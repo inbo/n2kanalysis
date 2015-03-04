@@ -2,6 +2,7 @@
 
 export(select_factor_count_strictly_positive)
 export(select_factor_threshold)
+export(select_observed_range)
 importFrom(MASS,glm.nb)
 importFrom(n2khelper,check_character)
 importFrom(n2khelper,check_dataframe_variable)
