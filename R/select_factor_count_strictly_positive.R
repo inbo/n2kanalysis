@@ -29,7 +29,7 @@ select_factor_count_strictly_positive <- function(observation, variable, thresho
     df = observation, variable = c("Count", variable), name = "observation", error = TRUE
   )
   if(dimension > length(variable)){
-    stop("the dimension cann't exceed the number of variables")
+    stop("the dimension can't exceed the number of variables")
   }
   
   positive.observation <- observation[observation$Count > 0, ]

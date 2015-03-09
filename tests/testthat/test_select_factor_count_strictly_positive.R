@@ -43,7 +43,7 @@ describe("select_factor_count_strictly_positive", {
         threshold = 3,
         dimension = 2
       ),
-      throws_error("the dimension cann't exceed the number of variables")
+      throws_error("the dimension can't exceed the number of variables")
     )
   })
 })
