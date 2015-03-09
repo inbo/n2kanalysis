@@ -5,7 +5,7 @@
 \title{Select data based on the number of prescences per category}
 \usage{
 select_factor_count_strictly_positive(observation, variable, threshold,
-  dimension = 1)
+  relative = FALSE, dimension = 1)
 }
 \arguments{
 \item{observation}{the \code{data.frame} with observations}
@@ -13,6 +13,8 @@ select_factor_count_strictly_positive(observation, variable, threshold,
 \item{variable}{the name of the \code{factor}}
 
 \item{threshold}{the minimal threshold}
+
+\item{relative}{When FALSE the threshold is the number of non-zero observations. When TRUE the threshold is the proportion of non-zero observations. Defaults to FALSE.}
 
 \item{dimension}{indicates which element of \code{variable} is used for the final aggregation}
 }

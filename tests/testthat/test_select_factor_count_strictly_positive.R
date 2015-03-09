@@ -5,6 +5,10 @@ describe("select_factor_count_strictly_positive", {
     LocationID = rep(1:3, each = 4),
     Year = rep(c(1, 1, 1, 1, 2, 2), 2)
   )
+  observation.relative <- data.frame(
+    Count = rep(1, 11),
+    Year = c(rep(1, 10), 2)
+  )
   
   it("selects correctly", {
     expect_that(
@@ -34,6 +38,16 @@ describe("select_factor_count_strictly_positive", {
       ),
       is_identical_to(subset(observation, Year == 1))
     )
+    expect_that(
+      select_factor_count_strictly_positive(
+        observation = observation.relative, 
+        variable = "Year", 
+        threshold = 0.15,
+        dimension = 1,
+        relative = TRUE
+      ),
+      is_identical_to(subset(observation.relative, Year == 1))
+    )
   })
   it("checks the number of dimensions", {
     expect_that(
@@ -44,6 +58,38 @@ describe("select_factor_count_strictly_positive", {
         dimension = 2
       ),
       throws_error("the dimension can't exceed the number of variables")
+    )
+    expect_that(
+      select_factor_count_strictly_positive(
+        observation = observation, 
+        variable = c("LocationID", "Year"),
+        threshold = 3,
+        dimension = 2,
+        relative = TRUE
+      ),
+      throws_error("relative threshold is only defined for 1 dimension")
+    )
+  })
+  it("checks the correct class of threshold", {
+    expect_that(
+      select_factor_count_strictly_positive(
+        observation = observation, 
+        variable = "LocationID", 
+        threshold = 0.15,
+        dimension = 1,
+        relative = FALSE
+      ),
+      throws_error("threshold is not integer")
+    )
+    expect_that(
+      select_factor_count_strictly_positive(
+        observation = observation, 
+        variable = "LocationID", 
+        threshold = 3,
+        dimension = 1,
+        relative = TRUE
+      ),
+      throws_error("threshold must be smaller than 1")
     )
   })
 })
