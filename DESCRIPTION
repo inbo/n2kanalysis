@@ -11,4 +11,5 @@ Suggests:
   testthat
 Imports: 
   MASS,
+  lme4,
   n2khelper
