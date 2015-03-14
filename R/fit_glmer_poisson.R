@@ -4,10 +4,12 @@
 #' @param weight Name of the weights variable
 #' @export
 #' @importFrom lme4 glmer glmerControl
+#' @importFrom n2khelper check_single_character check_dataframe_variable
 fit_glmer_poisson <- function(model, data, weight){
   if(missing(weight)){
     local.weight <- rep(1, nrow(data))
   } else {
+    check_dataframe_variable(df = data, variable = weight, name = "data")
     local.weight <- data[, weight]
   }
   
@@ -17,6 +19,9 @@ fit_glmer_poisson <- function(model, data, weight){
     glmerControl(optimizer = "optimx", optCtrl = list(method = "nlminb"))
   )
   for(control in controls){
+    if("optimx" %in% control$optimizer){
+      require(optimx)
+    }
     model <- glmer(
       formula = model.formula,
       data = data,
@@ -28,5 +33,9 @@ fit_glmer_poisson <- function(model, data, weight){
       break
     }
   }
-  return(model)
+  if(length(model@optinfo$conv$lme4) == 0){
+    return(model)
+  } else {
+    return(FALSE)
+  }
 }

@@ -8,8 +8,10 @@ Depends: R (>= 3.1.2)
 License: GPL-3
 LazyData: true
 Suggests: 
+  optimx,
   testthat
 Imports: 
   MASS,
   lme4,
+  digest,
   n2khelper
