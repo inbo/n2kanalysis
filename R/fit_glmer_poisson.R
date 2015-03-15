@@ -22,20 +22,25 @@ fit_glmer_poisson <- function(model, data, weight){
     if("optimx" %in% control$optimizer){
       require(optimx)
     }
-    model <- glmer(
+    model <- try(glmer(
       formula = model.formula,
       data = data,
       family = "poisson",
       weights = local.weight,
       control = control
-    )
+    ))
+    if("try-error" %in% class(model)){
+      next
+    }
     if(length(model@optinfo$conv$lme4) == 0){
       break
     }
   }
-  if(length(model@optinfo$conv$lme4) == 0){
-    return(model)
-  } else {
-    return(FALSE)
+  if("try-error" %in% class(model)){
+    return("error")
   }
+  if(length(model@optinfo$conv$lme4) > 0){
+    return("false convergence")
+  }
+  return(model)
 }
