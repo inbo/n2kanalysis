@@ -39,7 +39,13 @@ fit_single_model <- function(file, path){
       weight = weight
     )
   }
-
+  if(model.type == "inla nbinomial"){
+    model <- fit_inla_nbinomial(
+      model = model.set,
+      data = data
+    )
+  }
+  
   if("try-error" %in% class(model)){
     completed <- "error"
   } else if(is.logical(model)){
