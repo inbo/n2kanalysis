@@ -10,18 +10,20 @@ fit_single_model <- function(file, path){
   load(local.file, envir = local.environment)
   
   species.id <- read_object_environment(object = "species.id", env = local.environment)
-  region <- read_object_environment(object = "region", env = local.environment)
+  region <- read_object_environment(object = "region", env = local.environment, warn = FALSE)
   model.type <- read_object_environment(object = "model.type", env = local.environment)
   model.set <- read_object_environment(object = "model.set", env = local.environment)
-  weight <- read_object_environment(object = "weight", env = local.environment)
-  completed <- read_object_environment(object = "completed", env = local.environment)
+  weight <- read_object_environment(object = "weight", env = local.environment, warn = FALSE)
+  completed <- read_object_environment(
+    object = "completed", env = local.environment, warn = FALSE
+  )
   
   output <- data.frame(
     SpeciesID = species.id,
-    Region = region,
+    Region = ifelse(is.null(region), NA, region),
     ModelType = model.type,
     ModelSet = model.set,
-    Weight = weight
+    Weight = ifelse(is.null(weight), NA, weight)
   )
   
   if(is.null(completed)){
@@ -57,11 +59,13 @@ fit_single_model <- function(file, path){
     dir.create(paste0(path, "/model"))
   }
   sha <- digest(
-    list(species.id, region, model.type, model.set, model, weight), 
+    list(
+      species.id, region, model.type, model.set, model, weight
+    ), 
     algo = "sha1"
   )
   save(
-    species.id, region, model.type, model.set, model, weight, 
+      species.id, region, model.type, model.set, model, weight, 
     file = paste0(path, "/model/", sha, ".rda")
   )
   return(output)
