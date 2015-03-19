@@ -4,10 +4,12 @@
 \alias{fit_single_model}
 \title{Run a single element from the to do list}
 \usage{
-fit_single_model(file)
+fit_single_model(file, path)
 }
 \arguments{
 \item{file}{The name of the rda file}
+
+\item{path}{The path of the analysis files}
 }
 \description{
 Run a single element from the to do list

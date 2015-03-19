@@ -4,7 +4,7 @@
 \alias{fit_every_model}
 \title{Fit the model to the analysis files}
 \usage{
-fit_every_model(path)
+fit_every_model(path = ".")
 }
 \arguments{
 \item{path}{The path of the analysis files}

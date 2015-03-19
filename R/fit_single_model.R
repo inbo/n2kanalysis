@@ -1,43 +1,41 @@
 #' Run a single element from the to do list
 #' @param file The name of the rda file
+#' @param path The path of the analysis files
+#' @importFrom n2khelper read_object_environment
 #' @importFrom digest digest
 #' @export
-fit_single_model <- function(file){
+fit_single_model <- function(file, path){
+  local.file <- paste(path, file, sep = "/")
   local.environment <- new.env()
-  load(file, envir = local.environment)
-  species.id <- get("species.id", envir = local.environment)
-  model.type <- get("model.type", envir = local.environment)
-  model.set <- get("model.set", envir = local.environment)
-  weighted <- exists("weight", envir = local.environment)
+  load(local.file, envir = local.environment)
+  
+  species.id <- read_object_environment(object = "species.id", env = local.environment)
+  region <- read_object_environment(object = "region", env = local.environment)
+  model.type <- read_object_environment(object = "model.type", env = local.environment)
+  model.set <- read_object_environment(object = "model.set", env = local.environment)
+  weight <- read_object_environment(object = "weight", env = local.environment)
+  completed <- read_object_environment(object = "completed", env = local.environment)
+  
   output <- data.frame(
     SpeciesID = species.id,
+    Region = region,
     ModelType = model.type,
-    ModelSet = model.set
+    ModelSet = model.set,
+    Weight = weight
   )
-  if(weighted){
-    weight <- get("weight", envir = local.environment)
-    output$Weight <- weight
-  }
   
-  if(exists("completed", envir = local.environment)){
-    output$Status <- get("completed", envir = local.environment)
+  if(is.null(completed)){
+    output$Status <- completed
     return(output)
   }
-  data <- get("data", envir = local.environment)
+  data <- read_object_environment(object = "data", en = local.environment)
   
   if(model.type == "glmer poisson"){
-    if(weighted){
-      model <- fit_glmer_poisson(
-        model = model.set,
-        data = data,
-        weight = weight
-      )
-    } else {
-      model <- fit_glmer_poisson(
-        model = model.set,
-        data = data
-      )
-    }
+    model <- fit_glmer_poisson(
+      model = model.set,
+      data = data,
+      weight = weight
+    )
   }
 
   if("try-error" %in% class(model)){
@@ -47,30 +45,24 @@ fit_single_model <- function(file){
   } else {
     completed <- "converged"
   }
-  output$Status <- get("completed", envir = local.environment)
+  output$Status <- completed
   assign("completed", value = completed, envir = local.environment)
-  save(list = ls(local.environment), envir = local.environment, file = file)
-  
+  save(list = ls(local.environment), envir = local.environment, file = local.file)
   
   if(completed != "converged"){
     return(output)
   }
   
-  if(!file_test("-d", "model")){
-    dir.create("model")
+  if(!file_test("-d", paste0(path, "/model"))){
+    dir.create(paste0(path, "/model"))
   }
-  if(weighted){
-    sha <- digest(
-      list(species.id, model.type, model.set, model, weight), 
-      algo = "sha1"
-    )
-    save(species.id, model.type, model.set, model, weight, file = paste0("model/", sha, ".rda"))
-  } else {
-    sha <- digest(
-      list(species.id, model.type, model.set, model), 
-      algo = "sha1"
-    )
-    save(species.id, model.type, model.set, model, file = paste0("model/", sha, ".rda"))
-  }
+  sha <- digest(
+    list(species.id, region, model.type, model.set, model, weight), 
+    algo = "sha1"
+  )
+  save(
+    species.id, region, model.type, model.set, model, weight, 
+    file = paste0(path, "/model/", sha, ".rda")
+  )
   return(output)
 }
