@@ -4,8 +4,11 @@
 #' @param weight Name of the weights variable
 #' @export
 #' @importFrom lme4 glmer glmerControl
-#' @importFrom n2khelper check_single_character check_dataframe_variable
+#' @importFrom n2khelper check_single_character check_dataframe_variable check_dataframe_covariate
 fit_glmer_poisson <- function(model, data, weight){
+  check_dataframe_covariate(
+    df = data[1, ], covariate = model, response = "Count", error = TRUE
+  )  
   if(missing(weight)){
     local.weight <- rep(1, nrow(data))
   } else {
