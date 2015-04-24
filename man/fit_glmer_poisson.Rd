@@ -4,10 +4,10 @@
 \alias{fit_glmer_poisson}
 \title{Fit a Poisson GLMM model  with lme4}
 \usage{
-fit_glmer_poisson(model, data, weight)
+fit_glmer_poisson(model.set, data, weight)
 }
 \arguments{
-\item{model}{A character with the covariates of the model}
+\item{model.set}{A character with the covariates of the model}
 
 \item{data}{The data.frame with the data}
 

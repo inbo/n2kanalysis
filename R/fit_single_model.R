@@ -30,18 +30,18 @@ fit_single_model <- function(file, path){
     output$Status <- completed
     return(output)
   }
-  data <- read_object_environment(object = "data", en = local.environment)
+  data <- read_object_environment(object = "data", env = local.environment)
   
   if(model.type == "glmer poisson"){
     model <- fit_glmer_poisson(
-      model = model.set,
+      model.set = model.set,
       data = data,
       weight = weight
     )
   }
   if(model.type == "inla nbinomial"){
     model <- fit_inla_nbinomial(
-      model = model.set,
+      model.set = model.set,
       data = data
     )
   }

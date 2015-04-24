@@ -1,13 +1,13 @@
 #' Fit a Poisson GLMM model  with lme4
-#' @param model A character with the covariates of the model
+#' @param model.set A character with the covariates of the model
 #' @param data The data.frame with the data
 #' @param weight Name of the weights variable
 #' @export
 #' @importFrom lme4 glmer glmerControl
 #' @importFrom n2khelper check_single_character check_dataframe_variable check_dataframe_covariate
-fit_glmer_poisson <- function(model, data, weight){
+fit_glmer_poisson <- function(model.set, data, weight){
   check_dataframe_covariate(
-    df = data[1, ], covariate = model, response = "Count", error = TRUE
+    df = data[1, ], covariate = model.set, response = "Count", error = TRUE
   )  
   if(missing(weight)){
     local.weight <- rep(1, nrow(data))
@@ -16,7 +16,7 @@ fit_glmer_poisson <- function(model, data, weight){
     local.weight <- data[, weight]
   }
   
-  model.formula <- as.formula(paste("Count ~", model))
+  model.formula <- as.formula(paste("Count ~", model.set))
   controls <- list(
     glmerControl(optimizer = "bobyqa"),
     glmerControl(optimizer = "optimx", optCtrl = list(method = "nlminb"))

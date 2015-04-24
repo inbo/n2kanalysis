@@ -7,6 +7,8 @@
 fit_inla_nbinomial(model.set, data)
 }
 \arguments{
+\item{model.set}{A character with the covariates of the model}
+
 \item{data}{The data.frame with the data}
 }
 \value{
