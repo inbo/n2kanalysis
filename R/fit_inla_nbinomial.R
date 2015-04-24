@@ -16,7 +16,7 @@ fit_inla_nbinomial <- function(model.set, data){
   link <- rep(NA, nrow(data))
   link[is.na(data$Count)] <- 1
   
-  model <- try(inla(
+  model <- try(INLA::inla(
     formula = form, 
     family = "nbinomial", 
     data = data, 

@@ -23,7 +23,7 @@ fit_glmer_poisson <- function(model, data, weight){
   )
   for(control in controls){
     if("optimx" %in% control$optimizer){
-      require(optimx)
+      requireNamespace("optimx", quietly = TRUE)
     }
     model <- try(glmer(
       formula = model.formula,
