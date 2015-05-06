@@ -5,6 +5,7 @@ describe("status", {
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
     scheme.id = 1,
+    species.group.id = 2,
     data = cbpp
   )
   model.object <- lme4::glmer(
@@ -43,6 +44,7 @@ describe("get_data", {
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
     scheme.id = 1,
+    species.group.id = 2,
     data = cbpp
   )
   model.object <- lme4::glmer(
@@ -70,6 +72,7 @@ describe("get_seed", {
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
     scheme.id = 1,
+    species.group.id = 2,
     data = cbpp
   )
   it("returns the Seed slot", {
@@ -85,12 +88,29 @@ describe("get_scheme_id", {
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
     scheme.id = 1,
+    species.group.id = 2,
     data = cbpp
   )
   it("returns the SchemeID slot", {
     expect_that(
       get_scheme_id(object),
       is_identical_to(object@SchemeID)
+    )
+  })
+})
+
+context("get_species_group_id() handles n2kModel objects")
+describe("get_species_group_id", {
+  data("cbpp", package = "lme4")
+  object <- n2k_glmer_poisson(
+    scheme.id = 1,
+    species.group.id = 2,
+    data = cbpp
+  )
+  it("returns the SchemeID slot", {
+    expect_that(
+      get_species_group_id(object),
+      is_identical_to(object@SpeciesGroupID)
     )
   })
 })

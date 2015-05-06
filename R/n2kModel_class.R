@@ -6,6 +6,7 @@
 #'    \item{\code{Data}}{a data.frame with the data}
 #'    \item{\code{Status}}{a single character indicating the status of the model}
 #'    \item{\code{SchemeID}}{a single integer holding the id of the scheme}
+#'    \item{\code{SpeciesGroupID}}{a single integer identifing the species group}
 #'    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
 #'   }
 #' @name n2kModel-class
@@ -20,6 +21,7 @@ setClass(
     Data = "data.frame",
     Status = "character",
     SchemeID = "integer",
+    SpeciesGroupID = "integer",
     Seed = "integer",
     "VIRTUAL"
   )
@@ -31,6 +33,7 @@ setValidity(
   "n2kModel",
   function(object){
     check_single_strictly_positive_integer(object@SchemeID, name = "SchemeID")
+    check_single_strictly_positive_integer(object@SpeciesGroupID, name = "SpeciesGroupID")
     check_single_strictly_positive_integer(object@Seed, name = "Seed")
     check_single_character(object@Status, name = "Status")
     ok.status <- c("new", "error", "converged", "false convergence")

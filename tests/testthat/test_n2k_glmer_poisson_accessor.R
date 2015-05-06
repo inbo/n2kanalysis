@@ -4,6 +4,7 @@ describe("get_weight", {
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
     scheme.id = 1,
+    species.group.id = 2,
     data = cbpp
   )
   it("returns the Weight slot", {
@@ -19,6 +20,7 @@ describe("get_model", {
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
     scheme.id = 1,
+    species.group.id = 2,
     data = cbpp
   )
   it("returns the Model slot", {

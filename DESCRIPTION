@@ -30,6 +30,7 @@ Collate:
     'get_model.R'
     'get_scheme_id.R'
     'get_seed.R'
+    'get_species_group_id.R'
     'get_weight.R'
     'mark_obsolete_dataset.R'
     'n2k_glmer_poisson.R'
