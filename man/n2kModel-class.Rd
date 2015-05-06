@@ -12,6 +12,7 @@ A virtual superclass to contain the analysis models
   \describe{
    \item{\code{Data}}{a data.frame with the data}
    \item{\code{Status}}{a single character indicating the status of the model}
+   \item{\code{SchemeID}}{a single integer holding the id of the scheme}
    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
   }
 }

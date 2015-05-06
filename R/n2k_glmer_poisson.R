@@ -5,6 +5,7 @@
 #' @details
 #'   \describe{
 #'    \item{\code{status}}{a single character indicating the status of the model. Defaults to 'new' when \code{data} is a data.frame.}
+#'    \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
 #'    \item{\code{weight}}{The name of the variable to use as weights. '' indicates no weighting. Defautls to ''}
 #'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
 #'   }
@@ -52,6 +53,7 @@ setMethod(
       "n2kGlmerPoisson",
       Data = data,
       Status = dots$status,
+      SchemeID = check_single_strictly_positive_integer(dots$scheme.id, name = "scheme.id"),
       Seed = dots$seed,
       Weight = dots$weight,
       Model = NULL

@@ -26,6 +26,7 @@ Collate:
     'fit_single_model.R'
     'n2kModel_class.R'
     'get_data.R'
+    'get_scheme_id.R'
     'get_seed.R'
     'mark_obsolete_dataset.R'
     'n2kGlmerPoisson_class.R'

@@ -32,6 +32,7 @@ In case \code{data} a n2kGlmerPoisson object is, then only the model and status 
 \details{
 \describe{
    \item{\code{status}}{a single character indicating the status of the model. Defaults to 'new' when \code{data} is a data.frame.}
+   \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
    \item{\code{weight}}{The name of the variable to use as weights. '' indicates no weighting. Defautls to ''}
    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
   }

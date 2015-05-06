@@ -4,6 +4,7 @@ context("status() handles n2kModel objects")
 describe("status", {
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
+    scheme.id = 1,
     data = cbpp
   )
   model.object <- lme4::glmer(
@@ -37,10 +38,11 @@ describe("status", {
   })
 })
 
-context("get_data() handles n2k_virtual objects")
+context("get_data() handles n2kModel objects")
 describe("get_data", {
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
+    scheme.id = 1,
     data = cbpp
   )
   model.object <- lme4::glmer(
@@ -63,17 +65,32 @@ describe("get_data", {
   })
 })
 
-
-context("get_seed() handles n2k_virtual objects")
+context("get_seed() handles n2kModel objects")
 describe("get_seed", {
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
+    scheme.id = 1,
     data = cbpp
   )
   it("returns the Seed slot", {
     expect_that(
       get_seed(object),
       is_identical_to(object@Seed)
+    )
+  })
+})
+
+context("get_scheme_id() handles n2kModel objects")
+describe("get_scheme_id", {
+  data("cbpp", package = "lme4")
+  object <- n2k_glmer_poisson(
+    scheme.id = 1,
+    data = cbpp
+  )
+  it("returns the SchemeID slot", {
+    expect_that(
+      get_scheme_id(object),
+      is_identical_to(object@SchemeID)
     )
   })
 })

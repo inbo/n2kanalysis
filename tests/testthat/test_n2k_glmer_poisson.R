@@ -1,7 +1,9 @@
 context("prepare a n2kGlmerPoisson object")
 describe("n2k_glmer_poisson", {
+  this.scheme.id <- 1L
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
+    scheme.id = this.scheme.id,
     data = cbpp 
   )
   model.object <- lme4::glmer(
@@ -35,6 +37,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        scheme.id = this.scheme.id,
         status = "junk"
       ),
       throws_error("Status must be one of the following")
@@ -42,6 +45,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        scheme.id = this.scheme.id,
         status = NA
       ),
       throws_error("Status must be character")
@@ -57,6 +61,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        scheme.id = this.scheme.id,
         weight = "junk"
       ),
       throws_error("Variables missing in data: junk")
@@ -67,6 +72,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        scheme.id = this.scheme.id,
         seed = this.seed
       )@Seed,
       is_identical_to(this.seed)
@@ -77,6 +83,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        scheme.id = this.scheme.id,
         seed = this.seed
       )@Seed,
       is_identical_to(as.integer(this.seed))
@@ -85,6 +92,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        scheme.id = this.scheme.id,
         seed = this.seed + 1e-11
       )@Seed,
       is_identical_to(this.seed)
@@ -92,6 +100,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        scheme.id = this.scheme.id,
         seed = this.seed + 0.1
       ),
       throws_error("seed is not integer")
@@ -103,12 +112,47 @@ describe("n2k_glmer_poisson", {
       is_a("integer")
     )
   })
+  
+  it("sets the correct SchemeID", {
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        scheme.id = this.scheme.id
+      )@SchemeID,
+      is_identical_to(this.scheme.id)
+    )
+  })
+  it("converts numeric scheme.id, when possible", {
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        scheme.id = as.numeric(this.scheme.id)
+      )@SchemeID,
+      is_identical_to(this.scheme.id)
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        scheme.id = this.scheme.id + 1e-11
+      )@SchemeID,
+      is_identical_to(this.scheme.id)
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        scheme.id = this.scheme.id + 0.1
+      ),
+      throws_error("scheme.id is not integer")
+    )
+  })
 })
 
 context("add a model to a n2kGlmerPoisson object")
 describe("n2k_glmer_poisson", {
+  this.scheme.id <- 1L
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
+    scheme.id = this.scheme.id,
     data = cbpp 
   )
   model.object <- lme4::glmer(
@@ -156,6 +200,16 @@ describe("n2k_glmer_poisson", {
         data = object, model.fit = model.object, status = "converged", seed = 1
       )@Seed,
       is_identical_to(object@Seed)
+    )
+    expect_that(
+      object.model@Seed,
+      is_identical_to(object@Seed)
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = object, model.fit = model.object, status = "converged", scheme.id = 999
+      )@SchemeID,
+      is_identical_to(object@SchemeID)
     )
   })
   it("stores the new status", {
