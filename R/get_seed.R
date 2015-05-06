@@ -10,7 +10,7 @@
 setGeneric(
   name = "get_seed", 
   def = function(x){
-    standard.generic(get_seed)
+    standard.generic("get_seed")
   }
 )
 

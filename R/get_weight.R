@@ -9,7 +9,7 @@
 setGeneric(
   name = "get_weight", 
   def = function(x){
-    standard.generic(get_weight)
+    standard.generic("get_weight")
   }
 )
 

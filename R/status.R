@@ -9,7 +9,7 @@
 setGeneric(
   name = "status", 
   def = function(x){
-    standard.generic(status)
+    standard.generic("status")
   }
 )
 
