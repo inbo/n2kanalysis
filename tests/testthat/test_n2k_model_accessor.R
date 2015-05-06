@@ -36,3 +36,29 @@ describe("status", {
     )
   })
 })
+
+context("get_data() handles n2k_virtual objects")
+describe("get_data", {
+  data("cbpp", package = "lme4")
+  object <- n2k_glmer_poisson(
+    data = cbpp
+  )
+  model.object <- lme4::glmer(
+    incidence ~ offset(log(size)) + period + (1 | herd), 
+    data = object@Data,
+    family = poisson
+  )
+  object.model <- n2k_glmer_poisson(
+    data = object, model.fit = model.object, status = "converged"
+  )
+  it("returns the Data slot", {
+    expect_that(
+      get_data(object),
+      is_identical_to(cbpp)
+    )
+    expect_that(
+      get_data(object.model),
+      is_identical_to(cbpp)
+    )
+  })
+})
