@@ -20,3 +20,20 @@ setClass(
     "VIRTUAL"
   )
 )
+
+#' @importFrom methods setValidity
+#' @importFrom n2khelper check_single_character
+setValidity(
+  "n2kModel",
+  function(object){
+    check_single_character(object@Status, name = "Status")
+    ok.status <- c("new", "error", "converged", "false convergence")
+    if(!object@Status %in% ok.status){
+      stop(
+        "Status must be one of the following: ", 
+        paste0("'", ok.status, "'", collapse = ", ")
+      )
+    }
+    return(TRUE)
+  }
+)

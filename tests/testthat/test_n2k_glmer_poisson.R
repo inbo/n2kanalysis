@@ -31,6 +31,22 @@ describe("n2k_glmer_poisson", {
       is_identical_to("new")
     )
   })
+  it("requires a correct status", {
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        status = "junk"
+      ),
+      throws_error("Status must be one of the following")
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        status = NA
+      ),
+      throws_error("Status must be character")
+    )
+  })
   it("uses '' as default weight", {
     expect_that(
       object@Weight,
