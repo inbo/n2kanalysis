@@ -31,3 +31,4 @@ Collate:
     'select_factor_count_strictly_positive.R'
     'select_factor_threshold.R'
     'select_observed_range.R'
+    'status.R'
