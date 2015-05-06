@@ -6,6 +6,7 @@ describe("status", {
   object <- n2k_glmer_poisson(
     scheme.id = 1,
     species.group.id = 2,
+    location.group.id = 3,
     data = cbpp
   )
   model.object <- lme4::glmer(
@@ -45,6 +46,7 @@ describe("get_data", {
   object <- n2k_glmer_poisson(
     scheme.id = 1,
     species.group.id = 2,
+    location.group.id = 3,
     data = cbpp
   )
   model.object <- lme4::glmer(
@@ -73,6 +75,7 @@ describe("get_seed", {
   object <- n2k_glmer_poisson(
     scheme.id = 1,
     species.group.id = 2,
+    location.group.id = 3,
     data = cbpp
   )
   it("returns the Seed slot", {
@@ -89,6 +92,7 @@ describe("get_scheme_id", {
   object <- n2k_glmer_poisson(
     scheme.id = 1,
     species.group.id = 2,
+    location.group.id = 3,
     data = cbpp
   )
   it("returns the SchemeID slot", {
@@ -105,12 +109,30 @@ describe("get_species_group_id", {
   object <- n2k_glmer_poisson(
     scheme.id = 1,
     species.group.id = 2,
+    location.group.id = 3,
     data = cbpp
   )
-  it("returns the SchemeID slot", {
+  it("returns the SpeciesGroupID slot", {
     expect_that(
       get_species_group_id(object),
       is_identical_to(object@SpeciesGroupID)
+    )
+  })
+})
+
+context("get_location_group_id() handles n2kModel objects")
+describe("get_location_group_id", {
+  data("cbpp", package = "lme4")
+  object <- n2k_glmer_poisson(
+    scheme.id = 1,
+    species.group.id = 2,
+    location.group.id = 3,
+    data = cbpp
+  )
+  it("returns the LocationGroupID slot", {
+    expect_that(
+      get_location_group_id(object),
+      is_identical_to(object@LocationGroupID)
     )
   })
 })

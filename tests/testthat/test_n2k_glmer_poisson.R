@@ -2,10 +2,12 @@ context("prepare a n2kGlmerPoisson object")
 describe("n2k_glmer_poisson", {
   this.scheme.id <- 1L
   this.species.group.id <- 2L
+  this.location.group.id <- 3L
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
     data = cbpp 
   )
   model.object <- lme4::glmer(
@@ -41,6 +43,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
         status = "junk"
       ),
       throws_error("Status must be one of the following")
@@ -50,6 +53,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
         status = NA
       ),
       throws_error("Status must be character")
@@ -67,6 +71,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
         weight = "junk"
       ),
       throws_error("Variables missing in data: junk")
@@ -79,6 +84,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
         seed = this.seed
       )@Seed,
       is_identical_to(this.seed)
@@ -91,6 +97,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
         seed = this.seed
       )@Seed,
       is_identical_to(as.integer(this.seed))
@@ -101,6 +108,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
         seed = this.seed + 1e-11
       )@Seed,
       is_identical_to(this.seed)
@@ -110,6 +118,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
         seed = this.seed + 0.1
       ),
       throws_error("seed is not integer")
@@ -127,6 +136,7 @@ describe("n2k_glmer_poisson", {
       n2k_glmer_poisson(
         data = cbpp,
         species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
         scheme.id = this.scheme.id
       )@SchemeID,
       is_identical_to(this.scheme.id)
@@ -137,6 +147,7 @@ describe("n2k_glmer_poisson", {
       n2k_glmer_poisson(
         data = cbpp,
         species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
         scheme.id = as.numeric(this.scheme.id)
       )@SchemeID,
       is_identical_to(this.scheme.id)
@@ -145,6 +156,7 @@ describe("n2k_glmer_poisson", {
       n2k_glmer_poisson(
         data = cbpp,
         species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
         scheme.id = this.scheme.id + 1e-11
       )@SchemeID,
       is_identical_to(this.scheme.id)
@@ -153,6 +165,7 @@ describe("n2k_glmer_poisson", {
       n2k_glmer_poisson(
         data = cbpp,
         species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
         scheme.id = this.scheme.id + 0.1
       ),
       throws_error("scheme.id is not integer")
@@ -164,6 +177,7 @@ describe("n2k_glmer_poisson", {
       n2k_glmer_poisson(
         data = cbpp,
         species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
         scheme.id = this.scheme.id
       )@SpeciesGroupID,
       is_identical_to(this.species.group.id)
@@ -174,6 +188,7 @@ describe("n2k_glmer_poisson", {
       n2k_glmer_poisson(
         data = cbpp,
         species.group.id = as.numeric(this.species.group.id),
+        location.group.id = this.location.group.id,
         scheme.id = this.scheme.id
       )@SpeciesGroupID,
       is_identical_to(this.species.group.id)
@@ -182,6 +197,7 @@ describe("n2k_glmer_poisson", {
       n2k_glmer_poisson(
         data = cbpp,
         species.group.id = this.species.group.id + 1e-11,
+        location.group.id = this.location.group.id,
         scheme.id = this.scheme.id
       )@SpeciesGroupID,
       is_identical_to(this.species.group.id)
@@ -190,9 +206,51 @@ describe("n2k_glmer_poisson", {
       n2k_glmer_poisson(
         data = cbpp,
         species.group.id = this.species.group.id + 0.1,
+        location.group.id = this.location.group.id,
         scheme.id = this.scheme.id
       ),
       throws_error("species.group.id is not integer")
+    )
+  })
+  
+  it("sets the correct LocationGroupID", {
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        scheme.id = this.scheme.id
+      )@LocationGroupID,
+      is_identical_to(this.location.group.id)
+    )
+  })
+  it("converts numeric location.group.id, when possible", {
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = as.numeric(this.location.group.id),
+        scheme.id = this.scheme.id
+      )@LocationGroupID,
+      is_identical_to(this.location.group.id)
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id + 1e-11,
+        scheme.id = this.scheme.id
+      )@LocationGroupID,
+      is_identical_to(this.location.group.id)
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id + 0.1,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("location.group.id is not integer")
     )
   })
 })
@@ -212,10 +270,12 @@ context("add a model to a n2kGlmerPoisson object")
 describe("n2k_glmer_poisson", {
   this.scheme.id <- 1L
   this.species.group.id <- 2L
+  this.location.group.id <- 3L
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
     data = cbpp 
   )
   model.object <- lme4::glmer(
@@ -265,14 +325,34 @@ describe("n2k_glmer_poisson", {
       is_identical_to(object@Seed)
     )
     expect_that(
-      object.model@Seed,
-      is_identical_to(object@Seed)
+      object.model@SchemeID,
+      is_identical_to(object@SchemeID)
     )
     expect_that(
       n2k_glmer_poisson(
         data = object, model.fit = model.object, status = "converged", scheme.id = 999
       )@SchemeID,
       is_identical_to(object@SchemeID)
+    )
+    expect_that(
+      object.model@SpeciesGroupID,
+      is_identical_to(object@SpeciesGroupID)
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = object, model.fit = model.object, status = "converged", species.group.id = 999
+      )@SpeciesGroupID,
+      is_identical_to(object@SpeciesGroupID)
+    )
+    expect_that(
+      object.model@LocationGroupID,
+      is_identical_to(object@LocationGroupID)
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = object, model.fit = model.object, status = "converged", location.group.id = 999
+      )@LocationGroupID,
+      is_identical_to(object@LocationGroupID)
     )
   })
   it("stores the new status", {

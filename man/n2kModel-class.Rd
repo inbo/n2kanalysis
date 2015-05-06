@@ -14,6 +14,7 @@ A virtual superclass to contain the analysis models
    \item{\code{Status}}{a single character indicating the status of the model}
    \item{\code{SchemeID}}{a single integer holding the id of the scheme}
    \item{\code{SpeciesGroupID}}{a single integer identifing the species group}
+   \item{\code{LocationGroupID}}{a single integer identifing the location group}
    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
   }
 }
