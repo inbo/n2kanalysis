@@ -3,6 +3,13 @@
 setClassUnion("maybeGlmerMod", c("glmerMod", "NULL"))
 
 #' The n2kGlmerPoisson class
+#' 
+#' It hold analysis data based on a glmer poisson model
+#' @section Slots:
+#'   \describe{
+#'    \item{\code{Weight}}{The name of the variable to use as weights. '' indicates no weighting.}
+#'    \item{\code{Model}}{Either NULL or the resulting glmer model.}
+#'   }
 #' @name n2kGlmerPoisson-class
 #' @rdname n2kGlmerPoisson-class
 #' @exportClass n2kGlmerPoisson

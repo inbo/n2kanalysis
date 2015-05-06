@@ -5,6 +5,13 @@
 \alias{n2kGlmerPoisson-class}
 \title{The n2kGlmerPoisson class}
 \description{
-The n2kGlmerPoisson class
+It hold analysis data based on a glmer poisson model
+}
+\section{Slots}{
+
+  \describe{
+   \item{\code{Weight}}{The name of the variable to use as weights. '' indicates no weighting.}
+   \item{\code{Model}}{Either NULL or the resulting glmer model.}
+  }
 }
 
