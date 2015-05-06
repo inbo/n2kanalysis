@@ -16,6 +16,7 @@ A virtual superclass to contain the analysis models
    \item{\code{SpeciesGroupID}}{a single integer identifing the species group}
    \item{\code{LocationGroupID}}{a single integer identifing the location group}
    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
+   \item{\code{DataFingerprint}}{the SHA1 fingerprint of the data}
   }
 }
 

@@ -8,7 +8,7 @@
 #'    \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
 #'    \item{\code{species.group.id}}{a single integer identifing the species group}
 #'    \item{\code{location.group.id}}{a single integer identifing the location group}
-#'    \item{\code{weight}}{The name of the variable to use as weights. '' indicates no weighting. Defautls to ''}
+#'    \item{\code{weight}}{The name of the variable to use as weights. '' indicates no weighting. Defaults to ''}
 #'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
 #'   }
 #' @name n2k_glmer_poisson
@@ -66,6 +66,7 @@ setMethod(
       ),
       Seed = dots$seed,
       Weight = dots$weight,
+      DataFingerprint = digest(data, algo = "sha1"),
       Model = NULL
     )
   }

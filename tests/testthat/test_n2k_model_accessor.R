@@ -136,3 +136,20 @@ describe("get_location_group_id", {
     )
   })
 })
+
+context("get_data_fingerprint() handles n2kModel objects")
+describe("get_data_fingerprint", {
+  data("cbpp", package = "lme4")
+  object <- n2k_glmer_poisson(
+    scheme.id = 1,
+    species.group.id = 2,
+    location.group.id = 3,
+    data = cbpp
+  )
+  it("returns the DataFingerprint slot", {
+    expect_that(
+      get_data_fingerprint(object),
+      is_identical_to(object@DataFingerprint)
+    )
+  })
+})

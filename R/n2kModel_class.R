@@ -9,6 +9,7 @@
 #'    \item{\code{SpeciesGroupID}}{a single integer identifing the species group}
 #'    \item{\code{LocationGroupID}}{a single integer identifing the location group}
 #'    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
+#'    \item{\code{DataFingerprint}}{the SHA1 fingerprint of the data}
 #'   }
 #' @name n2kModel-class
 #' @rdname n2kModel-class
@@ -25,12 +26,14 @@ setClass(
     SpeciesGroupID = "integer",
     LocationGroupID = "integer",
     Seed = "integer",
+    DataFingerprint = "character",
     "VIRTUAL"
   )
 )
 
 #' @importFrom methods setValidity
 #' @importFrom n2khelper check_single_strictly_positive_integer check_single_character
+#' @importFrom digest digest
 setValidity(
   "n2kModel",
   function(object){
@@ -38,7 +41,9 @@ setValidity(
     check_single_strictly_positive_integer(object@SpeciesGroupID, name = "SpeciesGroupID")
     check_single_strictly_positive_integer(object@LocationGroupID, name = "LocationGroupID")
     check_single_strictly_positive_integer(object@Seed, name = "Seed")
+    check_single_character(object@DataFingerprint, name = "DataFingerprint")
     check_single_character(object@Status, name = "Status")
+    
     ok.status <- c("new", "error", "converged", "false convergence")
     if(!object@Status %in% ok.status){
       stop(
@@ -46,6 +51,10 @@ setValidity(
         paste0("'", ok.status, "'", collapse = ", ")
       )
     }
+    if(object@DataFingerprint != digest(object@Data, algo = "sha1")){
+      stop("Mismatch between DataFingerprint and Data")
+    }
+    
     return(TRUE)
   }
 )

@@ -35,7 +35,7 @@ In case \code{data} a n2kGlmerPoisson object is, then only the model and status 
    \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
    \item{\code{species.group.id}}{a single integer identifing the species group}
    \item{\code{location.group.id}}{a single integer identifing the location group}
-   \item{\code{weight}}{The name of the variable to use as weights. '' indicates no weighting. Defautls to ''}
+   \item{\code{weight}}{The name of the variable to use as weights. '' indicates no weighting. Defaults to ''}
    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
   }
 }
