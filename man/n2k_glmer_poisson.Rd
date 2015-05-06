@@ -18,11 +18,22 @@ n2k_glmer_poisson(data, ..., model.fit)
 \arguments{
 \item{data}{a data.frame with the data to analyse}
 
-\item{...}{other arguments}
+\item{...}{other arguments. See below}
 
 \item{model.fit}{The fitted model}
 }
 \description{
 Create a n2kGlmerPoisson object
+
+A new n2kGlmerPoisson model is created when \code{data} is a data.frame.
+
+In case \code{data} a n2kGlmerPoisson object is, then only the model and status are updated. All other slots are unaffected.
+}
+\details{
+\describe{
+   \item{\code{status}}{a single character indicating the status of the model. Defaults to 'new' when \code{data} is a data.frame.}
+   \item{\code{weight}}{The name of the variable to use as weights. '' indicates no weighting. Defautls to ''}
+   \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
+  }
 }
 

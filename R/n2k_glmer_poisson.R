@@ -1,7 +1,13 @@
 #' Create a n2kGlmerPoisson object
 #' @param data a data.frame with the data to analyse
 #' @param model.fit The fitted model
-#' @param ... other arguments
+#' @param ... other arguments. See below
+#' @details
+#'   \describe{
+#'    \item{\code{status}}{a single character indicating the status of the model. Defaults to 'new' when \code{data} is a data.frame.}
+#'    \item{\code{weight}}{The name of the variable to use as weights. '' indicates no weighting. Defautls to ''}
+#'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
+#'   }
 #' @name n2k_glmer_poisson
 #' @rdname n2k_glmer_poisson
 #' @exportMethod n2k_glmer_poisson
@@ -16,6 +22,7 @@ setGeneric(
   }
 )
 
+#' @description A new n2kGlmerPoisson model is created when \code{data} is a data.frame.
 #' @rdname n2k_glmer_poisson
 #' @aliases n2k_glmer_poisson,n2kGlmerPoisson-methods
 #' @importFrom methods setMethod
@@ -52,6 +59,7 @@ setMethod(
   }
 )
 
+#' @description In case \code{data} a n2kGlmerPoisson object is, then only the model and status are updated. All other slots are unaffected.
 #' @rdname n2k_glmer_poisson
 #' @aliases n2k_glmer_poisson,my_lmer-methods
 #' @importFrom methods setMethod validObject
