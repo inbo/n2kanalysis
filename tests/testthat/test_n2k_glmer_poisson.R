@@ -62,6 +62,47 @@ describe("n2k_glmer_poisson", {
       throws_error("Variables missing in data: junk")
     )
   })
+  it("sets the correct seed", {
+    this.seed <- 12345L
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        seed = this.seed
+      )@Seed,
+      is_identical_to(this.seed)
+    )
+  })
+  it("converts numeric seed, when possible", {
+    this.seed <- 12345
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        seed = this.seed
+      )@Seed,
+      is_identical_to(as.integer(this.seed))
+    )
+    this.seed <- 12345L
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        seed = this.seed + 1e-11
+      )@Seed,
+      is_identical_to(this.seed)
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        seed = this.seed + 0.1
+      ),
+      throws_error("seed is not integer")
+    )
+  })
+  it("sets a random seed when not provided", {
+    expect_that(
+      object@Seed,
+      is_a("integer")
+    )
+  })
 })
 
 context("add a model to a n2kGlmerPoisson object")
@@ -106,11 +147,15 @@ describe("n2k_glmer_poisson", {
       )@Weight,
       is_identical_to(object@Weight)
     )
-  })
-  it("stores the new status", {
     expect_that(
-      object.model@Status,
-      is_identical_to("converged")
+      object.model@Seed,
+      is_identical_to(object@Seed)
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = object, model.fit = model.object, status = "converged", seed = 1
+      )@Seed,
+      is_identical_to(object@Seed)
     )
   })
   it("stores the new status", {

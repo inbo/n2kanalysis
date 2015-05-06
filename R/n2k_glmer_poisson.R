@@ -19,6 +19,7 @@ setGeneric(
 #' @rdname n2k_glmer_poisson
 #' @aliases n2k_glmer_poisson,n2kGlmerPoisson-methods
 #' @importFrom methods setMethod
+#' @importFrom n2khelper check_single_strictly_positive_integer
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "n2k_glmer_poisson", 
@@ -27,16 +28,24 @@ setMethod(
     data, ..., model.fit
   ){
     dots <- list(...)
+    #set the defaults for missing arguments in dots
     if(is.null(dots$status)){
       dots$status <- "new"
     }
     if(is.null(dots$weight)){
       dots$weight <- ""
     }
+    if(is.null(dots$seed)){
+      dots$seed <- sample(.Machine$integer.max, 1)
+    } else {
+      dots$seed <- check_single_strictly_positive_integer(dots$seed, name = "seed")
+    }
+    
     new(
       "n2kGlmerPoisson",
       Data = data,
       Status = dots$status,
+      Seed = dots$seed,
       Weight = dots$weight,
       Model = NULL
     )

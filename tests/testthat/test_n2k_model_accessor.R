@@ -62,3 +62,18 @@ describe("get_data", {
     )
   })
 })
+
+
+context("get_seed() handles n2k_virtual objects")
+describe("get_seed", {
+  data("cbpp", package = "lme4")
+  object <- n2k_glmer_poisson(
+    data = cbpp
+  )
+  it("returns the Seed slot", {
+    expect_that(
+      get_seed(object),
+      is_identical_to(object@Seed)
+    )
+  })
+})
