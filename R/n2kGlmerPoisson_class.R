@@ -18,3 +18,25 @@ setClass(
   ),
   contains = "n2kModel"
 )
+
+#' @importFrom methods setValidity
+#' @importFrom n2khelper check_single_character check_dataframe_variable
+setValidity(
+  "n2kGlmerPoisson",
+  function(object){
+    check_single_character(object@Weight, name = "Weight")
+    if(object@Weight != ''){
+      check_dataframe_variable(
+        df = object@Data,
+        variable = object@Weight,
+        name = "data"
+      )
+    }
+    if(class(object@Model) == "glmerMod"){
+      if(object@Model@resp$family$family != "poisson"){
+        stop("The model must be from the poisson family")
+      }
+    }
+    return(TRUE)
+  }
+)

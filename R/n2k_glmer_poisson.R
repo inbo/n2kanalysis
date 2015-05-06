@@ -45,7 +45,7 @@ setMethod(
 
 #' @rdname n2k_glmer_poisson
 #' @aliases n2k_glmer_poisson,my_lmer-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod validObject
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "n2k_glmer_poisson", 
@@ -56,6 +56,7 @@ setMethod(
     dots <- list(...)
     data@Model <- model.fit
     data@Status <- dots$status
+    validObject(data)
     return(data)
   }
 )

@@ -53,6 +53,15 @@ describe("n2k_glmer_poisson", {
       is_identical_to("")
     )
   })
+  it("checks if the weight variable exists", {
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        weight = "junk"
+      ),
+      throws_error("Variables missing in data: junk")
+    )
+  })
 })
 
 context("add a model to a n2kGlmerPoisson object")
@@ -91,11 +100,42 @@ describe("n2k_glmer_poisson", {
       object.model@Weight,
       is_identical_to(object@Weight)
     )
+    expect_that(
+      n2k_glmer_poisson(
+        data = object, model.fit = model.object, status = "converged", weight = "junk"
+      )@Weight,
+      is_identical_to(object@Weight)
+    )
   })
   it("stores the new status", {
     expect_that(
       object.model@Status,
       is_identical_to("converged")
+    )
+  })
+  it("stores the new status", {
+    expect_that(
+      object.model@Status,
+      is_identical_to("converged")
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = object, model.fit = model.object, status = "junk"
+      ),
+      throws_error("Status must be one of the following")
+    )
+  })
+  model.binomial <- lme4::glmer(
+    cbind(incidence, size - incidence) ~ period + (1 | herd), 
+    data = object@Data,
+    family = binomial
+  )
+  it("checks if the model is a poisson model", {
+    expect_that(
+      n2k_glmer_poisson(
+        data = object, model.fit = model.binomial, status = "converged"
+      ),
+      throws_error("The model must be from the poisson family")
     )
   })
 })
