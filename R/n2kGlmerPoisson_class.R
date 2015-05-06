@@ -28,6 +28,7 @@ setClass(
 
 #' @importFrom methods setValidity
 #' @importFrom n2khelper check_single_character check_dataframe_variable
+#' @importFrom digest digest
 setValidity(
   "n2kGlmerPoisson",
   function(object){
@@ -44,6 +45,18 @@ setValidity(
         stop("The model must be from the poisson family")
       }
     }
+    
+    file.fingerprint <- digest(
+      list(
+        object@Data, object@SchemeID, object@SpeciesGroupID, object@LocationGroupID, 
+        object@Seed, object@Weight
+      ),
+      algo = "sha1"
+    )
+    if(object@FileFingerprint != file.fingerprint){
+      stop("Corrupt FileFingerprint")
+    }
+
     return(TRUE)
   }
 )

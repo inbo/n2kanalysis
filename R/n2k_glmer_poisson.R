@@ -50,23 +50,37 @@ setMethod(
     } else {
       dots$seed <- check_single_strictly_positive_integer(dots$seed, name = "seed")
     }
-    
+    dots$scheme.id <- check_single_strictly_positive_integer(
+      dots$scheme.id, 
+      name = "scheme.id"
+    )
+    dots$species.group.id <- check_single_strictly_positive_integer(
+      dots$species.group.id, 
+      name = "species.group.id"
+    )
+    dots$location.group.id <- check_single_strictly_positive_integer(
+        dots$location.group.id, 
+        name = "location.group.id"
+      )
+    file.fingerprint <- digest(
+      list(
+        data, dots$scheme.id, dots$species.group.id, dots$location.group.id, 
+        dots$seed, dots$weight
+      ),
+      algo = "sha1"
+    )
+
     new(
       "n2kGlmerPoisson",
       Data = data,
       Status = dots$status,
-      SchemeID = check_single_strictly_positive_integer(dots$scheme.id, name = "scheme.id"),
-      SpeciesGroupID = check_single_strictly_positive_integer(
-        dots$species.group.id, 
-        name = "species.group.id"
-      ),
-      LocationGroupID = check_single_strictly_positive_integer(
-        dots$location.group.id, 
-        name = "location.group.id"
-      ),
+      SchemeID = dots$scheme.id,
+      SpeciesGroupID = dots$species.group.id,
+      LocationGroupID = dots$location.group.id,
       Seed = dots$seed,
       Weight = dots$weight,
       DataFingerprint = digest(data, algo = "sha1"),
+      FileFingerprint = file.fingerprint,
       Model = NULL
     )
   }
