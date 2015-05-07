@@ -3,11 +3,13 @@ describe("n2k_glmer_poisson", {
   this.scheme.id <- 1L
   this.species.group.id <- 2L
   this.location.group.id <- 3L
+  this.analysis.date <- Sys.time()
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
+    analysis.date = this.analysis.date,
     data = cbpp 
   )
   model.object <- lme4::glmer(
@@ -44,6 +46,7 @@ describe("n2k_glmer_poisson", {
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         status = "junk"
       ),
       throws_error("Status must be one of the following")
@@ -54,6 +57,7 @@ describe("n2k_glmer_poisson", {
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         status = NA
       ),
       throws_error("Status must be character")
@@ -72,6 +76,7 @@ describe("n2k_glmer_poisson", {
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         weight = "junk"
       ),
       throws_error("Variables missing in data: junk")
@@ -85,6 +90,7 @@ describe("n2k_glmer_poisson", {
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         seed = this.seed
       )@Seed,
       is_identical_to(this.seed)
@@ -98,6 +104,7 @@ describe("n2k_glmer_poisson", {
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         seed = this.seed
       )@Seed,
       is_identical_to(as.integer(this.seed))
@@ -109,6 +116,7 @@ describe("n2k_glmer_poisson", {
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         seed = this.seed + 1e-11
       )@Seed,
       is_identical_to(this.seed)
@@ -119,6 +127,7 @@ describe("n2k_glmer_poisson", {
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         seed = this.seed + 0.1
       ),
       throws_error("seed is not integer")
@@ -137,6 +146,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@SchemeID,
       is_identical_to(this.scheme.id)
@@ -148,6 +158,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         scheme.id = as.numeric(this.scheme.id)
       )@SchemeID,
       is_identical_to(this.scheme.id)
@@ -157,6 +168,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         scheme.id = this.scheme.id + 1e-11
       )@SchemeID,
       is_identical_to(this.scheme.id)
@@ -166,6 +178,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         scheme.id = this.scheme.id + 0.1
       ),
       throws_error("scheme.id is not integer")
@@ -178,6 +191,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@SpeciesGroupID,
       is_identical_to(this.species.group.id)
@@ -189,6 +203,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = as.numeric(this.species.group.id),
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@SpeciesGroupID,
       is_identical_to(this.species.group.id)
@@ -198,6 +213,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id + 1e-11,
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@SpeciesGroupID,
       is_identical_to(this.species.group.id)
@@ -207,6 +223,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id + 0.1,
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
       throws_error("species.group.id is not integer")
@@ -219,6 +236,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@LocationGroupID,
       is_identical_to(this.location.group.id)
@@ -230,6 +248,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = as.numeric(this.location.group.id),
+        analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@LocationGroupID,
       is_identical_to(this.location.group.id)
@@ -239,6 +258,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id + 1e-11,
+        analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@LocationGroupID,
       is_identical_to(this.location.group.id)
@@ -248,11 +268,24 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id + 0.1,
+        analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
       throws_error("location.group.id is not integer")
     )
   })
+  it("checks if analysis date is from the past", {
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        analysis.date = Sys.time() + 24 * 60 * 60,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("analysis.date is in the future")
+    )
+  })  
 })
 
 
@@ -271,11 +304,13 @@ describe("n2k_glmer_poisson", {
   this.scheme.id <- 1L
   this.species.group.id <- 2L
   this.location.group.id <- 3L
+  this.analysis.date <- Sys.time()
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
+    analysis.date = this.analysis.date,
     data = cbpp 
   )
   model.object <- lme4::glmer(
@@ -347,6 +382,10 @@ describe("n2k_glmer_poisson", {
     expect_that(
       object.model@LocationGroupID,
       is_identical_to(object@LocationGroupID)
+    )
+    expect_that(
+      object.model@AnalysisDate,
+      is_identical_to(object@AnalysisDate)
     )
     expect_that(
       n2k_glmer_poisson(

@@ -8,6 +8,7 @@
 #'    \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
 #'    \item{\code{species.group.id}}{a single integer identifing the species group}
 #'    \item{\code{location.group.id}}{a single integer identifing the location group}
+#'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{weight}}{The name of the variable to use as weights. '' indicates no weighting. Defaults to ''}
 #'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
 #'   }
@@ -59,13 +60,18 @@ setMethod(
       name = "species.group.id"
     )
     dots$location.group.id <- check_single_strictly_positive_integer(
-        dots$location.group.id, 
-        name = "location.group.id"
-      )
+      dots$location.group.id, 
+      name = "location.group.id"
+    )
+    dots$analysis.date <- check_single_posix(
+      dots$analysis.date, 
+      name = "analysis.date", 
+      past = TRUE
+    )
     file.fingerprint <- digest(
       list(
         data, dots$scheme.id, dots$species.group.id, dots$location.group.id, 
-        dots$seed, dots$weight
+        dots$analysis.date, dots$seed, dots$weight
       ),
       algo = "sha1"
     )
@@ -77,6 +83,7 @@ setMethod(
       SchemeID = dots$scheme.id,
       SpeciesGroupID = dots$species.group.id,
       LocationGroupID = dots$location.group.id,
+      AnalysisDate = dots$analysis.date,
       Seed = dots$seed,
       Weight = dots$weight,
       DataFingerprint = digest(data, algo = "sha1"),

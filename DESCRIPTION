@@ -25,6 +25,7 @@ Collate:
     'fit_inla_nbinomial.R'
     'fit_single_model.R'
     'n2kModel_class.R'
+    'get_analysis_date.R'
     'get_data.R'
     'get_data_fingerprint.R'
     'get_file_fingerprint.R'

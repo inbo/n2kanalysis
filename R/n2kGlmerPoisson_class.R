@@ -49,7 +49,7 @@ setValidity(
     file.fingerprint <- digest(
       list(
         object@Data, object@SchemeID, object@SpeciesGroupID, object@LocationGroupID, 
-        object@Seed, object@Weight
+        object@AnalysisDate, object@Seed, object@Weight
       ),
       algo = "sha1"
     )

@@ -6,6 +6,7 @@ describe("get_weight", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
   it("returns the Weight slot", {
@@ -23,6 +24,7 @@ describe("get_model", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
   model.object <- lme4::glmer(

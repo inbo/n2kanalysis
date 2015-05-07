@@ -7,6 +7,7 @@ describe("status", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
   model.object <- lme4::glmer(
@@ -47,6 +48,7 @@ describe("get_data", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
   model.object <- lme4::glmer(
@@ -76,6 +78,7 @@ describe("get_seed", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
   it("returns the Seed slot", {
@@ -93,6 +96,7 @@ describe("get_scheme_id", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
   it("returns the SchemeID slot", {
@@ -110,6 +114,7 @@ describe("get_species_group_id", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
   it("returns the SpeciesGroupID slot", {
@@ -127,6 +132,7 @@ describe("get_location_group_id", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
   it("returns the LocationGroupID slot", {
@@ -144,12 +150,31 @@ describe("get_data_fingerprint", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
   it("returns the DataFingerprint slot", {
     expect_that(
       get_data_fingerprint(object),
       is_identical_to(object@DataFingerprint)
+    )
+  })
+})
+
+context("get_analysis_date() handles n2kModel objects")
+describe("get_analysis_date", {
+  data("cbpp", package = "lme4")
+  object <- n2k_glmer_poisson(
+    scheme.id = 1,
+    species.group.id = 2,
+    location.group.id = 3,
+    analysis.date = as.POSIXct("2000-01-01"),
+    data = cbpp
+  )
+  it("returns the AnalysisDate slot", {
+    expect_that(
+      get_analysis_date(object),
+      is_identical_to(object@AnalysisDate)
     )
   })
 })
