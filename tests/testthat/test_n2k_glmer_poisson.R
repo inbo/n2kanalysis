@@ -4,11 +4,14 @@ describe("n2k_glmer_poisson", {
   this.species.group.id <- 2L
   this.location.group.id <- 3L
   this.analysis.date <- Sys.time()
+  this.model.type <- "glmer poisson: period + herd"
+  weighted.model.type <- "weighted glmer poisson: period + herd"
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
+    model.type = this.model.type,
     analysis.date = this.analysis.date,
     data = cbpp 
   )
@@ -46,6 +49,7 @@ describe("n2k_glmer_poisson", {
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         status = "junk"
       ),
@@ -57,6 +61,7 @@ describe("n2k_glmer_poisson", {
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         status = NA
       ),
@@ -76,10 +81,59 @@ describe("n2k_glmer_poisson", {
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        model.type = weighted.model.type,
         analysis.date = this.analysis.date,
         weight = "junk"
       ),
       throws_error("Variables missing in data: junk")
+    )
+  })
+  it("checks the model type", {
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        scheme.id = this.scheme.id,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = "junk",
+        analysis.date = this.analysis.date
+      ),
+      throws_error("ModelType should be 'glmer poisson'")
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        scheme.id = this.scheme.id,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = "junk",
+        analysis.date = this.analysis.date,
+        weight = "size"
+      ),
+      throws_error("ModelType should be 'weighted glmer poisson'")
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        scheme.id = this.scheme.id,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = weighted.model.type,
+        analysis.date = this.analysis.date
+      ),
+      throws_error("ModelType should be 'glmer poisson'")
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        scheme.id = this.scheme.id,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        analysis.date = this.analysis.date,
+        weight = "size"
+      ),
+      throws_error("ModelType should be 'weighted glmer poisson'")
     )
   })
   it("sets the correct seed", {
@@ -90,6 +144,7 @@ describe("n2k_glmer_poisson", {
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         seed = this.seed
       )@Seed,
@@ -104,6 +159,7 @@ describe("n2k_glmer_poisson", {
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         seed = this.seed
       )@Seed,
@@ -116,6 +172,7 @@ describe("n2k_glmer_poisson", {
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         seed = this.seed + 1e-11
       )@Seed,
@@ -127,6 +184,7 @@ describe("n2k_glmer_poisson", {
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         seed = this.seed + 0.1
       ),
@@ -146,6 +204,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@SchemeID,
@@ -158,6 +217,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         scheme.id = as.numeric(this.scheme.id)
       )@SchemeID,
@@ -168,6 +228,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id + 1e-11
       )@SchemeID,
@@ -178,6 +239,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id + 0.1
       ),
@@ -191,6 +253,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@SpeciesGroupID,
@@ -203,6 +266,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = as.numeric(this.species.group.id),
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@SpeciesGroupID,
@@ -213,6 +277,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id + 1e-11,
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@SpeciesGroupID,
@@ -223,6 +288,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id + 0.1,
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
@@ -236,6 +302,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@LocationGroupID,
@@ -248,6 +315,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = as.numeric(this.location.group.id),
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@LocationGroupID,
@@ -258,6 +326,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id + 1e-11,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@LocationGroupID,
@@ -268,6 +337,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id + 0.1,
+        model.type = this.model.type,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
@@ -280,6 +350,7 @@ describe("n2k_glmer_poisson", {
         data = cbpp,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
+        model.type = this.model.type,
         analysis.date = Sys.time() + 24 * 60 * 60,
         scheme.id = this.scheme.id
       ),
@@ -304,12 +375,14 @@ describe("n2k_glmer_poisson", {
   this.scheme.id <- 1L
   this.species.group.id <- 2L
   this.location.group.id <- 3L
+  this.model.type <- "glmer poisson: period + herd"
   this.analysis.date <- Sys.time()
   data("cbpp", package = "lme4")
   object <- n2k_glmer_poisson(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
+    model.type = this.model.type,
     analysis.date = this.analysis.date,
     data = cbpp 
   )
@@ -382,6 +455,10 @@ describe("n2k_glmer_poisson", {
     expect_that(
       object.model@LocationGroupID,
       is_identical_to(object@LocationGroupID)
+    )
+    expect_that(
+      object.model@ModelType,
+      is_identical_to(object@ModelType)
     )
     expect_that(
       object.model@AnalysisDate,

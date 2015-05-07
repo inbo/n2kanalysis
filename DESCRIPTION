@@ -32,6 +32,7 @@ Collate:
     'get_location_group_id.R'
     'n2kGlmerPoisson_class.R'
     'get_model.R'
+    'get_model_type.R'
     'get_scheme_id.R'
     'get_seed.R'
     'get_species_group_id.R'

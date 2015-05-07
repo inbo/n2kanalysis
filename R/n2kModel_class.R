@@ -8,6 +8,7 @@
 #'    \item{\code{SchemeID}}{a single integer holding the id of the scheme}
 #'    \item{\code{SpeciesGroupID}}{a single integer identifing the species group}
 #'    \item{\code{LocationGroupID}}{a single integer identifing the location group}
+#'    \item{\code{ModelType}}{a single character identifying the type of model to fit to the data}
 #'    \item{\code{AnalysisDate}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
 #'    \item{\code{DataFingerprint}}{the SHA1 fingerprint of the data}
@@ -27,6 +28,7 @@ setClass(
     SchemeID = "integer",
     SpeciesGroupID = "integer",
     LocationGroupID = "integer",
+    ModelType = "character",
     AnalysisDate = "POSIXct",
     Seed = "integer",
     DataFingerprint = "character",
@@ -47,6 +49,7 @@ setValidity(
     check_single_strictly_positive_integer(object@Seed, name = "Seed")
     check_single_character(object@DataFingerprint, name = "DataFingerprint")
     check_single_character(object@Status, name = "Status")
+    check_single_character(object@ModelType, name = "ModelType")
     check_single_posix(object@AnalysisDate, name = "AnalysisDate", past = TRUE)
     
     ok.status <- c("new", "error", "converged", "false convergence")

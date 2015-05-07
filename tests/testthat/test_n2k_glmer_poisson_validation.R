@@ -7,7 +7,17 @@ describe("file fingerprint", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    model.type = "glmer poisson: period + herd",
     analysis.date = as.POSIXct("2000-01-01"),
+    data = cbpp
+  )
+  weighted.object <- n2k_glmer_poisson(
+    scheme.id = 1,
+    species.group.id = 2,
+    location.group.id = 3,
+    model.type = "weighted glmer poisson: period + herd",
+    analysis.date = as.POSIXct("2000-01-01"),
+    weight = "size",
     data = cbpp
   )
   
@@ -52,6 +62,30 @@ describe("file fingerprint", {
     change.object@Weight <- "size"
     expect_that(
       validObject(change.object),
+      throws_error("ModelType should be 'weighted glmer poisson'")
+    )
+    change.object@ModelType <- "weighted glmer poisson: period + herd"
+    expect_that(
+      validObject(change.object),
+      throws_error("Corrupt FileFingerprint")
+    )
+    
+    change.object <- weighted.object
+    change.object@Weight <- ""
+    expect_that(
+      validObject(change.object),
+      throws_error("ModelType should be 'glmer poisson'")
+    )
+    change.object@ModelType <- "glmer poisson: period + herd"
+    expect_that(
+      validObject(change.object),
+      throws_error("Corrupt FileFingerprint")
+    )
+
+    change.object <- weighted.object
+    change.object@Weight <- "herd"
+    expect_that(
+      validObject(change.object),
       throws_error("Corrupt FileFingerprint")
     )
   })
@@ -59,6 +93,15 @@ describe("file fingerprint", {
   it("detects changes in AnalysisDate", {
     change.object <- object
     change.object@AnalysisDate <- Sys.time()
+    expect_that(
+      validObject(change.object),
+      throws_error("Corrupt FileFingerprint")
+    )
+  })
+  
+  it("detects changes in ModelType", {
+    change.object <- object
+    change.object@ModelType <- "glmer poisson: period"
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")

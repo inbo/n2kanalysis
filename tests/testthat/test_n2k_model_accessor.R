@@ -7,6 +7,7 @@ describe("status", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    model.type = "glmer poisson: period + herd",
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
@@ -48,6 +49,7 @@ describe("get_data", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    model.type = "glmer poisson: period + herd",
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
@@ -78,6 +80,7 @@ describe("get_seed", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    model.type = "glmer poisson: period + herd",
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
@@ -96,6 +99,7 @@ describe("get_scheme_id", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    model.type = "glmer poisson: period + herd",
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
@@ -114,6 +118,7 @@ describe("get_species_group_id", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    model.type = "glmer poisson: period + herd",
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
@@ -132,6 +137,7 @@ describe("get_location_group_id", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    model.type = "glmer poisson: period + herd",
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
@@ -150,6 +156,7 @@ describe("get_data_fingerprint", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    model.type = "glmer poisson: period + herd",
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
@@ -168,6 +175,7 @@ describe("get_analysis_date", {
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
+    model.type = "glmer poisson: period + herd",
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
@@ -175,6 +183,25 @@ describe("get_analysis_date", {
     expect_that(
       get_analysis_date(object),
       is_identical_to(object@AnalysisDate)
+    )
+  })
+})
+
+context("get_model_type() handles n2kModel objects")
+describe("get_model_type", {
+  data("cbpp", package = "lme4")
+  object <- n2k_glmer_poisson(
+    scheme.id = 1,
+    species.group.id = 2,
+    location.group.id = 3,
+    model.type = "glmer poisson: period + herd",
+    analysis.date = as.POSIXct("2000-01-01"),
+    data = cbpp
+  )
+  it("returns the ModelType slot", {
+    expect_that(
+      get_model_type(object),
+      is_identical_to(object@ModelType)
     )
   })
 })

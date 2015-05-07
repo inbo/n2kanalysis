@@ -33,12 +33,19 @@ setValidity(
   "n2kGlmerPoisson",
   function(object){
     check_single_character(object@Weight, name = "Weight")
-    if(object@Weight != ''){
+    if(object@Weight == ''){
+      if(!grepl("^glmer poisson", object@ModelType)){
+        stop("ModelType should be 'glmer poisson'")
+      }
+    } else {
       check_dataframe_variable(
         df = object@Data,
         variable = object@Weight,
         name = "data"
       )
+      if(!grepl("^weighted glmer poisson", object@ModelType)){
+        stop("ModelType should be 'weighted glmer poisson'")
+      }
     }
     if(class(object@Model) == "glmerMod"){
       if(object@Model@resp$family$family != "poisson"){
@@ -49,7 +56,7 @@ setValidity(
     file.fingerprint <- digest(
       list(
         object@Data, object@SchemeID, object@SpeciesGroupID, object@LocationGroupID, 
-        object@AnalysisDate, object@Seed, object@Weight
+        object@ModelType, object@AnalysisDate, object@Seed, object@Weight
       ),
       algo = "sha1"
     )

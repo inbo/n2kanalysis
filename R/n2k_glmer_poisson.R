@@ -8,6 +8,7 @@
 #'    \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
 #'    \item{\code{species.group.id}}{a single integer identifing the species group}
 #'    \item{\code{location.group.id}}{a single integer identifing the location group}
+#'    \item{\code{model.type}}{a single character identifying the type of model to fit to the data}
 #'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{weight}}{The name of the variable to use as weights. '' indicates no weighting. Defaults to ''}
 #'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
@@ -30,7 +31,7 @@ setGeneric(
 #' @rdname n2k_glmer_poisson
 #' @aliases n2k_glmer_poisson,n2kGlmerPoisson-methods
 #' @importFrom methods setMethod
-#' @importFrom n2khelper check_single_strictly_positive_integer
+#' @importFrom n2khelper check_single_strictly_positive_integer check_single_character
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "n2k_glmer_poisson", 
@@ -63,6 +64,7 @@ setMethod(
       dots$location.group.id, 
       name = "location.group.id"
     )
+    dots$model.type <- check_single_character(dots$model.type, name = "model.type")
     dots$analysis.date <- check_single_posix(
       dots$analysis.date, 
       name = "analysis.date", 
@@ -71,7 +73,7 @@ setMethod(
     file.fingerprint <- digest(
       list(
         data, dots$scheme.id, dots$species.group.id, dots$location.group.id, 
-        dots$analysis.date, dots$seed, dots$weight
+        dots$model.type, dots$analysis.date, dots$seed, dots$weight
       ),
       algo = "sha1"
     )
@@ -83,6 +85,7 @@ setMethod(
       SchemeID = dots$scheme.id,
       SpeciesGroupID = dots$species.group.id,
       LocationGroupID = dots$location.group.id,
+      ModelType = dots$model.type,
       AnalysisDate = dots$analysis.date,
       Seed = dots$seed,
       Weight = dots$weight,
