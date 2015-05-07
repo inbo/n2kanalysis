@@ -24,3 +24,15 @@ setMethod(
     return(x@Model)
   }
 )
+
+#' @rdname get_model
+#' @aliases get_model,n2kInlaNbinomial-methods
+#' @importFrom methods setMethod
+#' @include n2kInlaNbinomial_class.R
+setMethod(
+  f = "get_model",
+  signature = signature(x = "n2kInlaNbinomial"),
+  definition = function(x){
+    return(x@Model)
+  }
+)

@@ -5,11 +5,15 @@
 \alias{get_model}
 \alias{get_model,n2kGlmerPoisson-method}
 \alias{get_model,n2kGlmerPoisson-methods}
+\alias{get_model,n2kInlaNbinomial-method}
+\alias{get_model,n2kInlaNbinomial-methods}
 \title{Get the model of a n2kModel object}
 \usage{
 get_model(x)
 
 \S4method{get_model}{n2kGlmerPoisson}(x)
+
+\S4method{get_model}{n2kInlaNbinomial}(x)
 }
 \arguments{
 \item{x}{the n2kModel object}
