@@ -5,13 +5,16 @@ describe("n2k_glmer_poisson", {
   this.location.group.id <- 3L
   this.analysis.date <- Sys.time()
   this.model.type <- "glmer poisson: period + herd"
+  this.covariate <- "offset(log(size)) + period + (1|herd)"  
   weighted.model.type <- "weighted glmer poisson: period + herd"
   data("cbpp", package = "lme4")
+  cbpp$Count <- cbpp$incidence
   object <- n2k_glmer_poisson(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
     model.type = this.model.type,
+    covariate = this.covariate,
     analysis.date = this.analysis.date,
     data = cbpp 
   )
@@ -50,6 +53,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         status = "junk"
       ),
@@ -62,6 +66,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         status = NA
       ),
@@ -82,6 +87,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = weighted.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         weight = "junk"
       ),
@@ -96,6 +102,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = "junk",
+        covariate = this.covariate,
         analysis.date = this.analysis.date
       ),
       throws_error("ModelType should be 'glmer poisson'")
@@ -107,6 +114,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = "junk",
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         weight = "size"
       ),
@@ -119,6 +127,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = weighted.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date
       ),
       throws_error("ModelType should be 'glmer poisson'")
@@ -130,6 +139,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         weight = "size"
       ),
@@ -145,6 +155,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         seed = this.seed
       )@Seed,
@@ -160,6 +171,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         seed = this.seed
       )@Seed,
@@ -173,6 +185,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         seed = this.seed + 1e-11
       )@Seed,
@@ -205,6 +218,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@SchemeID,
@@ -218,6 +232,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         scheme.id = as.numeric(this.scheme.id)
       )@SchemeID,
@@ -229,6 +244,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id + 1e-11
       )@SchemeID,
@@ -240,6 +256,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id + 0.1
       ),
@@ -255,6 +272,7 @@ describe("n2k_glmer_poisson", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         analysis.date = this.analysis.date,
+        covariate = this.covariate,
         scheme.id = this.scheme.id
       )@SpeciesGroupID,
       is_identical_to(this.species.group.id)
@@ -267,6 +285,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = as.numeric(this.species.group.id),
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@SpeciesGroupID,
@@ -278,6 +297,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id + 1e-11,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@SpeciesGroupID,
@@ -289,6 +309,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id + 0.1,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
@@ -303,6 +324,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@LocationGroupID,
@@ -316,6 +338,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = as.numeric(this.location.group.id),
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@LocationGroupID,
@@ -327,6 +350,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id + 1e-11,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@LocationGroupID,
@@ -338,6 +362,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id + 0.1,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
@@ -351,10 +376,61 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        covariate = this.covariate,
         analysis.date = Sys.time() + 24 * 60 * 60,
         scheme.id = this.scheme.id
       ),
       throws_error("analysis.date is in the future")
+    )
+  })  
+  it("checks if all variable in covariate are available in the data", {
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp[, c("herd", "period", "size")],
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("Variables missing in df: Count")
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp[, c("herd", "period", "Count")],
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("Variables missing in df: size")
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp[, c("herd", "size", "Count")],
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("Variables missing in df: period")
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp[, c("size", "period", "Count")],
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("Variables missing in df: herd")
     )
   })  
 })
@@ -376,13 +452,16 @@ describe("n2k_glmer_poisson", {
   this.species.group.id <- 2L
   this.location.group.id <- 3L
   this.model.type <- "glmer poisson: period + herd"
+  this.covariate <- "offset(log(size)) + period + (1|herd)"  
   this.analysis.date <- Sys.time()
   data("cbpp", package = "lme4")
+  cbpp$Count <- cbpp$incidence
   object <- n2k_glmer_poisson(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
     model.type = this.model.type,
+    covariate = this.covariate,
     analysis.date = this.analysis.date,
     data = cbpp 
   )
@@ -459,6 +538,10 @@ describe("n2k_glmer_poisson", {
     expect_that(
       object.model@ModelType,
       is_identical_to(object@ModelType)
+    )
+    expect_that(
+      object.model@Covariate,
+      is_identical_to(object@Covariate)
     )
     expect_that(
       object.model@AnalysisDate,

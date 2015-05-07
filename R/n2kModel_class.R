@@ -9,6 +9,7 @@
 #'    \item{\code{SpeciesGroupID}}{a single integer identifing the species group}
 #'    \item{\code{LocationGroupID}}{a single integer identifing the location group}
 #'    \item{\code{ModelType}}{a single character identifying the type of model to fit to the data}
+#'    \item{\code{Covariate}}{a single character holding the right hand side of the model formula}
 #'    \item{\code{AnalysisDate}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
 #'    \item{\code{DataFingerprint}}{the SHA1 fingerprint of the data}
@@ -29,6 +30,7 @@ setClass(
     SpeciesGroupID = "integer",
     LocationGroupID = "integer",
     ModelType = "character",
+    Covariate = "character",
     AnalysisDate = "POSIXct",
     Seed = "integer",
     DataFingerprint = "character",
@@ -50,6 +52,7 @@ setValidity(
     check_single_character(object@DataFingerprint, name = "DataFingerprint")
     check_single_character(object@Status, name = "Status")
     check_single_character(object@ModelType, name = "ModelType")
+    check_single_character(object@Covariate, name = "Covariate")
     check_single_posix(object@AnalysisDate, name = "AnalysisDate", past = TRUE)
     
     ok.status <- c("new", "error", "converged", "false convergence")
@@ -62,6 +65,7 @@ setValidity(
     if(object@DataFingerprint != digest(object@Data, algo = "sha1")){
       stop("Mismatch between DataFingerprint and Data")
     }
+    check_dataframe_covariate(df = object@Data, covariate = object@Covariate)
     
     return(TRUE)
   }

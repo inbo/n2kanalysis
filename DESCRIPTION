@@ -26,6 +26,7 @@ Collate:
     'fit_single_model.R'
     'n2kModel_class.R'
     'get_analysis_date.R'
+    'get_covariate.R'
     'get_data.R'
     'get_data_fingerprint.R'
     'get_file_fingerprint.R'

@@ -3,11 +3,13 @@ context("n2kGlmerPoisson validation")
 context("illegal changes in the file fingerprint")
 describe("file fingerprint", {
   data("cbpp", package = "lme4")
+  cbpp$Count <- cbpp$incidence
   object <- n2k_glmer_poisson(
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
     model.type = "glmer poisson: period + herd",
+    covariate = "offset(log(size)) + period + (1|herd)",
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
@@ -16,6 +18,7 @@ describe("file fingerprint", {
     species.group.id = 2,
     location.group.id = 3,
     model.type = "weighted glmer poisson: period + herd",
+    covariate = "offset(log(size)) + period + (1|herd)",
     analysis.date = as.POSIXct("2000-01-01"),
     weight = "size",
     data = cbpp
@@ -102,6 +105,15 @@ describe("file fingerprint", {
   it("detects changes in ModelType", {
     change.object <- object
     change.object@ModelType <- "glmer poisson: period"
+    expect_that(
+      validObject(change.object),
+      throws_error("Corrupt FileFingerprint")
+    )
+  })
+  
+  it("detects changes in Covariate", {
+    change.object <- object
+    change.object@Covariate <- "period"
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")

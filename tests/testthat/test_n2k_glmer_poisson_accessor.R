@@ -2,11 +2,13 @@
 context("get_weight() handles n2kGlmerPoisson objects")
 describe("get_weight", {
   data("cbpp", package = "lme4")
+  cbpp$Count <- cbpp$incidence
   object <- n2k_glmer_poisson(
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
     model.type = "glmer poisson: period + herd",
+    covariate = "offset(log(size)) + period + (1|herd)",
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
@@ -21,11 +23,13 @@ describe("get_weight", {
 context("get_model() handles n2kGlmerPoisson objects")
 describe("get_model", {
   data("cbpp", package = "lme4")
+  cbpp$Count <- cbpp$incidence
   object <- n2k_glmer_poisson(
     scheme.id = 1,
     species.group.id = 2,
     location.group.id = 3,
     model.type = "glmer poisson: period + herd",
+    covariate = "offset(log(size)) + period + (1|herd)",
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
