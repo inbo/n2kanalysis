@@ -536,11 +536,29 @@ describe("n2k_glmer_poisson", {
       is_identical_to(object@LocationGroupID)
     )
     expect_that(
+      n2k_glmer_poisson(
+        data = object, model.fit = model.object, status = "converged", location.group.id = 999
+      )@LocationGroupID,
+      is_identical_to(object@LocationGroupID)
+    )
+    expect_that(
       object.model@ModelType,
       is_identical_to(object@ModelType)
     )
     expect_that(
+      n2k_glmer_poisson(
+        data = object, model.fit = model.object, status = "converged", model.type = 999
+      )@ModelType,
+      is_identical_to(object@ModelType)
+    )
+    expect_that(
       object.model@Covariate,
+      is_identical_to(object@Covariate)
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = object, model.fit = model.object, status = "converged", covariate = 999
+      )@Covariate,
       is_identical_to(object@Covariate)
     )
     expect_that(
@@ -549,9 +567,9 @@ describe("n2k_glmer_poisson", {
     )
     expect_that(
       n2k_glmer_poisson(
-        data = object, model.fit = model.object, status = "converged", location.group.id = 999
-      )@LocationGroupID,
-      is_identical_to(object@LocationGroupID)
+        data = object, model.fit = model.object, status = "converged", analysis.date = 999
+      )@AnalysisDate,
+      is_identical_to(object@AnalysisDate)
     )
   })
   it("stores the new status", {
