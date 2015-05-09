@@ -1,5 +1,6 @@
 #' Fit a n2kModel object
 #' @param x the n2kModel
+#' @param status A vector of statusses for which the model will be calculated
 #' @name fit_model
 #' @rdname fit_model
 #' @exportMethod fit_model
@@ -7,7 +8,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "fit_model", 
-  def = function(x){
+  def = function(x, status){
     standard.generic("fit_model")
   }
 )
@@ -17,14 +18,14 @@ setGeneric(
 #' @importFrom n2khelper check_path read_object_environment
 setMethod(
   f = "fit_model",
-  signature = signature(x = "character"),
-  definition = function(x){
+  signature = signature(x = "character", status = "character"),
+  definition = function(x, status){
     x <- check_path(x, type = "file")
     local.environment <- new.env()
     load(x, envir = local.environment)
     analysis <- read_object_environment(object = "analysis", env = local.environment)
     analysis <- tryCatch(
-      fit_model(x = analysis),
+      fit_model(x = analysis, status = status),
       error = function(e){
         warning(e)
       } 
@@ -42,9 +43,10 @@ setMethod(
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "fit_model",
-  signature = signature(x = "n2kGlmerPoisson"),
-  definition = function(x){
-    if(status(x) != "new"){
+  signature = signature(x = "n2kGlmerPoisson", status = "character"),
+  definition = function(x, status = c("new", "error", "converged", "false convergence")){
+    status <- match.arg(status, several.ok = TRUE)
+    if(!(status(x) %in% status)){
       return(x)
     }
     
@@ -102,8 +104,13 @@ setMethod(
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "fit_model",
-  signature = signature(x = "n2kInlaNbinomial"),
-  definition = function(x){
+  signature = signature(x = "n2kInlaNbinomial", status = "character"),
+  definition = function(x, status = c("new", "error", "converged", "false convergence")){
+    status <- match.arg(status, several.ok = TRUE)
+    if(!(status(x) %in% status)){
+      return(x)
+    }
+    
     if(!requireNamespace("INLA", quietly = TRUE)){
       stop("The INLA package is required but not installed.")
     }

@@ -3,21 +3,25 @@
 \docType{methods}
 \name{fit_model}
 \alias{fit_model}
-\alias{fit_model,character-method}
-\alias{fit_model,n2kGlmerPoisson-method}
-\alias{fit_model,n2kInlaNbinomial-method}
+\alias{fit_model,character,character-method}
+\alias{fit_model,n2kGlmerPoisson,character-method}
+\alias{fit_model,n2kInlaNbinomial,character-method}
 \title{Fit a n2kModel object}
 \usage{
-fit_model(x)
+fit_model(x, status)
 
-\S4method{fit_model}{character}(x)
+\S4method{fit_model}{character,character}(x, status)
 
-\S4method{fit_model}{n2kGlmerPoisson}(x)
+\S4method{fit_model}{n2kGlmerPoisson,character}(x, status = c("new", "error",
+  "converged", "false convergence"))
 
-\S4method{fit_model}{n2kInlaNbinomial}(x)
+\S4method{fit_model}{n2kInlaNbinomial,character}(x, status = c("new", "error",
+  "converged", "false convergence"))
 }
 \arguments{
 \item{x}{the n2kModel}
+
+\item{status}{A vector of statusses for which the model will be calculated}
 }
 \description{
 Fit a n2kModel object

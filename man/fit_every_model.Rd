@@ -4,10 +4,13 @@
 \alias{fit_every_model}
 \title{Fit the model to the analysis files}
 \usage{
-fit_every_model(path = ".")
+fit_every_model(path = ".", status = c("new", "error", "converged",
+  "false convergence"))
 }
 \arguments{
 \item{path}{the path containing the analysis files}
+
+\item{status}{A vector of statusses for which the model will be calculated}
 }
 \description{
 Fit the model to the analysis files
