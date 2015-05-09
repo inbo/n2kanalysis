@@ -7,7 +7,7 @@
 fit_every_model(path = ".")
 }
 \arguments{
-\item{path}{The path of the analysis files}
+\item{path}{the path containing the analysis files}
 }
 \description{
 Fit the model to the analysis files
