@@ -1,6 +1,6 @@
 #' Fit a n2kModel object
 #' @param x the n2kModel
-#' @param status A vector of statusses for which the model will be calculated
+#' @param ... other arguments. See details
 #' @name fit_model
 #' @rdname fit_model
 #' @exportMethod fit_model
@@ -8,7 +8,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "fit_model", 
-  def = function(x, status){
+  def = function(x, ...){
     standard.generic("fit_model")
   }
 )
@@ -16,11 +16,25 @@ setGeneric(
 #' @rdname fit_model
 #' @importFrom methods setMethod
 #' @importFrom n2khelper check_path read_object_environment
+#' @details
+#' \describe{
+#'  \item{\code{status}}{A vector with status levels naming the levels which should be recalculated. Defaults to \code{"new"}}
+#'  \item{\code{verbose}}{A logical indicating if the function should display the name of the file and the status. Defaults to \code{TRUE}}
+#' }
 setMethod(
   f = "fit_model",
-  signature = signature(x = "character", status = "character"),
-  definition = function(x, status){
+  signature = signature(x = "character"),
+  definition = function(x, ...){
     x <- check_path(x, type = "file")
+    dots <- list(...)
+    if(is.null(dots$verbose)){
+      dots$verbose <- TRUE
+    } else {
+      dots$verbose <- check_single_logical(dots$verbose, name = "verbose")
+    }
+    if(dots$verbose){
+      message(x)
+    }
     local.environment <- new.env()
     load(x, envir = local.environment)
     analysis <- read_object_environment(object = "analysis", env = local.environment)
@@ -43,10 +57,13 @@ setMethod(
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "fit_model",
-  signature = signature(x = "n2kGlmerPoisson", status = "character"),
-  definition = function(x, status = c("new", "error", "converged", "false convergence")){
-    status <- match.arg(status, several.ok = TRUE)
-    if(!(status(x) %in% status)){
+  signature = signature(x = "n2kGlmerPoisson"),
+  definition = function(x, ...){
+    dots <- list(...)
+    if(is.null(dots$status)){
+      dots$status <- "new"
+    }
+    if(!(status(x) %in% dots$status)){
       return(x)
     }
     
@@ -104,9 +121,12 @@ setMethod(
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "fit_model",
-  signature = signature(x = "n2kInlaNbinomial", status = "character"),
-  definition = function(x, status = c("new", "error", "converged", "false convergence")){
-    status <- match.arg(status, several.ok = TRUE)
+  signature = signature(x = "n2kInlaNbinomial"),
+  definition = function(x, ...){
+    dots <- list(...)
+    if(is.null(dots$status)){
+      dots$status <- "new"
+    }
     if(!(status(x) %in% status)){
       return(x)
     }
@@ -139,4 +159,3 @@ setMethod(
     return(n2k_inla_nbinomial(data = x, model.fit = model, status = "converged"))
   }
 )
-

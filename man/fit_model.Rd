@@ -3,27 +3,31 @@
 \docType{methods}
 \name{fit_model}
 \alias{fit_model}
-\alias{fit_model,character,character-method}
-\alias{fit_model,n2kGlmerPoisson,character-method}
-\alias{fit_model,n2kInlaNbinomial,character-method}
+\alias{fit_model,character-method}
+\alias{fit_model,n2kGlmerPoisson-method}
+\alias{fit_model,n2kInlaNbinomial-method}
 \title{Fit a n2kModel object}
 \usage{
-fit_model(x, status)
+fit_model(x, ...)
 
-\S4method{fit_model}{character,character}(x, status)
+\S4method{fit_model}{character}(x, ...)
 
-\S4method{fit_model}{n2kGlmerPoisson,character}(x, status = c("new", "error",
-  "converged", "false convergence"))
+\S4method{fit_model}{n2kGlmerPoisson}(x, ...)
 
-\S4method{fit_model}{n2kInlaNbinomial,character}(x, status = c("new", "error",
-  "converged", "false convergence"))
+\S4method{fit_model}{n2kInlaNbinomial}(x, ...)
 }
 \arguments{
 \item{x}{the n2kModel}
 
-\item{status}{A vector of statusses for which the model will be calculated}
+\item{...}{other arguments. See details}
 }
 \description{
 Fit a n2kModel object
+}
+\details{
+\describe{
+ \item{\code{status}}{A vector with status levels naming the levels which should be recalculated. Defaults to \code{"new"}}
+ \item{\code{verbose}}{A logical indicating if the function should display the name of the file and the status. Defaults to \code{TRUE}}
+}
 }
 
