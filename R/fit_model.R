@@ -24,15 +24,15 @@ setMethod(
     local.environment <- new.env()
     load(x, envir = local.environment)
     analysis <- read_object_environment(object = "analysis", env = local.environment)
-    analysis <- tryCatch(
-      fit_model(x = analysis, status = status),
-      error = function(e){
-        warning(e)
-      } 
+    analysis <- fit_model(
+      x = analysis, 
+      status = dots$status
     )
-    if(inherits(x, what = "n2kModel")){
-      save(analysis, file = x)
+    if(dots$verbose){
+      message(status(analysis))
     }
+    assign("analysis", value = analysis, envir = local.environment)
+    save(list = ls(local.environment), envir = local.environment, file = x)
     return(invisible(NULL))
   }
 )
