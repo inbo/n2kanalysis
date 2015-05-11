@@ -10,6 +10,7 @@ describe("data fingerprint", {
     location.group.id = 3,
     model.type = "glmer poisson: period + herd",
     covariate = "offset(log(size)) + period + (1|herd)",
+    first.imported.year = 1990,
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )

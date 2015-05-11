@@ -9,6 +9,7 @@ describe("get_model", {
     location.group.id = 3,
     model.type = "inla nbinomial: period + herd",
     covariate = "offset(log(size)) + period + f(herd, model = 'iid')",
+    first.imported.year = 1990,
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )

@@ -10,6 +10,7 @@ describe("file fingerprint", {
     location.group.id = 3,
     model.type = "glmer poisson: period + herd",
     covariate = "offset(log(size)) + period + (1|herd)",
+    first.imported.year = 1990,
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )
@@ -19,6 +20,7 @@ describe("file fingerprint", {
     location.group.id = 3,
     model.type = "weighted glmer poisson: period + herd",
     covariate = "offset(log(size)) + period + (1|herd)",
+    first.imported.year = 1990,
     analysis.date = as.POSIXct("2000-01-01"),
     weight = "size",
     data = cbpp
@@ -60,6 +62,15 @@ describe("file fingerprint", {
     )
   })
 
+  it("detects changes in FirstImportedYear", {
+    change.object <- object
+    change.object@FirstImportedYear <- 999L
+    expect_that(
+      validObject(change.object),
+      throws_error("Corrupt FileFingerprint")
+    )
+  })
+  
   it("detects changes in Weight", {
     change.object <- object
     change.object@Weight <- "size"

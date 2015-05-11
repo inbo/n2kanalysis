@@ -1,26 +1,27 @@
 context("n2kModel accesor functions")
+data("cbpp", package = "lme4")
+cbpp$Count <- cbpp$incidence
+object <- n2k_glmer_poisson(
+  scheme.id = 1,
+  species.group.id = 2,
+  location.group.id = 3,
+  model.type = "glmer poisson: period + herd",
+  covariate = "offset(log(size)) + period + (1|herd)",
+  first.imported.year = 1990,
+  analysis.date = as.POSIXct("2000-01-01"),
+  data = cbpp
+)
+model.object <- lme4::glmer(
+  incidence ~ offset(log(size)) + period + (1 | herd), 
+  data = object@Data,
+  family = poisson
+)
+object.model <- n2k_glmer_poisson(
+  data = object, model.fit = model.object, status = "converged"
+)
 
 context("status() handles n2kModel objects")
 describe("status", {
-  data("cbpp", package = "lme4")
-  cbpp$Count <- cbpp$incidence
-  object <- n2k_glmer_poisson(
-    scheme.id = 1,
-    species.group.id = 2,
-    location.group.id = 3,
-    model.type = "glmer poisson: period + herd",
-    covariate = "offset(log(size)) + period + (1|herd)",
-    analysis.date = as.POSIXct("2000-01-01"),
-    data = cbpp
-  )
-  model.object <- lme4::glmer(
-    incidence ~ offset(log(size)) + period + (1 | herd), 
-    data = object@Data,
-    family = poisson
-  )
-  object.model <- n2k_glmer_poisson(
-    data = object, model.fit = model.object, status = "converged"
-  )
   it("returns the status", {
     expect_that(
       status(object),
@@ -46,25 +47,6 @@ describe("status", {
 
 context("get_data() handles n2kModel objects")
 describe("get_data", {
-  data("cbpp", package = "lme4")
-  cbpp$Count <- cbpp$incidence
-  object <- n2k_glmer_poisson(
-    scheme.id = 1,
-    species.group.id = 2,
-    location.group.id = 3,
-    model.type = "glmer poisson: period + herd",
-    covariate = "offset(log(size)) + period + (1|herd)",
-    analysis.date = as.POSIXct("2000-01-01"),
-    data = cbpp
-  )
-  model.object <- lme4::glmer(
-    incidence ~ offset(log(size)) + period + (1 | herd), 
-    data = object@Data,
-    family = poisson
-  )
-  object.model <- n2k_glmer_poisson(
-    data = object, model.fit = model.object, status = "converged"
-  )
   it("returns the Data slot", {
     expect_that(
       get_data(object),
@@ -79,17 +61,6 @@ describe("get_data", {
 
 context("get_seed() handles n2kModel objects")
 describe("get_seed", {
-  data("cbpp", package = "lme4")
-  cbpp$Count <- cbpp$incidence
-  object <- n2k_glmer_poisson(
-    scheme.id = 1,
-    species.group.id = 2,
-    location.group.id = 3,
-    model.type = "glmer poisson: period + herd",
-    covariate = "offset(log(size)) + period + (1|herd)",
-    analysis.date = as.POSIXct("2000-01-01"),
-    data = cbpp
-  )
   it("returns the Seed slot", {
     expect_that(
       get_seed(object),
@@ -100,17 +71,6 @@ describe("get_seed", {
 
 context("get_scheme_id() handles n2kModel objects")
 describe("get_scheme_id", {
-  data("cbpp", package = "lme4")
-  cbpp$Count <- cbpp$incidence
-  object <- n2k_glmer_poisson(
-    scheme.id = 1,
-    species.group.id = 2,
-    location.group.id = 3,
-    model.type = "glmer poisson: period + herd",
-    covariate = "offset(log(size)) + period + (1|herd)",
-    analysis.date = as.POSIXct("2000-01-01"),
-    data = cbpp
-  )
   it("returns the SchemeID slot", {
     expect_that(
       get_scheme_id(object),
@@ -121,17 +81,6 @@ describe("get_scheme_id", {
 
 context("get_species_group_id() handles n2kModel objects")
 describe("get_species_group_id", {
-  data("cbpp", package = "lme4")
-  cbpp$Count <- cbpp$incidence
-  object <- n2k_glmer_poisson(
-    scheme.id = 1,
-    species.group.id = 2,
-    location.group.id = 3,
-    model.type = "glmer poisson: period + herd",
-    covariate = "offset(log(size)) + period + (1|herd)",
-    analysis.date = as.POSIXct("2000-01-01"),
-    data = cbpp
-  )
   it("returns the SpeciesGroupID slot", {
     expect_that(
       get_species_group_id(object),
@@ -142,17 +91,6 @@ describe("get_species_group_id", {
 
 context("get_location_group_id() handles n2kModel objects")
 describe("get_location_group_id", {
-  data("cbpp", package = "lme4")
-  cbpp$Count <- cbpp$incidence
-  object <- n2k_glmer_poisson(
-    scheme.id = 1,
-    species.group.id = 2,
-    location.group.id = 3,
-    model.type = "glmer poisson: period + herd",
-    covariate = "offset(log(size)) + period + (1|herd)",
-    analysis.date = as.POSIXct("2000-01-01"),
-    data = cbpp
-  )
   it("returns the LocationGroupID slot", {
     expect_that(
       get_location_group_id(object),
@@ -163,17 +101,6 @@ describe("get_location_group_id", {
 
 context("get_data_fingerprint() handles n2kModel objects")
 describe("get_data_fingerprint", {
-  data("cbpp", package = "lme4")
-  cbpp$Count <- cbpp$incidence
-  object <- n2k_glmer_poisson(
-    scheme.id = 1,
-    species.group.id = 2,
-    location.group.id = 3,
-    model.type = "glmer poisson: period + herd",
-    covariate = "offset(log(size)) + period + (1|herd)",
-    analysis.date = as.POSIXct("2000-01-01"),
-    data = cbpp
-  )
   it("returns the DataFingerprint slot", {
     expect_that(
       get_data_fingerprint(object),
@@ -184,17 +111,6 @@ describe("get_data_fingerprint", {
 
 context("get_analysis_date() handles n2kModel objects")
 describe("get_analysis_date", {
-  data("cbpp", package = "lme4")
-  cbpp$Count <- cbpp$incidence
-  object <- n2k_glmer_poisson(
-    scheme.id = 1,
-    species.group.id = 2,
-    location.group.id = 3,
-    model.type = "glmer poisson: period + herd",
-    covariate = "offset(log(size)) + period + (1|herd)",
-    analysis.date = as.POSIXct("2000-01-01"),
-    data = cbpp
-  )
   it("returns the AnalysisDate slot", {
     expect_that(
       get_analysis_date(object),
@@ -205,17 +121,6 @@ describe("get_analysis_date", {
 
 context("get_model_type() handles n2kModel objects")
 describe("get_model_type", {
-  data("cbpp", package = "lme4")
-  cbpp$Count <- cbpp$incidence
-  object <- n2k_glmer_poisson(
-    scheme.id = 1,
-    species.group.id = 2,
-    location.group.id = 3,
-    model.type = "glmer poisson: period + herd",
-    covariate = "offset(log(size)) + period + (1|herd)",
-    analysis.date = as.POSIXct("2000-01-01"),
-    data = cbpp
-  )
   it("returns the ModelType slot", {
     expect_that(
       get_model_type(object),
@@ -224,24 +129,27 @@ describe("get_model_type", {
   })
 })
 
-
 context("get_covariate() handles n2kModel objects")
 describe("get_covariate", {
-  data("cbpp", package = "lme4")
-  cbpp$Count <- cbpp$incidence
-  object <- n2k_glmer_poisson(
-    scheme.id = 1,
-    species.group.id = 2,
-    location.group.id = 3,
-    model.type = "glmer poisson: period + herd",
-    covariate = "offset(log(size)) + period + (1|herd)",
-    analysis.date = as.POSIXct("2000-01-01"),
-    data = cbpp
-  )
   it("returns the Covariate slot", {
     expect_that(
       get_covariate(object),
       is_identical_to(object@Covariate)
+    )
+  })
+})
+
+context("get_model_set() handles n2kModel objects")
+describe("get_model_set", {
+  it("returns the model set data.frame", {
+    expect_that(
+      get_model_set(object),
+      is_identical_to(
+        data.frame(
+          ModelType = object@ModelType,
+          FirstImportedYear = object@FirstImportedYear
+        )
+      )
     )
   })
 })

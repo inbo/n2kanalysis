@@ -10,6 +10,7 @@
 #'    \item{\code{LocationGroupID}}{a single integer identifing the location group}
 #'    \item{\code{ModelType}}{a single character identifying the type of model to fit to the data}
 #'    \item{\code{Covariate}}{a single character holding the right hand side of the model formula}
+#'    \item{\code{FirstImportedYear}}{Oldest year considered in the data}
 #'    \item{\code{AnalysisDate}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
 #'    \item{\code{DataFingerprint}}{the SHA1 fingerprint of the data}
@@ -31,6 +32,7 @@ setClass(
     LocationGroupID = "integer",
     ModelType = "character",
     Covariate = "character",
+    FirstImportedYear = "integer",
     AnalysisDate = "POSIXct",
     Seed = "integer",
     DataFingerprint = "character",
@@ -48,6 +50,10 @@ setValidity(
     check_single_strictly_positive_integer(object@SchemeID, name = "SchemeID")
     check_single_strictly_positive_integer(object@SpeciesGroupID, name = "SpeciesGroupID")
     check_single_strictly_positive_integer(object@LocationGroupID, name = "LocationGroupID")
+    check_single_strictly_positive_integer(
+      object@FirstImportedYear, 
+      name = "FirstImportedYear"
+    )
     check_single_strictly_positive_integer(object@Seed, name = "Seed")
     check_single_character(object@DataFingerprint, name = "DataFingerprint")
     check_single_character(object@Status, name = "Status")
@@ -66,6 +72,9 @@ setValidity(
       stop("Mismatch between DataFingerprint and Data")
     }
     check_dataframe_covariate(df = object@Data, covariate = object@Covariate)
+    if(object@FirstImportedYear > as.integer(format(Sys.time(), "%Y"))){
+      stop("Importing data from the future?")
+    }
     
     return(TRUE)
   }

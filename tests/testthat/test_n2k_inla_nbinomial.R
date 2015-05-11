@@ -1,33 +1,35 @@
 context("prepare a n2kGlmerPoisson object")
+require(INLA)
+this.scheme.id <- 1L
+this.species.group.id <- 2L
+this.location.group.id <- 3L
+this.analysis.date <- Sys.time()
+this.model.type <- "inla nbinomial: period + herd"
+this.covariate <- "offset(log(size)) + period + f(herd, model = 'iid')"  
+this.first.imported.year <- 1990L
+data("cbpp", package = "lme4")
+cbpp$Count <- cbpp$incidence
+object <- n2k_inla_nbinomial(
+  scheme.id = this.scheme.id,
+  species.group.id = this.species.group.id,
+  location.group.id = this.location.group.id,
+  model.type = this.model.type,
+  covariate = this.covariate,
+  first.imported.year = this.first.imported.year,
+  analysis.date = this.analysis.date,
+  data = cbpp 
+)
+model.object <- INLA::inla(
+  Count ~ offset(log(size)) + period + f(herd, model = "iid"), 
+  data = object@Data,
+  family = "nbinomial"
+)
+model.truth <- INLA::inla(
+  Count ~ offset(log(size)) + period + f(herd, model = "iid"), 
+  data = cbpp,
+  family = "nbinomial"
+)
 describe("n2k_inla_nbinomial", {
-  require(INLA)
-  this.scheme.id <- 1L
-  this.species.group.id <- 2L
-  this.location.group.id <- 3L
-  this.analysis.date <- Sys.time()
-  this.model.type <- "inla nbinomial: period + herd"
-  this.covariate <- "offset(log(size)) + period + f(herd, model = 'iid')"  
-  data("cbpp", package = "lme4")
-  cbpp$Count <- cbpp$incidence
-  object <- n2k_inla_nbinomial(
-    scheme.id = this.scheme.id,
-    species.group.id = this.species.group.id,
-    location.group.id = this.location.group.id,
-    model.type = this.model.type,
-    covariate = this.covariate,
-    analysis.date = this.analysis.date,
-    data = cbpp 
-  )
-  model.object <- INLA::inla(
-    Count ~ offset(log(size)) + period + f(herd, model = "iid"), 
-    data = object@Data,
-    family = "nbinomial"
-  )
-  model.truth <- INLA::inla(
-    Count ~ offset(log(size)) + period + f(herd, model = "iid"), 
-    data = cbpp,
-    family = "nbinomial"
-  )
   
   it("adds the data as a data.frame", {
     expect_that(
@@ -58,6 +60,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         status = "junk"
       ),
@@ -71,6 +74,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         status = NA
       ),
@@ -86,6 +90,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = "junk",
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date
       ),
       throws_error("ModelType should be 'inla nbinomial'")
@@ -101,6 +106,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         seed = this.seed
       )@Seed,
@@ -117,6 +123,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         seed = this.seed
       )@Seed,
@@ -131,6 +138,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         seed = this.seed + 1e-11
       )@Seed,
@@ -143,6 +151,7 @@ describe("n2k_inla_nbinomial", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         seed = this.seed + 0.1
       ),
@@ -164,6 +173,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@SchemeID,
@@ -178,6 +188,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = as.numeric(this.scheme.id)
       )@SchemeID,
@@ -190,6 +201,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id + 1e-11
       )@SchemeID,
@@ -202,6 +214,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id + 0.1
       ),
@@ -216,6 +229,7 @@ describe("n2k_inla_nbinomial", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         covariate = this.covariate,
         scheme.id = this.scheme.id
@@ -231,6 +245,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@SpeciesGroupID,
@@ -243,6 +258,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@SpeciesGroupID,
@@ -255,6 +271,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
@@ -270,6 +287,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@LocationGroupID,
@@ -284,6 +302,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = as.numeric(this.location.group.id),
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@LocationGroupID,
@@ -296,6 +315,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id + 1e-11,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       )@LocationGroupID,
@@ -308,12 +328,86 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id + 0.1,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
       throws_error("location.group.id is not integer")
     )
   })
+  
+  it("sets the correct FirstImportedYear", {
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      )@FirstImportedYear,
+      is_identical_to(this.first.imported.year)
+    )
+  })
+  it("converts numeric location.group.id, when possible", {
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = as.numeric(this.first.imported.year),
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      )@FirstImportedYear,
+      is_identical_to(this.first.imported.year)
+    )
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year + 1e-11,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      )@FirstImportedYear,
+      is_identical_to(this.first.imported.year)
+    )
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year + 0.1,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("first.imported.year is not integer")
+    )
+  })
+  it("checks that FirstImportedYear is from the past", {
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = as.integer(format(Sys.time(), "%Y")) + 1,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("Importing data from the future?")
+    )
+  })
+  
   it("checks if analysis date is from the past", {
     expect_that(
       n2k_inla_nbinomial(
@@ -322,6 +416,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = Sys.time() + 24 * 60 * 60,
         scheme.id = this.scheme.id
       ),
@@ -336,6 +431,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
@@ -348,6 +444,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
@@ -360,6 +457,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
@@ -372,6 +470,7 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
@@ -393,34 +492,6 @@ describe("n2k_inla_nbinomial", {
 
 context("add a model to a n2kInlaNbinomial object")
 describe("n2k_inla_nbinomial", {
-  require(INLA)
-  this.scheme.id <- 1L
-  this.species.group.id <- 2L
-  this.location.group.id <- 3L
-  this.model.type <- "inla nbinomial: period + herd"
-  this.covariate <- "offset(log(size)) + period + f(herd, model = 'iid')"  
-  this.analysis.date <- Sys.time()
-  data("cbpp", package = "lme4")
-  cbpp$Count <- cbpp$incidence
-  object <- n2k_inla_nbinomial(
-    scheme.id = this.scheme.id,
-    species.group.id = this.species.group.id,
-    location.group.id = this.location.group.id,
-    model.type = this.model.type,
-    covariate = this.covariate,
-    analysis.date = this.analysis.date,
-    data = cbpp 
-  )
-  model.object <- INLA::inla(
-    Count ~ offset(log(size)) + period + f(herd, model = "iid"), 
-    data = object@Data,
-    family = "nbinomial"
-  )
-  model.truth <- INLA::inla(
-    Count ~ offset(log(size)) + period + f(herd, model = "iid"), 
-    data = cbpp,
-    family = "nbinomial"
-  )
   object.model <- n2k_inla_nbinomial(
     data = object, model.fit = model.object, status = "converged"
   )

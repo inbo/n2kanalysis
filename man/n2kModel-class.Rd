@@ -17,6 +17,7 @@ A virtual superclass to contain the analysis models
    \item{\code{LocationGroupID}}{a single integer identifing the location group}
    \item{\code{ModelType}}{a single character identifying the type of model to fit to the data}
    \item{\code{Covariate}}{a single character holding the right hand side of the model formula}
+   \item{\code{FirstImportedYear}}{Oldest year considered in the data}
    \item{\code{AnalysisDate}}{A POSIXct date indicating the date that the dataset was imported}
    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
    \item{\code{DataFingerprint}}{the SHA1 fingerprint of the data}

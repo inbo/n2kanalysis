@@ -1,17 +1,18 @@
+data("cbpp", package = "lme4")
+cbpp$Count <- cbpp$incidence
+object <- n2k_glmer_poisson(
+  scheme.id = 1,
+  species.group.id = 2,
+  location.group.id = 3,
+  model.type = "glmer poisson: period + herd",
+  covariate = "offset(log(size)) + period + (1|herd)",
+  first.imported.year = 1990,
+  analysis.date = as.POSIXct("2000-01-01"),
+  data = cbpp
+)
 
 context("get_weight() handles n2kGlmerPoisson objects")
 describe("get_weight", {
-  data("cbpp", package = "lme4")
-  cbpp$Count <- cbpp$incidence
-  object <- n2k_glmer_poisson(
-    scheme.id = 1,
-    species.group.id = 2,
-    location.group.id = 3,
-    model.type = "glmer poisson: period + herd",
-    covariate = "offset(log(size)) + period + (1|herd)",
-    analysis.date = as.POSIXct("2000-01-01"),
-    data = cbpp
-  )
   it("returns the Weight slot", {
     expect_that(
       get_weight(object),
@@ -22,17 +23,6 @@ describe("get_weight", {
 
 context("get_model() handles n2kGlmerPoisson objects")
 describe("get_model", {
-  data("cbpp", package = "lme4")
-  cbpp$Count <- cbpp$incidence
-  object <- n2k_glmer_poisson(
-    scheme.id = 1,
-    species.group.id = 2,
-    location.group.id = 3,
-    model.type = "glmer poisson: period + herd",
-    covariate = "offset(log(size)) + period + (1|herd)",
-    analysis.date = as.POSIXct("2000-01-01"),
-    data = cbpp
-  )
   model.object <- lme4::glmer(
     incidence ~ offset(log(size)) + period + (1 | herd), 
     data = object@Data,

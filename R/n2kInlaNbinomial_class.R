@@ -44,7 +44,8 @@ setValidity(
     file.fingerprint <- digest(
       list(
         object@Data, object@SchemeID, object@SpeciesGroupID, object@LocationGroupID, 
-        object@ModelType, object@Covariate, object@AnalysisDate, object@Seed
+        object@ModelType, object@Covariate, object@FirstImportedYear, 
+        object@AnalysisDate, object@Seed
       ),
       algo = "sha1"
     )
