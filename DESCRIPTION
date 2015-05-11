@@ -2,17 +2,45 @@ Package: n2kanalysis
 Title: Generic Functions to Analyse Data from the Natura 2000 Monitoring
 Version: 0.0
 Authors@R: c(person("Thierry", "Onkelinx", email = "thierry.onkelinx@inbo.be", role = c("aut", "cre")))
-Description: All generic functions for the analysis. The full analysis is defined in the analysis package of each monitoring scheme.
-Depends: R (>= 3.1.2)
+Description: All generic functions for the analysis. The full analysis is
+    defined in the analysis package of each monitoring scheme.
+Depends:
+    R (>= 3.1.2)
 License: GPL-3
 LazyData: true
-Suggests: 
-  optimx,
-  INLA,
-  testthat
-Imports: 
-  MASS,
-  lme4,
-  digest,
-  RODBC,
-  n2khelper
+Suggests:
+    optimx,
+    INLA,
+    testthat
+Imports:
+    methods,
+    MASS,
+    lme4,
+    digest,
+    RODBC,
+    n2khelper
+Collate:
+    'fit_every_model.R'
+    'n2kModel_class.R'
+    'n2kInlaNbinomial_class.R'
+    'n2kGlmerPoisson_class.R'
+    'fit_model.R'
+    'get_analysis_date.R'
+    'get_covariate.R'
+    'get_data.R'
+    'get_data_fingerprint.R'
+    'get_file_fingerprint.R'
+    'get_location_group_id.R'
+    'get_model.R'
+    'get_model_type.R'
+    'get_scheme_id.R'
+    'get_seed.R'
+    'get_species_group_id.R'
+    'get_weight.R'
+    'mark_obsolete_dataset.R'
+    'n2k_glmer_poisson.R'
+    'n2k_inla_nbinomial.R'
+    'select_factor_count_strictly_positive.R'
+    'select_factor_threshold.R'
+    'select_observed_range.R'
+    'status.R'
