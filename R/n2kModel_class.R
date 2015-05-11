@@ -11,6 +11,7 @@
 #'    \item{\code{ModelType}}{a single character identifying the type of model to fit to the data}
 #'    \item{\code{Covariate}}{a single character holding the right hand side of the model formula}
 #'    \item{\code{FirstImportedYear}}{Oldest year considered in the data}
+#'    \item{\code{LastImportedYear}}{Most recent year considered in the data}
 #'    \item{\code{AnalysisDate}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
 #'    \item{\code{DataFingerprint}}{the SHA1 fingerprint of the data}
@@ -33,6 +34,7 @@ setClass(
     ModelType = "character",
     Covariate = "character",
     FirstImportedYear = "integer",
+    LastImportedYear = "integer",
     AnalysisDate = "POSIXct",
     Seed = "integer",
     DataFingerprint = "character",
@@ -53,6 +55,10 @@ setValidity(
     check_single_strictly_positive_integer(
       object@FirstImportedYear, 
       name = "FirstImportedYear"
+    )
+    check_single_strictly_positive_integer(
+      object@LastImportedYear, 
+      name = "LastImportedYear"
     )
     check_single_strictly_positive_integer(object@Seed, name = "Seed")
     check_single_character(object@DataFingerprint, name = "DataFingerprint")
@@ -75,7 +81,12 @@ setValidity(
     if(object@FirstImportedYear > as.integer(format(Sys.time(), "%Y"))){
       stop("Importing data from the future?")
     }
-    
+    if(object@LastImportedYear > as.integer(format(Sys.time(), "%Y"))){
+      stop("Importing data from the future?")
+    }
+    if(object@LastImportedYear < object@FirstImportedYear){
+      stop("LastImportedYear cannot proceed FirstImportedYear")
+    }
     return(TRUE)
   }
 )

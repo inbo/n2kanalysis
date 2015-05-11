@@ -23,7 +23,8 @@ setMethod(
   definition = function(x){
     return(data.frame(
       ModelType = x@ModelType,
-      FirstImportedYear = x@FirstImportedYear
+      FirstImportedYear = x@FirstImportedYear,
+      LastImportedYear = x@LastImportedYear
     ))
   }
 )

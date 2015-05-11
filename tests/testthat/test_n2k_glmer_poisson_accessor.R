@@ -7,6 +7,7 @@ object <- n2k_glmer_poisson(
   model.type = "glmer poisson: period + herd",
   covariate = "offset(log(size)) + period + (1|herd)",
   first.imported.year = 1990,
+  last.imported.year = 2015,
   analysis.date = as.POSIXct("2000-01-01"),
   data = cbpp
 )

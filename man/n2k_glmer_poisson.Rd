@@ -38,6 +38,7 @@ In case \code{data} a n2kGlmerPoisson object is, then only the model and status 
    \item{\code{model.type}}{a single character identifying the type of model to fit to the data}
    \item{\code{covariate}}{a single character holding the right hand side of the model formula}
    \item{\code{first.imported.year}}{Oldest year considered in the data}
+   \item{\code{last.imported.year}}{Most recent year considered in the data}
    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
    \item{\code{weight}}{The name of the variable to use as weights. '' indicates no weighting. Defaults to ''}
    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}

@@ -10,6 +10,7 @@ describe("get_model", {
     model.type = "inla nbinomial: period + herd",
     covariate = "offset(log(size)) + period + f(herd, model = 'iid')",
     first.imported.year = 1990,
+    last.imported.year = 2015,
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
   )

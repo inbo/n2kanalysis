@@ -11,6 +11,7 @@
 #'    \item{\code{model.type}}{a single character identifying the type of model to fit to the data}
 #'    \item{\code{covariate}}{a single character holding the right hand side of the model formula}
 #'    \item{\code{first.imported.year}}{Oldest year considered in the data}
+#'    \item{\code{last.imported.year}}{Most recent year considered in the data}
 #'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{weight}}{The name of the variable to use as weights. '' indicates no weighting. Defaults to ''}
 #'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
@@ -72,6 +73,10 @@ setMethod(
       dots$first.imported.year, 
       name = "first.imported.year"
     )
+    dots$last.imported.year <- check_single_strictly_positive_integer(
+      dots$last.imported.year, 
+      name = "last.imported.year"
+    )
     dots$analysis.date <- check_single_posix(
       dots$analysis.date, 
       name = "analysis.date", 
@@ -80,7 +85,7 @@ setMethod(
     file.fingerprint <- digest(
       list(
         data, dots$scheme.id, dots$species.group.id, dots$location.group.id, 
-        dots$model.type, dots$covariate, dots$first.imported.year, 
+        dots$model.type, dots$covariate, dots$first.imported.year, dots$last.imported.year,
         dots$analysis.date, dots$seed, dots$weight
       ),
       algo = "sha1"
@@ -96,6 +101,7 @@ setMethod(
       ModelType = dots$model.type,
       Covariate = dots$covariate,
       FirstImportedYear = dots$first.imported.year,
+      LastImportedYear = dots$last.imported.year,
       AnalysisDate = dots$analysis.date,
       Seed = dots$seed,
       Weight = dots$weight,
