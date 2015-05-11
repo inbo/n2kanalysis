@@ -34,6 +34,7 @@ setMethod(
     }
     if(dots$verbose){
       message(x)
+      utils::flush.console()
     }
     local.environment <- new.env()
     load(x, envir = local.environment)
@@ -44,6 +45,7 @@ setMethod(
     )
     if(dots$verbose){
       message(status(analysis))
+      utils::flush.console()
     }
     assign("analysis", value = analysis, envir = local.environment)
     save(list = ls(local.environment), envir = local.environment, file = x)
@@ -127,7 +129,7 @@ setMethod(
     if(is.null(dots$status)){
       dots$status <- "new"
     }
-    if(!(status(x) %in% status)){
+    if(!(status(x) %in% dots$status)){
       return(x)
     }
     
