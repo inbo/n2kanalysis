@@ -4,12 +4,14 @@
 \alias{fit_every_model}
 \title{Fit the model to the analysis files}
 \usage{
-fit_every_model(path = ".", ...)
+fit_every_model(path = ".", status, verbose = TRUE)
 }
 \arguments{
 \item{path}{the path containing the analysis files}
 
-\item{...}{other arguments. See details}
+\item{status}{a vector with status levels to (re-)fit the model. Defaults to "new" when missing.}
+
+\item{verbose}{Show the name of the current analysis file on screen. Defaults to TRUE}
 }
 \description{
 Fit the model to the analysis files
