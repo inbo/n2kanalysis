@@ -8,6 +8,8 @@ this.model.type <- "inla nbinomial: period + herd"
 this.covariate <- "offset(log(size)) + period + f(herd, model = 'iid')"  
 this.first.imported.year <- 1990L
 this.last.imported.year <- 2015L
+this.last.analysed.year <- 2014L
+this.duration <- 1L
 data("cbpp", package = "lme4")
 cbpp$Count <- cbpp$incidence
 object <- n2k_inla_nbinomial(
@@ -653,6 +655,124 @@ describe("n2k_inla_nbinomial", {
     )
   })
   
+  it("sets the correct LastAnalysedYear", {
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        last.analysed.year = this.last.analysed.year,
+        duration = 1L,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      )@LastAnalysedYear,
+      is_identical_to(this.last.analysed.year)
+    )
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      )@LastAnalysedYear,
+      is_identical_to(this.last.imported.year)
+    )
+  })
+  it("converts numeric last.analysed.year, when possible", {
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        last.analysed.year = as.numeric(this.last.analysed.year),
+        duration = 1,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      )@LastAnalysedYear,
+      is_identical_to(this.last.analysed.year)
+    )
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        duration = 1,
+        last.analysed.year = this.last.analysed.year + 1e-11,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      )@LastAnalysedYear,
+      is_identical_to(this.last.analysed.year)
+    )
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        duration = 1,
+        last.analysed.year = this.last.analysed.year + 0.1,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("last.analysed.year is not integer")
+    )
+  })
+  it("checks that LastAnalysedYear is within the range", {
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        duration = 1,
+        last.analysed.year = this.last.imported.year + 1,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("LastAnalysedYear larger than LastImportedYear. Window outside imported range.")
+    )
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        duration = 1,
+        last.analysed.year = this.first.imported.year + this.duration - 2,
+        duration = this.duration,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("LastAnalysedYear smaller than FirstImportedYear \\+ Duration \\- 1\\. Window outside imported range\\.")
+    )
+  })
+  
   it("checks if analysis date is from the past", {
     expect_that(
       n2k_inla_nbinomial(
@@ -788,7 +908,10 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = object, model.fit = model.object, status = "converged", species.group.id = 999
+        data = object, 
+        model.fit = model.object, 
+        status = "converged", 
+        species.group.id = 999
       )@SpeciesGroupID,
       is_identical_to(object@SpeciesGroupID)
     )
@@ -863,6 +986,19 @@ describe("n2k_inla_nbinomial", {
         last.imported.year = 999
       )@LastImportedYear,
       is_identical_to(object@LastImportedYear)
+    )
+    expect_that(
+      object.model@LastAnalysedYear,
+      is_identical_to(object@LastAnalysedYear)
+    )
+    expect_that(
+      n2k_inla_nbinomial(
+        data = object, 
+        model.fit = model.object, 
+        status = "converged", 
+        last.analysed.year = 3000
+      )@LastAnalysedYear,
+      is_identical_to(object@LastAnalysedYear)
     )
     expect_that(
       object.model@AnalysisDate,

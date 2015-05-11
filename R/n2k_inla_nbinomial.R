@@ -11,6 +11,7 @@
 #'    \item{\code{first.imported.year}}{Oldest year considered in the data}
 #'    \item{\code{last.imported.year}}{Most recent year considered in the data}
 #'    \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
+#'    \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
 #'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
 #'   }
@@ -80,6 +81,14 @@ setMethod(
         name = "duration"
       )
     }
+    if(is.null(dots$last.analysed.year)){
+      dots$last.analysed.year <- dots$last.imported.year
+    } else {
+      dots$last.analysed.year <- check_single_strictly_positive_integer(
+        dots$last.analysed.year, 
+        name = "last.analysed.year"
+      )
+    }
     dots$analysis.date <- check_single_posix(
       dots$analysis.date, 
       name = "analysis.date", 
@@ -89,7 +98,7 @@ setMethod(
       list(
         data, dots$scheme.id, dots$species.group.id, dots$location.group.id, 
         dots$model.type, dots$covariate, dots$first.imported.year, dots$last.imported.year,
-        dots$duration, dots$analysis.date, dots$seed
+        dots$duration, dots$last.analysed.year, dots$analysis.date, dots$seed
       ),
       algo = "sha1"
     )
@@ -106,6 +115,7 @@ setMethod(
       FirstImportedYear = dots$first.imported.year,
       LastImportedYear = dots$last.imported.year,
       Duration = dots$duration,
+      LastAnalysedYear = dots$last.analysed.year,
       AnalysisDate = dots$analysis.date,
       Seed = dots$seed,
       DataFingerprint = digest(data, algo = "sha1"),

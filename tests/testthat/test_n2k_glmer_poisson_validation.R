@@ -12,6 +12,7 @@ describe("file fingerprint", {
     covariate = "offset(log(size)) + period + (1|herd)",
     first.imported.year = 1990,
     last.imported.year = 2015,
+    last.analysed.year = 1995,
     duration = 1,
     analysis.date = as.POSIXct("2000-01-01"),
     data = cbpp
@@ -76,7 +77,7 @@ describe("file fingerprint", {
   
   it("detects changes in LastImportedYear", {
     change.object <- object
-    change.object@LastImportedYear <- 1990L
+    change.object@LastImportedYear <- 2010L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -86,6 +87,15 @@ describe("file fingerprint", {
   it("detects changes in Duration", {
     change.object <- object
     change.object@Duration <- 2L
+    expect_that(
+      validObject(change.object),
+      throws_error("Corrupt FileFingerprint")
+    )
+  })
+  
+  it("detects changes in LastAnalysedYear", {
+    change.object <- object
+    change.object@LastAnalysedYear <- 1994L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")

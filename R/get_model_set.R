@@ -25,7 +25,8 @@ setMethod(
       ModelType = x@ModelType,
       FirstImportedYear = x@FirstImportedYear,
       LastImportedYear = x@LastImportedYear,
-      Duration = x@Duration
+      Duration = x@Duration,
+      LastAnalysedYear = x@LastAnalysedYear
     ))
   }
 )

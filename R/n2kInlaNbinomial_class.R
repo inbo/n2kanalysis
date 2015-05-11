@@ -45,7 +45,7 @@ setValidity(
       list(
         object@Data, object@SchemeID, object@SpeciesGroupID, object@LocationGroupID, 
         object@ModelType, object@Covariate, object@FirstImportedYear, object@LastImportedYear, 
-        object@Duration, object@AnalysisDate, object@Seed
+        object@Duration, object@LastAnalysedYear, object@AnalysisDate, object@Seed
       ),
       algo = "sha1"
     )

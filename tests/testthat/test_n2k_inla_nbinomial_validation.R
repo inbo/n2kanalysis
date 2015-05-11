@@ -11,6 +11,7 @@ object <- n2k_inla_nbinomial(
   first.imported.year = 1990,
   last.imported.year = 2015,
   duration = 1,
+  last.analysed.year = 1995,
   analysis.date = as.POSIXct("2000-01-01"),
   data = cbpp
 )
@@ -107,6 +108,15 @@ describe("file fingerprint", {
     )
   })
   
+  it("detects changes in LastAnalysedYear", {
+    change.object <- object
+    change.object@LastAnalysedYear <- 2000L
+    expect_that(
+      validObject(change.object),
+      throws_error("Corrupt FileFingerprint")
+    )
+  })
+
   it("ignores changes in Status", {
     change.object <- object
     change.object@Status <- "error"

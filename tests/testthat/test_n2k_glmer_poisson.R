@@ -8,6 +8,8 @@ this.covariate <- "offset(log(size)) + period + (1|herd)"
 weighted.model.type <- "weighted glmer poisson: period + herd"
 this.first.imported.year <- 1990L
 this.last.imported.year <- 2015L
+this.last.analysed.year <- 2014L
+this.duration <- 1L
 data("cbpp", package = "lme4")
 cbpp$Count <- cbpp$incidence
 object <- n2k_glmer_poisson(
@@ -715,6 +717,123 @@ describe("n2k_glmer_poisson", {
     )
   })
 
+  it("sets the correct LastImportedYear", {
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        duration = 1,
+        last.analysed.year = this.last.analysed.year,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      )@LastAnalysedYear,
+      is_identical_to(this.last.analysed.year)
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        duration = 1,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      )@LastAnalysedYear,
+      is_identical_to(this.last.imported.year)
+    )
+  })
+  it("converts numeric last.imported.year, when possible", {
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        duration = 1,
+        last.analysed.year = as.numeric(this.last.analysed.year),
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      )@LastAnalysedYear,
+      is_identical_to(this.last.analysed.year)
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        duration = 1,
+        last.analysed.year = this.last.analysed.year + 1e-11,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      )@LastAnalysedYear,
+      is_identical_to(this.last.analysed.year)
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        duration = 1L,
+        last.analysed.year = this.last.analysed.year + 0.1,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("last.analysed.year is not integer")
+    )
+  })
+  it("checks that LastAnalyseYear is within range", {
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        last.analysed.year = this.last.imported.year + 1,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("LastAnalysedYear larger than LastImportedYear. Window outside imported range.")
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        duration = this.duration,
+        last.analysed.year = this.first.imported.year + this.duration - 2,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("LastAnalysedYear smaller than FirstImportedYear \\+ Duration - 1. Window outside imported range.")
+    )
+  })
+  
   it("checks if analysis date is from the past", {
     expect_that(
       n2k_glmer_poisson(
@@ -918,6 +1037,19 @@ describe("n2k_glmer_poisson", {
         last.imported.year = 3000
       )@LastImportedYear,
       is_identical_to(object@LastImportedYear)
+    )
+    expect_that(
+      object.model@LastAnalysedYear,
+      is_identical_to(object@LastAnalysedYear)
+    )
+    expect_that(
+      n2k_glmer_poisson(
+        data = object, 
+        model.fit = model.object, 
+        status = "converged", 
+        last.analysed.year = 3000
+      )@LastAnalysedYear,
+      is_identical_to(object@LastAnalysedYear)
     )
     expect_that(
       object.model@Duration,

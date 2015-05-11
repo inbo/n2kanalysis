@@ -20,6 +20,7 @@ A virtual superclass to contain the analysis models
    \item{\code{FirstImportedYear}}{Oldest year considered in the data}
    \item{\code{LastImportedYear}}{Most recent year considered in the data}
    \item{\code{Duration}}{The width of the moving window}
+   \item{\code{LastAnalysedYear}}{Most recent year in the window}
    \item{\code{AnalysisDate}}{A POSIXct date indicating the date that the dataset was imported}
    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
    \item{\code{DataFingerprint}}{the SHA1 fingerprint of the data}
