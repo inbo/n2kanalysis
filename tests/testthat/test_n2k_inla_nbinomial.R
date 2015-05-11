@@ -541,6 +541,118 @@ describe("n2k_inla_nbinomial", {
     )
   })
   
+  it("sets the correct Duration", {
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        duration = this.duration,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      )@Duration,
+      is_identical_to(this.duration)
+    )
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      )@Duration,
+      is_identical_to(this.last.imported.year - this.first.imported.year + 1L)
+    )
+  })
+  it("converts numeric duration, when possible", {
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        last.analysed.year = this.last.analysed.year,
+        duration = as.numeric(this.duration),
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      )@Duration,
+      is_identical_to(this.duration)
+    )
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        duration = this.duration + 1e-11,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      )@Duration,
+      is_identical_to(this.duration)
+    )
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        duration = this.duration + 0.1,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("duration is not integer")
+    )
+  })
+  it("checks that Duration is not outside the FirstImportYear - LastImportedYear ranges", {
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = 1999,
+        last.imported.year = 1999,
+        duration = 2,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("Duration longer than the interval from FirstImportedYear to LastImportedYear")
+    )
+    expect_that(
+      n2k_inla_nbinomial(
+        data = cbpp,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        covariate = this.covariate,
+        first.imported.year = 1999,
+        last.imported.year = 1999,
+        duration = 0,
+        analysis.date = this.analysis.date,
+        scheme.id = this.scheme.id
+      ),
+      throws_error("duration must be strictly positive")
+    )
+  })
+  
   it("checks if analysis date is from the past", {
     expect_that(
       n2k_inla_nbinomial(
@@ -716,6 +828,19 @@ describe("n2k_inla_nbinomial", {
     expect_that(
       object.model@FirstImportedYear,
       is_identical_to(object@FirstImportedYear)
+    )
+    expect_that(
+      object.model@Duration,
+      is_identical_to(object@Duration)
+    )
+    expect_that(
+      n2k_inla_nbinomial(
+        data = object, 
+        model.fit = model.object, 
+        status = "converged", 
+        duration = 999
+      )@Duration,
+      is_identical_to(object@Duration)
     )
     expect_that(
       n2k_inla_nbinomial(

@@ -24,7 +24,8 @@ setMethod(
     return(data.frame(
       ModelType = x@ModelType,
       FirstImportedYear = x@FirstImportedYear,
-      LastImportedYear = x@LastImportedYear
+      LastImportedYear = x@LastImportedYear,
+      Duration = x@Duration
     ))
   }
 )

@@ -12,6 +12,7 @@
 #'    \item{\code{Covariate}}{a single character holding the right hand side of the model formula}
 #'    \item{\code{FirstImportedYear}}{Oldest year considered in the data}
 #'    \item{\code{LastImportedYear}}{Most recent year considered in the data}
+#'    \item{\code{Duration}}{The width of the moving window}
 #'    \item{\code{AnalysisDate}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
 #'    \item{\code{DataFingerprint}}{the SHA1 fingerprint of the data}
@@ -35,6 +36,7 @@ setClass(
     Covariate = "character",
     FirstImportedYear = "integer",
     LastImportedYear = "integer",
+    Duration = "integer",
     AnalysisDate = "POSIXct",
     Seed = "integer",
     DataFingerprint = "character",
@@ -87,6 +89,11 @@ setValidity(
     if(object@LastImportedYear < object@FirstImportedYear){
       stop("LastImportedYear cannot proceed FirstImportedYear")
     }
+    check_single_strictly_positive_integer(object@Duration, name = "Duration")
+    if(object@Duration > object@LastImportedYear - object@FirstImportedYear + 1){
+      stop("Duration longer than the interval from FirstImportedYear to LastImportedYear")
+    }
+    
     return(TRUE)
   }
 )

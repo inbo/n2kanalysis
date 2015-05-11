@@ -149,7 +149,8 @@ describe("get_model_set", {
         data.frame(
           ModelType = object@ModelType,
           FirstImportedYear = object@FirstImportedYear,
-          LastImportedYear = object@LastImportedYear
+          LastImportedYear = object@LastImportedYear,
+          Duration = object@Duration
         )
       )
     )
