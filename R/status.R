@@ -25,6 +25,37 @@ setMethod(
   }
 )
 
+#' @rdname status
+#' @aliases status,n2kModel-methods
+#' @importFrom methods setMethod
+#' @importFrom n2khelper check_path
+setMethod(
+  f = "status",
+  signature = signature(x = "character"),
+  definition = function(x){
+    path <- check_path(x, type = "directory")
+    files <- list.files(path = path, pattern = "\\.rda$", full.names = TRUE)
+    return(
+      do.call(
+        rbind, 
+        lapply(files, function(file){
+          local.environment <- new.env()
+          load(file, envir = local.environment)
+          analysis <- read_object_environment(object = "analysis", env = local.environment)
+          cbind(
+            Filename = file,
+            SchemeID = get_scheme_id(analysis),
+            SpeciesGroupID = get_species_group_id(analysis),
+            LocationGroupID = get_location_group_id(analysis),
+            get_model_set(analysis),
+            Status = status(analysis)
+          )
+        })
+      )
+    )
+  }
+)
+
 #' Overwrite the status of a n2kModel
 #' @param x the n2kModel object
 #' @param value the new values for the status

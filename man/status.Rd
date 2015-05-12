@@ -3,6 +3,7 @@
 \docType{methods}
 \name{status}
 \alias{status}
+\alias{status,character-method}
 \alias{status,n2kModel-method}
 \alias{status,n2kModel-methods}
 \title{Get the status of a n2kModel}
@@ -10,6 +11,8 @@
 status(x)
 
 \S4method{status}{n2kModel}(x)
+
+\S4method{status}{character}(x)
 }
 \arguments{
 \item{x}{the n2kModel object}
