@@ -100,16 +100,6 @@ describe("get_location_group_id", {
   })
 })
 
-context("get_data_fingerprint() handles n2kModel objects")
-describe("get_data_fingerprint", {
-  it("returns the DataFingerprint slot", {
-    expect_that(
-      get_data_fingerprint(object),
-      is_identical_to(object@DataFingerprint)
-    )
-  })
-})
-
 context("get_analysis_date() handles n2kModel objects")
 describe("get_analysis_date", {
   it("returns the AnalysisDate slot", {

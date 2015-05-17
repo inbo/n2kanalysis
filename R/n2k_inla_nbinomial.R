@@ -118,7 +118,6 @@ setMethod(
       LastAnalysedYear = dots$last.analysed.year,
       AnalysisDate = dots$analysis.date,
       Seed = dots$seed,
-      DataFingerprint = digest(data, algo = "sha1"),
       FileFingerprint = file.fingerprint,
       Model = NULL
     )

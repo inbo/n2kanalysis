@@ -23,7 +23,7 @@ describe("file fingerprint", {
     change.object@Data <- head(cbpp, 1)
     expect_that(
       validObject(change.object),
-      throws_error("Mismatch between DataFingerprint and Data")
+      throws_error("Corrupt FileFingerprint")
     )
   })
   

@@ -32,6 +32,7 @@ setClass(
 setValidity(
   "n2kInlaNbinomial",
   function(object){
+    check_dataframe_covariate(df = object@Data, covariate = object@Covariate)
     if(!grepl("^inla nbinomial", object@ModelType)){
       stop("ModelType should be 'inla nbinomial'")
     }

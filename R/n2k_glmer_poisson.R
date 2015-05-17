@@ -125,7 +125,6 @@ setMethod(
       AnalysisDate = dots$analysis.date,
       Seed = dots$seed,
       Weight = dots$weight,
-      DataFingerprint = digest(data, algo = "sha1"),
       FileFingerprint = file.fingerprint,
       Model = NULL
     )

@@ -16,7 +16,6 @@
 #'    \item{\code{LastAnalysedYear}}{Most recent year in the window}
 #'    \item{\code{AnalysisDate}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
-#'    \item{\code{DataFingerprint}}{the SHA1 fingerprint of the data}
 #'    \item{\code{FileFingerprint}}{the SHA1 fingerprint of the data}
 #'   }
 #' @name n2kModel-class
@@ -41,7 +40,6 @@ setClass(
     LastAnalysedYear = "integer",
     AnalysisDate = "POSIXct",
     Seed = "integer",
-    DataFingerprint = "character",
     FileFingerprint = "character",
     "VIRTUAL"
   )
@@ -65,7 +63,6 @@ setValidity(
       name = "LastImportedYear"
     )
     check_single_strictly_positive_integer(object@Seed, name = "Seed")
-    check_single_character(object@DataFingerprint, name = "DataFingerprint")
     check_single_character(object@Status, name = "Status")
     check_single_character(object@ModelType, name = "ModelType")
     check_single_character(object@Covariate, name = "Covariate")
@@ -78,10 +75,6 @@ setValidity(
         paste0("'", ok.status, "'", collapse = ", ")
       )
     }
-    if(object@DataFingerprint != digest(object@Data, algo = "sha1")){
-      stop("Mismatch between DataFingerprint and Data")
-    }
-    check_dataframe_covariate(df = object@Data, covariate = object@Covariate)
     if(object@FirstImportedYear > as.integer(format(Sys.time(), "%Y"))){
       stop("Importing data from the future?")
     }

@@ -28,7 +28,6 @@ Collate:
     'get_analysis_date.R'
     'get_covariate.R'
     'get_data.R'
-    'get_data_fingerprint.R'
     'get_file_fingerprint.R'
     'get_location_group_id.R'
     'get_model.R'

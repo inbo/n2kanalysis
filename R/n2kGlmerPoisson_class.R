@@ -32,6 +32,7 @@ setClass(
 setValidity(
   "n2kGlmerPoisson",
   function(object){
+    check_dataframe_covariate(df = object@Data, covariate = object@Covariate)
     check_single_character(object@Weight, name = "Weight")
     if(object@Weight == ''){
       if(!grepl("^glmer poisson", object@ModelType)){
