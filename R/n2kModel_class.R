@@ -68,7 +68,7 @@ setValidity(
     check_single_character(object@Covariate, name = "Covariate")
     check_single_posix(object@AnalysisDate, name = "AnalysisDate", past = TRUE)
     
-    ok.status <- c("new", "error", "converged", "false convergence", "insufficient data")
+    ok.status <- c("new", "working", "waiting", "error", "converged", "false convergence", "insufficient data")
     if(!object@Status %in% ok.status){
       stop(
         "Status must be one of the following: ", 
