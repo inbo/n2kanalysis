@@ -147,3 +147,13 @@ describe("get_model_set", {
     )
   })
 })
+
+context("get_session_info() handles n2kModel objects")
+describe("get_session_info()", {
+  it("returns the SessionInfo slot", {
+    expect_that(
+      get_session_info(object),
+      is_identical_to(object@SessionInfo)
+    )
+  })
+})

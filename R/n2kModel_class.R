@@ -1,3 +1,6 @@
+#' @importFrom methods setOldClass
+setOldClass("sessionInfo")
+
 #' The n2kModel class
 #' 
 #' A virtual superclass to contain the analysis models
@@ -17,6 +20,7 @@
 #'    \item{\code{AnalysisDate}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
 #'    \item{\code{FileFingerprint}}{the SHA1 fingerprint of the data}
+#'    \item{\code{SessionInfo}}{The sessionInfo() output}
 #'   }
 #' @name n2kModel-class
 #' @rdname n2kModel-class
@@ -41,6 +45,7 @@ setClass(
     AnalysisDate = "POSIXct",
     Seed = "integer",
     FileFingerprint = "character",
+    SessionInfo = "sessionInfo",
     "VIRTUAL"
   )
 )
@@ -67,6 +72,15 @@ setValidity(
     check_single_character(object@ModelType, name = "ModelType")
     check_single_character(object@Covariate, name = "Covariate")
     check_single_posix(object@AnalysisDate, name = "AnalysisDate", past = TRUE)
+    
+    required.names <- c("R.version", "platform", "locale", "running", "basePkgs", "otherPkgs", "loadedOnly")
+    if(!all(required.names %in% names(object@SessionInfo))){
+      missing.names <- required.names[!required.names %in% names(object@SessionInfo)]
+      stop(
+        "SessionInfo is missing following elements: ", 
+        paste(missing.names, collapse = ", ")
+      )
+    }
     
     ok.status <- c("new", "working", "waiting", "error", "converged", "false convergence", "insufficient data")
     if(!object@Status %in% ok.status){

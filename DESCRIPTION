@@ -35,6 +35,7 @@ Collate:
     'get_model_type.R'
     'get_scheme_id.R'
     'get_seed.R'
+    'get_session_info.R'
     'get_species_group_id.R'
     'get_weight.R'
     'mark_obsolete_dataset.R'

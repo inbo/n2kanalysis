@@ -119,6 +119,7 @@ setMethod(
       AnalysisDate = dots$analysis.date,
       Seed = dots$seed,
       FileFingerprint = file.fingerprint,
+      SessionInfo = sessionInfo(),
       Model = NULL
     )
   }
@@ -138,6 +139,7 @@ setMethod(
     dots <- list(...)
     data@Model <- model.fit
     data@Status <- dots$status
+    data@SessionInfo <- sessionInfo()
     validObject(data)
     return(data)
   }
