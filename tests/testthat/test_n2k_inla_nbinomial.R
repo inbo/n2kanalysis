@@ -1,4 +1,4 @@
-context("prepare a n2kGlmerPoisson object")
+context("prepare a n2kInlaNbinomial object")
 require(INLA)
 this.scheme.id <- 1L
 this.species.group.id <- 2L

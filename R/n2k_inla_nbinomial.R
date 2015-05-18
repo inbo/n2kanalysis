@@ -102,6 +102,12 @@ setMethod(
       ),
       algo = "sha1"
     )
+    status.fingerprint <- digest(
+      list(
+        file.fingerprint, dots$status, NULL, sessionInfo()
+      ),
+      algo = "sha1"
+    )
 
     new(
       "n2kInlaNbinomial",
@@ -119,6 +125,7 @@ setMethod(
       AnalysisDate = dots$analysis.date,
       Seed = dots$seed,
       FileFingerprint = file.fingerprint,
+      StatusFingerprint = status.fingerprint,
       SessionInfo = sessionInfo(),
       Model = NULL
     )
@@ -129,6 +136,7 @@ setMethod(
 #' @rdname n2k_inla_nbinomial
 #' @aliases n2k_inla_nbinomial,n2kInlaNbinomial-methods
 #' @importFrom methods setMethod validObject
+#' @importFrom digest digest
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "n2k_inla_nbinomial", 
@@ -140,6 +148,12 @@ setMethod(
     data@Model <- model.fit
     data@Status <- dots$status
     data@SessionInfo <- sessionInfo()
+    data@StatusFingerprint <- digest(
+      list(
+        data@FileFingerprint, dots$status, model.fit, sessionInfo()
+      ),
+      algo = "sha1"
+    )
     validObject(data)
     return(data)
   }

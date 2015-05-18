@@ -116,17 +116,31 @@ describe("file fingerprint", {
       throws_error("Corrupt FileFingerprint")
     )
   })
+})
 
-  it("ignores changes in Status", {
+context("illegal changes in the status fingerprint")
+describe("status fingerprint", {
+  it("detects changes in Status", {
     change.object <- object
     change.object@Status <- "error"
     expect_that(
       validObject(change.object),
-      is_true()
+      throws_error("Corrupt StatusFingerprint")
     )
   })
-
-  it("ignores changes in Model", {
+  
+  it("detects changes in SessionInfo", {
+    require(RODBC)
+    change.object <- object
+    change.object@SessionInfo <- sessionInfo()
+    expect_that(
+      validObject(change.object),
+      throws_error("Corrupt StatusFingerprint")
+    )
+  })
+  
+  
+  it("detects changes in Model", {
     require(INLA)
     model.object <- INLA::inla(
       Count ~ offset(log(size)) + period + f(herd, model = "iid"), 
@@ -144,7 +158,7 @@ describe("file fingerprint", {
     object.model@Model <- change.model
     expect_that(
       validObject(object.model),
-      is_true()
+      throws_error("Corrupt StatusFingerprint")
     )
   })
 })

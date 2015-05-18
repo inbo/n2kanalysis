@@ -22,7 +22,8 @@ A virtual superclass to contain the analysis models
    \item{\code{LastAnalysedYear}}{Most recent year in the window}
    \item{\code{AnalysisDate}}{A POSIXct date indicating the date that the dataset was imported}
    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
-   \item{\code{FileFingerprint}}{the SHA1 fingerprint of the data}
+   \item{\code{FileFingerprint}}{the SHA1 fingerprint of the analysis}
+   \item{\code{StatusFingerprint}}{the SHA1 fingerprint of the status of the analysis}
    \item{\code{SessionInfo}}{The sessionInfo() output}
   }
 }

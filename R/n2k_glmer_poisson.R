@@ -108,7 +108,13 @@ setMethod(
       ),
       algo = "sha1"
     )
-
+    status.fingerprint <- digest(
+      list(
+        file.fingerprint, dots$status, NULL, sessionInfo()
+      ),
+      algo = "sha1"
+    )
+    
     new(
       "n2kGlmerPoisson",
       Data = data,
@@ -126,6 +132,7 @@ setMethod(
       Seed = dots$seed,
       Weight = dots$weight,
       FileFingerprint = file.fingerprint,
+      StatusFingerprint = status.fingerprint,
       SessionInfo = sessionInfo(),
       Model = NULL
     )
@@ -136,6 +143,7 @@ setMethod(
 #' @rdname n2k_glmer_poisson
 #' @aliases n2k_glmer_poisson,my_lmer-methods
 #' @importFrom methods setMethod validObject
+#' @importFrom digest digest
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "n2k_glmer_poisson", 
@@ -147,6 +155,12 @@ setMethod(
     data@Model <- model.fit
     data@Status <- dots$status
     data@SessionInfo <- sessionInfo()
+    data@StatusFingerprint <- digest(
+      list(
+        data@FileFingerprint, dots$status, model.fit, sessionInfo()
+      ),
+      algo = "sha1"
+    )
     validObject(data)
     return(data)
   }

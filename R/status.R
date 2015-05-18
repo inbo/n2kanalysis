@@ -48,7 +48,10 @@ setMethod(
             SpeciesGroupID = get_species_group_id(analysis),
             LocationGroupID = get_location_group_id(analysis),
             get_model_set(analysis),
-            Status = status(analysis)
+            AnalysisDate = get_analysis_date(analysis),
+            Status = status(analysis),
+            FileFingerprint = get_file_fingerprint(analysis),
+            StatusFingerprint = get_status_fingerprint(analysis)
           )
         })
       )
@@ -74,12 +77,54 @@ setGeneric(
 
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
-#' @include n2kModel_class.R
+#' @importFrom digest digest
+#' @include n2kGlmerPoisson_class.R
+setReplaceMethod(
+  "status",
+  "n2kGlmerPoisson",
+  function(x, value){
+    x@Status <- value
+    x@StatusFingerprint <- digest(
+      list(
+        x@FileFingerprint, x@Status, x@Model, x@SessionInfo
+      ),
+      algo = "sha1"
+    )
+    validObject(x)
+    return(x)
+  }
+)
+
+#' @rdname status.change
+#' @importFrom methods setReplaceMethod
+#' @importFrom digest digest
+#' @include n2kInlaNbinomial_class.R
+setReplaceMethod(
+  "status",
+  "n2kInlaNbinomial",
+  function(x, value){
+    x@Status <- value
+    x@StatusFingerprint <- digest(
+      list(
+        x@FileFingerprint, x@Status, x@Model, x@SessionInfo
+      ),
+      algo = "sha1"
+    )
+    validObject(x)
+    return(x)
+  }
+)
 setReplaceMethod(
   "status",
   "n2kModel",
   function(x, value){
     x@Status <- value
+    x@StatusFingerprint <- digest(
+      list(
+        x@FileFingerprint, value, x@Model, x@SessionInfo
+      ),
+      algo = "sha1"
+    )
     validObject(x)
     return(x)
   }

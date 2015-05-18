@@ -1,34 +1,34 @@
 context("n2kGlmerPoisson validation")
+data("cbpp", package = "lme4")
+cbpp$Count <- cbpp$incidence
+object <- n2k_glmer_poisson(
+  scheme.id = 1,
+  species.group.id = 2,
+  location.group.id = 3,
+  model.type = "glmer poisson: period + herd",
+  covariate = "offset(log(size)) + period + (1|herd)",
+  first.imported.year = 1990,
+  last.imported.year = 2015,
+  last.analysed.year = 1995,
+  duration = 1,
+  analysis.date = as.POSIXct("2000-01-01"),
+  data = cbpp
+)
+weighted.object <- n2k_glmer_poisson(
+  scheme.id = 1,
+  species.group.id = 2,
+  location.group.id = 3,
+  model.type = "weighted glmer poisson: period + herd",
+  covariate = "offset(log(size)) + period + (1|herd)",
+  first.imported.year = 1990,
+  last.imported.year = 2015,
+  analysis.date = as.POSIXct("2000-01-01"),
+  weight = "size",
+  data = cbpp
+)
 
 context("illegal changes in the file fingerprint")
 describe("file fingerprint", {
-  data("cbpp", package = "lme4")
-  cbpp$Count <- cbpp$incidence
-  object <- n2k_glmer_poisson(
-    scheme.id = 1,
-    species.group.id = 2,
-    location.group.id = 3,
-    model.type = "glmer poisson: period + herd",
-    covariate = "offset(log(size)) + period + (1|herd)",
-    first.imported.year = 1990,
-    last.imported.year = 2015,
-    last.analysed.year = 1995,
-    duration = 1,
-    analysis.date = as.POSIXct("2000-01-01"),
-    data = cbpp
-  )
-  weighted.object <- n2k_glmer_poisson(
-    scheme.id = 1,
-    species.group.id = 2,
-    location.group.id = 3,
-    model.type = "weighted glmer poisson: period + herd",
-    covariate = "offset(log(size)) + period + (1|herd)",
-    first.imported.year = 1990,
-    last.imported.year = 2015,
-    analysis.date = as.POSIXct("2000-01-01"),
-    weight = "size",
-    data = cbpp
-  )
   
   it("detects changes in Data", {
     change.object <- object
@@ -162,16 +162,21 @@ describe("file fingerprint", {
     )
   })
   
-  it("ignores changes in Status", {
+})
+
+context("illegal changes in the status fingerprint")
+describe("status fingerprint", {
+  
+  it("detects changes in Status", {
     change.object <- object
     change.object@Status <- "error"
     expect_that(
       validObject(change.object),
-      is_true()
+      throws_error("Corrupt StatusFingerprint")
     )
   })
-
-  it("ignores changes in Model", {
+  
+  it("detects changes in Model", {
     model.object <- lme4::glmer(
       incidence ~ offset(log(size)) + period + (1 | herd), 
       data = object@Data,
@@ -188,7 +193,17 @@ describe("file fingerprint", {
     object.model@Model <- change.model
     expect_that(
       validObject(object.model),
-      is_true()
+      throws_error("Corrupt StatusFingerprint")
+    )
+  })
+  
+  it("detects changes in sessionInfo", {
+    require(optimx)
+    change.object <- object
+    change.object@SessionInfo <- sessionInfo()
+    expect_that(
+      validObject(change.object),
+      throws_error("Corrupt StatusFingerprint")
     )
   })
 })

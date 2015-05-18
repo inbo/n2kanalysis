@@ -3,12 +3,15 @@
 \docType{methods}
 \name{status<-}
 \alias{status<-}
-\alias{status<-,n2kModel-method}
+\alias{status<-,n2kGlmerPoisson-method}
+\alias{status<-,n2kInlaNbinomial-method}
 \title{Overwrite the status of a n2kModel}
 \usage{
 status(x) <- value
 
-\S4method{status}{n2kModel}(x) <- value
+\S4method{status}{n2kGlmerPoisson}(x) <- value
+
+\S4method{status}{n2kInlaNbinomial}(x) <- value
 }
 \arguments{
 \item{x}{the n2kModel object}

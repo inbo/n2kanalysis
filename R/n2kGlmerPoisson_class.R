@@ -69,6 +69,16 @@ setValidity(
       stop("Corrupt FileFingerprint")
     }
 
+    status.fingerprint <- digest(
+      list(
+        object@FileFingerprint, object@Status, object@Model, object@SessionInfo
+      ),
+      algo = "sha1"
+    )
+    if(object@StatusFingerprint != status.fingerprint){
+      stop("Corrupt StatusFingerprint")
+    }
+    
     return(TRUE)
   }
 )

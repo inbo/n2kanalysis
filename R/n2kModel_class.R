@@ -18,7 +18,8 @@ setOldClass("sessionInfo")
 #'    \item{\code{LastAnalysedYear}}{Most recent year in the window}
 #'    \item{\code{AnalysisDate}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{Seed}}{a single integer uses as a seed for all calculations}
-#'    \item{\code{FileFingerprint}}{the SHA1 fingerprint of the data}
+#'    \item{\code{FileFingerprint}}{the SHA1 fingerprint of the analysis}
+#'    \item{\code{StatusFingerprint}}{the SHA1 fingerprint of the status of the analysis}
 #'    \item{\code{SessionInfo}}{The sessionInfo() output}
 #'   }
 #' @name n2kModel-class
@@ -43,6 +44,7 @@ setClass(
     AnalysisDate = "POSIXct",
     Seed = "integer",
     FileFingerprint = "character",
+    StatusFingerprint = "character",
     SessionInfo = "sessionInfo",
     "VIRTUAL"
   )
@@ -70,6 +72,8 @@ setValidity(
     check_single_character(object@ModelType, name = "ModelType")
     check_single_character(object@Covariate, name = "Covariate")
     check_single_posix(object@AnalysisDate, name = "AnalysisDate", past = TRUE)
+    check_single_character(object@FileFingerprint, name = "FileFingerprint")
+    check_single_character(object@StatusFingerprint, name = "StatusFingerprint")
     
     required.names <- c("R.version", "platform", "locale", "running", "basePkgs", "otherPkgs", "loadedOnly")
     if(!all(required.names %in% names(object@SessionInfo))){

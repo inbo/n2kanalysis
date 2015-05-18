@@ -167,3 +167,13 @@ describe("get_file_fingerprint()", {
     )
   })
 })
+
+context("get_status_fingerprint() handles n2kModel objects")
+describe("get_status_fingerprint()", {
+  it("returns the StatusFingerprint slot", {
+    expect_that(
+      get_status_fingerprint(object),
+      is_identical_to(object@StatusFingerprint)
+    )
+  })
+})
