@@ -7,6 +7,7 @@ setClassUnion("maybeGlmerMod", c("glmerMod", "NULL"))
 #' It hold analysis data based on a glmer poisson model
 #' @section Slots:
 #'   \describe{
+#'    \item{\code{Data}}{a data.frame with the data}
 #'    \item{\code{Weight}}{The name of the variable to use as weights. '' indicates no weighting.}
 #'    \item{\code{Model}}{Either NULL or the resulting glmer model.}
 #'   }
@@ -20,6 +21,7 @@ setClassUnion("maybeGlmerMod", c("glmerMod", "NULL"))
 setClass(
   "n2kGlmerPoisson",
   representation = representation(
+    Data = "data.frame",
     Weight = "character",
     Model = "maybeGlmerMod"
   ),

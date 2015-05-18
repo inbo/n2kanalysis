@@ -10,7 +10,6 @@ A virtual superclass to contain the analysis models
 \section{Slots}{
 
   \describe{
-   \item{\code{Data}}{a data.frame with the data}
    \item{\code{Status}}{a single character indicating the status of the model}
    \item{\code{SchemeID}}{a single integer holding the id of the scheme}
    \item{\code{SpeciesGroupID}}{a single integer identifing the species group}

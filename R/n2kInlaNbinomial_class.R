@@ -9,6 +9,7 @@ setClassUnion("maybeInla", c("inla", "NULL"))
 #' It hold analysis data based on a INLA negative binomial model
 #' @section Slots:
 #'   \describe{
+#'    \item{\code{Data}}{a data.frame with the data}
 #'    \item{\code{Model}}{Either NULL or the resulting INLA model.}
 #'   }
 #' @name n2kInlaNbinomial-class
@@ -21,6 +22,7 @@ setClassUnion("maybeInla", c("inla", "NULL"))
 setClass(
   "n2kInlaNbinomial",
   representation = representation(
+    Data = "data.frame",
     Model = "maybeInla"
   ),
   contains = "n2kModel"

@@ -15,11 +15,22 @@ setGeneric(
 )
 
 #' @rdname get_data
-#' @aliases get_data,n2kModel-methods
+#' @aliases get_data,n2kGlmerPoisson-methods
 #' @importFrom methods setMethod
 setMethod(
   f = "get_data",
-  signature = signature(x = "n2kModel"),
+  signature = signature(x = "n2kGlmerPoisson"),
+  definition = function(x){
+    return(x@Data)
+  }
+)
+
+#' @rdname get_data
+#' @aliases get_data,n2kInlaNbinomial-methods
+#' @importFrom methods setMethod
+setMethod(
+  f = "get_data",
+  signature = signature(x = "n2kInlaNbinomial"),
   definition = function(x){
     return(x@Data)
   }

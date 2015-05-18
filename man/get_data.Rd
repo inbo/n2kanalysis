@@ -3,13 +3,17 @@
 \docType{methods}
 \name{get_data}
 \alias{get_data}
-\alias{get_data,n2kModel-method}
-\alias{get_data,n2kModel-methods}
+\alias{get_data,n2kGlmerPoisson-method}
+\alias{get_data,n2kGlmerPoisson-methods}
+\alias{get_data,n2kInlaNbinomial-method}
+\alias{get_data,n2kInlaNbinomial-methods}
 \title{Get the data of a n2kModel object}
 \usage{
 get_data(x)
 
-\S4method{get_data}{n2kModel}(x)
+\S4method{get_data}{n2kGlmerPoisson}(x)
+
+\S4method{get_data}{n2kInlaNbinomial}(x)
 }
 \arguments{
 \item{x}{the n2kModel object}
