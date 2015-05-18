@@ -157,3 +157,13 @@ describe("get_session_info()", {
     )
   })
 })
+
+context("get_file_fingerprint() handles n2kModel objects")
+describe("get_file_fingerprint()", {
+  it("returns the FileFingerprint slot", {
+    expect_that(
+      get_file_fingerprint(object),
+      is_identical_to(object@FileFingerprint)
+    )
+  })
+})
