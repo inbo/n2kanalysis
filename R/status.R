@@ -114,6 +114,27 @@ setReplaceMethod(
     return(x)
   }
 )
+
+#' @rdname status.change
+#' @importFrom methods setReplaceMethod
+#' @importFrom digest digest
+#' @include n2kLrtGlmer_class.R
+setReplaceMethod(
+  "status",
+  "n2kLrtGlmer",
+  function(x, value){
+    x@Status <- value
+    x@StatusFingerprint <- digest(
+      list(
+        x@FileFingerprint, x@Status, x@ParentStatus, x@Model, x@Model0, x@Anova, 
+        x@SessionInfo
+      ),
+      algo = "sha1"
+    )
+    validObject(x)
+    return(x)
+  }
+)
 setReplaceMethod(
   "status",
   "n2kModel",

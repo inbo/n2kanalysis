@@ -9,7 +9,7 @@ fit_every_model(path = ".", status, verbose = TRUE)
 \arguments{
 \item{path}{the path containing the analysis files}
 
-\item{status}{a vector with status levels to (re-)fit the model. Defaults to "new" when missing.}
+\item{status}{a vector with status levels to (re-)fit the model. Defaults to c("new", "waiting") when missing.}
 
 \item{verbose}{Show the name of the current analysis file on screen. Defaults to TRUE}
 }

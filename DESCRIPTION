@@ -10,6 +10,7 @@ License: GPL-3
 LazyData: true
 Suggests:
     optimx,
+    Matrix,
     INLA,
     testthat
 Imports:

@@ -34,14 +34,18 @@ setMethod(
     }
     if(dots$verbose){
       message(x)
-      utils::flush.console()
     }
     local.environment <- new.env()
     load(x, envir = local.environment)
     analysis <- read_object_environment(object = "analysis", env = local.environment)
+    if(dots$verbose){
+      message(status(analysis), " -> ", appendLF = FALSE)
+      utils::flush.console()
+    }
     analysis <- fit_model(
       x = analysis, 
-      status = dots$status
+      status = dots$status,
+      path = dirname(x)
     )
     if(dots$verbose){
       message(status(analysis))
@@ -63,7 +67,7 @@ setMethod(
   definition = function(x, ...){
     dots <- list(...)
     if(is.null(dots$status)){
-      dots$status <- "new"
+      dots$status <- c("new", "waiting")
     }
     if(!(status(x) %in% dots$status)){
       return(x)
@@ -127,7 +131,7 @@ setMethod(
   definition = function(x, ...){
     dots <- list(...)
     if(is.null(dots$status)){
-      dots$status <- "new"
+      dots$status <- c("new", "waiting")
     }
     if(!(status(x) %in% dots$status)){
       return(x)
@@ -159,5 +163,93 @@ setMethod(
       return(x)
     }
     return(n2k_inla_nbinomial(data = x, model.fit = model, status = "converged"))
+  }
+)
+
+#' @rdname fit_model
+#' @importFrom methods setMethod
+#' @importFrom digest digest
+#' @include n2kLrtGlmer_class.R
+setMethod(
+  f = "fit_model",
+  signature = signature(x = "n2kLrtGlmer"),
+  definition = function(x, ...){
+    dots <- list(...)
+    if(is.null(dots$status)){
+      dots$status <- c("new", "waiting")
+    }
+    if(!(status(x) %in% dots$status)){
+      return(x)
+    }
+    if(status(x) == "new"){
+      x@Status <- "converged"
+      x@Anova <- anova(x@Model, x@Model0)
+      x@StatusFingerprint <- digest(
+        list(
+          x@FileFingerprint, x@Status, x@ParentStatus, x@Model, x@Model0, x@Anova, 
+          x@SessionInfo
+        ),
+        algo = "sha1"
+      )
+      validObject(x)
+      return(x)
+    }
+    if(is.null(dots$path)){
+      dots$path <- "."
+    }
+    old.parent.status <- x@ParentStatus
+    colnames(old.parent.status)[2:3] <- c("OldStatusFingerprint", "OldStatus")
+    files.to.check <- normalizePath(
+      paste0(dots$path, "/", old.parent.status$FileFingerprint, ".rda"),
+      winslash = "/",
+      mustWork = FALSE
+    )
+    if(!all(file_test("-f", files.to.check))){
+      status(x) <- "error"
+      return(x)
+    }
+    current.parent.status <- status(files.to.check)[, c("FileFingerprint", "StatusFingerprint", "Status")]
+    if(any(current.parent.status == "error")){
+      status(x) <- "error"
+      return(x)
+    }
+    if(any(current.parent.status == "false convergence")){
+      status(x) <- "false convergence"
+      return(x)
+    }
+    if(all(current.parent.status$Status == "converged")){
+      status(x) <- "new"
+    }
+    compare <- merge(old.parent.status, current.parent.status)
+    compare$OldStatusFingerprint <- levels(compare$OldStatusFingerprint)[compare$OldStatusFingerprint]
+    compare$StatusFingerprint <- levels(compare$StatusFingerprint)[compare$StatusFingerprint]
+    changes <- which(compare$OldStatusFingerprint != compare$StatusFingerprint)
+    if(length(changes) == 0){
+      return(x)
+    }
+    if(x@Parent %in% compare$FileFingerprint[changes]){
+      file <- paste0(dots$path, "/", x@Parent, ".rda")
+      x@Model <- get_model(file)
+    }
+    if(x@Parent0 %in% compare$FileFingerprint[changes]){
+      file <- paste0(dots$path, "/", x@Parent, ".rda")
+      x@Model0 <- get_model(file)
+    }
+    x@ParentStatus <- compare[
+      order(compare$FileFingerprint), 
+      c("FileFingerprint", "StatusFingerprint", "Status")
+    ]
+    x@StatusFingerprint <- digest(
+      list(
+        x@FileFingerprint, x@Status, x@ParentStatus, x@Model, x@Model0, x@Anova, 
+        x@SessionInfo
+      ),
+      algo = "sha1"
+    )
+    validObject(x)
+    if(status(x) == "new"){
+      return(fit_model(x, ...))
+    }
+    return(x)
   }
 )
