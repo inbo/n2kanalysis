@@ -3,6 +3,8 @@
 \docType{methods}
 \name{get_model}
 \alias{get_model}
+\alias{get_model,character-method}
+\alias{get_model,character-methods}
 \alias{get_model,n2kGlmerPoisson-method}
 \alias{get_model,n2kGlmerPoisson-methods}
 \alias{get_model,n2kInlaNbinomial-method}
@@ -14,6 +16,8 @@ get_model(x)
 \S4method{get_model}{n2kGlmerPoisson}(x)
 
 \S4method{get_model}{n2kInlaNbinomial}(x)
+
+\S4method{get_model}{character}(x)
 }
 \arguments{
 \item{x}{the n2kModel object}

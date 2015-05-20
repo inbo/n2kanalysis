@@ -36,3 +36,18 @@ setMethod(
     return(x@Model)
   }
 )
+
+#' @rdname get_model
+#' @aliases get_model,character-methods
+#' @importFrom methods setMethod
+setMethod(
+  f = "get_model",
+  signature = signature(x = "character"),
+  definition = function(x){
+    x <- check_path(x, type = "file")
+    local.environment <- new.env()
+    load(x, envir = local.environment)
+    analysis <- read_object_environment(object = "analysis", env = local.environment)
+    return(get_model(analysis))
+  }
+)
