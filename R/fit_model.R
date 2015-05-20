@@ -182,6 +182,13 @@ setMethod(
       return(x)
     }
     if(status(x) == "new"){
+      #check for incorrect "new" status
+      if(any(is.null(x@Model), is.null(x@Model0))){
+        x@ParentStatus$StatusFingerprint <- factor("zzz")
+        status(x) <- "waiting"
+        return(fit_model(x, ...))
+      }
+      require(Matrix)
       x@Status <- "converged"
       x@Anova <- anova(x@Model, x@Model0)
       x@StatusFingerprint <- digest(
@@ -217,14 +224,14 @@ setMethod(
       status(x) <- "false convergence"
       return(x)
     }
-    if(all(current.parent.status$Status == "converged")){
-      status(x) <- "new"
-    }
     compare <- merge(old.parent.status, current.parent.status)
     compare$OldStatusFingerprint <- levels(compare$OldStatusFingerprint)[compare$OldStatusFingerprint]
     compare$StatusFingerprint <- levels(compare$StatusFingerprint)[compare$StatusFingerprint]
     changes <- which(compare$OldStatusFingerprint != compare$StatusFingerprint)
     if(length(changes) == 0){
+      if(all(current.parent.status$Status == "converged")){
+        status(x) <- "new"
+      }
       return(x)
     }
     if(x@Parent %in% compare$FileFingerprint[changes]){
@@ -246,6 +253,9 @@ setMethod(
       ),
       algo = "sha1"
     )
+    if(all(current.parent.status$Status == "converged")){
+      status(x) <- "new"
+    }
     validObject(x)
     if(status(x) == "new"){
       return(fit_model(x, ...))
