@@ -141,7 +141,8 @@ describe("get_model_set", {
           FirstImportedYear = object@FirstImportedYear,
           LastImportedYear = object@LastImportedYear,
           Duration = object@Duration,
-          LastAnalysedYear = object@LastAnalysedYear
+          LastAnalysedYear = object@LastAnalysedYear,
+          Seed = object@Seed
         )
       )
     )
