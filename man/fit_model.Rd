@@ -4,6 +4,7 @@
 \name{fit_model}
 \alias{fit_model}
 \alias{fit_model,character-method}
+\alias{fit_model,n2kComposite-method}
 \alias{fit_model,n2kGlmerPoisson-method}
 \alias{fit_model,n2kInlaNbinomial-method}
 \alias{fit_model,n2kLrtGlmer-method}
@@ -18,6 +19,8 @@ fit_model(x, ...)
 \S4method{fit_model}{n2kInlaNbinomial}(x, ...)
 
 \S4method{fit_model}{n2kLrtGlmer}(x, ...)
+
+\S4method{fit_model}{n2kComposite}(x, ...)
 }
 \arguments{
 \item{x}{the n2kModel}

@@ -253,3 +253,130 @@ setMethod(
     return(x)
   }
 )
+
+#' @rdname fit_model
+#' @importFrom methods setMethod
+#' @importFrom digest digest
+#' @include n2kComposite_class.R
+setMethod(
+  f = "fit_model",
+  signature = signature(x = "n2kComposite"),
+  definition = function(x, ...){
+    dots <- list(...)
+    if(is.null(dots$status)){
+      dots$status <- c("new", "waiting")
+    }
+    if(!(status(x) %in% dots$status)){
+      return(x)
+    }
+    if(status(x) == "new"){
+      parameter <- x@Parameter
+      # ignore parents which are missing in one of more years
+      missing.parent <- unique(parameter$Parent[parameter$Estimate < -10])
+      parameter <- parameter[!parameter$Parent %in% missing.parent, ]
+      reference <- parameter[
+        parameter$Value == levels(parameter$Value)[1], 
+        c("Parent", "Estimate")
+      ]
+      colnames(reference)[2] <- "Reference"
+      parameter <- merge(parameter, reference)
+      parameter$Estimate <- parameter$Estimate - parameter$Reference
+      index <- aggregate(
+        cbind(parameter[, c("Estimate", "Variance")], N = 1),
+        parameter[, "Value", drop = FALSE],
+        FUN = sum
+      )
+      index$Estimate <- index$Estimate / index$N
+      index$Variance <- index$Variance / (index$N ^ 2)
+      index$LowerConfidenceLimit <- qnorm(
+        0.025, 
+        mean = index$Estimate, 
+        sd = sqrt(index$Variance)
+      )
+      index$UpperConfidenceLimit <- qnorm(
+        0.975, 
+        mean = index$Estimate, 
+        sd = sqrt(index$Variance)
+      )
+      x@Index <- index[
+        order(index$Value), 
+        c("Value", "Estimate", "LowerConfidenceLimit", "UpperConfidenceLimit")
+      ]
+      status(x) <- "converged"
+      return(x)
+    }
+    if(is.null(dots$path)){
+      dots$path <- "."
+    }
+    old.parent.status <- parent_status(x)
+    files.to.check <- normalizePath(
+      paste0(dots$path, "/", old.parent.status$FileFingerprint, ".rda"),
+      winslash = "/",
+      mustWork = FALSE
+    )
+    if(!all(file_test("-f", files.to.check))){
+      status(x) <- "error"
+      return(x)
+    }
+    colnames(old.parent.status)[2:3] <- c("OldStatusFingerprint", "OldStatus")
+    current.parent.status <- status(files.to.check)[, c("FileFingerprint", "StatusFingerprint", "Status")]
+    if(any(current.parent.status == "error")){
+      status(x) <- "error"
+      return(x)
+    }
+    if(any(current.parent.status == "false convergence")){
+      status(x) <- "false convergence"
+      return(x)
+    }
+    if(all(current.parent.status$Status == "converged")){
+      status(x) <- "new"
+    }
+    compare <- merge(old.parent.status, current.parent.status)
+    compare$OldStatusFingerprint <- levels(compare$OldStatusFingerprint)[compare$OldStatusFingerprint]
+    compare$StatusFingerprint <- levels(compare$StatusFingerprint)[compare$StatusFingerprint]
+    changes <- which(compare$OldStatusFingerprint != compare$StatusFingerprint)
+    if(length(changes) == 0){
+      return(x)
+    }
+    to.update <- x@Parent[x@Parent %in% compare$FileFingerprint[changes]]
+    
+    for(parent in to.update){
+      this.model <- get_model(paste0(dots$path, "/", parent, ".rda"))
+      if(class(this.model) == "glmerMod"){
+        require(Matrix)
+        this.coef <- coef(summary(this.model))[, c("Estimate", "Std. Error")]
+        this.coef <- as.data.frame(this.coef)
+        this.coef$Variance <- this.coef$"Std. Error" ^ 2
+        this.coef$"Std. Error" <- NULL
+      } else {
+        stop("Composite with other class")
+      }
+      this.coef$Parent <- parent
+      this.coef$Value <- row.names(this.coef)
+      rownames(this.coef) <- NULL
+      this.coef <- this.coef[grep(x@Covariate, this.coef$Value), ]
+      this.coef$Value <- gsub(x@Covariate, "", this.coef$Value)
+      this.coef$Value <- factor(this.coef$Value, levels = this.coef$Value)
+      new.parameter <- rbind(x@Parameter, this.coef)
+      x@Parameter <- new.parameter[
+        order(new.parameter$Parent, new.parameter$Value), 
+        c("Parent", "Value", "Estimate", "Variance")
+      ]
+    }
+    x@ParentStatus <- compare[
+      order(compare$FileFingerprint), 
+      c("FileFingerprint", "StatusFingerprint", "Status")
+    ]
+    x@StatusFingerprint <- digest(
+      list(
+        x@FileFingerprint, x@Status, x@ParentStatus, x@Parameter, x@Index, x@SessionInfo
+      ),
+      algo = "sha1"
+    )
+    validObject(x)
+    if(status(x) == "new"){
+      return(fit_model(x, ...))
+    }
+    return(x)
+  }
+)

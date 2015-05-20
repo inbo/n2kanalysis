@@ -3,6 +3,8 @@
 \docType{methods}
 \name{parent_status}
 \alias{parent_status}
+\alias{parent_status,n2kComposite-method}
+\alias{parent_status,n2kComposite-methods}
 \alias{parent_status,n2kLrtGlmer-method}
 \alias{parent_status,n2kLrtGlmer-methods}
 \title{Get the parent status of a n2kModel}
@@ -10,6 +12,8 @@
 parent_status(x)
 
 \S4method{parent_status}{n2kLrtGlmer}(x)
+
+\S4method{parent_status}{n2kComposite}(x)
 }
 \arguments{
 \item{x}{the n2kModel object}

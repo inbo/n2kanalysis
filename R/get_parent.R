@@ -53,3 +53,15 @@ setMethod(
     }
   }
 )
+
+#' @rdname get_parent
+#' @aliases get_parent,n2kComposite-methods
+#' @importFrom methods setMethod
+setMethod(
+  f = "get_parent",
+  signature = signature(x = "n2kComposite"),
+  definition = function(x, ...){
+    return(x@Parent)
+  }
+)
+

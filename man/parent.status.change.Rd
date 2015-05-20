@@ -3,12 +3,15 @@
 \docType{methods}
 \name{parent_status<-}
 \alias{parent_status<-}
+\alias{parent_status<-,n2kComposite-method}
 \alias{parent_status<-,n2kLrtGlmer-method}
 \title{Overwrite the status of a n2kModel}
 \usage{
 parent_status(x) <- value
 
 \S4method{parent_status}{n2kLrtGlmer}(x) <- value
+
+\S4method{parent_status}{n2kComposite}(x) <- value
 }
 \arguments{
 \item{x}{the n2kModel object}

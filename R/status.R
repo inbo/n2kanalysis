@@ -33,8 +33,16 @@ setMethod(
   f = "status",
   signature = signature(x = "character"),
   definition = function(x){
-    path <- check_path(x, type = "directory")
-    files <- list.files(path = path, pattern = "\\.rda$", full.names = TRUE)
+    if(length(x) > 1){
+      files <- x[file_test("-f", x)]
+    } else {
+      if(file_test("-d", x)){
+        path <- check_path(x, type = "directory")
+        files <- list.files(path = path, pattern = "\\.rda$", full.names = TRUE)
+      } else {
+        files <- x
+      }
+    }
     return(
       do.call(
         rbind, 
@@ -135,14 +143,19 @@ setReplaceMethod(
     return(x)
   }
 )
+
+#' @rdname status.change
+#' @importFrom methods setReplaceMethod
+#' @importFrom digest digest
+#' @include n2kComposite_class.R
 setReplaceMethod(
   "status",
-  "n2kModel",
+  "n2kComposite",
   function(x, value){
     x@Status <- value
     x@StatusFingerprint <- digest(
       list(
-        x@FileFingerprint, value, x@Model, x@SessionInfo
+        x@FileFingerprint, x@Status, x@ParentStatus, x@Parameter, x@Index, x@SessionInfo
       ),
       algo = "sha1"
     )
