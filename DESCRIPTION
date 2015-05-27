@@ -12,6 +12,7 @@ Suggests:
     optimx,
     Matrix,
     INLA,
+    parallel,
     testthat
 Imports:
     methods,

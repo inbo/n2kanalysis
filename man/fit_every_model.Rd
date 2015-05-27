@@ -4,7 +4,7 @@
 \alias{fit_every_model}
 \title{Fit the model to the analysis files}
 \usage{
-fit_every_model(path = ".", status, verbose = TRUE)
+fit_every_model(path = ".", status, verbose = TRUE, n.cluster = 1)
 }
 \arguments{
 \item{path}{the path containing the analysis files}
@@ -12,6 +12,8 @@ fit_every_model(path = ".", status, verbose = TRUE)
 \item{status}{a vector with status levels to (re-)fit the model. Defaults to c("new", "waiting") when missing.}
 
 \item{verbose}{Show the name of the current analysis file on screen. Defaults to TRUE}
+
+\item{n.cluster}{the number of clusters to use}
 }
 \description{
 Fit the model to the analysis files
