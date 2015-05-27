@@ -270,7 +270,7 @@ setMethod(
       x@Model <- get_model(file)
     }
     if(x@Parent0 %in% compare$FileFingerprint[changes]){
-      file <- paste0(dots$path, "/", x@Parent, ".rda")
+      file <- paste0(dots$path, "/", x@Parent0, ".rda")
       x@Model0 <- get_model(file)
     }
     x@ParentStatus <- compare[
