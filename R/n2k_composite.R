@@ -114,13 +114,15 @@ setMethod(
       Parent = character(0),
       Value = numeric(0),
       Estimate = numeric(0),
-      Variance = numeric(0)
+      Variance = numeric(0),
+      stringsAsFactors = FALSE
     )
     index <- data.frame(
       Value = numeric(0),
       Estimate = numeric(0),
       LowerConfidenceLimit = numeric(0),
-      UpperConfidenceLimit = numeric(0)
+      UpperConfidenceLimit = numeric(0),
+      stringsAsFactors = FALSE
     )
     
     status.fingerprint <- digest(

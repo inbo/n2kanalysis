@@ -27,7 +27,8 @@ setMethod(
       LastImportedYear = x@LastImportedYear,
       Duration = x@Duration,
       LastAnalysedYear = x@LastAnalysedYear,
-      Seed = x@Seed
+      Seed = x@Seed,
+      stringsAsFactors = FALSE
     ))
   }
 )
