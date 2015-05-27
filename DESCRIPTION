@@ -22,6 +22,8 @@ Imports:
     RODBC,
     n2khelper
 Collate:
+    'n2kAnalysisVersion_class.R'
+    'combine.R'
     'fit_every_model.R'
     'n2kModel_class.R'
     'n2kGlmerPoisson_class.R'
@@ -30,6 +32,7 @@ Collate:
     'n2kComposite_class.R'
     'fit_model.R'
     'get_analysis_date.R'
+    'get_analysis_version.R'
     'get_covariate.R'
     'get_data.R'
     'get_file_fingerprint.R'
@@ -53,4 +56,5 @@ Collate:
     'select_factor_count_strictly_positive.R'
     'select_factor_threshold.R'
     'select_observed_range.R'
+    'session_package.R'
     'status.R'
