@@ -84,7 +84,7 @@ setValidity(
       )
     }
     
-    ok.status <- c("new", "working", "waiting", "error", "converged", "false convergence", "insufficient data")
+    ok.status <- c("new", "working", "waiting", "error", "converged", "false convergence", "unstable", "insufficient data")
     if(!object@Status %in% ok.status){
       stop(
         "Status must be one of the following: ", 

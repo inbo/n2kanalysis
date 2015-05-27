@@ -8,7 +8,7 @@ fit_every_model <- function(path = ".", status, verbose = TRUE){
     status <- c("new", "waiting")
   } else {
     status <- check_character(status, name = "status")
-    test.status <- status %in% c("new", "waiting", "error", "converged", "false convergence")
+    test.status <- status %in% c("new", "waiting", "error", "converged", "false convergence", "unstable")
     if(!all(test.status)){
       warning(
         "Following status values are ignored: ", 

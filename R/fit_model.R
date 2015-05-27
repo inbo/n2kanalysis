@@ -119,6 +119,22 @@ setMethod(
       status(x) <- "false convergence"
       return(x)
     }
+    vc <- VarCorr(model)
+    if("fRow" %in% names(vc)){
+      olre.ratio <- exp(
+        diff(
+          qnorm(
+            c(0.025, 0.975), 
+            mean = 0, 
+            sd = sqrt(vc[["fRow"]])
+          )
+        )
+      )
+      if(olre.ratio > 1e4){
+        status(x) <- "unstable"
+        return(x)
+      }
+    }
     return(n2k_glmer_poisson(data = x, model.fit = model, status = "converged"))
   }
 )
@@ -182,9 +198,13 @@ setMethod(
     if(is.null(dots$status)){
       dots$status <- c("new", "waiting")
     }
+    
+    # stop if status doesn't require (re-)fitting the model
     if(!(status(x) %in% dots$status)){
       return(x)
     }
+    
+    # do calculation when all parents are available
     if(status(x) == "new"){
       #check for incorrect "new" status
       if(any(is.null(x@Model), is.null(x@Model0))){
@@ -192,7 +212,6 @@ setMethod(
         status(x) <- "waiting"
         return(fit_model(x, ...))
       }
-      require(Matrix)
       x@Status <- "converged"
       x@Anova <- anova(x@Model, x@Model0)
       x@StatusFingerprint <- digest(
@@ -205,6 +224,8 @@ setMethod(
       validObject(x)
       return(x)
     }
+    
+    # check if parents are available
     if(is.null(dots$path)){
       dots$path <- "."
     }
@@ -219,6 +240,8 @@ setMethod(
       status(x) <- "error"
       return(x)
     }
+    
+    #check if parents have changed
     current.parent.status <- status(files.to.check)[, c("FileFingerprint", "StatusFingerprint", "Status")]
     if(any(current.parent.status == "error")){
       status(x) <- "error"
@@ -226,6 +249,10 @@ setMethod(
     }
     if(any(current.parent.status == "false convergence")){
       status(x) <- "false convergence"
+      return(x)
+    }
+    if(any(current.parent.status == "unstable")){
+      status(x) <- "unstable"
       return(x)
     }
     compare <- merge(old.parent.status, current.parent.status)
@@ -342,24 +369,23 @@ setMethod(
       status(x) <- "false convergence"
       return(x)
     }
-    if(all(current.parent.status$Status == "converged")){
+    if(all(current.parent.status$Status %in% c("converged", "unstable"))){
       status(x) <- "new"
     }
     compare <- merge(old.parent.status, current.parent.status)
     compare$OldStatusFingerprint <- levels(compare$OldStatusFingerprint)[compare$OldStatusFingerprint]
     compare$StatusFingerprint <- levels(compare$StatusFingerprint)[compare$StatusFingerprint]
-    changes <- which(compare$OldStatusFingerprint != compare$StatusFingerprint)
+    changes <- which(compare$Status == "converged")
     if(length(changes) == 0){
       return(x)
     }
     to.update <- x@Parent[x@Parent %in% compare$FileFingerprint[changes]]
     
-    for(parent in to.update){
+    new.parameter <- do.call(rbind, lapply(to.update, function(parent){
       this.model <- get_model(paste0(dots$path, "/", parent, ".rda"))
       if(class(this.model) == "glmerMod"){
-        require(Matrix)
         this.coef <- coef(summary(this.model))[, c("Estimate", "Std. Error")]
-        this.coef <- as.data.frame(this.coef)
+        this.coef <- as.data.frame(this.coef, stringsAsFactors = FALSE)
         this.coef$Variance <- this.coef$"Std. Error" ^ 2
         this.coef$"Std. Error" <- NULL
       } else {
