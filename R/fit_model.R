@@ -397,12 +397,13 @@ setMethod(
       this.coef <- this.coef[grep(x@Covariate, this.coef$Value), ]
       this.coef$Value <- gsub(x@Covariate, "", this.coef$Value)
       this.coef$Value <- factor(this.coef$Value, levels = this.coef$Value)
-      new.parameter <- rbind(x@Parameter, this.coef)
-      x@Parameter <- new.parameter[
-        order(new.parameter$Parent, new.parameter$Value), 
-        c("Parent", "Value", "Estimate", "Variance")
-      ]
-    }
+      return(this.coef)
+    }))
+    x@Parameter <- new.parameter[
+      order(new.parameter$Parent, new.parameter$Value), 
+      c("Parent", "Value", "Estimate", "Variance")
+    ]
+    
     x@ParentStatus <- compare[
       order(compare$FileFingerprint), 
       c("FileFingerprint", "StatusFingerprint", "Status")
