@@ -73,6 +73,8 @@ setMethod(
       return(x)
     }
     
+    set.seed(x@Seed)
+    
     data <- get_data(x)
     check_dataframe_covariate(
       df = data[1, ], covariate = get_covariate(x), response = "Count", error = TRUE
@@ -140,6 +142,8 @@ setMethod(
     if(!requireNamespace("INLA", quietly = TRUE)){
       stop("The INLA package is required but not installed.")
     }
+    
+    set.seed(x@Seed)
     
     data <- get_data(x)
     check_dataframe_covariate(
