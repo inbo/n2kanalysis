@@ -22,6 +22,7 @@ Imports:
     RODBC,
     n2khelper
 Collate:
+    'n2kParameter_class.R'
     'n2kAnalysisVersion_class.R'
     'combine.R'
     'n2kAnalysisMetadata_class.R'
@@ -39,6 +40,7 @@ Collate:
     'get_file_fingerprint.R'
     'get_location_group_id.R'
     'get_model.R'
+    'get_model_parameter.R'
     'get_model_set.R'
     'get_model_type.R'
     'get_parent.R'

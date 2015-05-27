@@ -41,3 +41,27 @@ setMethod(
     )
   }
 )
+
+#' @rdname combine
+#' @aliases combine,n2kParameter-methods
+#' @importFrom methods setMethod
+#' @include n2kParameter_class.R
+setMethod(
+  f = "combine",
+  signature = "n2kParameter",
+  definition = function(...){
+    dots <- list(...)
+    parameter <- unique(do.call(
+      rbind,
+      lapply(dots, function(x){x@Parameter})
+    ))
+    parameter.estimate <- unique(do.call(
+      rbind,
+      lapply(dots, function(x){x@ParameterEstimate})
+    ))
+    new(
+      "n2kParameter",
+      Parameter = parameter,
+      ParameterEstimate = parameter.estimate
+    )
+  }
