@@ -24,6 +24,7 @@ Imports:
 Collate:
     'n2kAnalysisVersion_class.R'
     'combine.R'
+    'n2kAnalysisMetadata_class.R'
     'fit_every_model.R'
     'n2kModel_class.R'
     'n2kGlmerPoisson_class.R'
