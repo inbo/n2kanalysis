@@ -20,6 +20,8 @@ combine(...)
 \S4method{combine}{n2kParameter}(...)
 
 \S4method{combine}{n2kAnomaly}(...)
+
+\S4method{combine}{n2kResult}(...)
 }
 \arguments{
 \item{...}{n2k objects}
