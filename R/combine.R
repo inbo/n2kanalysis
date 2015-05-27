@@ -65,3 +65,29 @@ setMethod(
       ParameterEstimate = parameter.estimate
     )
   }
+)
+
+#' @rdname combine
+#' @aliases combine,n2kAnamoly-methods
+#' @importFrom methods setMethod
+#' @include n2kAnomaly_class.R
+setMethod(
+  f = "combine",
+  signature = "n2kAnomaly",
+  definition = function(...){
+    dots <- list(...)
+    anomaly.type <- unique(do.call(
+      rbind,
+      lapply(dots, function(x){x@AnomalyType})
+    ))
+    anomaly <- unique(do.call(
+      rbind,
+      lapply(dots, function(x){x@Anomaly})
+    ))
+    new(
+      "n2kAnomaly",
+      AnomalyType = anomaly.type,
+      Anomaly = anomaly
+    )
+  }
+)

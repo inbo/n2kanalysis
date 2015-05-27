@@ -18,6 +18,8 @@ combine(...)
 \S4method{combine}{n2kAnalysisVersion}(...)
 
 \S4method{combine}{n2kParameter}(...)
+
+\S4method{combine}{n2kAnomaly}(...)
 }
 \arguments{
 \item{...}{n2k objects}

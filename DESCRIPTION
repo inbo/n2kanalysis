@@ -23,6 +23,7 @@ Imports:
     n2khelper
 Collate:
     'n2kParameter_class.R'
+    'n2kAnomaly_class.R'
     'n2kAnalysisVersion_class.R'
     'combine.R'
     'n2kAnalysisMetadata_class.R'
@@ -35,6 +36,7 @@ Collate:
     'fit_model.R'
     'get_analysis_date.R'
     'get_analysis_version.R'
+    'get_anomaly.R'
     'get_covariate.R'
     'get_data.R'
     'get_file_fingerprint.R'
