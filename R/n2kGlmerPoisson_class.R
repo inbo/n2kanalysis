@@ -7,6 +7,7 @@ setClassUnion("maybeGlmerMod", c("glmerMod", "NULL"))
 #' It hold analysis data based on a glmer poisson model
 #' @section Slots:
 #'   \describe{
+#'    \item{\code{Parent}}{the file fingerprint of the import}
 #'    \item{\code{Data}}{a data.frame with the data}
 #'    \item{\code{Weight}}{The name of the variable to use as weights. '' indicates no weighting.}
 #'    \item{\code{Model}}{Either NULL or the resulting glmer model.}
@@ -21,6 +22,7 @@ setClassUnion("maybeGlmerMod", c("glmerMod", "NULL"))
 setClass(
   "n2kGlmerPoisson",
   representation = representation(
+    Parent = "character",
     Data = "data.frame",
     Weight = "character",
     Model = "maybeGlmerMod"
@@ -34,6 +36,7 @@ setClass(
 setValidity(
   "n2kGlmerPoisson",
   function(object){
+    check_single_character(object@Parent, name = "Parent")
     check_dataframe_covariate(df = object@Data, covariate = object@Covariate)
     check_single_character(object@Weight, name = "Weight")
     if(object@Weight == ''){
@@ -61,7 +64,7 @@ setValidity(
         object@Data, object@SchemeID, object@SpeciesGroupID, object@LocationGroupID, 
         object@ModelType, object@Covariate, object@FirstImportedYear, object@LastImportedYear,
         object@Duration, object@LastAnalysedYear, object@AnalysisDate, object@Seed, 
-        object@Weight
+        object@Weight, object@Parent
       ),
       algo = "sha1"
     )

@@ -16,6 +16,7 @@
 #'    \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
 #'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{weight}}{The name of the variable to use as weights. '' indicates no weighting. Defaults to ''}
+#'    \item{\code{parent}}{the file fingerprint of the import}
 #'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
 #'   }
 #' @name n2k_glmer_poisson
@@ -100,11 +101,17 @@ setMethod(
       name = "analysis.date", 
       past = TRUE
     )
+    if(is.null(dots$parent)){
+      dots$parent <- ""
+    } else {
+      dots$parent <- check_single_character(dots$parent, name = "parent")
+    }
     file.fingerprint <- digest(
       list(
         data, dots$scheme.id, dots$species.group.id, dots$location.group.id, 
         dots$model.type, dots$covariate, dots$first.imported.year, dots$last.imported.year,
-        dots$duration, dots$last.analysed.year, dots$analysis.date, dots$seed, dots$weight
+        dots$duration, dots$last.analysed.year, dots$analysis.date, dots$seed, dots$weight,
+        dots$parent
       ),
       algo = "sha1"
     )
@@ -134,6 +141,7 @@ setMethod(
       FileFingerprint = file.fingerprint,
       StatusFingerprint = status.fingerprint,
       SessionInfo = sessionInfo(),
+      Parent = dots$parent,
       Model = NULL
     )
   }

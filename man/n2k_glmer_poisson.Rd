@@ -43,6 +43,7 @@ In case \code{data} a n2kGlmerPoisson object is, then only the model and status 
    \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
    \item{\code{weight}}{The name of the variable to use as weights. '' indicates no weighting. Defaults to ''}
+   \item{\code{parent}}{the file fingerprint of the import}
    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
   }
 }

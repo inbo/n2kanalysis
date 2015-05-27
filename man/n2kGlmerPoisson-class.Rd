@@ -10,6 +10,7 @@ It hold analysis data based on a glmer poisson model
 \section{Slots}{
 
   \describe{
+   \item{\code{Parent}}{the file fingerprint of the import}
    \item{\code{Data}}{a data.frame with the data}
    \item{\code{Weight}}{The name of the variable to use as weights. '' indicates no weighting.}
    \item{\code{Model}}{Either NULL or the resulting glmer model.}
