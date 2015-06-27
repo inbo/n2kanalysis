@@ -12,12 +12,17 @@ get_result(x, ...)
 
 \S4method{get_result}{n2kModel}(x, ...)
 
-\S4method{get_result}{character}(x, ...)
+\S4method{get_result}{character}(x, keep.fingerprint = TRUE, n.cluster = 1,
+  ...)
 }
 \arguments{
 \item{x}{object with the current results}
 
 \item{...}{further arguments (see Details)}
+
+\item{keep.fingerprint}{Keep the character fingerprints? Otherwise change them into integers}
+
+\item{n.cluster}{the number of clusters to run this function in parallel. Defaults to 1 (= no parallel computing).}
 }
 \description{
 Add the results from an analysis

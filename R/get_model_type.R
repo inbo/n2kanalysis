@@ -6,7 +6,6 @@
 #' @exportMethod get_model_type
 #' @docType methods
 #' @importFrom methods setGeneric
-#' @include n2kModel_class.R
 setGeneric(
   name = "get_model_type", 
   def = function(x){
@@ -15,12 +14,13 @@ setGeneric(
 )
 
 #' @rdname get_model_type
-#' @aliases get_model_type,n2kModel-methods
+#' @aliases get_model_type,n2kAnalysisMetadata-methods
 #' @importFrom methods setMethod
+#' @include n2kAnalysisMetadata_class.R
 setMethod(
   f = "get_model_type",
-  signature = signature(x = "n2kModel"),
+  signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x){
-    return(x@ModelType)
+    return(x@AnalysisMetadata$ModelType)
   }
 )

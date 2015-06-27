@@ -14,31 +14,19 @@ setGeneric(
 )
 
 #' @rdname parent_status
-#' @aliases parent_status,n2kLrtGlmer-methods
+#' @aliases parent_status,n2kAnalysisMetadata-methods
 #' @importFrom methods setMethod
-#' @include n2kLrtGlmer_class.R
+#' @include n2kAnalysisMetadata_class.R
 setMethod(
   f = "parent_status",
-  signature = signature(x = "n2kLrtGlmer"),
+  signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x){
-    return(x@ParentStatus)
+    return(x@AnalysisRelation)
   }
 )
 
-
-#' @rdname parent_status
-#' @aliases parent_status,n2kComposite-methods
-#' @importFrom methods setMethod
-#' @include n2kComposite_class.R
-setMethod(
-  f = "parent_status",
-  signature = signature(x = "n2kComposite"),
-  definition = function(x){
-    return(x@ParentStatus)
-  }
-)
-#' Overwrite the status of a n2kModel
-#' @param x the n2kModel object
+#' Overwrite the status of a n2kAnalysisMetadata
+#' @param x the n2kAnalysisMetadata object
 #' @param value the new values for the status
 #' @name parent_status<-
 #' @rdname parent.status.change
@@ -54,18 +42,17 @@ setGeneric(
 
 #' @rdname parent.status.change
 #' @importFrom methods setReplaceMethod
-#' @importFrom digest digest
 #' @include n2kLrtGlmer_class.R
 setReplaceMethod(
   "parent_status",
   "n2kLrtGlmer",
   function(x, value){
-    x@ParentStatus <- value
-    x@StatusFingerprint <- digest(
+    x@AnalysisRelation <- value
+    x@StatusFingerprint <- get_sha1(
       list(
-        x@FileFingerprint, x@Status, x@ParentStatus, x@Model, x@Model0, x@SessionInfo
-      ),
-      algo = "sha1"
+        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Model, x@Model0, 
+        x@Anova, x@AnalysisMetadata$AnalysisVersion, x@AnalysisRelation
+      )
     )
     validObject(x)
     return(x)
@@ -74,18 +61,17 @@ setReplaceMethod(
 
 #' @rdname parent.status.change
 #' @importFrom methods setReplaceMethod
-#' @importFrom digest digest
 #' @include n2kComposite_class.R
 setReplaceMethod(
   "parent_status",
   "n2kComposite",
   function(x, value){
     x@ParentStatus <- value
-    x@StatusFingerprint <- digest(
+    x@StatusFingerprint <- get_sha1(
       list(
-        x@FileFingerprint, x@Status, x@ParentStatus, x@Model, x@Model0, x@SessionInfo
-      ),
-      algo = "sha1"
+        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Parameter, x@Index,
+        x@AnalysisMetadata$AnalysisVersion, x@AnalysisRelation
+      )
     )
     validObject(x)
     return(x)

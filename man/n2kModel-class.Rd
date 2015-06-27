@@ -7,24 +7,4 @@
 \description{
 A virtual superclass to contain the analysis models
 }
-\section{Slots}{
-
-  \describe{
-   \item{\code{Status}}{a single character indicating the status of the model}
-   \item{\code{SchemeID}}{a single integer holding the id of the scheme}
-   \item{\code{SpeciesGroupID}}{a single integer identifing the species group}
-   \item{\code{LocationGroupID}}{a single integer identifing the location group}
-   \item{\code{ModelType}}{a single character identifying the type of model to fit to the data}
-   \item{\code{Covariate}}{a single character holding the right hand side of the model formula}
-   \item{\code{FirstImportedYear}}{Oldest year considered in the data}
-   \item{\code{LastImportedYear}}{Most recent year considered in the data}
-   \item{\code{Duration}}{The width of the moving window}
-   \item{\code{LastAnalysedYear}}{Most recent year in the window}
-   \item{\code{AnalysisDate}}{A POSIXct date indicating the date that the dataset was imported}
-   \item{\code{Seed}}{a single integer uses as a seed for all calculations}
-   \item{\code{FileFingerprint}}{the SHA1 fingerprint of the analysis}
-   \item{\code{StatusFingerprint}}{the SHA1 fingerprint of the status of the analysis}
-   \item{\code{SessionInfo}}{The sessionInfo() output}
-  }
-}
 

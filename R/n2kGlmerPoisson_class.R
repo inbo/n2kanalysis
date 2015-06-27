@@ -7,9 +7,7 @@ setClassUnion("maybeGlmerMod", c("glmerMod", "NULL"))
 #' It hold analysis data based on a glmer poisson model
 #' @section Slots:
 #'   \describe{
-#'    \item{\code{Parent}}{the file fingerprint of the import}
 #'    \item{\code{Data}}{a data.frame with the data}
-#'    \item{\code{Weight}}{The name of the variable to use as weights. '' indicates no weighting.}
 #'    \item{\code{Model}}{Either NULL or the resulting glmer model.}
 #'   }
 #' @name n2kGlmerPoisson-class
@@ -22,9 +20,7 @@ setClassUnion("maybeGlmerMod", c("glmerMod", "NULL"))
 setClass(
   "n2kGlmerPoisson",
   representation = representation(
-    Parent = "character",
     Data = "data.frame",
-    Weight = "character",
     Model = "maybeGlmerMod"
   ),
   contains = "n2kModel"
@@ -32,53 +28,59 @@ setClass(
 
 #' @importFrom methods setValidity
 #' @importFrom n2khelper check_single_character check_dataframe_variable
-#' @importFrom digest digest
 setValidity(
   "n2kGlmerPoisson",
   function(object){
-    check_single_character(object@Parent, name = "Parent")
-    check_dataframe_covariate(df = object@Data, covariate = object@Covariate)
-    check_single_character(object@Weight, name = "Weight")
-    if(object@Weight == ''){
-      if(!grepl("^glmer poisson", object@ModelType)){
-        stop("ModelType should be 'glmer poisson'")
-      }
-    } else {
+    check_dataframe_variable(
+      df = object@Data[1, ], 
+      variable = c(all.vars(object@AnalysisFormula[[1]]), "ObservationID", "DatasourceID"), 
+      error = TRUE
+    )
+    if (anyDuplicated(object@Data$ObservationID)) {
+      stop("Duplicated ObservationID")
+    }
+    
+    if (!grepl("glmer poisson", object@AnalysisMetadata$ModelType)) {
+      stop("ModelType should be 'glmer poisson'")
+    }
+    if (grepl("^weighted glmer poisson", object@AnalysisMetadata$ModelType)) {
       check_dataframe_variable(
         df = object@Data,
-        variable = object@Weight,
+        variable = "Weight",
         name = "data"
       )
-      if(!grepl("^weighted glmer poisson", object@ModelType)){
-        stop("ModelType should be 'weighted glmer poisson'")
-      }
     }
-    if(class(object@Model) == "glmerMod"){
-      if(object@Model@resp$family$family != "poisson"){
+    if (class(object@Model) == "glmerMod") {
+      if (object@Model@resp$family$family != "poisson") {
         stop("The model must be from the poisson family")
       }
     }
     
-    file.fingerprint <- digest(
+    file.fingerprint <- get_sha1(
       list(
-        object@Data, object@SchemeID, object@SpeciesGroupID, object@LocationGroupID, 
-        object@ModelType, object@Covariate, object@FirstImportedYear, object@LastImportedYear,
-        object@Duration, object@LastAnalysedYear, object@AnalysisDate, object@Seed, 
-        object@Weight, object@Parent
-      ),
-      algo = "sha1"
+        object@Data, object@AnalysisMetadata$SchemeID, 
+        object@AnalysisMetadata$SpeciesGroupID,
+        object@AnalysisMetadata$LocationGroupID, object@AnalysisMetadata$ModelType, 
+        object@AnalysisMetadata$Formula, object@AnalysisMetadata$FirstImportedYear,
+        object@AnalysisMetadata$LastImportedYear, object@AnalysisMetadata$Duration, 
+        object@AnalysisMetadata$LastAnalysedYear, object@AnalysisMetadata$AnalysisDate, 
+        object@AnalysisMetadata$Seed, object@AnalysisRelation$ParentAnalysis
+      )
     )
-    if(object@FileFingerprint != file.fingerprint){
+    if(object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
       stop("Corrupt FileFingerprint")
     }
-
-    status.fingerprint <- digest(
+    
+    status.fingerprint <- get_sha1(
       list(
-        object@FileFingerprint, object@Status, object@Model, object@SessionInfo
-      ),
-      algo = "sha1"
+        object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
+        coef(object@Model), 
+        object@AnalysisMetadata$AnalysisVersion, 
+        object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage, 
+        object@AnalysisRelation
+      )
     )
-    if(object@StatusFingerprint != status.fingerprint){
+    if(object@AnalysisMetadata$StatusFingerprint != status.fingerprint) {
       stop("Corrupt StatusFingerprint")
     }
     

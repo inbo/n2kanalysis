@@ -1,13 +1,12 @@
 context("n2kInlaNbinomial validation")
 
 data("cbpp", package = "lme4")
-cbpp$Count <- cbpp$incidence
 object <- n2k_inla_nbinomial(
   scheme.id = 1,
   species.group.id = 2,
   location.group.id = 3,
   model.type = "inla nbinomial: period + herd",
-  covariate = "offset(log(size)) + period + f(herd, model = 'iid')",
+  formula = "incidence ~ offset(log(size)) + period + f(herd, model = 'iid')",
   first.imported.year = 1990,
   last.imported.year = 2015,
   duration = 1,
@@ -29,7 +28,7 @@ describe("file fingerprint", {
   
   it("detects changes in SchemeID", {
     change.object <- object
-    change.object@SchemeID <- 999L
+    change.object@AnalysisMetadata$SchemeID <- 999L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -38,7 +37,7 @@ describe("file fingerprint", {
 
   it("detects changes in SpeciesGroupID", {
     change.object <- object
-    change.object@SpeciesGroupID <- 999L
+    change.object@AnalysisMetadata$SpeciesGroupID <- 999L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -47,7 +46,7 @@ describe("file fingerprint", {
 
   it("detects changes in LocationGroupID", {
     change.object <- object
-    change.object@LocationGroupID <- 999L
+    change.object@AnalysisMetadata$LocationGroupID <- 999L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -56,7 +55,7 @@ describe("file fingerprint", {
 
   it("detects changes in AnalysisDate", {
     change.object <- object
-    change.object@AnalysisDate <- Sys.time()
+    change.object@AnalysisMetadata$AnalysisDate <- Sys.time()
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -65,25 +64,25 @@ describe("file fingerprint", {
   
   it("detects changes in ModelType", {
     change.object <- object
-    change.object@ModelType <- "inla nbinomial: period"
+    change.object@AnalysisMetadata$ModelType <- "inla nbinomial: period"
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
     )
   })
   
-  it("detects changes in Covariate", {
+  it("detects changes in Formula", {
     change.object <- object
-    change.object@Covariate <- "period"
+    change.object@AnalysisMetadata$Formula <- "incidence ~ period"
     expect_that(
       validObject(change.object),
-      throws_error("Corrupt FileFingerprint")
+      throws_error("Formulas in 'AnalysisMetadata' don't match 'AnalysisFormula'")
     )
   })
   
   it("detects changes in FirstImportedYear", {
     change.object <- object
-    change.object@FirstImportedYear <- 999L
+    change.object@AnalysisMetadata$FirstImportedYear <- 999L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -92,7 +91,7 @@ describe("file fingerprint", {
   
   it("detects changes in LastImportedYear", {
     change.object <- object
-    change.object@LastImportedYear <- 2000L
+    change.object@AnalysisMetadata$LastImportedYear <- 2000L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -101,7 +100,7 @@ describe("file fingerprint", {
   
   it("detects changes in Duration", {
     change.object <- object
-    change.object@Duration <- 2L
+    change.object@AnalysisMetadata$Duration <- 2L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -110,7 +109,7 @@ describe("file fingerprint", {
   
   it("detects changes in LastAnalysedYear", {
     change.object <- object
-    change.object@LastAnalysedYear <- 2000L
+    change.object@AnalysisMetadata$LastAnalysedYear <- 2000L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -122,17 +121,16 @@ context("illegal changes in the status fingerprint")
 describe("status fingerprint", {
   it("detects changes in Status", {
     change.object <- object
-    change.object@Status <- "error"
+    change.object@AnalysisMetadata$Status <- "error"
     expect_that(
       validObject(change.object),
       throws_error("Corrupt StatusFingerprint")
     )
   })
   
-  it("detects changes in SessionInfo", {
-    require(RODBC)
+  it("detects changes in AnalysisVersion", {
     change.object <- object
-    change.object@SessionInfo <- sessionInfo()
+    change.object@AnalysisMetadata$AnalysisVersion <- ""
     expect_that(
       validObject(change.object),
       throws_error("Corrupt StatusFingerprint")
@@ -143,7 +141,7 @@ describe("status fingerprint", {
   it("detects changes in Model", {
     require(INLA)
     model.object <- INLA::inla(
-      Count ~ offset(log(size)) + period + f(herd, model = "iid"), 
+      incidence ~ offset(log(size)) + period + f(herd, model = "iid"), 
       data = object@Data,
       family = "nbinomial"
     )
@@ -151,7 +149,7 @@ describe("status fingerprint", {
       data = object, model.fit = model.object, status = "converged"
     )
     change.model <- INLA::inla(
-      Count ~ period + f(herd, model = "iid"), 
+      incidence ~ period + f(herd, model = "iid"), 
       data = object@Data,
       family = "nbinomial"
     )

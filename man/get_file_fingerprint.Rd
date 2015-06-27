@@ -3,13 +3,13 @@
 \docType{methods}
 \name{get_file_fingerprint}
 \alias{get_file_fingerprint}
-\alias{get_file_fingerprint,n2kModel-method}
-\alias{get_file_fingerprint,n2kModel-methods}
+\alias{get_file_fingerprint,n2kAnalysisMetadata-method}
+\alias{get_file_fingerprint,n2kAnalysisMetadata-methods}
 \title{Get the file fingerprint of a n2kModel object}
 \usage{
 get_file_fingerprint(x)
 
-\S4method{get_file_fingerprint}{n2kModel}(x)
+\S4method{get_file_fingerprint}{n2kAnalysisMetadata}(x)
 }
 \arguments{
 \item{x}{the n2kModel object}

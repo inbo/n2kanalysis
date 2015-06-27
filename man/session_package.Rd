@@ -3,8 +3,6 @@
 \docType{methods}
 \name{session_package}
 \alias{session_package}
-\alias{session_package,n2kModel-method}
-\alias{session_package,n2kModel-methods}
 \alias{session_package,sessionInfo-method}
 \alias{session_package,sessionInfo-methods}
 \title{Convert a sessionInfo() to a data.frame of packages}
@@ -12,8 +10,6 @@
 session_package(session)
 
 \S4method{session_package}{sessionInfo}(session)
-
-\S4method{session_package}{n2kModel}(session)
 }
 \arguments{
 \item{session}{The output of sessionInfo()}

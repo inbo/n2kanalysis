@@ -6,7 +6,6 @@
 #' @exportMethod get_file_fingerprint
 #' @docType methods
 #' @importFrom methods setGeneric
-#' @include n2kModel_class.R
 setGeneric(
   name = "get_file_fingerprint", 
   def = function(x){
@@ -15,12 +14,13 @@ setGeneric(
 )
 
 #' @rdname get_file_fingerprint
-#' @aliases get_file_fingerprint,n2kModel-methods
+#' @aliases get_file_fingerprint,n2kAnalysisMetadata-methods
 #' @importFrom methods setMethod
+#' @include n2kAnalysisMetadata_class.R
 setMethod(
   f = "get_file_fingerprint",
-  signature = signature(x = "n2kModel"),
+  signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x){
-    return(x@FileFingerprint)
+    return(x@AnalysisMetadata$FileFingerprint)
   }
 )

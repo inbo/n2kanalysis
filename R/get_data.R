@@ -6,7 +6,6 @@
 #' @exportMethod get_data
 #' @docType methods
 #' @importFrom methods setGeneric
-#' @include n2kModel_class.R
 setGeneric(
   name = "get_data", 
   def = function(x){
@@ -17,6 +16,7 @@ setGeneric(
 #' @rdname get_data
 #' @aliases get_data,n2kGlmerPoisson-methods
 #' @importFrom methods setMethod
+#' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "get_data",
   signature = signature(x = "n2kGlmerPoisson"),
@@ -28,6 +28,7 @@ setMethod(
 #' @rdname get_data
 #' @aliases get_data,n2kInlaNbinomial-methods
 #' @importFrom methods setMethod
+#' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "get_data",
   signature = signature(x = "n2kInlaNbinomial"),

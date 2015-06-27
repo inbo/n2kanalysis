@@ -15,7 +15,6 @@
 #'    \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
 #'    \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
 #'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
-#'    \item{\code{weight}}{The name of the variable to use as weights. '' indicates no weighting. Defaults to ''}
 #'    \item{\code{parent}}{the file fingerprint of the import}
 #'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
 #'   }
@@ -47,13 +46,10 @@ setMethod(
   ){
     dots <- list(...)
     #set the defaults for missing arguments in dots
-    if(is.null(dots$status)){
+    if (is.null(dots$status)) {
       dots$status <- "new"
     }
-    if(is.null(dots$weight)){
-      dots$weight <- ""
-    }
-    if(is.null(dots$seed)){
+    if (is.null(dots$seed)) {
       dots$seed <- sample(.Machine$integer.max, 1)
     } else {
       dots$seed <- check_single_strictly_positive_integer(dots$seed, name = "seed")
@@ -71,7 +67,7 @@ setMethod(
       name = "location.group.id"
     )
     dots$model.type <- check_single_character(dots$model.type, name = "model.type")
-    dots$covariate <- check_single_character(dots$covariate, name = "covariate")
+    dots$formula <- check_single_character(dots$formula, name = "formula")
     dots$first.imported.year <- check_single_strictly_positive_integer(
       dots$first.imported.year, 
       name = "first.imported.year"
@@ -80,7 +76,7 @@ setMethod(
       dots$last.imported.year, 
       name = "last.imported.year"
     )
-    if(is.null(dots$duration)){
+    if (is.null(dots$duration)) {
       dots$duration <- dots$last.imported.year - dots$first.imported.year + 1L
     } else {
       dots$duration <- check_single_strictly_positive_integer(
@@ -88,7 +84,7 @@ setMethod(
         name = "duration"
       )
     }
-    if(is.null(dots$last.analysed.year)){
+    if (is.null(dots$last.analysed.year)) {
       dots$last.analysed.year <- dots$last.imported.year
     } else {
       dots$last.analysed.year <- check_single_strictly_positive_integer(
@@ -101,47 +97,82 @@ setMethod(
       name = "analysis.date", 
       past = TRUE
     )
-    if(is.null(dots$parent)){
-      dots$parent <- ""
+    if (is.null(dots$parent)) {
+      dots$parent <- character(0)
     } else {
       dots$parent <- check_single_character(dots$parent, name = "parent")
     }
-    file.fingerprint <- digest(
+    file.fingerprint <- get_sha1(
       list(
         data, dots$scheme.id, dots$species.group.id, dots$location.group.id, 
-        dots$model.type, dots$covariate, dots$first.imported.year, dots$last.imported.year,
-        dots$duration, dots$last.analysed.year, dots$analysis.date, dots$seed, dots$weight,
-        dots$parent
-      ),
-      algo = "sha1"
+        dots$model.type, dots$formula, dots$first.imported.year, 
+        dots$last.imported.year, dots$duration, dots$last.analysed.year, 
+        dots$analysis.date, dots$seed, dots$parent
+      )
     )
-    status.fingerprint <- digest(
+    if (length(dots$parent) == 0) {
+      analysis.relation <- data.frame(
+        Analysis = character(0),
+        ParentAnalysis = character(0),
+        ParentStatusFingerprint = character(0),
+        ParentStatus = character(0),
+        stringsAsFactors = FALSE
+      )
+    } else {
+      if (is.null(dots$parent.status.fingerprint)) {
+        if (is.null(dots$parent.status)) {
+          dots$parent.status <- "converged"
+        }
+        dots$parent.status.fingerprint <- get_sha1(dots$parent.status)
+      } else {
+        if (is.null(dots$parent.status)) {
+          stop("'parent.status' is required when 'parent.status.fingerprint' is provided")
+        }
+      }
+      analysis.relation <- data.frame(
+        Analysis = file.fingerprint,
+        ParentAnalysis = dots$parent,
+        ParentStatusFingerprint = dots$parent.status.fingerprint,
+        ParentStatus = dots$parent.status,
+        stringsAsFactors = FALSE
+      )
+    }
+    version <- get_analysis_version(sessionInfo())
+    status.fingerprint <- get_sha1(
       list(
-        file.fingerprint, dots$status, NULL, sessionInfo()
-      ),
-      algo = "sha1"
+        file.fingerprint, dots$status, NULL, 
+        version@AnalysisVersion$Fingerprint, 
+        version@AnalysisVersion, version@RPackage, version@AnalysisVersionRPackage,
+        analysis.relation
+      )
     )
     
     new(
       "n2kGlmerPoisson",
+      AnalysisVersion = version@AnalysisVersion,
+      RPackage = version@RPackage,
+      AnalysisVersionRPackage = version@AnalysisVersionRPackage,
+      AnalysisMetadata = data.frame(
+        SchemeID = dots$scheme.id,
+        SpeciesGroupID = dots$species.group.id,
+        LocationGroupID = dots$location.group.id,
+        ModelType = dots$model.type,
+        Formula = dots$formula,
+        FirstImportedYear = dots$first.imported.year,
+        LastImportedYear = dots$last.imported.year,
+        Duration = dots$duration,
+        LastAnalysedYear = dots$last.analysed.year,
+        AnalysisDate = dots$analysis.date,
+        Seed = dots$seed,
+        Status = dots$status,
+        AnalysisVersion = version@AnalysisVersion$Fingerprint,
+        FileFingerprint = file.fingerprint,
+        StatusFingerprint = status.fingerprint,
+        stringsAsFactors = FALSE
+      ),
+      AnalysisFormula = list(as.formula(dots$formula)),
+      AnalysisRelation = analysis.relation,
       Data = data,
-      Status = dots$status,
-      SchemeID = dots$scheme.id,
-      SpeciesGroupID = dots$species.group.id,
-      LocationGroupID = dots$location.group.id,
-      ModelType = dots$model.type,
-      Covariate = dots$covariate,
-      FirstImportedYear = dots$first.imported.year,
-      LastImportedYear = dots$last.imported.year,
-      Duration = dots$duration,
-      LastAnalysedYear = dots$last.analysed.year,
-      AnalysisDate = dots$analysis.date,
-      Seed = dots$seed,
-      Weight = dots$weight,
-      FileFingerprint = file.fingerprint,
-      StatusFingerprint = status.fingerprint,
-      SessionInfo = sessionInfo(),
-      Parent = dots$parent,
       Model = NULL
     )
   }
@@ -151,7 +182,6 @@ setMethod(
 #' @rdname n2k_glmer_poisson
 #' @aliases n2k_glmer_poisson,my_lmer-methods
 #' @importFrom methods setMethod validObject
-#' @importFrom digest digest
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "n2k_glmer_poisson", 
@@ -160,16 +190,18 @@ setMethod(
     data, ..., model.fit
   ){
     dots <- list(...)
+    
     data@Model <- model.fit
-    data@Status <- dots$status
-    data@SessionInfo <- sessionInfo()
-    data@StatusFingerprint <- digest(
-      list(
-        data@FileFingerprint, dots$status, model.fit, sessionInfo()
-      ),
-      algo = "sha1"
-    )
-    validObject(data)
+    
+    version <- get_analysis_version(sessionInfo())
+    new.version <- union(data, version)
+    data@AnalysisVersion <- new.version$Union@AnalysisVersion
+    data@RPackage <- new.version$Union@RPackage
+    data@AnalysisVersionRPackage <- new.version$Union@AnalysisVersionRPackage
+
+    data@AnalysisMetadata$AnalysisVersion <- new.version$UnionFingerprint
+    
+    status(data) <- dots$status
     return(data)
   }
 )

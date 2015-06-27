@@ -31,6 +31,7 @@ setClass(
   )
 )
 
+#' @importFrom n2khelper check_dataframe_variable
 #' @importFrom methods setValidity
 setValidity(
   "n2kAnalysisVersion",
@@ -51,19 +52,19 @@ setValidity(
       name = "AnalysisVersionRPackage"
     )
     
-    if(!all(object@AnalysisVersionRPackage$AnalysisVersion %in% object@AnalysisVersion$Fingerprint)){
+    if (!all(object@AnalysisVersionRPackage$AnalysisVersion %in% object@AnalysisVersion$Fingerprint)) {
       stop("Some AnalysisVersion in 'AnalysisVersionRPackage' slot are not present in 'AnalysisVersion' slot")
     }
-    if(!all(object@AnalysisVersionRPackage$RPackage %in% object@RPackage$Fingerprint)){
+    if (!all(object@AnalysisVersionRPackage$RPackage %in% object@RPackage$Fingerprint)) {
       stop("Some AnalysisVersion in 'AnalysisVersionRPackage' slot are not present in 'AnalysisVersion' slot")
     }
-    if(anyDuplicated(object@AnalysisVersionRPackage)){
+    if (anyDuplicated(object@AnalysisVersionRPackage)) {
       stop("Duplicated rows in 'AnalysisVersionRPackage' slot")
     }
-    if(anyDuplicated(object@AnalysisVersion)){
+    if (anyDuplicated(object@AnalysisVersion)) {
       stop("Duplicated rows in 'AnalysisVersion' slot")
     }
-    if(anyDuplicated(object@RPackage)){
+    if (anyDuplicated(object@RPackage)) {
       stop("Duplicated rows in 'RPackage' slot")
     }
     return(TRUE)

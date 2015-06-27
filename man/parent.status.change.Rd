@@ -5,7 +5,7 @@
 \alias{parent_status<-}
 \alias{parent_status<-,n2kComposite-method}
 \alias{parent_status<-,n2kLrtGlmer-method}
-\title{Overwrite the status of a n2kModel}
+\title{Overwrite the status of a n2kAnalysisMetadata}
 \usage{
 parent_status(x) <- value
 
@@ -14,11 +14,11 @@ parent_status(x) <- value
 \S4method{parent_status}{n2kComposite}(x) <- value
 }
 \arguments{
-\item{x}{the n2kModel object}
+\item{x}{the n2kAnalysisMetadata object}
 
 \item{value}{the new values for the status}
 }
 \description{
-Overwrite the status of a n2kModel
+Overwrite the status of a n2kAnalysisMetadata
 }
 

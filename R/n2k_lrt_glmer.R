@@ -1,6 +1,5 @@
 #' Create a n2kLrtGlmer object
 #' @param parent the file fingerprint of the paretnt
-#' @param model.fit The fitted model
 #' @param ... other arguments. See below
 #' @details
 #'   \describe{
@@ -8,7 +7,7 @@
 #'    \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
 #'    \item{\code{species.group.id}}{a single integer identifing the species group}
 #'    \item{\code{location.group.id}}{a single integer identifing the location group}
-#'    \item{\code{covariate}}{a single character identifying the comparison}
+#'    \item{\code{formula}}{a single character identifying the comparison}
 #'    \item{\code{first.imported.year}}{Oldest year considered in the data}
 #'    \item{\code{last.imported.year}}{Most recent year considered in the data}
 #'    \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
@@ -24,7 +23,7 @@
 setGeneric(
   name = "n2k_lrt_glmer", 
   def = function(
-    parent, ..., model.fit
+    parent, ...
   ){
     standard.generic("n2k_lrt_glmer")
   }
@@ -34,19 +33,19 @@ setGeneric(
 #' @rdname n2k_lrt_glmer
 #' @aliases n2k_lrt_glmer,n2kLrtGlmer-methods
 #' @importFrom methods setMethod
-#' @importFrom n2khelper check_single_strictly_positive_integer check_single_character
+#' @importFrom n2khelper check_single_strictly_positive_integer check_single_character check_dataframe_variable
 #' @include n2kLrtGlmer_class.R
 setMethod(
   f = "n2k_lrt_glmer", 
   signature = signature(parent = "character"),
   definition = function(
-    parent, ..., model.fit
+    parent, ...
   ){
     dots <- list(...)
     parent <- check_single_character(parent, name = "parent")
     dots$parent.0 <- check_single_character(dots$parent.0, name = "parent.0")
     #set the defaults for missing arguments in dots
-    if(is.null(dots$status)){
+    if (is.null(dots$status)) {
       dots$status <- "waiting"
     }
     dots$seed <- check_single_strictly_positive_integer(dots$seed, name = "seed")
@@ -63,7 +62,7 @@ setMethod(
       name = "location.group.id"
     )
     dots$model.type <- check_single_character(dots$model.type, name = "model.type")
-    dots$covariate <- check_single_character(dots$covariate, name = "covariate")
+    dots$formula <- check_single_character(dots$formula, name = "formula")
     dots$first.imported.year <- check_single_strictly_positive_integer(
       dots$first.imported.year, 
       name = "first.imported.year"
@@ -72,7 +71,7 @@ setMethod(
       dots$last.imported.year, 
       name = "last.imported.year"
     )
-    if(is.null(dots$duration)){
+    if (is.null(dots$duration)) {
       dots$duration <- dots$last.imported.year - dots$first.imported.year + 1L
     } else {
       dots$duration <- check_single_strictly_positive_integer(
@@ -80,7 +79,7 @@ setMethod(
         name = "duration"
       )
     }
-    if(is.null(dots$last.analysed.year)){
+    if (is.null(dots$last.analysed.year)) {
       dots$last.analysed.year <- dots$last.imported.year
     } else {
       dots$last.analysed.year <- check_single_strictly_positive_integer(
@@ -93,113 +92,65 @@ setMethod(
       name = "analysis.date", 
       past = TRUE
     )
-    file.fingerprint <- digest(
-      list(
-        dots$scheme.id, dots$species.group.id, dots$location.group.id, 
-        dots$model.type, dots$covariate, dots$first.imported.year, dots$last.imported.year,
-        dots$duration, dots$last.analysed.year, dots$analysis.date, dots$seed, parent, 
-        dots$parent.0
-      ),
-      algo = "sha1"
-    )
     check_dataframe_variable(
       df = dots$parent.status,
       name = "parent.status",
-      variable = c("FileFingerprint", "StatusFingerprint", "Status")
+      variable = c("ParentAnalysis", "ParentStatusFingerprint", "ParentStatus")
     )
     dots$parent.status <- dots$parent.status[
-      order(dots$parent.status$FileFingerprint),
-      c("FileFingerprint", "StatusFingerprint", "Status")
+      order(dots$parent.status$ParentAnalysis),
     ]
-    status.fingerprint <- digest(
+    file.fingerprint <- get_sha1(
       list(
-        file.fingerprint, dots$status, dots$parent.status, NULL, NULL, NULL, sessionInfo()
-      ),
-      algo = "sha1"
+        dots$scheme.id, dots$species.group.id, dots$location.group.id, 
+        dots$model.type, dots$formula, dots$first.imported.year, dots$last.imported.year,
+        dots$duration, dots$last.analysed.year, dots$analysis.date, dots$seed, 
+        dots$parent.0, dots$parent.status$ParentAnalysis
+      )
+    )
+    dots$parent.status$Analysis <- file.fingerprint
+    dots$parent.status <- dots$parent.status[
+      ,
+      c("Analysis", "ParentAnalysis", "ParentStatusFingerprint", "ParentStatus")
+    ]
+    version <- get_analysis_version(sessionInfo())
+    status.fingerprint <- get_sha1(
+      list(
+        file.fingerprint, dots$status, NULL, NULL, NULL, 
+        version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
+        version@RPackage, version@AnalysisVersionRPackage, dots$parent.status
+      )
     )
     
     new(
       "n2kLrtGlmer",
-      Status = dots$status,
-      SchemeID = dots$scheme.id,
-      SpeciesGroupID = dots$species.group.id,
-      LocationGroupID = dots$location.group.id,
-      ModelType = dots$model.type,
-      Covariate = dots$covariate,
-      FirstImportedYear = dots$first.imported.year,
-      LastImportedYear = dots$last.imported.year,
-      Duration = dots$duration,
-      LastAnalysedYear = dots$last.analysed.year,
-      AnalysisDate = dots$analysis.date,
-      Seed = dots$seed,
-      FileFingerprint = file.fingerprint,
-      StatusFingerprint = status.fingerprint,
-      SessionInfo = sessionInfo(),
-      Parent = parent,
+      AnalysisVersion = version@AnalysisVersion,
+      RPackage = version@RPackage,
+      AnalysisVersionRPackage = version@AnalysisVersionRPackage,
+      AnalysisMetadata = data.frame(
+        SchemeID = dots$scheme.id,
+        SpeciesGroupID = dots$species.group.id,
+        LocationGroupID = dots$location.group.id,
+        ModelType = dots$model.type,
+        Formula = dots$formula,
+        FirstImportedYear = dots$first.imported.year,
+        LastImportedYear = dots$last.imported.year,
+        Duration = dots$duration,
+        LastAnalysedYear = dots$last.analysed.year,
+        AnalysisDate = dots$analysis.date,
+        Seed = dots$seed,
+        Status = dots$status,
+        AnalysisVersion = version@AnalysisVersion$Fingerprint,
+        FileFingerprint = file.fingerprint,
+        StatusFingerprint = status.fingerprint,
+        stringsAsFactors = FALSE
+      ),
+      AnalysisFormula = list(as.formula(dots$formula)),
+      AnalysisRelation = dots$parent.status,
       Parent0 = dots$parent.0,
-      ParentStatus = dots$parent.status,
       Model = NULL,
       Model0 = NULL,
       Anova = NULL
     )
-  }
-)
-
-#' @description In case \code{parent} a n2kLrtGlmer object is, then only the model and status are updated. All other slots are unaffected.
-#' @rdname n2k_lrt_glmer
-#' @aliases n2k_lrt_glmer,my_lmer-methods
-#' @importFrom methods setMethod validObject
-#' @importFrom digest digest
-#' @include n2kLrtGlmer_class.R
-setMethod(
-  f = "n2k_lrt_glmer", 
-  signature = signature(parent = "n2kLrtGlmer", model.fit = "glmerMod"),
-  definition = function(
-    parent, ..., model.fit
-  ){
-    dots <- list(...)
-    if(is.null(dots$which.model)){
-      warning("'which.model' unspecified, assuming which.model = 1")
-      dots$which.model <- 1L
-    }
-    if(!class(dots$which.model) %in% c("integer", "numeric")){
-      stop("'which.model' must be integer")
-    }
-    if(length(dots$which.model) != 1){
-      stop("'which.model' must be a single number")
-    }
-    if(is.numeric(dots$which.model)){
-      if(abs(dots$which.model - round(dots$which.model)) > 1e-8){
-        stop("'which.model' is not integer")
-      } else {
-        dots$which.model <- as.integer(dots$which.model)
-      }
-    }
-    if(!dots$which.model %in% 0:1){
-      stop("'which.model' must be 0 (NULL model) or 1 (alternative model)")
-    }
-    if(dots$which.model == 0){
-      parent@Model0 <- model.fit
-    } else {
-      parent@Model <- model.fit
-    }
-    if(is.null(dots$status)){
-      if(dots$which.model == 0 & !is.null(parent@Model)){
-        parent@Status <- "new"
-      }
-      if(dots$which.model == 1 & !is.null(parent@Model0)){
-        parent@Status <- "new"
-      }
-    }
-    parent@SessionInfo <- sessionInfo()
-    parent@StatusFingerprint <- digest(
-      list(
-        parent@FileFingerprint, parent@Status, parent@ParentStatus, parent@Model, 
-        parent@Model0, parent@Anova, parent@SessionInfo
-      ),
-      algo = "sha1"
-    )
-    validObject(parent)
-    return(parent)
   }
 )

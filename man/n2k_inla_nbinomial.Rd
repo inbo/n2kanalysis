@@ -30,7 +30,6 @@ In case \code{data} a n2kInlaNbinomial object is, then only the model and status
 }
 \details{
 \describe{
-   \item{\code{status}}{a single character indicating the status of the model. Defaults to 'new' when \code{data} is a data.frame.}
    \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
    \item{\code{species.group.id}}{a single integer identifing the species group}
    \item{\code{location.group.id}}{a single integer identifing the location group}

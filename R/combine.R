@@ -25,14 +25,19 @@ setMethod(
       rbind,
       lapply(dots, function(x){x@AnalysisVersion})
     ))
+    analysis.version <- analysis.version[order(analysis.version$Fingerprint), , drop = FALSE]
     r.package <- unique(do.call(
       rbind,
       lapply(dots, function(x){x@RPackage})
     ))
+    r.package <- r.package[order(r.package$Description, r.package$Version), ]
     analysis.version.r.package <- unique(do.call(
       rbind,
       lapply(dots, function(x){x@AnalysisVersionRPackage})
     ))
+    analysis.version.r.package <- analysis.version.r.package[
+      order(analysis.version.r.package$AnalysisVersion, analysis.version.r.package$RPackage), 
+    ]
     new(
       "n2kAnalysisVersion",
       AnalysisVersion = analysis.version,

@@ -3,8 +3,6 @@
 #' Calculate composite indices from multiple analysis
 #' @section Slots:
 #'   \describe{
-#'    \item{\code{Parent}}{a vector with the FileFingerprints of the parent analysis}
-#'    \item{\code{ParentStatus}}{A data.frame with the FileFingerprint, StatusFingerprint and Status of the parent analysis}
 #'    \item{\code{Parameter}}{A data.frame with the relevant parameter estimates of each parent analysis}
 #'    \item{\code{Index}}{The composite index based on the parameters}
 #'   }
@@ -18,8 +16,6 @@
 setClass(
   "n2kComposite",
   representation = representation(
-    Parent = "character",
-    ParentStatus = "data.frame",
     Parameter = "data.frame",
     Index = "data.frame"
   ),
@@ -29,55 +25,38 @@ setClass(
 
 #' @importFrom methods setValidity
 #' @importFrom n2khelper check_single_character check_dataframe_variable
-#' @importFrom digest digest
 setValidity(
   "n2kComposite",
   function(object){
-    check_dataframe_variable(
-      df = object@ParentStatus, 
-      variable = c("FileFingerprint", "StatusFingerprint", "Status"),
-      name = "ParentStatus"
-    )
-    
-    if(!all.equal(
-      object@Parent,
-      object@ParentStatus$FileFingerprint
-    )){
-      stop("FileFingerprints in ParentStatus slot don't match Parent slot")
+    if (nrow(object@AnalysisRelation) == 0) {
+      stop("'AnalysisRelation' not defined")
+    }
+    if (anyNA(object@AnalysisRelation$ParentAnalysis)) {
+      stop("'ParentAnalysis' in 'AnalysisRelation' slot cannot be missing")
     }
     
-    check_dataframe_variable(
-      df = object@Parameter,
-      name = "Parameter",
-      variable = c("Parent", "Value", "Estimate", "Variance")
-    )
-    check_dataframe_variable(
-      df = object@Index,
-      name = "Index",
-      variable = c("Value", "Estimate", "LowerConfidenceLimit", "UpperConfidenceLimit")
-    )
-    
-    file.fingerprint <- digest(
+    file.fingerprint <- get_sha1(
       list(
-        object@SchemeID, object@SpeciesGroupID, object@LocationGroupID, 
-        object@ModelType, object@Covariate, object@FirstImportedYear, object@LastImportedYear,
-        object@Duration, object@LastAnalysedYear, object@AnalysisDate, object@Seed, 
-        object@Parent
-      ),
-      algo = "sha1"
+        object@AnalysisMetadata$SchemeID, object@AnalysisMetadata$SpeciesGroupID,
+        object@AnalysisMetadata$LocationGroupID, object@AnalysisMetadata$ModelType, 
+        object@AnalysisMetadata$Formula, object@AnalysisMetadata$FirstImportedYear,
+        object@AnalysisMetadata$LastImportedYear, object@AnalysisMetadata$Duration, 
+        object@AnalysisMetadata$LastAnalysedYear, object@AnalysisMetadata$AnalysisDate, 
+        object@AnalysisMetadata$Seed, object@AnalysisRelation$ParentAnalysis
+      )
     )
-    if(object@FileFingerprint != file.fingerprint){
+    if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
       stop("Corrupt FileFingerprint")
     }
-    
-    status.fingerprint <- digest(
+    status.fingerprint <- get_sha1(
       list(
-        object@FileFingerprint, object@Status, object@ParentStatus, object@Parameter, 
-        object@Index, object@SessionInfo
-      ),
-      algo = "sha1"
+        object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status, 
+        object@Parameter, object@Index, object@AnalysisMetadata$AnalysisVersion, 
+        object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
+        object@AnalysisRelation
+      )
     )
-    if(object@StatusFingerprint != status.fingerprint){
+    if (object@AnalysisMetadata$StatusFingerprint != status.fingerprint) {
       stop("Corrupt StatusFingerprint")
     }
     

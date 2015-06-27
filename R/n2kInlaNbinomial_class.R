@@ -1,7 +1,5 @@
-#' @importFrom methods setOldClass
-setOldClass("inla")
-
 #' @importFrom methods setClassUnion
+#' @include import_S3_classes.R
 setClassUnion("maybeInla", c("inla", "NULL"))
 
 #' The n2kInlaNBinomial class
@@ -30,39 +28,46 @@ setClass(
 
 #' @importFrom methods setValidity
 #' @importFrom n2khelper check_single_character check_dataframe_variable
-#' @importFrom digest digest
 setValidity(
   "n2kInlaNbinomial",
   function(object){
-    check_dataframe_covariate(df = object@Data, covariate = object@Covariate)
-    if(!grepl("^inla nbinomial", object@ModelType)){
+    check_dataframe_variable(
+      df = object@Data[1, ], 
+      variable = all.vars(object@AnalysisFormula[[1]]), 
+      error = TRUE
+    )
+    if (!grepl("^inla nbinomial", object@AnalysisMetadata$ModelType)) {
       stop("ModelType should be 'inla nbinomial'")
     }
-    if(class(object@Model) == "inla"){
-      if(object@Model$all.hyper$family[[1]]$label != "nbinomial"){
+    if (class(object@Model) == "inla") {
+      if (object@Model$all.hyper$family[[1]]$label != "nbinomial") {
         stop("The model must be from the nbinomial family")
       }
     }
     
-    file.fingerprint <- digest(
+    file.fingerprint <- get_sha1(
       list(
-        object@Data, object@SchemeID, object@SpeciesGroupID, object@LocationGroupID, 
-        object@ModelType, object@Covariate, object@FirstImportedYear, object@LastImportedYear, 
-        object@Duration, object@LastAnalysedYear, object@AnalysisDate, object@Seed
-      ),
-      algo = "sha1"
+        object@Data, object@AnalysisMetadata$SchemeID, object@AnalysisMetadata$SpeciesGroupID, 
+        object@AnalysisMetadata$LocationGroupID, object@AnalysisMetadata$ModelType, 
+        object@AnalysisMetadata$Covariate, object@AnalysisMetadata$FirstImportedYear, 
+        object@AnalysisMetadata$LastImportedYear, object@AnalysisMetadata$Duration, 
+        object@AnalysisMetadata$LastAnalysedYear, object@AnalysisMetadata$AnalysisDate,
+        object@AnalysisMetadata$Seed, object@AnalysisRelation$ParentAnalysis
+      )
     )
-    if(object@FileFingerprint != file.fingerprint){
+    if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
       stop("Corrupt FileFingerprint")
     }
 
-    status.fingerprint <- digest(
+    status.fingerprint <- get_sha1(
       list(
-        object@FileFingerprint, object@Status, object@Model, object@SessionInfo
-      ),
-      algo = "sha1"
+        object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status, 
+        object@Model, object@AnalysisMetadata$AnalysisVersion, object@AnalysisVersion,
+        object@RPackage, object@AnalysisVersionRPackage, object@AnalysisRelation
+      )
     )
-    if(object@StatusFingerprint != status.fingerprint){
+    
+    if (object@AnalysisMetadata$StatusFingerprint != status.fingerprint) {
       stop("Corrupt StatusFingerprint")
     }
     

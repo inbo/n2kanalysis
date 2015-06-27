@@ -3,13 +3,13 @@
 \docType{methods}
 \name{get_scheme_id}
 \alias{get_scheme_id}
-\alias{get_scheme_id,n2kModel-method}
-\alias{get_scheme_id,n2kModel-methods}
+\alias{get_scheme_id,n2kAnalysisMetadata-method}
+\alias{get_scheme_id,n2kAnalysisMetadata-methods}
 \title{Get the scheme_id of a n2kModel object}
 \usage{
 get_scheme_id(x)
 
-\S4method{get_scheme_id}{n2kModel}(x)
+\S4method{get_scheme_id}{n2kAnalysisMetadata}(x)
 }
 \arguments{
 \item{x}{the n2kModel object}

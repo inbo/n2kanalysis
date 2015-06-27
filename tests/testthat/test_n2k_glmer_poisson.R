@@ -4,20 +4,21 @@ this.species.group.id <- 2L
 this.location.group.id <- 3L
 this.analysis.date <- Sys.time()
 this.model.type <- "glmer poisson: period + herd"
-this.covariate <- "offset(log(size)) + period + (1|herd)"  
+this.formula <- "incidence ~ offset(log(size)) + period + (1|herd)"
 weighted.model.type <- "weighted glmer poisson: period + herd"
 this.first.imported.year <- 1990L
 this.last.imported.year <- 2015L
 this.last.analysed.year <- 2014L
 this.duration <- 1L
 data("cbpp", package = "lme4")
-cbpp$Count <- cbpp$incidence
+cbpp$DatasourceID <- 1
+cbpp$ObservationID <- seq_len(nrow(cbpp))
 object <- n2k_glmer_poisson(
   scheme.id = this.scheme.id,
   species.group.id = this.species.group.id,
   location.group.id = this.location.group.id,
   model.type = this.model.type,
-  covariate = this.covariate,
+  formula = this.formula,
   first.imported.year = this.first.imported.year,
   last.imported.year = this.last.imported.year,
   analysis.date = this.analysis.date,
@@ -47,7 +48,7 @@ describe("n2k_glmer_poisson", {
   })
   it("uses 'new' as default status", {
     expect_that(
-      object@Status,
+      object@AnalysisMetadata$Status,
       is_identical_to("new")
     )
   })
@@ -59,7 +60,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
@@ -74,19 +75,13 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         status = NA
       ),
-      throws_error("Status must be character")
-    )
-  })
-  it("uses '' as default weight", {
-    expect_that(
-      object@Weight,
-      is_identical_to("")
+      throws_error("Status must be one of the following")
     )
   })
   it("checks if the weight variable exists", {
@@ -97,13 +92,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = weighted.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        weight = "junk"
+        analysis.date = this.analysis.date
       ),
-      throws_error("Variables missing in data: junk")
+      throws_error("Variables missing in data: Weight")
     )
   })
   it("checks the model type", {
@@ -114,56 +108,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = "junk",
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date
       ),
       throws_error("ModelType should be 'glmer poisson'")
-    )
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        scheme.id = this.scheme.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = "junk",
-        covariate = this.covariate,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        weight = "size"
-      ),
-      throws_error("ModelType should be 'weighted glmer poisson'")
-    )
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        scheme.id = this.scheme.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = weighted.model.type,
-        covariate = this.covariate,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date
-      ),
-      throws_error("ModelType should be 'glmer poisson'")
-    )
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        scheme.id = this.scheme.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        covariate = this.covariate,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        weight = "size"
-      ),
-      throws_error("ModelType should be 'weighted glmer poisson'")
     )
   })
   it("sets the correct seed", {
@@ -175,12 +125,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         seed = this.seed
-      )@Seed,
+      )@AnalysisMetadata$Seed,
       is_identical_to(this.seed)
     )
   })
@@ -193,12 +143,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         seed = this.seed
-      )@Seed,
+      )@AnalysisMetadata$Seed,
       is_identical_to(as.integer(this.seed))
     )
     this.seed <- 12345L
@@ -209,12 +159,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         seed = this.seed + 1e-11
-      )@Seed,
+      )@AnalysisMetadata$Seed,
       is_identical_to(this.seed)
     )
     expect_that(
@@ -234,7 +184,7 @@ describe("n2k_glmer_poisson", {
   })
   it("sets a random seed when not provided", {
     expect_that(
-      object@Seed,
+      object@AnalysisMetadata$Seed,
       is_a("integer")
     )
   })
@@ -246,12 +196,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@SchemeID,
+      )@AnalysisMetadata$SchemeID,
       is_identical_to(this.scheme.id)
     )
   })
@@ -262,12 +212,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = as.numeric(this.scheme.id)
-      )@SchemeID,
+      )@AnalysisMetadata$SchemeID,
       is_identical_to(this.scheme.id)
     )
     expect_that(
@@ -276,12 +226,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id + 1e-11
-      )@SchemeID,
+      )@AnalysisMetadata$SchemeID,
       is_identical_to(this.scheme.id)
     )
     expect_that(
@@ -290,7 +240,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
@@ -310,9 +260,9 @@ describe("n2k_glmer_poisson", {
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
-        covariate = this.covariate,
+        formula = this.formula,
         scheme.id = this.scheme.id
-      )@SpeciesGroupID,
+      )@AnalysisMetadata$SpeciesGroupID,
       is_identical_to(this.species.group.id)
     )
   })
@@ -323,12 +273,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = as.numeric(this.species.group.id),
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@SpeciesGroupID,
+      )@AnalysisMetadata$SpeciesGroupID,
       is_identical_to(this.species.group.id)
     )
     expect_that(
@@ -337,12 +287,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id + 1e-11,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@SpeciesGroupID,
+      )@AnalysisMetadata$SpeciesGroupID,
       is_identical_to(this.species.group.id)
     )
     expect_that(
@@ -351,7 +301,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id + 0.1,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
@@ -368,12 +318,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@LocationGroupID,
+      )@AnalysisMetadata$LocationGroupID,
       is_identical_to(this.location.group.id)
     )
   })
@@ -384,12 +334,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = as.numeric(this.location.group.id),
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@LocationGroupID,
+      )@AnalysisMetadata$LocationGroupID,
       is_identical_to(this.location.group.id)
     )
     expect_that(
@@ -398,12 +348,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id + 1e-11,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@LocationGroupID,
+      )@AnalysisMetadata$LocationGroupID,
       is_identical_to(this.location.group.id)
     )
     expect_that(
@@ -412,7 +362,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id + 0.1,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
@@ -429,12 +379,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@FirstImportedYear,
+      )@AnalysisMetadata$FirstImportedYear,
       is_identical_to(this.first.imported.year)
     )
   })
@@ -445,12 +395,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = as.numeric(this.first.imported.year),
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@FirstImportedYear,
+      )@AnalysisMetadata$FirstImportedYear,
       is_identical_to(this.first.imported.year)
     )
     expect_that(
@@ -459,12 +409,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year + 1e-11,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@FirstImportedYear,
+      )@AnalysisMetadata$FirstImportedYear,
       is_identical_to(this.first.imported.year)
     )
     expect_that(
@@ -473,7 +423,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year + 0.1,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
@@ -489,13 +439,13 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = as.integer(format(Sys.time(), "%Y")) + 1,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Importing data from the future?")
+      throws_error("FirstImportedYear from the future.")
     )
   })
   
@@ -506,12 +456,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@LastImportedYear,
+      )@AnalysisMetadata$LastImportedYear,
       is_identical_to(this.last.imported.year)
     )
   })
@@ -522,12 +472,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = as.numeric(this.last.imported.year),
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@LastImportedYear,
+      )@AnalysisMetadata$LastImportedYear,
       is_identical_to(this.last.imported.year)
     )
     expect_that(
@@ -536,12 +486,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year + 1e-11,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@LastImportedYear,
+      )@AnalysisMetadata$LastImportedYear,
       is_identical_to(this.last.imported.year)
     )
     expect_that(
@@ -550,7 +500,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year + 0.1,
         analysis.date = this.analysis.date,
@@ -566,13 +516,13 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = as.integer(format(Sys.time(), "%Y")) + 1,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Importing data from the future?")
+      throws_error("LastImportedYear from the future.")
     )
   })
   it("checks that LastImportedYear is more recent than FirstImportedYear", {
@@ -582,13 +532,13 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = 2000,
         last.imported.year = 1999,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("LastImportedYear cannot proceed FirstImportedYear")
+      throws_error("FirstImportedYear cannot exceed LastImportedYear")
     )
     expect_that(
       n2k_glmer_poisson(
@@ -596,7 +546,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = as.integer(format(Sys.time(), "%Y")),
         last.imported.year = as.integer(format(Sys.time(), "%Y")),
         analysis.date = this.analysis.date,
@@ -613,13 +563,13 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         duration = this.duration,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@Duration,
+      )@AnalysisMetadata$Duration,
       is_identical_to(this.duration)
     )
     expect_that(
@@ -628,12 +578,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@Duration,
+      )@AnalysisMetadata$Duration,
       is_identical_to(this.last.imported.year - this.first.imported.year + 1L)
     )
   })
@@ -644,13 +594,13 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         duration = as.numeric(this.duration),
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@Duration,
+      )@AnalysisMetadata$Duration,
       is_identical_to(this.duration)
     )
     expect_that(
@@ -659,13 +609,13 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         duration = this.duration + 1e-11,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@Duration,
+      )@AnalysisMetadata$Duration,
       is_identical_to(this.duration)
     )
     expect_that(
@@ -674,7 +624,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         duration = this.duration + 0.1,
@@ -691,7 +641,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = 1999,
         last.imported.year = 1999,
         duration = 2,
@@ -706,7 +656,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = 1999,
         last.imported.year = 1999,
         duration = 0,
@@ -724,14 +674,14 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         duration = 1,
         last.analysed.year = this.last.analysed.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@LastAnalysedYear,
+      )@AnalysisMetadata$LastAnalysedYear,
       is_identical_to(this.last.analysed.year)
     )
     expect_that(
@@ -740,13 +690,13 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         duration = 1,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@LastAnalysedYear,
+      )@AnalysisMetadata$LastAnalysedYear,
       is_identical_to(this.last.imported.year)
     )
   })
@@ -757,14 +707,14 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         duration = 1,
         last.analysed.year = as.numeric(this.last.analysed.year),
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@LastAnalysedYear,
+      )@AnalysisMetadata$LastAnalysedYear,
       is_identical_to(this.last.analysed.year)
     )
     expect_that(
@@ -773,14 +723,14 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         duration = 1,
         last.analysed.year = this.last.analysed.year + 1e-11,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
-      )@LastAnalysedYear,
+      )@AnalysisMetadata$LastAnalysedYear,
       is_identical_to(this.last.analysed.year)
     )
     expect_that(
@@ -789,7 +739,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         duration = 1L,
@@ -807,14 +757,14 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         last.analysed.year = this.last.imported.year + 1,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("LastAnalysedYear larger than LastImportedYear. Window outside imported range.")
+      throws_error("LastAnalysedYear cannot exceed LastImportedYear")
     )
     expect_that(
       n2k_glmer_poisson(
@@ -822,7 +772,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         duration = this.duration,
@@ -841,7 +791,7 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = Sys.time() + 24 * 60 * 60,
@@ -850,28 +800,28 @@ describe("n2k_glmer_poisson", {
       throws_error("analysis.date is in the future")
     )
   })  
-  it("checks if all variable in covariate are available in the data", {
+  it("checks if all variables in formula are available in the data", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp[, c("herd", "period", "size")],
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Variables missing in df: Count")
+      throws_error("Variables missing in df: incidence")
     )
     expect_that(
       n2k_glmer_poisson(
-        data = cbpp[, c("herd", "period", "Count")],
+        data = cbpp[, c("herd", "period", "incidence")],
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
@@ -881,11 +831,11 @@ describe("n2k_glmer_poisson", {
     )
     expect_that(
       n2k_glmer_poisson(
-        data = cbpp[, c("herd", "size", "Count")],
+        data = cbpp[, c("herd", "size", "incidence")],
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
@@ -895,11 +845,11 @@ describe("n2k_glmer_poisson", {
     )
     expect_that(
       n2k_glmer_poisson(
-        data = cbpp[, c("size", "period", "Count")],
+        data = cbpp[, c("size", "period", "incidence")],
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        covariate = this.covariate,
+        formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
@@ -940,48 +890,38 @@ describe("n2k_glmer_poisson", {
       is_identical_to(model.object)
     )
     expect_that(
-      object.model@Weight,
-      is_identical_to(object@Weight)
-    )
-    expect_that(
-      n2k_glmer_poisson(
-        data = object, model.fit = model.object, status = "converged", weight = "junk"
-      )@Weight,
-      is_identical_to(object@Weight)
-    )
-    expect_that(
-      object.model@Seed,
-      is_identical_to(object@Seed)
+      object.model@AnalysisMetadata$Seed,
+      is_identical_to(object@AnalysisMetadata$Seed)
     )
     expect_that(
       n2k_glmer_poisson(
         data = object, model.fit = model.object, status = "converged", seed = 1
-      )@Seed,
-      is_identical_to(object@Seed)
+      )@AnalysisMetadata$Seed,
+      is_identical_to(object@AnalysisMetadata$Seed)
     )
     expect_that(
-      object.model@SchemeID,
-      is_identical_to(object@SchemeID)
+      object.model@AnalysisMetadata$SchemeID,
+      is_identical_to(object@AnalysisMetadata$SchemeID)
     )
     expect_that(
       n2k_glmer_poisson(
         data = object, model.fit = model.object, status = "converged", scheme.id = 999
-      )@SchemeID,
-      is_identical_to(object@SchemeID)
+      )@AnalysisMetadata$SchemeID,
+      is_identical_to(object@AnalysisMetadata$SchemeID)
     )
     expect_that(
-      object.model@SpeciesGroupID,
-      is_identical_to(object@SpeciesGroupID)
+      object.model@AnalysisMetadata$SpeciesGroupID,
+      is_identical_to(object@AnalysisMetadata$SpeciesGroupID)
     )
     expect_that(
       n2k_glmer_poisson(
         data = object, model.fit = model.object, status = "converged", species.group.id = 999
-      )@SpeciesGroupID,
-      is_identical_to(object@SpeciesGroupID)
+      )@AnalysisMetadata$SpeciesGroupID,
+      is_identical_to(object@AnalysisMetadata$SpeciesGroupID)
     )
     expect_that(
-      object.model@LocationGroupID,
-      is_identical_to(object@LocationGroupID)
+      object.model@AnalysisMetadata$LocationGroupID,
+      is_identical_to(object@AnalysisMetadata$LocationGroupID)
     )
     expect_that(
       n2k_glmer_poisson(
@@ -989,32 +929,32 @@ describe("n2k_glmer_poisson", {
         model.fit = model.object, 
         status = "converged", 
         location.group.id = 999
-      )@LocationGroupID,
-      is_identical_to(object@LocationGroupID)
+      )@AnalysisMetadata$LocationGroupID,
+      is_identical_to(object@AnalysisMetadata$LocationGroupID)
     )
     expect_that(
-      object.model@ModelType,
-      is_identical_to(object@ModelType)
+      object.model@AnalysisMetadata$ModelType,
+      is_identical_to(object@AnalysisMetadata$ModelType)
     )
     expect_that(
       n2k_glmer_poisson(
         data = object, model.fit = model.object, status = "converged", model.type = 999
-      )@ModelType,
-      is_identical_to(object@ModelType)
+      )@AnalysisMetadata$ModelType,
+      is_identical_to(object@AnalysisMetadata$ModelType)
     )
     expect_that(
-      object.model@Covariate,
-      is_identical_to(object@Covariate)
+      object.model@AnalysisMetadata$Covariate,
+      is_identical_to(object@AnalysisMetadata$Covariate)
     )
     expect_that(
       n2k_glmer_poisson(
         data = object, model.fit = model.object, status = "converged", covariate = 999
-      )@Covariate,
-      is_identical_to(object@Covariate)
+      )@AnalysisMetadata$Covariate,
+      is_identical_to(object@AnalysisMetadata$Covariate)
     )
     expect_that(
-      object.model@FirstImportedYear,
-      is_identical_to(object@FirstImportedYear)
+      object.model@AnalysisMetadata$FirstImportedYear,
+      is_identical_to(object@AnalysisMetadata$FirstImportedYear)
     )
     expect_that(
       n2k_glmer_poisson(
@@ -1022,12 +962,12 @@ describe("n2k_glmer_poisson", {
         model.fit = model.object, 
         status = "converged", 
         first.imported.year = 3000
-      )@FirstImportedYear,
-      is_identical_to(object@FirstImportedYear)
+      )@AnalysisMetadata$FirstImportedYear,
+      is_identical_to(object@AnalysisMetadata$FirstImportedYear)
     )
     expect_that(
-      object.model@LastImportedYear,
-      is_identical_to(object@LastImportedYear)
+      object.model@AnalysisMetadata$LastImportedYear,
+      is_identical_to(object@AnalysisMetadata$LastImportedYear)
     )
     expect_that(
       n2k_glmer_poisson(
@@ -1035,12 +975,12 @@ describe("n2k_glmer_poisson", {
         model.fit = model.object, 
         status = "converged", 
         last.imported.year = 3000
-      )@LastImportedYear,
-      is_identical_to(object@LastImportedYear)
+      )@AnalysisMetadata$LastImportedYear,
+      is_identical_to(object@AnalysisMetadata$LastImportedYear)
     )
     expect_that(
-      object.model@LastAnalysedYear,
-      is_identical_to(object@LastAnalysedYear)
+      object.model@AnalysisMetadata$LastAnalysedYear,
+      is_identical_to(object@AnalysisMetadata$LastAnalysedYear)
     )
     expect_that(
       n2k_glmer_poisson(
@@ -1048,12 +988,12 @@ describe("n2k_glmer_poisson", {
         model.fit = model.object, 
         status = "converged", 
         last.analysed.year = 3000
-      )@LastAnalysedYear,
-      is_identical_to(object@LastAnalysedYear)
+      )@AnalysisMetadata$LastAnalysedYear,
+      is_identical_to(object@AnalysisMetadata$LastAnalysedYear)
     )
     expect_that(
-      object.model@Duration,
-      is_identical_to(object@Duration)
+      object.model@AnalysisMetadata$Duration,
+      is_identical_to(object@AnalysisMetadata$Duration)
     )
     expect_that(
       n2k_glmer_poisson(
@@ -1061,23 +1001,23 @@ describe("n2k_glmer_poisson", {
         model.fit = model.object, 
         status = "converged", 
         duration = 999
-      )@Duration,
-      is_identical_to(object@Duration)
+      )@AnalysisMetadata$Duration,
+      is_identical_to(object@AnalysisMetadata$Duration)
     )
     expect_that(
-      object.model@AnalysisDate,
-      is_identical_to(object@AnalysisDate)
+      object.model@AnalysisMetadata$AnalysisDate,
+      is_identical_to(object@AnalysisMetadata$AnalysisDate)
     )
     expect_that(
       n2k_glmer_poisson(
         data = object, model.fit = model.object, status = "converged", analysis.date = 999
-      )@AnalysisDate,
-      is_identical_to(object@AnalysisDate)
+      )@AnalysisMetadata$AnalysisDate,
+      is_identical_to(object@AnalysisMetadata$AnalysisDate)
     )
   })
   it("stores the new status", {
     expect_that(
-      object.model@Status,
+      object.model@AnalysisMetadata$Status,
       is_identical_to("converged")
     )
     expect_that(

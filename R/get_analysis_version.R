@@ -33,6 +33,7 @@ setMethod(
       Fingerprint = attr(version, "AnalysisVersion"),
       stringsAsFactors = FALSE
     )
+    version <- version[order(version$Description, version$Version), ]
     new(
       "n2kAnalysisVersion",
       AnalysisVersion = analysis.version,
@@ -47,21 +48,26 @@ setMethod(
 )
 
 #' @rdname get_analysis_version
-#' @aliases get_analysis_version,n2kModel-methods
+#' @aliases get_analysis_version,n2kAnalysisMetadata-methods
 #' @importFrom methods setMethod
-#' @include n2kModel_class.R
+#' @include n2kAnalysisMetadata_class.R
 setMethod(
   f = "get_analysis_version",
-  signature = signature(version = "n2kModel"),
+  signature = signature(version = "n2kAnalysisMetadata"),
   definition = function(version){
-    get_analysis_version(version = session_package(version))
+    new(
+      "n2kAnalysisVersion",
+      AnalysisVersion = version@AnalysisVersion,
+      Rpackage = version@Rpackage,
+      AnalysisVersionRPackage = version@AnalysisVersionRPackage
+    )
   }
 )
 
 #' @rdname get_analysis_version
 #' @aliases get_analysis_version,sessionInfo-methods
 #' @importFrom methods setMethod
-#' @include n2kModel_class.R
+#' @include import_S3_classes.R
 setMethod(
   f = "get_analysis_version",
   signature = signature(version = "sessionInfo"),

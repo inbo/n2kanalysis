@@ -3,13 +3,13 @@
 \docType{methods}
 \name{get_model_type}
 \alias{get_model_type}
-\alias{get_model_type,n2kModel-method}
-\alias{get_model_type,n2kModel-methods}
+\alias{get_model_type,n2kAnalysisMetadata-method}
+\alias{get_model_type,n2kAnalysisMetadata-methods}
 \title{Get the model type of a n2kModel object}
 \usage{
 get_model_type(x)
 
-\S4method{get_model_type}{n2kModel}(x)
+\S4method{get_model_type}{n2kAnalysisMetadata}(x)
 }
 \arguments{
 \item{x}{the n2kModel object}

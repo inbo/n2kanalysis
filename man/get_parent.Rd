@@ -11,7 +11,7 @@
 \usage{
 get_parent(x, ...)
 
-\S4method{get_parent}{n2kLrtGlmer}(x, ...)
+\S4method{get_parent}{n2kLrtGlmer}(x, which.parent = c(0, 1))
 
 \S4method{get_parent}{n2kComposite}(x, ...)
 }
@@ -19,16 +19,13 @@ get_parent(x, ...)
 \item{x}{the n2kModel object}
 
 \item{...}{additional arguments (see details)}
+
+\item{which.parent}{0 = the parent for the null hypothesis, 1 =  the parent for the alternative hypothesis}
 }
 \value{
 the parent of the object
 }
 \description{
 Get the fingerprint of the parent analysis of a n2kModel object
-}
-\details{
-\describe{
- \item{\code{which.parent}}{0 = the parent for the null hypothesis, 1 =  the parent for the alternative hypothesis}
-}
 }
 

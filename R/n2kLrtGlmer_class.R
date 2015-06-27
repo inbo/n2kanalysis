@@ -1,7 +1,5 @@
-#' @importFrom methods setOldClass
-setOldClass("anova")
-
 #' @importFrom methods setClassUnion
+#' @include import_S3_classes.R
 setClassUnion("maybeAnova", c("anova", "NULL"))
 
 #' The n2kLrtGlmer class
@@ -9,11 +7,9 @@ setClassUnion("maybeAnova", c("anova", "NULL"))
 #' Calculate composite indices from multiple analysis
 #' @section Slots:
 #'   \describe{
-#'    \item{\code{Parent}}{the file fingerprint of the alternative model}
 #'    \item{\code{Parent0}}{the file fingerprint of the NULL model}
 #'    \item{\code{Model}}{the alternative model}
 #'    \item{\code{Model0}}{the NULL model}
-#'    \item{\code{ParentStatus}}{the last known status of the parent analysis}
 #'    \item{\code{Anova}}{the anova table}
 #'   }
 #' @name n2kLrtGlmer-class
@@ -26,11 +22,9 @@ setClassUnion("maybeAnova", c("anova", "NULL"))
 setClass(
   "n2kLrtGlmer",
   representation = representation(
-    Parent = "character",
     Parent0 = "character",
     Model = "maybeGlmerMod",
     Model0 = "maybeGlmerMod",
-    ParentStatus = "data.frame",
     Anova = "maybeAnova"
   ),
   contains = "n2kModel"
@@ -38,46 +32,45 @@ setClass(
 
 #' @importFrom methods setValidity
 #' @importFrom n2khelper check_single_character check_dataframe_variable
-#' @importFrom digest digest
 setValidity(
   "n2kLrtGlmer",
   function(object){
-    check_dataframe_variable(
-      df = object@ParentStatus, 
-      variable = c("FileFingerprint", "Status", "StatusFingerprint"),
-      name = "ParentStatus"
-    )
-    check_single_character(object@Parent, name = "Parent")
     check_single_character(object@Parent0, name = "Parent0")
     
-    if(!all.equal(
-      sort(c(object@Parent, object@Parent0)),
-      object@ParentStatus$FileFingerprint
-    )){
-      stop("FileFingerprints in ParentStatus slot don't match Parent and Parent0 slots")
+    if (nrow(object@AnalysisRelation) != 2) {
+      stop("'AnalysisRelation' slot must have exactly 2 rows")
+    }
+    if (anyNA(object@AnalysisRelation$ParentAnalysis)) {
+      stop("'ParentAnalysis' in 'AnalysisRelation' slot cannot be missing")
+    }
+    if (!object@Parent0 %in% object@AnalysisRelation$ParentAnalysis) {
+      stop("'Parent0' is not available in 'AnalysisRelation' slot")
     }
     
-    file.fingerprint <- digest(
+    file.fingerprint <- get_sha1(
       list(
-        object@SchemeID, object@SpeciesGroupID, object@LocationGroupID, 
-        object@ModelType, object@Covariate, object@FirstImportedYear, object@LastImportedYear,
-        object@Duration, object@LastAnalysedYear, object@AnalysisDate, object@Seed, 
-        object@Parent, object@Parent0
-      ),
-      algo = "sha1"
+        object@AnalysisMetadata$SchemeID, object@AnalysisMetadata$SpeciesGroupID,
+        object@AnalysisMetadata$LocationGroupID, object@AnalysisMetadata$ModelType, 
+        object@AnalysisMetadata$Formula, object@AnalysisMetadata$FirstImportedYear,
+        object@AnalysisMetadata$LastImportedYear, object@AnalysisMetadata$Duration, 
+        object@AnalysisMetadata$LastAnalysedYear, object@AnalysisMetadata$AnalysisDate, 
+        object@AnalysisMetadata$Seed, object@Parent0, object@AnalysisRelation$ParentAnalysis
+      )
     )
-    if(object@FileFingerprint != file.fingerprint){
+    if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
       stop("Corrupt FileFingerprint")
     }
     
-    status.fingerprint <- digest(
+    status.fingerprint <- get_sha1(
       list(
-        object@FileFingerprint, object@Status, object@ParentStatus, object@Model, 
-        object@Model0, object@Anova, object@SessionInfo
-      ),
-      algo = "sha1"
+        object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status, 
+        coef(object@Model), coef(object@Model0), object@Anova, 
+        object@AnalysisMetadata$AnalysisVersion, 
+        object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage, 
+        object@AnalysisRelation
+      )
     )
-    if(object@StatusFingerprint != status.fingerprint){
+    if (object@AnalysisMetadata$StatusFingerprint != status.fingerprint) {
       stop("Corrupt StatusFingerprint")
     }
     

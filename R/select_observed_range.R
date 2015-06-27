@@ -12,7 +12,7 @@ select_observed_range <- function(observation, variable){
   junk <- check_dataframe_variable(
     df = observation, variable = c("Count", variable), name = "observation", error = TRUE
   )
-  if(any(is.na(observation[, variable]))){
+  if (any(is.na(observation[, variable]))) {
     warning(variable, " contains missing values. Corresponding rows are removed.")
   }
   
@@ -20,4 +20,3 @@ select_observed_range <- function(observation, variable){
   selection <- observed.range[1] <= observation[, variable] & observation[, variable] <= observed.range[2]
   return(observation[selection, ])
 }
-

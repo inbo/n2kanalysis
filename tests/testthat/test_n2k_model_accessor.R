@@ -1,12 +1,13 @@
 context("n2kModel accesor functions")
 data("cbpp", package = "lme4")
-cbpp$Count <- cbpp$incidence
+cbpp$DatasourceID <- 1
+cbpp$ObservationID <- seq_len(nrow(cbpp))
 object <- n2k_glmer_poisson(
   scheme.id = 1,
   species.group.id = 2,
   location.group.id = 3,
   model.type = "glmer poisson: period + herd",
-  covariate = "offset(log(size)) + period + (1|herd)",
+  formula = "incidence ~ offset(log(size)) + period + (1|herd)",
   first.imported.year = 1990,
   last.imported.year = 2015,
   analysis.date = as.POSIXct("2000-01-01"),
@@ -26,11 +27,11 @@ describe("status", {
   it("returns the status", {
     expect_that(
       status(object),
-      is_identical_to(object@Status)
+      is_identical_to(object@AnalysisMetadata$Status)
     )
     expect_that(
       status(object.model),
-      is_identical_to(object.model@Status)
+      is_identical_to(object.model@AnalysisMetadata$Status)
     )
   })
   it("updates the status", {
@@ -65,7 +66,7 @@ describe("get_seed", {
   it("returns the Seed slot", {
     expect_that(
       get_seed(object),
-      is_identical_to(object@Seed)
+      is_identical_to(object@AnalysisMetadata$Seed)
     )
   })
 })
@@ -75,7 +76,7 @@ describe("get_scheme_id", {
   it("returns the SchemeID slot", {
     expect_that(
       get_scheme_id(object),
-      is_identical_to(object@SchemeID)
+      is_identical_to(object@AnalysisMetadata$SchemeID)
     )
   })
 })
@@ -85,7 +86,7 @@ describe("get_species_group_id", {
   it("returns the SpeciesGroupID slot", {
     expect_that(
       get_species_group_id(object),
-      is_identical_to(object@SpeciesGroupID)
+      is_identical_to(object@AnalysisMetadata$SpeciesGroupID)
     )
   })
 })
@@ -95,7 +96,7 @@ describe("get_location_group_id", {
   it("returns the LocationGroupID slot", {
     expect_that(
       get_location_group_id(object),
-      is_identical_to(object@LocationGroupID)
+      is_identical_to(object@AnalysisMetadata$LocationGroupID)
     )
   })
 })
@@ -105,7 +106,7 @@ describe("get_analysis_date", {
   it("returns the AnalysisDate slot", {
     expect_that(
       get_analysis_date(object),
-      is_identical_to(object@AnalysisDate)
+      is_identical_to(object@AnalysisMetadata$AnalysisDate)
     )
   })
 })
@@ -115,47 +116,17 @@ describe("get_model_type", {
   it("returns the ModelType slot", {
     expect_that(
       get_model_type(object),
-      is_identical_to(object@ModelType)
+      is_identical_to(object@AnalysisMetadata$ModelType)
     )
   })
 })
 
-context("get_covariate() handles n2kModel objects")
-describe("get_covariate", {
-  it("returns the Covariate slot", {
+context("get_formula() handles n2kModel objects")
+describe("get_formula", {
+  it("returns the AnalysisFormula slot", {
     expect_that(
-      get_covariate(object),
-      is_identical_to(object@Covariate)
-    )
-  })
-})
-
-context("get_model_set() handles n2kModel objects")
-describe("get_model_set", {
-  it("returns the model set data.frame", {
-    expect_that(
-      get_model_set(object),
-      is_identical_to(
-        data.frame(
-          ModelType = object@ModelType,
-          FirstImportedYear = object@FirstImportedYear,
-          LastImportedYear = object@LastImportedYear,
-          Duration = object@Duration,
-          LastAnalysedYear = object@LastAnalysedYear,
-          Seed = object@Seed,
-          stringsAsFactors = FALSE
-        )
-      )
-    )
-  })
-})
-
-context("get_session_info() handles n2kModel objects")
-describe("get_session_info()", {
-  it("returns the SessionInfo slot", {
-    expect_that(
-      get_session_info(object),
-      is_identical_to(object@SessionInfo)
+      get_formula(object),
+      is_identical_to(object@AnalysisFormula)
     )
   })
 })
@@ -165,7 +136,7 @@ describe("get_file_fingerprint()", {
   it("returns the FileFingerprint slot", {
     expect_that(
       get_file_fingerprint(object),
-      is_identical_to(object@FileFingerprint)
+      is_identical_to(object@AnalysisMetadata$FileFingerprint)
     )
   })
 })
@@ -175,7 +146,7 @@ describe("get_status_fingerprint()", {
   it("returns the StatusFingerprint slot", {
     expect_that(
       get_status_fingerprint(object),
-      is_identical_to(object@StatusFingerprint)
+      is_identical_to(object@AnalysisMetadata$StatusFingerprint)
     )
   })
 })

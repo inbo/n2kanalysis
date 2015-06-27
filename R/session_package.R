@@ -16,7 +16,6 @@ setGeneric(
 #' @rdname session_package
 #' @aliases session_package,sessionInfo-methods
 #' @importFrom methods setMethod
-#' @importFrom digest digest
 setMethod(
   f = "session_package",
   signature = signature(session = "sessionInfo"),
@@ -32,7 +31,7 @@ setMethod(
       ),
       stringsAsFactors = FALSE
     )
-    if("otherPkgs" %in% names(session)){
+    if ("otherPkgs" %in% names(session)) {
       package <- rbind(
         package,
         do.call(rbind, lapply(session$otherPkgs, function(i){
@@ -44,7 +43,7 @@ setMethod(
         }))
       )
     }
-    if("loadedOnly" %in% names(session)){
+    if ("loadedOnly" %in% names(session)) {
       package <- rbind(
         package,
         do.call(rbind, lapply(session$loadedOnly, function(i){
@@ -58,20 +57,8 @@ setMethod(
     }
     rownames(package) <- NULL
     package <- package[order(package$Description), ]
-    package$Fingerprint <- apply(package, 1, digest, algo = "sha1")
-    attr(package, "AnalysisVersion") <- digest(package, algo = "sha1")
+    package$Fingerprint <- apply(package, 1, get_sha1)
+    attr(package, "AnalysisVersion") <- get_sha1(package)
     return(package)
-  }
-)
-
-#' @rdname session_package
-#' @aliases session_package,n2kModel-methods
-#' @importFrom methods setMethod
-#' @include n2kModel_class.R
-setMethod(
-  f = "session_package",
-  signature = signature(session = "n2kModel"),
-  definition = function(session){
-    session_package(get_session_info(session))
   }
 )

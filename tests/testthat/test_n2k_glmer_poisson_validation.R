@@ -1,12 +1,14 @@
 context("n2kGlmerPoisson validation")
 data("cbpp", package = "lme4")
-cbpp$Count <- cbpp$incidence
+cbpp$Weight <- cbpp$size
+cbpp$DatasourceID <- 1
+cbpp$ObservationID <- seq_len(nrow(cbpp))
 object <- n2k_glmer_poisson(
   scheme.id = 1,
   species.group.id = 2,
   location.group.id = 3,
   model.type = "glmer poisson: period + herd",
-  covariate = "offset(log(size)) + period + (1|herd)",
+  formula = "incidence ~ offset(log(size)) + period + (1|herd)",
   first.imported.year = 1990,
   last.imported.year = 2015,
   last.analysed.year = 1995,
@@ -19,11 +21,10 @@ weighted.object <- n2k_glmer_poisson(
   species.group.id = 2,
   location.group.id = 3,
   model.type = "weighted glmer poisson: period + herd",
-  covariate = "offset(log(size)) + period + (1|herd)",
+  formula = "incidence ~ offset(log(size)) + period + (1|herd)",
   first.imported.year = 1990,
   last.imported.year = 2015,
   analysis.date = as.POSIXct("2000-01-01"),
-  weight = "size",
   data = cbpp
 )
 
@@ -41,7 +42,7 @@ describe("file fingerprint", {
   
   it("detects changes in SchemeID", {
     change.object <- object
-    change.object@SchemeID <- 999L
+    change.object@AnalysisMetadata$SchemeID <- 999L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -50,7 +51,7 @@ describe("file fingerprint", {
 
   it("detects changes in SpeciesGroupID", {
     change.object <- object
-    change.object@SpeciesGroupID <- 999L
+    change.object@AnalysisMetadata$SpeciesGroupID <- 999L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -59,7 +60,7 @@ describe("file fingerprint", {
 
   it("detects changes in LocationGroupID", {
     change.object <- object
-    change.object@LocationGroupID <- 999L
+    change.object@AnalysisMetadata$LocationGroupID <- 999L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -68,7 +69,7 @@ describe("file fingerprint", {
 
   it("detects changes in FirstImportedYear", {
     change.object <- object
-    change.object@FirstImportedYear <- 999L
+    change.object@AnalysisMetadata$FirstImportedYear <- 999L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -77,7 +78,7 @@ describe("file fingerprint", {
   
   it("detects changes in LastImportedYear", {
     change.object <- object
-    change.object@LastImportedYear <- 2010L
+    change.object@AnalysisMetadata$LastImportedYear <- 2010L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -86,7 +87,7 @@ describe("file fingerprint", {
   
   it("detects changes in Duration", {
     change.object <- object
-    change.object@Duration <- 2L
+    change.object@AnalysisMetadata$Duration <- 2L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -95,49 +96,17 @@ describe("file fingerprint", {
   
   it("detects changes in LastAnalysedYear", {
     change.object <- object
-    change.object@LastAnalysedYear <- 1994L
+    change.object@AnalysisMetadata$LastAnalysedYear <- 1994L
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
     )
   })
   
-  it("detects changes in Weight", {
-    change.object <- object
-    change.object@Weight <- "size"
-    expect_that(
-      validObject(change.object),
-      throws_error("ModelType should be 'weighted glmer poisson'")
-    )
-    change.object@ModelType <- "weighted glmer poisson: period + herd"
-    expect_that(
-      validObject(change.object),
-      throws_error("Corrupt FileFingerprint")
-    )
-    
-    change.object <- weighted.object
-    change.object@Weight <- ""
-    expect_that(
-      validObject(change.object),
-      throws_error("ModelType should be 'glmer poisson'")
-    )
-    change.object@ModelType <- "glmer poisson: period + herd"
-    expect_that(
-      validObject(change.object),
-      throws_error("Corrupt FileFingerprint")
-    )
-
-    change.object <- weighted.object
-    change.object@Weight <- "herd"
-    expect_that(
-      validObject(change.object),
-      throws_error("Corrupt FileFingerprint")
-    )
-  })
   
   it("detects changes in AnalysisDate", {
     change.object <- object
-    change.object@AnalysisDate <- Sys.time()
+    change.object@AnalysisMetadata$AnalysisDate <- Sys.time()
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -146,19 +115,19 @@ describe("file fingerprint", {
   
   it("detects changes in ModelType", {
     change.object <- object
-    change.object@ModelType <- "glmer poisson: period"
+    change.object@AnalysisMetadata$ModelType <- "glmer poisson: period"
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
     )
   })
   
-  it("detects changes in Covariate", {
+  it("detects changes in Formula", {
     change.object <- object
-    change.object@Covariate <- "period"
+    change.object@AnalysisMetadata$Formula <- "incidence ~ period"
     expect_that(
       validObject(change.object),
-      throws_error("Corrupt FileFingerprint")
+      throws_error("Formulas in 'AnalysisMetadata' don't match 'AnalysisFormula'")
     )
   })
   
@@ -169,7 +138,7 @@ describe("status fingerprint", {
   
   it("detects changes in Status", {
     change.object <- object
-    change.object@Status <- "error"
+    change.object@AnalysisMetadata$Status <- "error"
     expect_that(
       validObject(change.object),
       throws_error("Corrupt StatusFingerprint")
@@ -197,10 +166,9 @@ describe("status fingerprint", {
     )
   })
   
-  it("detects changes in sessionInfo", {
-    require(optimx)
+  it("detects changes in AnalysisVersion", {
     change.object <- object
-    change.object@SessionInfo <- sessionInfo()
+    change.object@AnalysisMetadata$AnalysisVersion <- ""
     expect_that(
       validObject(change.object),
       throws_error("Corrupt StatusFingerprint")

@@ -18,7 +18,6 @@ Imports:
     methods,
     MASS,
     lme4,
-    digest,
     RODBC,
     n2khelper
 Collate:
@@ -32,6 +31,7 @@ Collate:
     'fit_every_model.R'
     'n2kModel_class.R'
     'n2kGlmerPoisson_class.R'
+    'import_S3_classes.R'
     'n2kLrtGlmer_class.R'
     'n2kInlaNbinomial_class.R'
     'n2kComposite_class.R'
@@ -39,22 +39,21 @@ Collate:
     'get_analysis_date.R'
     'get_analysis_version.R'
     'get_anomaly.R'
-    'get_covariate.R'
     'get_data.R'
     'get_file_fingerprint.R'
+    'get_formula.R'
     'get_location_group_id.R'
     'get_model.R'
     'get_model_parameter.R'
-    'get_model_set.R'
     'get_model_type.R'
     'get_parent.R'
     'get_result.R'
     'get_scheme_id.R'
     'get_seed.R'
-    'get_session_info.R'
+    'get_sha1.R'
     'get_species_group_id.R'
     'get_status_fingerprint.R'
-    'get_weight.R'
+    'import_result.R'
     'mark_obsolete_dataset.R'
     'n2k_composite.R'
     'n2k_glmer_poisson.R'
@@ -66,3 +65,4 @@ Collate:
     'select_observed_range.R'
     'session_package.R'
     'status.R'
+    'union.R'

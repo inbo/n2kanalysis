@@ -26,25 +26,25 @@ select_factor_count_strictly_positive <- function(observation, variable, thresho
   variable <- check_character(x = variable, name = "variable", na.action = na.fail)
   dimension <- check_single_strictly_positive_integer(x = dimension, name = "dimension")
   relative <- check_single_logical(x = relative, name = "relative")
-  if(relative && dimension > 1){
+  if (relative && dimension > 1) {
     stop("relative threshold is only defined for 1 dimension")
   }
-  if(relative){
+  if (relative) {
     threshold <- check_single_probability(x = threshold, name = "threshold")
   } else {
     threshold <- check_single_strictly_positive_integer(x = threshold, name = "threshold")
   }
-  junk <- check_dataframe_variable(
+  check_dataframe_variable(
     df = observation, variable = c("Count", variable), name = "observation", error = TRUE
   )
-  if(dimension > length(variable)){
+  if (dimension > length(variable)) {
     stop("the dimension can't exceed the number of variables")
   }
   
   positive.observation <- observation[observation$Count > 0, ]
   observed.combination <- table(positive.observation[, variable])
-  if(length(variable) == 1){
-    if(relative){
+  if (length(variable) == 1) {
+    if (relative) {
       observed.combination <- observed.combination / sum(observed.combination)
     }
     relevance <- observed.combination >= threshold

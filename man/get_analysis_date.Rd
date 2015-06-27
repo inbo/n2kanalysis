@@ -3,13 +3,13 @@
 \docType{methods}
 \name{get_analysis_date}
 \alias{get_analysis_date}
-\alias{get_analysis_date,n2kModel-method}
+\alias{get_analysis_date,n2kAnalysisMetadata-method}
 \alias{get_analysis_date,n2kModel-methods}
 \title{Get the analysis date of a n2kModel object}
 \usage{
 get_analysis_date(x)
 
-\S4method{get_analysis_date}{n2kModel}(x)
+\S4method{get_analysis_date}{n2kAnalysisMetadata}(x)
 }
 \arguments{
 \item{x}{the n2kModel object}

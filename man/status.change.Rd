@@ -7,7 +7,7 @@
 \alias{status<-,n2kGlmerPoisson-method}
 \alias{status<-,n2kInlaNbinomial-method}
 \alias{status<-,n2kLrtGlmer-method}
-\title{Overwrite the status of a n2kModel}
+\title{Overwrite the status of a n2kAnalysisMetadata}
 \usage{
 status(x) <- value
 
@@ -20,11 +20,11 @@ status(x) <- value
 \S4method{status}{n2kComposite}(x) <- value
 }
 \arguments{
-\item{x}{the n2kModel object}
+\item{x}{the n2kAnalysisMetadata object}
 
 \item{value}{the new values for the status}
 }
 \description{
-Overwrite the status of a n2kModel
+Overwrite the status of a n2kAnalysisMetadata
 }
 

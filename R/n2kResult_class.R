@@ -10,23 +10,20 @@
 #' @include n2kParameter_class.R
 setClass(
   "n2kResult",
-  representation = representation(
-    AnalysisMetadata = "n2kAnalysisMetadata"
-  ),
-  contains = c("n2kAnalysisVersion", "n2kParameter", "n2kAnomaly")
+  contains = c("n2kAnalysisMetadata", "n2kAnomaly")
 )
 
 #' @importFrom methods setValidity
 setValidity(
   "n2kResult",
   function(object){
-    if(!all(object@AnalysisMetadata$AnalysisVersion %in% object@AnalysisVersion$Fingerprint)){
+    if (!all(object@AnalysisMetadata$AnalysisVersion %in% object@AnalysisVersion$Fingerprint)) {
       stop("Some AnalysisVersion in 'AnalysisMetadata' slot are not present in 'AnalysisVersion' slot")
     }
-    if(!all(object@ParameterEstimate$Analysis %in% object@AnalysisMetadata$Fingerprint)){
+    if (!all(object@ParameterEstimate$Analysis %in% object@AnalysisMetadata$FileFingerprint)) {
       stop("Some Analysis in 'ParameterEstimate' slot are not present in 'AnalysisMetadata' slot")
     }
-    if(!all(object@Anomaly$Analysis %in% object@AnalysisMetadata$Fingerprint)){
+    if (!all(object@Anomaly$Analysis %in% object@AnalysisMetadata$FileFingerprint)) {
       stop("Some Analysis in 'Anomaly' slot are not present in 'AnalysisMetadata' slot")
     }
     return(TRUE)

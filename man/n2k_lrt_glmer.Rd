@@ -3,31 +3,23 @@
 \docType{methods}
 \name{n2k_lrt_glmer}
 \alias{n2k_lrt_glmer}
-\alias{n2k_lrt_glmer,character,ANY-method}
-\alias{n2k_lrt_glmer,my_lmer-methods}
-\alias{n2k_lrt_glmer,n2kLrtGlmer,glmerMod-method}
+\alias{n2k_lrt_glmer,character-method}
 \alias{n2k_lrt_glmer,n2kLrtGlmer-methods}
 \title{Create a n2kLrtGlmer object}
 \usage{
-n2k_lrt_glmer(parent, ..., model.fit)
+n2k_lrt_glmer(parent, ...)
 
-\S4method{n2k_lrt_glmer}{character,ANY}(parent, ..., model.fit)
-
-\S4method{n2k_lrt_glmer}{n2kLrtGlmer,glmerMod}(parent, ..., model.fit)
+\S4method{n2k_lrt_glmer}{character}(parent, ...)
 }
 \arguments{
 \item{parent}{the file fingerprint of the paretnt}
 
 \item{...}{other arguments. See below}
-
-\item{model.fit}{The fitted model}
 }
 \description{
 Create a n2kLrtGlmer object
 
 A new n2kLrtGlmer model is created when \code{parent} is a character
-
-In case \code{parent} a n2kLrtGlmer object is, then only the model and status are updated. All other slots are unaffected.
 }
 \details{
 \describe{
@@ -35,7 +27,7 @@ In case \code{parent} a n2kLrtGlmer object is, then only the model and status ar
    \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
    \item{\code{species.group.id}}{a single integer identifing the species group}
    \item{\code{location.group.id}}{a single integer identifing the location group}
-   \item{\code{covariate}}{a single character identifying the comparison}
+   \item{\code{formula}}{a single character identifying the comparison}
    \item{\code{first.imported.year}}{Oldest year considered in the data}
    \item{\code{last.imported.year}}{Most recent year considered in the data}
    \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}

@@ -23,13 +23,13 @@ select_factor_threshold <- function(observation, variable, threshold){
     error = TRUE
   )
   
-  if(class(observation[, variable]) == "factor"){
+  if (class(observation[, variable]) == "factor") {
     variable.factor <- observation[, variable]
   } else {
     variable.factor <- factor(observation[, variable])
     warning(variable, " was converted to a factor")
   }
-  if(nrow(observation) < 2 * length(levels(variable.factor))){
+  if (nrow(observation) < 2 * length(levels(variable.factor))) {
     stop("The number of observations much be at least twice the number of levels in ", variable)
   }
   

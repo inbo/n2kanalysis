@@ -3,13 +3,13 @@
 \docType{methods}
 \name{get_status_fingerprint}
 \alias{get_status_fingerprint}
-\alias{get_status_fingerprint,n2kModel-method}
-\alias{get_status_fingerprint,n2kModel-methods}
+\alias{get_status_fingerprint,n2kAnalysisMetadata-method}
+\alias{get_status_fingerprint,n2kAnalysisMetadata-methods}
 \title{Get the status fingerprint of a n2kModel object}
 \usage{
 get_status_fingerprint(x)
 
-\S4method{get_status_fingerprint}{n2kModel}(x)
+\S4method{get_status_fingerprint}{n2kAnalysisMetadata}(x)
 }
 \arguments{
 \item{x}{the n2kModel object}

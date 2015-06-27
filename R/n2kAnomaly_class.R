@@ -11,6 +11,7 @@ setClass(
     AnomalyType = "data.frame",
     Anomaly = "data.frame"
   ),
+  contains = "n2kParameter",
   prototype = prototype(
     AnomalyType = data.frame(
       Description = character(0),
@@ -18,11 +19,54 @@ setClass(
       stringsAsFactors = FALSE
     ),
     Anomaly = data.frame(
-      Analysis = character(0),
       AnomalyType = character(0),
-      ObservationID = character(0),
-      Estimate = numeric(0),
+      Analysis = character(0),
+      Parameter = character(0),
+      DatasourceID = integer(0),
+      Datafield = character(0),
       stringsAsFactors = FALSE
     )
   )
+)
+
+#' @importFrom methods setValidity
+#' @importFrom n2khelper check_dataframe_variable
+setValidity(
+  "n2kAnomaly",
+  function(object){
+    required.class <- list(
+      Description = c("character", "factor"),
+      Fingerprint = c("character", "factor", "integer")
+    )
+    check_dataframe_variable(
+      df = object@AnomalyType,
+      variable = required.class,
+      name = "AnomalyType"
+    )
+
+    required.class <- list(
+      AnomalyType = c("character", "factor", "integer"),
+      Analysis = c("character", "factor"),
+      Parameter = c("character", "factor", "integer"),
+      DatasourceID = "integer",
+      Datafield = c("character", "factor")
+    )
+    check_dataframe_variable(
+      df = object@Anomaly,
+      variable = required.class,
+      name = "Anomaly"
+    )
+    
+    if (!all(object@Anomaly$AnomalyType %in% object@AnomalyType$Fingerprint)) {
+      stop("Some Anomaly have no matching Fingerprint in 'AnomalyType'")
+    }
+    
+    current <- object@Anomaly[, c("Analysis", "Parameter")]
+    merged <- merge(current, object@ParameterEstimate[, c("Analysis", "Parameter")])
+    if (nrow(current) != nrow(merged)) {
+      stop("Mismatch on Parameter between Anomaly and ParameterEstimate slot")
+    }
+
+    return(TRUE)
+  }
 )

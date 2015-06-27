@@ -6,7 +6,6 @@
 #' @exportMethod get_location_group_id
 #' @docType methods
 #' @importFrom methods setGeneric
-#' @include n2kModel_class.R
 setGeneric(
   name = "get_location_group_id", 
   def = function(x){
@@ -15,12 +14,13 @@ setGeneric(
 )
 
 #' @rdname get_location_group_id
-#' @aliases get_location_group_id,n2kModel-methods
+#' @aliases get_location_group_id,n2kAnalysisMetadata-methods
 #' @importFrom methods setMethod
+#' @include n2kAnalysisMetadata_class.R
 setMethod(
   f = "get_location_group_id",
-  signature = signature(x = "n2kModel"),
+  signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x){
-    return(x@LocationGroupID)
+    return(x@AnalysisMetadata$LocationGroupID)
   }
 )

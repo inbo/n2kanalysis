@@ -3,13 +3,13 @@
 \docType{methods}
 \name{get_location_group_id}
 \alias{get_location_group_id}
-\alias{get_location_group_id,n2kModel-method}
-\alias{get_location_group_id,n2kModel-methods}
+\alias{get_location_group_id,n2kAnalysisMetadata-method}
+\alias{get_location_group_id,n2kAnalysisMetadata-methods}
 \title{Get the location group id of a n2kModel object}
 \usage{
 get_location_group_id(x)
 
-\S4method{get_location_group_id}{n2kModel}(x)
+\S4method{get_location_group_id}{n2kAnalysisMetadata}(x)
 }
 \arguments{
 \item{x}{the n2kModel object}

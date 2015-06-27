@@ -5,12 +5,12 @@
 #' @param n.cluster the number of clusters to use
 #' @export
 fit_every_model <- function(path = ".", status, verbose = TRUE, n.cluster = 1){
-  if(missing(status)){
+  if (missing(status)) {
     status <- c("new", "waiting")
   } else {
     status <- check_character(status, name = "status")
     test.status <- status %in% c("new", "waiting", "error", "converged", "false convergence", "unstable")
-    if(!all(test.status)){
+    if (!all(test.status)) {
       warning(
         "Following status values are ignored: ", 
         paste(status[!test.status], collapse = ", ")
@@ -20,12 +20,12 @@ fit_every_model <- function(path = ".", status, verbose = TRUE, n.cluster = 1){
   }
   path <- check_path(path, type = "directory")
   files <- list.files(path = path, pattern = "\\.rda$", full.names = TRUE)
-  if(n.cluster == 1){
+  if (n.cluster == 1) {
     junk <- lapply(files, fit_model, status = status, verbose = verbose)
   } else {
-    if(requireNamespace("parallel", quietly = TRUE)){
+    if( requireNamespace("parallel", quietly = TRUE)) {
       available.cluster <- parallel::detectCores()
-      if(n.cluster > available.cluster){
+      if (n.cluster > available.cluster) {
         message("Requesting ", n.cluster, " clusters but only ", available.cluster, " available.")
         n.cluster <- available.cluster
       }
@@ -36,6 +36,7 @@ fit_every_model <- function(path = ".", status, verbose = TRUE, n.cluster = 1){
         cl = cl, 
         x = files, 
         fun = function(x, status, verbose){
+          require(optimx)
           require(n2kanalysis)
           fit_model(x = x, status = status, verbose = verbose)
         }, 

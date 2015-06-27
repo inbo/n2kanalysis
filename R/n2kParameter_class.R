@@ -44,19 +44,19 @@ setValidity(
       variable = c("Analysis", "Parameter", "Estimate", "LowerConfidenceLimit", "UpperConfidenceLimit"),
       name = "ParameterEstimate"
     )
-    if(!all(na.omit(object@Parameter$Parent) %in% object@Parameter$Fingerprint)){
+    if (!all(na.omit(object@Parameter$Parent) %in% object@Parameter$Fingerprint)) {
       stop("Some Parent in 'Parameter' slot not found")
     }
-    if(!all(object@ParameterEstimate$Parameter %in% object@Parameter$Fingerprint)){
+    if (!all(object@ParameterEstimate$Parameter %in% object@Parameter$Fingerprint)) {
       stop("Some Parameter in 'ParameterEstimate' slot have no matching Fingerprint in 'Parameter' slot")
     }
-    if(anyDuplicated(object@Parameter$Fingerprint)){
+    if (anyDuplicated(object@Parameter$Fingerprint)) {
       stop("Duplicated Fingerprint in 'Parameter' slot")
     }
-    if(anyDuplicated(object@Parameter[, c("Description", "Parent")])){
+    if (anyDuplicated(object@Parameter[, c("Description", "Parent")])) {
       stop("Duplicated rows in 'Parameter' slot")
     }
-    if(anyDuplicated(object@ParameterEstimate[, c("Analysis", "Parameter")])){
+    if (anyDuplicated(object@ParameterEstimate[, c("Analysis", "Parameter")])) {
       stop("Duplicated rows in 'ParameterEstimate' slot")
     }
     return(TRUE)

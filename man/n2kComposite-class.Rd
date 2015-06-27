@@ -10,8 +10,6 @@ Calculate composite indices from multiple analysis
 \section{Slots}{
 
   \describe{
-   \item{\code{Parent}}{a vector with the FileFingerprints of the parent analysis}
-   \item{\code{ParentStatus}}{A data.frame with the FileFingerprint, StatusFingerprint and Status of the parent analysis}
    \item{\code{Parameter}}{A data.frame with the relevant parameter estimates of each parent analysis}
    \item{\code{Index}}{The composite index based on the parameters}
   }
