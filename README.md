@@ -1,7 +1,7 @@
 **Branch** | **Build status** | **Test coverage**
 -- | -- | --
-master | [![wercker status](https://app.wercker.com/status/9f6c69b5cc40a32aeffeb5e8ee42b552/s/master "wercker status master branch")](https://app.wercker.com/project/bykey/9f6c69b5cc40a32aeffeb5e8ee42b552) | [![codecov.io](http://codecov.io/bitbucket/thierry_onkelinx/n2khelper/coverage.svg?branch=master)](http://codecov.io/bitbucket/thierry_onkelinx/n2khelper?branch=master)
-develop | [![wercker status](https://app.wercker.com/status/9f6c69b5cc40a32aeffeb5e8ee42b552/s/develop "wercker status develop branch")](https://app.wercker.com/project/bykey/9f6c69b5cc40a32aeffeb5e8ee42b552) | [![codecov.io](http://codecov.io/bitbucket/thierry_onkelinx/n2khelper/coverage.svg?branch=develop)](http://codecov.io/bitbucket/thierry_onkelinx/n2khelper?branch=develop)
+master | [![wercker status](https://app.wercker.com/status/38bcfec6bd0177b7b48297e66e49cd62/s/master "wercker status master ranch")](https://app.wercker.com/project/bykey/38bcfec6bd0177b7b48297e66e49cd62) | [![codecov.io](http://codecov.io/bitbucket/thierry_onkelinx/n2kanalysis/coverage.svg?branch=master)](http://codecov.io/bitbucket/thierry_onkelinx/n2kanalysis?branch=master)
+develop | [![wercker status](https://app.wercker.com/status/38bcfec6bd0177b7b48297e66e49cd62/s/develop "wercker status develop branch")](https://app.wercker.com/project/bykey/38bcfec6bd0177b7b48297e66e49cd62) | [![codecov.io](http://codecov.io/bitbucket/thierry_onkelinx/n2kanalysis/coverage.svg?branch=develop)](http://codecov.io/bitbucket/thierry_onkelinx/n2kanalysis?branch=develop)
 
 # The n2kanalysis package
 
