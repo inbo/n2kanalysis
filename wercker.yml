@@ -7,6 +7,10 @@ build:
           apt-get update -y
           apt-get install -y r-cran-RODBC
     - jimhester/r-dependencies
+    - script:
+        name: install n2khelper
+        code: |
+          Rscript -e 'devtools::install_bitbucket("n2khelper", "ThierryO", ref = "development")'
     - jimhester/r-check
     - jimhester/r-coverage
     - jimhester/r-lint
