@@ -7,6 +7,7 @@
 #'   Year = 1:10
 #' )
 #' select_observed_range(observation, "Year")
+#' @importFrom n2khelper check_character check_dataframe_variable
 select_observed_range <- function(observation, variable){
   variable <- check_character(x = variable, name = "variable", na.action = na.fail)
   junk <- check_dataframe_variable(

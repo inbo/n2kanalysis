@@ -28,7 +28,7 @@ setMethod(
 #' @rdname status
 #' @aliases status,character-methods
 #' @importFrom methods setMethod
-#' @importFrom n2khelper check_path
+#' @importFrom n2khelper check_path read_object_environment
 setMethod(
   f = "status",
   signature = signature(x = "character"),

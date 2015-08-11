@@ -43,7 +43,7 @@ setMethod(
 
 #' @rdname get_result
 #' @importFrom methods setMethod validObject
-#' @importFrom n2khelper check_single_character check_single_logical
+#' @importFrom assertthat assert_that is.string is.flag is.count
 #' @param keep.fingerprint Keep the character fingerprints? Otherwise change them into integers
 #' @param n.cluster the number of clusters to run this function in parallel. Defaults to 1 (= no parallel computing).
 setMethod(
@@ -51,9 +51,9 @@ setMethod(
   signature = signature(x = "character"),
   definition = function(x, keep.fingerprint = TRUE, n.cluster = 1, ...){
     # check arguments
-    x <- check_single_character(x)
-    keep.fingerprint <- check_single_logical(keep.fingerprint, name = "keep.fingerprint")
-    n.cluster <- check_single_strictly_positive_integer(n.cluster, name = "n.cluster")
+    assert_that(is.string(x))
+    assert_that(is.flag(keep.fingerprint))
+    assert_that(is.count(n.cluster))
 
     # x is an existing file
     if (file_test("-f", x)) {

@@ -16,6 +16,7 @@ setGeneric(
 #' @rdname fit_model
 #' @importFrom methods setMethod
 #' @importFrom n2khelper check_path read_object_environment
+#' @importFrom assertthat assert_that is.flag
 #' @details
 #' \describe{
 #'  \item{\code{status}}{A vector with status levels naming the levels which should be recalculated. Defaults to \code{"new"}}
@@ -30,7 +31,7 @@ setMethod(
     if (is.null(dots$verbose)) {
       dots$verbose <- TRUE
     } else {
-      dots$verbose <- check_single_logical(dots$verbose, name = "verbose")
+      assert_that(is.flag(dots$verbose))
     }
     if (dots$verbose) {
       message(x)
@@ -60,7 +61,6 @@ setMethod(
 
 #' @rdname fit_model
 #' @importFrom methods setMethod
-#' @importFrom n2khelper check_dataframe_covariate check_dataframe_variable
 #' @importFrom lme4 glmer glmerControl
 #' @include n2kGlmerPoisson_class.R
 setMethod(

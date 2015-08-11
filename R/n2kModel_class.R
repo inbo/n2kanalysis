@@ -17,7 +17,6 @@ setClass(
 )
 
 #' @importFrom methods setValidity
-#' @importFrom n2khelper check_single_strictly_positive_integer check_single_character check_single_posix
 setValidity(
   "n2kModel",
   function(object){

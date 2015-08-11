@@ -5,7 +5,8 @@
 #' @param dimension indicates which element of \code{variable} is used for the final aggregation
 #' @param relative When FALSE the threshold is the number of non-zero observations. When TRUE the threshold is the proportion of non-zero observations. Defaults to FALSE.
 #' @export
-#' @importFrom n2khelper check_character check_single_strictly_positive_integer check_dataframe_variable check_single_logical
+#' @importFrom n2khelper check_character check_dataframe_variable check_single_probability
+#' @importFrom assertthat assert_that is.count is.flag
 #' @examples
 #' observation <- data.frame(
 #'   Count = c(4, 4, 4, 4, 3, 3, 3, 0, 2, 2, 0, 0),
@@ -24,15 +25,15 @@
 #' )
 select_factor_count_strictly_positive <- function(observation, variable, threshold, relative = FALSE, dimension = 1){
   variable <- check_character(x = variable, name = "variable", na.action = na.fail)
-  dimension <- check_single_strictly_positive_integer(x = dimension, name = "dimension")
-  relative <- check_single_logical(x = relative, name = "relative")
+  assert_that(is.count(dimension))
+  assert_that(is.flag(relative))
   if (relative && dimension > 1) {
     stop("relative threshold is only defined for 1 dimension")
   }
   if (relative) {
     threshold <- check_single_probability(x = threshold, name = "threshold")
   } else {
-    threshold <- check_single_strictly_positive_integer(x = threshold, name = "threshold")
+    assert_that(is.count(threshold))
   }
   check_dataframe_variable(
     df = observation, variable = c("Count", variable), name = "observation", error = TRUE

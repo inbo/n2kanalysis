@@ -24,7 +24,6 @@ setClass(
 
 
 #' @importFrom methods setValidity
-#' @importFrom n2khelper check_single_character check_dataframe_variable
 setValidity(
   "n2kComposite",
   function(object){

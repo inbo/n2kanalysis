@@ -31,12 +31,12 @@ setClass(
 )
 
 #' @importFrom methods setValidity
-#' @importFrom n2khelper check_single_character check_dataframe_variable
+#' @importFrom assertthat assert_that is.string
 setValidity(
   "n2kLrtGlmer",
   function(object){
-    check_single_character(object@Parent0, name = "Parent0")
     
+    assert_that(is.string(object@Parent0))
     if (nrow(object@AnalysisRelation) != 2) {
       stop("'AnalysisRelation' slot must have exactly 2 rows")
     }

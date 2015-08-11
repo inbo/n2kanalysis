@@ -6,7 +6,8 @@
 #' @param threshold the minimal threshold
 #' @export
 #' @importFrom MASS glm.nb
-#' @importFrom n2khelper check_single_character check_single_probability check_dataframe_variable
+#' @importFrom n2khelper check_single_probability check_dataframe_variable
+#' @importFrom assertthat assert_that is.string
 #' @examples
 #' observation <- data.frame(
 #'   Count = c(100, 101, 50, 51, 1, 0, 0, 0),
@@ -14,7 +15,7 @@
 #' )
 #' select_factor_threshold(observation, "LocationID", threshold = 0.05)
 select_factor_threshold <- function(observation, variable, threshold){
-  variable <- check_single_character(x = variable, name = "variable")
+  assert_that(is.string(variable))
   threshold <- check_single_probability(x = threshold, name = "threshold")
   junk <- check_dataframe_variable(
     df = observation, 

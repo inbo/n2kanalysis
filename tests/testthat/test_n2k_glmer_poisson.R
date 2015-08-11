@@ -159,27 +159,12 @@ describe("n2k_glmer_poisson", {
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        seed = this.seed + 1e-11
-      )@AnalysisMetadata$Seed,
-      is_identical_to(this.seed)
-    )
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        scheme.id = this.scheme.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         seed = this.seed + 0.1
       ),
-      throws_error("seed is not integer")
+      throws_error("seed is not a count \\(a single positive integer\\)")
     )
   })
   it("sets a random seed when not provided", {
@@ -188,7 +173,7 @@ describe("n2k_glmer_poisson", {
       is_a("integer")
     )
   })
-  
+
   it("sets the correct SchemeID", {
     expect_that(
       n2k_glmer_poisson(
@@ -230,26 +215,12 @@ describe("n2k_glmer_poisson", {
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id + 1e-11
-      )@AnalysisMetadata$SchemeID,
-      is_identical_to(this.scheme.id)
-    )
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
         scheme.id = this.scheme.id + 0.1
       ),
-      throws_error("scheme.id is not integer")
+      throws_error("scheme.id is not a count \\(a single positive integer\\)")
     )
   })
-  
+
   it("sets the correct SpeciesGroupID", {
     expect_that(
       n2k_glmer_poisson(
@@ -284,20 +255,6 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
-        species.group.id = this.species.group.id + 1e-11,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$SpeciesGroupID,
-      is_identical_to(this.species.group.id)
-    )
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
         species.group.id = this.species.group.id + 0.1,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -307,10 +264,10 @@ describe("n2k_glmer_poisson", {
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("species.group.id is not integer")
+      throws_error("species.group.id is not a count \\(a single positive integer\\)")
     )
   })
-  
+
   it("sets the correct LocationGroupID", {
     expect_that(
       n2k_glmer_poisson(
@@ -346,20 +303,6 @@ describe("n2k_glmer_poisson", {
       n2k_glmer_poisson(
         data = cbpp,
         species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id + 1e-11,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$LocationGroupID,
-      is_identical_to(this.location.group.id)
-    )
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        species.group.id = this.species.group.id,
         location.group.id = this.location.group.id + 0.1,
         model.type = this.model.type,
         formula = this.formula,
@@ -368,7 +311,7 @@ describe("n2k_glmer_poisson", {
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("location.group.id is not integer")
+      throws_error("location.group.id is not a count \\(a single positive integer\\)")
     )
   })
   
@@ -410,26 +353,12 @@ describe("n2k_glmer_poisson", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         formula = this.formula,
-        first.imported.year = this.first.imported.year + 1e-11,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$FirstImportedYear,
-      is_identical_to(this.first.imported.year)
-    )
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
         first.imported.year = this.first.imported.year + 0.1,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("first.imported.year is not integer")
+      throws_error("first.imported.year is not a count \\(a single positive integer\\)")
     )
   })
   it("checks that FirstImportedYear is from the past", {
@@ -488,25 +417,11 @@ describe("n2k_glmer_poisson", {
         model.type = this.model.type,
         formula = this.formula,
         first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year + 1e-11,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$LastImportedYear,
-      is_identical_to(this.last.imported.year)
-    )
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year + 0.1,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("last.imported.year is not integer")
+      throws_error("last.imported.year is not a count \\(a single positive integer\\)")
     )
   })
   it("checks that LastImportedYear is from the past", {
@@ -612,26 +527,11 @@ describe("n2k_glmer_poisson", {
         formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
-        duration = this.duration + 1e-11,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$Duration,
-      is_identical_to(this.duration)
-    )
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
         duration = this.duration + 0.1,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("duration is not integer")
+      throws_error("duration is not a count \\(a single positive integer\\)")
     )
   })
   it("checks that Duration is not outside the FirstImportYear - LastImportedYear ranges", {
@@ -663,7 +563,7 @@ describe("n2k_glmer_poisson", {
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("duration must be strictly positive")
+      throws_error("dots\\$duration is not a count \\(a single positive integer\\)")
     )
   })
 
@@ -726,28 +626,12 @@ describe("n2k_glmer_poisson", {
         formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
-        duration = 1,
-        last.analysed.year = this.last.analysed.year + 1e-11,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$LastAnalysedYear,
-      is_identical_to(this.last.analysed.year)
-    )
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
         duration = 1L,
         last.analysed.year = this.last.analysed.year + 0.1,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("last.analysed.year is not integer")
+      throws_error("last.analysed.year is not a count \\(a single positive integer\\)")
     )
   })
   it("checks that LastAnalyseYear is within range", {
@@ -797,7 +681,7 @@ describe("n2k_glmer_poisson", {
         analysis.date = Sys.time() + 24 * 60 * 60,
         scheme.id = this.scheme.id
       ),
-      throws_error("analysis.date is in the future")
+      throws_error("AnalysisDate must be in the past")
     )
   })  
   it("checks if all variables in formula are available in the data", {

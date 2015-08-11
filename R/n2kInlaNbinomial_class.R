@@ -27,7 +27,7 @@ setClass(
 )
 
 #' @importFrom methods setValidity
-#' @importFrom n2khelper check_single_character check_dataframe_variable
+#' @importFrom n2khelper check_dataframe_variable
 setValidity(
   "n2kInlaNbinomial",
   function(object){
