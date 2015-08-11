@@ -35,20 +35,30 @@ setValidity(
   "n2kParameter",
   function(object){
     check_dataframe_variable(
-      df = object@Parameter, 
+      df = object@Parameter,
       variable = c("Description", "Parent", "Fingerprint"),
       name = "Parameter"
     )
     check_dataframe_variable(
-      df = object@ParameterEstimate, 
-      variable = c("Analysis", "Parameter", "Estimate", "LowerConfidenceLimit", "UpperConfidenceLimit"),
+      df = object@ParameterEstimate,
+      variable = c(
+        "Analysis", "Parameter", "Estimate", "LowerConfidenceLimit",
+        "UpperConfidenceLimit"
+      ),
       name = "ParameterEstimate"
     )
-    if (!all(na.omit(object@Parameter$Parent) %in% object@Parameter$Fingerprint)) {
+    if (!all(
+      na.omit(object@Parameter$Parent) %in% object@Parameter$Fingerprint
+    )) {
       stop("Some Parent in 'Parameter' slot not found")
     }
-    if (!all(object@ParameterEstimate$Parameter %in% object@Parameter$Fingerprint)) {
-      stop("Some Parameter in 'ParameterEstimate' slot have no matching Fingerprint in 'Parameter' slot")
+    if (!all(
+      object@ParameterEstimate$Parameter %in% object@Parameter$Fingerprint
+    )) {
+      stop(
+"Some Parameter in 'ParameterEstimate' slot have no matching Fingerprint in
+'Parameter' slot"
+      )
     }
     if (anyDuplicated(object@Parameter$Fingerprint)) {
       stop("Duplicated Fingerprint in 'Parameter' slot")

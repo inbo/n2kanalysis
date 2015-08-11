@@ -21,7 +21,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "n2k_composite", 
+  name = "n2k_composite",
   def = function(
     parent.status, ...
   ){
@@ -37,7 +37,7 @@ setGeneric(
 #' @importFrom assertthat assert_that is.count is.string is.time
 #' @include n2kLrtGlmer_class.R
 setMethod(
-  f = "n2k_composite", 
+  f = "n2k_composite",
   signature = signature(parent.status = "data.frame"),
   definition = function(
     parent.status, ...
@@ -50,8 +50,8 @@ setMethod(
     parent.status <- parent.status[
       order(parent.status$ParentAnalysis),
     ]
-    
-    
+
+
     dots <- list(...)
     #set the defaults for missing arguments in dots
     if (is.null(dots$status)) {
@@ -87,14 +87,17 @@ setMethod(
     file.fingerprint <- get_sha1(
       list(
         dots$scheme.id, dots$species.group.id, dots$location.group.id,
-        dots$model.type, dots$formula, dots$first.imported.year, dots$last.imported.year,
-        dots$duration, dots$last.analysed.year, dots$analysis.date, dots$seed,
-        parent.status$ParentAnalysis
+        dots$model.type, dots$formula, dots$first.imported.year,
+        dots$last.imported.year, dots$duration, dots$last.analysed.year,
+        dots$analysis.date, dots$seed, parent.status$ParentAnalysis
       )
     )
     parent.status$Analysis <- file.fingerprint
     parent.status <- parent.status[
-      order(parent.status$ParentAnalysis, parent.status$ParentStatusFingerprint),
+      order(
+        parent.status$ParentAnalysis,
+        parent.status$ParentStatusFingerprint
+      ),
       c("Analysis", "ParentAnalysis", "ParentStatusFingerprint", "ParentStatus")
     ]
     parameter <- data.frame(
@@ -111,16 +114,16 @@ setMethod(
       UpperConfidenceLimit = numeric(0),
       stringsAsFactors = FALSE
     )
-    
+
     version <- get_analysis_version(sessionInfo())
     status.fingerprint <- get_sha1(
       list(
-        file.fingerprint, dots$status, parameter, index, 
-        version@AnalysisVersion$Fingerprint, version@AnalysisVersion, version@RPackage,
-        version@AnalysisVersionRPackage, parent.status
+        file.fingerprint, dots$status, parameter, index,
+        version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
+        version@RPackage, version@AnalysisVersionRPackage, parent.status
       )
     )
-    
+
     new(
       "n2kComposite",
       AnalysisVersion = version@AnalysisVersion,

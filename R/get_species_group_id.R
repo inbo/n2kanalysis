@@ -7,7 +7,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "get_species_group_id", 
+  name = "get_species_group_id",
   def = function(x){
     standard.generic("get_species_group_id")
   }

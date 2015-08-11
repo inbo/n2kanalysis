@@ -7,7 +7,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "get_formula", 
+  name = "get_formula",
   def = function(x){
     standard.generic("get_formula")
   }

@@ -1,5 +1,5 @@
 #' The n2kComposite class
-#' 
+#'
 #' Calculate composite indices from multiple analysis
 #' @section Slots:
 #'   \describe{
@@ -33,15 +33,19 @@ setValidity(
     if (anyNA(object@AnalysisRelation$ParentAnalysis)) {
       stop("'ParentAnalysis' in 'AnalysisRelation' slot cannot be missing")
     }
-    
+
     file.fingerprint <- get_sha1(
       list(
-        object@AnalysisMetadata$SchemeID, object@AnalysisMetadata$SpeciesGroupID,
-        object@AnalysisMetadata$LocationGroupID, object@AnalysisMetadata$ModelType, 
-        object@AnalysisMetadata$Formula, object@AnalysisMetadata$FirstImportedYear,
-        object@AnalysisMetadata$LastImportedYear, object@AnalysisMetadata$Duration, 
-        object@AnalysisMetadata$LastAnalysedYear, object@AnalysisMetadata$AnalysisDate, 
-        object@AnalysisMetadata$Seed, object@AnalysisRelation$ParentAnalysis
+        object@AnalysisMetadata$SchemeID,
+        object@AnalysisMetadata$SpeciesGroupID,
+        object@AnalysisMetadata$LocationGroupID,
+        object@AnalysisMetadata$ModelType, object@AnalysisMetadata$Formula,
+        object@AnalysisMetadata$FirstImportedYear,
+        object@AnalysisMetadata$LastImportedYear,
+        object@AnalysisMetadata$Duration,
+        object@AnalysisMetadata$LastAnalysedYear,
+        object@AnalysisMetadata$AnalysisDate, object@AnalysisMetadata$Seed,
+        object@AnalysisRelation$ParentAnalysis
       )
     )
     if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
@@ -49,8 +53,8 @@ setValidity(
     }
     status.fingerprint <- get_sha1(
       list(
-        object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status, 
-        object@Parameter, object@Index, object@AnalysisMetadata$AnalysisVersion, 
+        object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
+        object@Parameter, object@Index, object@AnalysisMetadata$AnalysisVersion,
         object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation
       )
@@ -58,7 +62,7 @@ setValidity(
     if (object@AnalysisMetadata$StatusFingerprint != status.fingerprint) {
       stop("Corrupt StatusFingerprint")
     }
-    
+
     return(TRUE)
   }
 )

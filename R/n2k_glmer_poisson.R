@@ -24,7 +24,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "n2k_glmer_poisson", 
+  name = "n2k_glmer_poisson",
   def = function(
     data, ..., model.fit
   ){
@@ -39,7 +39,7 @@ setGeneric(
 #' @importFrom assertthat assert_that is.count is.string is.time
 #' @include n2kGlmerPoisson_class.R
 setMethod(
-  f = "n2k_glmer_poisson", 
+  f = "n2k_glmer_poisson",
   signature = signature(data = "data.frame"),
   definition = function(
     data, ..., model.fit
@@ -87,9 +87,9 @@ setMethod(
     }
     file.fingerprint <- get_sha1(
       list(
-        data, dots$scheme.id, dots$species.group.id, dots$location.group.id, 
-        dots$model.type, dots$formula, dots$first.imported.year, 
-        dots$last.imported.year, dots$duration, dots$last.analysed.year, 
+        data, dots$scheme.id, dots$species.group.id, dots$location.group.id,
+        dots$model.type, dots$formula, dots$first.imported.year,
+        dots$last.imported.year, dots$duration, dots$last.analysed.year,
         dots$analysis.date, dots$seed, dots$parent
       )
     )
@@ -109,7 +109,9 @@ setMethod(
         dots$parent.status.fingerprint <- get_sha1(dots$parent.status)
       } else {
         if (is.null(dots$parent.status)) {
-          stop("'parent.status' is required when 'parent.status.fingerprint' is provided")
+          stop(
+"'parent.status' is required when 'parent.status.fingerprint' is provided"
+          )
         }
       }
       analysis.relation <- data.frame(
@@ -123,13 +125,13 @@ setMethod(
     version <- get_analysis_version(sessionInfo())
     status.fingerprint <- get_sha1(
       list(
-        file.fingerprint, dots$status, NULL, 
-        version@AnalysisVersion$Fingerprint, 
-        version@AnalysisVersion, version@RPackage, version@AnalysisVersionRPackage,
-        analysis.relation
+        file.fingerprint, dots$status, NULL,
+        version@AnalysisVersion$Fingerprint,
+        version@AnalysisVersion, version@RPackage,
+        version@AnalysisVersionRPackage, analysis.relation
       )
     )
-    
+
     new(
       "n2kGlmerPoisson",
       AnalysisVersion = version@AnalysisVersion,
@@ -167,15 +169,15 @@ setMethod(
 #' @importFrom methods setMethod validObject
 #' @include n2kGlmerPoisson_class.R
 setMethod(
-  f = "n2k_glmer_poisson", 
+  f = "n2k_glmer_poisson",
   signature = signature(data = "n2kGlmerPoisson", model.fit = "glmerMod"),
   definition = function(
     data, ..., model.fit
   ){
     dots <- list(...)
-    
+
     data@Model <- model.fit
-    
+
     version <- get_analysis_version(sessionInfo())
     new.version <- union(data, version)
     data@AnalysisVersion <- new.version$Union@AnalysisVersion
@@ -183,7 +185,7 @@ setMethod(
     data@AnalysisVersionRPackage <- new.version$Union@AnalysisVersionRPackage
 
     data@AnalysisMetadata$AnalysisVersion <- new.version$UnionFingerprint
-    
+
     status(data) <- dots$status
     return(data)
   }

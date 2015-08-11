@@ -13,7 +13,7 @@ describe("fit_model() on GlmerPoisson based objects", {
     first.imported.year = 1990L,
     last.imported.year = 2015L,
     analysis.date = Sys.time(),
-    data = cbpp 
+    data = cbpp
   )
   weighted.object <- n2k_glmer_poisson(
     scheme.id = 1L,
@@ -24,7 +24,7 @@ describe("fit_model() on GlmerPoisson based objects", {
     first.imported.year = 1990L,
     last.imported.year = 2015L,
     analysis.date = Sys.time(),
-    data = cbpp 
+    data = cbpp
   )
   object.fit <- fit_model(object)
   weighted.object.fit <- fit_model(weighted.object)

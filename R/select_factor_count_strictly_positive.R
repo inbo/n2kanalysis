@@ -1,6 +1,6 @@
 #' Select data based on the number of prescences per category
-#' 
-#' Prescences have \eqn{Count > 0}. 
+#'
+#' Prescences have \eqn{Count > 0}.
 #' @inheritParams select_factor_threshold
 #' @param dimension indicates which element of \code{variable} is used for the final aggregation
 #' @param relative When FALSE the threshold is the number of non-zero observations. When TRUE the threshold is the proportion of non-zero observations. Defaults to FALSE.
@@ -23,8 +23,18 @@
 #' select_factor_count_strictly_positive(
 #'   observation, variable = c("LocationID", "Year"), threshold = 2, dimension = 2
 #' )
-select_factor_count_strictly_positive <- function(observation, variable, threshold, relative = FALSE, dimension = 1){
-  variable <- check_character(x = variable, name = "variable", na.action = na.fail)
+select_factor_count_strictly_positive <- function(
+  observation,
+  variable,
+  threshold,
+  relative = FALSE,
+  dimension = 1
+){
+  variable <- check_character(
+    x = variable,
+    name = "variable",
+    na.action = na.fail
+  )
   assert_that(is.count(dimension))
   assert_that(is.flag(relative))
   if (relative && dimension > 1) {
@@ -36,12 +46,15 @@ select_factor_count_strictly_positive <- function(observation, variable, thresho
     assert_that(is.count(threshold))
   }
   check_dataframe_variable(
-    df = observation, variable = c("Count", variable), name = "observation", error = TRUE
+    df = observation,
+    variable = c("Count", variable),
+    name = "observation",
+    error = TRUE
   )
   if (dimension > length(variable)) {
     stop("the dimension can't exceed the number of variables")
   }
-  
+
   positive.observation <- observation[observation$Count > 0, ]
   observed.combination <- table(positive.observation[, variable])
   if (length(variable) == 1) {
@@ -53,7 +66,8 @@ select_factor_count_strictly_positive <- function(observation, variable, thresho
     relevance <- apply(observed.combination > 0, dimension, sum) >= threshold
   }
   selected.level <- names(relevance)[relevance]
-  
-  selection <- as.character(observation[, variable[dimension]]) %in% selected.level
+
+  selection <- as.character(observation[, variable[dimension]]) %in%
+    selected.level
   return(observation[selection, ])
 }

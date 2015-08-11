@@ -7,7 +7,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "get_model", 
+  name = "get_model",
   def = function(x){
     standard.generic("get_model")
   }
@@ -40,6 +40,7 @@ setMethod(
 #' @rdname get_model
 #' @aliases get_model,character-methods
 #' @importFrom methods setMethod
+#' @importFrom n2khelper check_path read_object_environment
 setMethod(
   f = "get_model",
   signature = signature(x = "character"),
@@ -47,7 +48,10 @@ setMethod(
     x <- check_path(x, type = "file")
     local.environment <- new.env()
     load(x, envir = local.environment)
-    analysis <- read_object_environment(object = "analysis", env = local.environment)
+    analysis <- read_object_environment(
+      object = "analysis",
+      env = local.environment
+    )
     return(get_model(analysis))
   }
 )

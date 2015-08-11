@@ -8,7 +8,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "get_parent", 
+  name = "get_parent",
   def = function(x, ...){
     standard.generic("get_parent")
   }
@@ -41,4 +41,3 @@ setMethod(
     return(x@Parent)
   }
 )
-

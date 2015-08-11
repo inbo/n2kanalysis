@@ -3,7 +3,7 @@
 setClassUnion("maybeGlmerMod", c("glmerMod", "NULL"))
 
 #' The n2kGlmerPoisson class
-#' 
+#'
 #' It hold analysis data based on a glmer poisson model
 #' @section Slots:
 #'   \describe{
@@ -32,14 +32,16 @@ setValidity(
   "n2kGlmerPoisson",
   function(object){
     check_dataframe_variable(
-      df = object@Data[1, ], 
-      variable = c(all.vars(object@AnalysisFormula[[1]]), "ObservationID", "DatasourceID"), 
+      df = object@Data[1, ],
+      variable = c(
+        all.vars(object@AnalysisFormula[[1]]), "ObservationID", "DatasourceID"
+      ),
       error = TRUE
     )
     if (anyDuplicated(object@Data$ObservationID)) {
       stop("Duplicated ObservationID")
     }
-    
+
     if (!grepl("glmer poisson", object@AnalysisMetadata$ModelType)) {
       stop("ModelType should be 'glmer poisson'")
     }
@@ -55,35 +57,37 @@ setValidity(
         stop("The model must be from the poisson family")
       }
     }
-    
+
     file.fingerprint <- get_sha1(
       list(
-        object@Data, object@AnalysisMetadata$SchemeID, 
+        object@Data, object@AnalysisMetadata$SchemeID,
         object@AnalysisMetadata$SpeciesGroupID,
-        object@AnalysisMetadata$LocationGroupID, object@AnalysisMetadata$ModelType, 
-        object@AnalysisMetadata$Formula, object@AnalysisMetadata$FirstImportedYear,
-        object@AnalysisMetadata$LastImportedYear, object@AnalysisMetadata$Duration, 
-        object@AnalysisMetadata$LastAnalysedYear, object@AnalysisMetadata$AnalysisDate, 
-        object@AnalysisMetadata$Seed, object@AnalysisRelation$ParentAnalysis
+        object@AnalysisMetadata$LocationGroupID,
+        object@AnalysisMetadata$ModelType, object@AnalysisMetadata$Formula,
+        object@AnalysisMetadata$FirstImportedYear,
+        object@AnalysisMetadata$LastImportedYear,
+        object@AnalysisMetadata$Duration,
+        object@AnalysisMetadata$LastAnalysedYear,
+        object@AnalysisMetadata$AnalysisDate, object@AnalysisMetadata$Seed,
+        object@AnalysisRelation$ParentAnalysis
       )
     )
-    if(object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
+    if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
       stop("Corrupt FileFingerprint")
     }
-    
+
     status.fingerprint <- get_sha1(
       list(
         object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
-        coef(object@Model), 
-        object@AnalysisMetadata$AnalysisVersion, 
-        object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage, 
+        coef(object@Model), object@AnalysisMetadata$AnalysisVersion,
+        object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation
       )
     )
     if(object@AnalysisMetadata$StatusFingerprint != status.fingerprint) {
       stop("Corrupt StatusFingerprint")
     }
-    
+
     return(TRUE)
   }
 )

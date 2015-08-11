@@ -3,7 +3,7 @@
 setClassUnion("maybeInla", c("inla", "NULL"))
 
 #' The n2kInlaNBinomial class
-#' 
+#'
 #' It hold analysis data based on a INLA negative binomial model
 #' @section Slots:
 #'   \describe{
@@ -32,8 +32,8 @@ setValidity(
   "n2kInlaNbinomial",
   function(object){
     check_dataframe_variable(
-      df = object@Data[1, ], 
-      variable = all.vars(object@AnalysisFormula[[1]]), 
+      df = object@Data[1, ],
+      variable = all.vars(object@AnalysisFormula[[1]]),
       error = TRUE
     )
     if (!grepl("^inla nbinomial", object@AnalysisMetadata$ModelType)) {
@@ -44,15 +44,19 @@ setValidity(
         stop("The model must be from the nbinomial family")
       }
     }
-    
+
     file.fingerprint <- get_sha1(
       list(
-        object@Data, object@AnalysisMetadata$SchemeID, object@AnalysisMetadata$SpeciesGroupID, 
-        object@AnalysisMetadata$LocationGroupID, object@AnalysisMetadata$ModelType, 
-        object@AnalysisMetadata$Covariate, object@AnalysisMetadata$FirstImportedYear, 
-        object@AnalysisMetadata$LastImportedYear, object@AnalysisMetadata$Duration, 
-        object@AnalysisMetadata$LastAnalysedYear, object@AnalysisMetadata$AnalysisDate,
-        object@AnalysisMetadata$Seed, object@AnalysisRelation$ParentAnalysis
+        object@Data, object@AnalysisMetadata$SchemeID,
+        object@AnalysisMetadata$SpeciesGroupID,
+        object@AnalysisMetadata$LocationGroupID,
+        object@AnalysisMetadata$ModelType, object@AnalysisMetadata$Covariate,
+        object@AnalysisMetadata$FirstImportedYear,
+        object@AnalysisMetadata$LastImportedYear,
+        object@AnalysisMetadata$Duration,
+        object@AnalysisMetadata$LastAnalysedYear,
+        object@AnalysisMetadata$AnalysisDate, object@AnalysisMetadata$Seed,
+        object@AnalysisRelation$ParentAnalysis
       )
     )
     if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
@@ -61,16 +65,17 @@ setValidity(
 
     status.fingerprint <- get_sha1(
       list(
-        object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status, 
-        object@Model, object@AnalysisMetadata$AnalysisVersion, object@AnalysisVersion,
-        object@RPackage, object@AnalysisVersionRPackage, object@AnalysisRelation
+        object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
+        object@Model, object@AnalysisMetadata$AnalysisVersion,
+        object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
+        object@AnalysisRelation
       )
     )
-    
+
     if (object@AnalysisMetadata$StatusFingerprint != status.fingerprint) {
       stop("Corrupt StatusFingerprint")
     }
-    
+
     return(TRUE)
   }
 )

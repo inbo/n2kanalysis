@@ -21,7 +21,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "n2k_lrt_glmer", 
+  name = "n2k_lrt_glmer",
   def = function(
     parent, ...
   ){
@@ -37,7 +37,7 @@ setGeneric(
 #' @importFrom assertthat assert_that is.count is.string
 #' @include n2kLrtGlmer_class.R
 setMethod(
-  f = "n2k_lrt_glmer", 
+  f = "n2k_lrt_glmer",
   signature = signature(parent = "character"),
   definition = function(
     parent, ...
@@ -86,10 +86,11 @@ setMethod(
     ]
     file.fingerprint <- get_sha1(
       list(
-        dots$scheme.id, dots$species.group.id, dots$location.group.id, 
-        dots$model.type, dots$formula, dots$first.imported.year, dots$last.imported.year,
-        dots$duration, dots$last.analysed.year, dots$analysis.date, dots$seed, 
-        dots$parent.0, dots$parent.status$ParentAnalysis
+        dots$scheme.id, dots$species.group.id, dots$location.group.id,
+        dots$model.type, dots$formula, dots$first.imported.year,
+        dots$last.imported.year, dots$duration, dots$last.analysed.year,
+        dots$analysis.date, dots$seed, dots$parent.0,
+        dots$parent.status$ParentAnalysis
       )
     )
     dots$parent.status$Analysis <- file.fingerprint
@@ -100,12 +101,12 @@ setMethod(
     version <- get_analysis_version(sessionInfo())
     status.fingerprint <- get_sha1(
       list(
-        file.fingerprint, dots$status, NULL, NULL, NULL, 
+        file.fingerprint, dots$status, NULL, NULL, NULL,
         version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
         version@RPackage, version@AnalysisVersionRPackage, dots$parent.status
       )
     )
-    
+
     new(
       "n2kLrtGlmer",
       AnalysisVersion = version@AnalysisVersion,

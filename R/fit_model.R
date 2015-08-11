@@ -7,7 +7,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "fit_model", 
+  name = "fit_model",
   def = function(x, ...){
     standard.generic("fit_model")
   }
@@ -37,14 +37,18 @@ setMethod(
       message(x)
     }
     local.environment <- new.env()
+
     load(x, envir = local.environment)
-    analysis <- read_object_environment(object = "analysis", env = local.environment)
+    analysis <- read_object_environment(
+      object = "analysis",
+      env = local.environment
+    )
     if (dots$verbose) {
       message(status(analysis), " -> ", appendLF = FALSE)
       utils::flush.console()
     }
     analysis.fitted <- fit_model(
-      x = analysis, 
+      x = analysis,
       status = dots$status,
       path = dirname(x)
     )
@@ -68,20 +72,20 @@ setMethod(
   signature = signature(x = "n2kGlmerPoisson"),
   definition = function(x, ...){
     validObject(x)
-    
+
     dots <- list(...)
-    if (is.null(dots$status)){
+    if (is.null(dots$status)) {
       dots$status <- c("new", "waiting")
     }
-    if (!(status(x) %in% dots$status)){
+    if (!(status(x) %in% dots$status)) {
       return(x)
     }
-    
+
     set.seed(get_seed(x))
-    
+
     data <- get_data(x)
     model.formula <- x@AnalysisFormula[[1]]
-    
+
     controls <- list(
       glmerControl(optimizer = "bobyqa"),
       glmerControl(optimizer = "optimx", optCtrl = list(method = "nlminb"))
@@ -90,7 +94,7 @@ setMethod(
       if ("optimx" %in% control$optimizer) {
         requireNamespace("optimx", quietly = TRUE)
       }
-      
+
       if (grepl("^weighted", get_model_type(x))) {
         model <- try(glmer(
           formula = model.formula,
@@ -127,8 +131,8 @@ setMethod(
       olre.ratio <- exp(
         diff(
           qnorm(
-            p = c(0.025, 0.975), 
-            mean = 0, 
+            p = c(0.025, 0.975),
+            mean = 0,
             sd = sqrt(vc[["fRow"]])
           )
         )
@@ -145,7 +149,7 @@ setMethod(
     x@AnalysisVersion <- new.version$Union@AnalysisVersion
     x@RPackage <- new.version$Union@RPackage
     x@AnalysisVersionRPackage <- new.version$Union@AnalysisVersionRPackage
-    
+
     x@AnalysisMetadata$AnalysisVersion <- new.version$UnionFingerprint
 
     status(x) <- "converged"
@@ -161,7 +165,7 @@ setMethod(
   signature = signature(x = "n2kInlaNbinomial"),
   definition = function(x, ...){
     validObject(x)
-    
+
     dots <- list(...)
     if (is.null(dots$status)) {
       dots$status <- c("new", "waiting")
@@ -169,24 +173,24 @@ setMethod(
     if (!(status(x) %in% dots$status)) {
       return(x)
     }
-    
+
     if (!requireNamespace("INLA", quietly = TRUE)) {
       stop("The INLA package is required but not installed.")
     }
-    
+
     set.seed(get_seed(x))
-    
+
     data <- get_data(x)
     model.formula <- x@AnalysisFormula[[1]]
-    
+
     link <- rep(NA, nrow(data))
     link[is.na(data$Count)] <- 1
-    
+
     inla.models <- INLA::inla.models
     model <- try(INLA::inla(
-      formula = model.formula, 
-      family = "nbinomial", 
-      data = data, 
+      formula = model.formula,
+      family = "nbinomial",
+      data = data,
       control.compute = list(dic = TRUE, cpo = TRUE),
       control.predictor = list(compute = TRUE, link = link),
       control.fixed = list(prec.intercept = 1)
@@ -195,7 +199,9 @@ setMethod(
       status(x) <- "error"
       return(x)
     }
-    return(n2k_inla_nbinomial(data = x, model.fit = model, status = "converged"))
+    return(
+      n2k_inla_nbinomial(data = x, model.fit = model, status = "converged")
+    )
   }
 )
 
@@ -211,12 +217,12 @@ setMethod(
     if (is.null(dots$status)) {
       dots$status <- c("new", "waiting")
     }
-    
+
     # stop if status doesn't require (re-)fitting the model
     if (!(status(x) %in% dots$status)) {
       return(x)
     }
-    
+
     # do calculation when all parents are available
     if (status(x) == "new") {
       #check for incorrect "new" status
@@ -229,7 +235,7 @@ setMethod(
       status(x) <- "converged"
       return(x)
     }
-    
+
     # check if parents are available
     if (is.null(dots$path)) {
       dots$path <- "."
@@ -245,15 +251,17 @@ setMethod(
       status(x) <- "error"
       return(x)
     }
-    
+
     #check if parents have changed
-    current.parent.status <- status(files.to.check)[, c("FileFingerprint", "StatusFingerprint", "Status")]
+    current.parent.status <- status(files.to.check)[
+      , c("FileFingerprint", "StatusFingerprint", "Status")
+    ]
     colnames(current.parent.status)[1] <- "ParentAnalysis"
     compare <- merge(old.parent.status, current.parent.status)
     changes <- which(compare$OldStatusFingerprint != compare$StatusFingerprint)
     colnames(compare)[5:6] <- c("ParentStatusFingerprint", "ParentStatus")
     x@AnalysisRelation <- compare[
-      order(compare$ParentAnalysis), 
+      order(compare$ParentAnalysis),
       c("Analysis", "ParentAnalysis", "ParentStatusFingerprint", "ParentStatus")
     ]
     if (any(current.parent.status == "error")) {
@@ -326,7 +334,7 @@ setMethod(
       missing.parent <- unique(parameter$Parent[parameter$Estimate < -10])
       parameter <- parameter[!parameter$Parent %in% missing.parent, ]
       reference <- parameter[
-        parameter$Value == levels(parameter$Value)[1], 
+        parameter$Value == levels(parameter$Value)[1],
         c("Parent", "Estimate")
       ]
       colnames(reference)[2] <- "Reference"
@@ -340,17 +348,17 @@ setMethod(
       index$Estimate <- index$Estimate / index$N
       index$Variance <- index$Variance / (index$N ^ 2)
       index$LowerConfidenceLimit <- qnorm(
-        p = 0.025, 
-        mean = index$Estimate, 
+        p = 0.025,
+        mean = index$Estimate,
         sd = sqrt(index$Variance)
       )
       index$UpperConfidenceLimit <- qnorm(
-        p = 0.975, 
-        mean = index$Estimate, 
+        p = 0.975,
+        mean = index$Estimate,
         sd = sqrt(index$Variance)
       )
       x@Index <- index[
-        order(index$Value), 
+        order(index$Value),
         c("Value", "Estimate", "LowerConfidenceLimit", "UpperConfidenceLimit")
       ]
       status(x) <- "converged"
@@ -370,15 +378,19 @@ setMethod(
       return(x)
     }
     colnames(old.parent.status)[3:4] <- c("OldStatusFingerprint", "OldStatus")
-    current.parent.status <- status(files.to.check)[, c("FileFingerprint", "StatusFingerprint", "Status")]
-    colnames(current.parent.status) <- c("ParentAnalysis", "ParentStatusFingerprint", "ParentStatus")
+    current.parent.status <- status(files.to.check)[
+      , c("FileFingerprint", "StatusFingerprint", "Status")
+    ]
+    colnames(current.parent.status) <- c(
+      "ParentAnalysis", "ParentStatusFingerprint", "ParentStatus"
+    )
     compare <- merge(old.parent.status, current.parent.status)
     converged <- which(compare$ParentStatus == "converged")
     x@AnalysisRelation <- compare[
-      order(compare$ParentAnalysis), 
+      order(compare$ParentAnalysis),
       c("Analysis", "ParentAnalysis", "ParentStatusFingerprint", "ParentStatus")
     ]
-    
+
     if (any(current.parent.status$ParentStatus == "error")) {
       status(x) <- "error"
       return(x)
@@ -414,11 +426,13 @@ setMethod(
       return(this.coef)
     }))
     x@Parameter <- new.parameter[
-      order(new.parameter$Parent, new.parameter$Value), 
+      order(new.parameter$Parent, new.parameter$Value),
       c("Parent", "Value", "Estimate", "Variance")
     ]
-    
-    if (all(current.parent.status$ParentStatus %in% c("converged", "unstable"))) {
+
+    if (all(
+      current.parent.status$ParentStatus %in% c("converged", "unstable")
+    )) {
       status(x) <- "new"
       return(fit_model(x, ...))
     }

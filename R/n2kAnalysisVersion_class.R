@@ -37,26 +37,37 @@ setValidity(
   "n2kAnalysisVersion",
   function(object){
     check_dataframe_variable(
-      df = object@AnalysisVersion, 
+      df = object@AnalysisVersion,
       variable = "Fingerprint",
       name = "AnalysisVersion"
     )
     check_dataframe_variable(
-      df = object@RPackage, 
+      df = object@RPackage,
       variable = c("Fingerprint", "Description", "Version"),
       name = "AnalysisVersionRPackage"
     )
     check_dataframe_variable(
-      df = object@AnalysisVersionRPackage, 
+      df = object@AnalysisVersionRPackage,
       variable = c("AnalysisVersion", "RPackage"),
       name = "AnalysisVersionRPackage"
     )
-    
-    if (!all(object@AnalysisVersionRPackage$AnalysisVersion %in% object@AnalysisVersion$Fingerprint)) {
-      stop("Some AnalysisVersion in 'AnalysisVersionRPackage' slot are not present in 'AnalysisVersion' slot")
+
+    if (!all(
+      object@AnalysisVersionRPackage$AnalysisVersion %in%
+        object@AnalysisVersion$Fingerprint
+    )) {
+      stop(
+"Some AnalysisVersion in 'AnalysisVersionRPackage' slot are not present in
+'AnalysisVersion' slot"
+      )
     }
-    if (!all(object@AnalysisVersionRPackage$RPackage %in% object@RPackage$Fingerprint)) {
-      stop("Some AnalysisVersion in 'AnalysisVersionRPackage' slot are not present in 'AnalysisVersion' slot")
+    if (!all(
+      object@AnalysisVersionRPackage$RPackage %in% object@RPackage$Fingerprint
+    )) {
+      stop(
+"Some AnalysisVersion in 'AnalysisVersionRPackage' slot are not present in
+'AnalysisVersion' slot"
+      )
     }
     if (anyDuplicated(object@AnalysisVersionRPackage)) {
       stop("Duplicated rows in 'AnalysisVersionRPackage' slot")

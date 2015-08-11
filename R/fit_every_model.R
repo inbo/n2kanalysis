@@ -10,10 +10,11 @@ fit_every_model <- function(path = ".", status, verbose = TRUE, n.cluster = 1){
     status <- c("new", "waiting")
   } else {
     status <- check_character(status, name = "status")
-    test.status <- status %in% c("new", "waiting", "error", "converged", "false convergence", "unstable")
+    test.status <- status %in%
+      c("new", "waiting", "error", "converged", "false convergence", "unstable")
     if (!all(test.status)) {
       warning(
-        "Following status values are ignored: ", 
+        "Following status values are ignored: ",
         paste(status[!test.status], collapse = ", ")
       )
       status <- status[test.status]
@@ -22,35 +23,40 @@ fit_every_model <- function(path = ".", status, verbose = TRUE, n.cluster = 1){
   path <- check_path(path, type = "directory")
   files <- list.files(path = path, pattern = "\\.rda$", full.names = TRUE)
   if (n.cluster == 1) {
-    junk <- lapply(files, fit_model, status = status, verbose = verbose)
+    lapply(files, fit_model, status = status, verbose = verbose)
   } else {
-    if( requireNamespace("parallel", quietly = TRUE)) {
+    if (requireNamespace("parallel", quietly = TRUE)) {
       available.cluster <- parallel::detectCores()
       if (n.cluster > available.cluster) {
-        message("Requesting ", n.cluster, " clusters but only ", available.cluster, " available.")
+        message(
+          "Requesting ", n.cluster, " clusters but only ", available.cluster,
+          " available."
+        )
         n.cluster <- available.cluster
       }
       message("Fitting models in parallel on ", n.cluster, " clusters")
       utils::flush.console()
       cl <- parallel::makeCluster(n.cluster)
       result <- parallel::clusterApplyLB(
-        cl = cl, 
-        x = files, 
+        cl = cl,
+        x = files,
         fun = function(x, status, verbose){
           require(optimx)
           require(n2kanalysis)
           fit_model(x = x, status = status, verbose = verbose)
-        }, 
-        status = status, 
+        },
+        status = status,
         verbose = verbose
       )
       parallel::stopCluster(cl)
     } else {
-      message("Cannot load the parallel package. Falling back to non-parallel computing.")
+      message(
+"Cannot load the parallel package. Falling back to non-parallel computing."
+      )
       utils::flush.console()
-      junk <- lapply(files, fit_model, status = status, verbose = verbose)
+      lapply(files, fit_model, status = status, verbose = verbose)
     }
   }
-  
+
   return(invisible(NULL))
 }
