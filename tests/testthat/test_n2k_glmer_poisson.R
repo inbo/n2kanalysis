@@ -2,6 +2,7 @@ context("prepare a n2kGlmerPoisson object")
 this.scheme.id <- 1L
 this.species.group.id <- 2L
 this.location.group.id <- 3L
+this.seed <- 4L
 this.analysis.date <- Sys.time()
 this.model.type <- "glmer poisson: period + herd"
 this.formula <- "incidence ~ offset(log(size)) + period + (1|herd)"
