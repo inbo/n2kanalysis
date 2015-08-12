@@ -91,3 +91,22 @@ expect_is(
 )
 
 ### set to a random value when missing
+expect_true(
+  assertthat::is.count(
+    get_seed(
+      n2k_lrt_glmer(
+        parent = get_file_fingerprint(object.1),
+        parent.0 = get_file_fingerprint(object.0),
+        parent.status = this.parent.status,
+        scheme.id = this.scheme.id,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        formula = this.formula,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        analysis.date = this.analysis.date
+      )
+    )
+  )
+)
