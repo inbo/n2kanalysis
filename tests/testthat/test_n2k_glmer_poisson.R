@@ -116,6 +116,41 @@ describe("n2k_glmer_poisson", {
       throws_error("ModelType should be 'glmer poisson'")
     )
   })
+  it("sets the correct parent", {
+    expect_identical(
+      nrow(
+        n2k_glmer_poisson(
+          data = cbpp,
+          scheme.id = this.scheme.id,
+          species.group.id = this.species.group.id,
+          location.group.id = this.location.group.id,
+          model.type = this.model.type,
+          formula = this.formula,
+          first.imported.year = this.first.imported.year,
+          last.imported.year = this.last.imported.year,
+          analysis.date = this.analysis.date,
+          seed = this.seed
+        )@AnalysisRelation
+      ),
+      0L
+    )
+    this.parent <- "12345"
+    expect_identical(
+      n2k_glmer_poisson(
+        data = cbpp,
+        scheme.id = this.scheme.id,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        formula = this.formula,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        analysis.date = this.analysis.date,
+        seed = this.seed,
+        parent = this.parent
+      )@AnalysisRelation$ParentAnalysis,
+      this.parent
+    )
   it("sets the correct seed", {
     this.seed <- 12345L
     expect_that(
