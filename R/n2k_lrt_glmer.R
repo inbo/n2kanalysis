@@ -50,7 +50,7 @@ setMethod(
       dots$status <- "waiting"
     }
     assert_that(is.count(dots$seed))
-    dots$seed <- is.integer(dots$seed)
+    dots$seed <- as.integer(dots$seed)
     assert_that(is.count(dots$scheme.id))
     dots$scheme.id <- as.integer(dots$scheme.id)
     assert_that(is.count(dots$species.group.id))
