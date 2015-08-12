@@ -83,7 +83,11 @@ setMethod(
     check_dataframe_variable(
       df = dots$parent.status,
       name = "parent.status",
-      variable = c("ParentAnalysis", "ParentStatusFingerprint", "ParentStatus")
+      variable = list(
+        ParentAnalysis = "character",
+        ParentStatusFingerprint = "character",
+        ParentStatus = "character"
+      )
     )
     dots$parent.status <- dots$parent.status[
       order(dots$parent.status$ParentAnalysis),

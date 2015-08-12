@@ -47,7 +47,20 @@ this.parent.status <- data.frame(
     get_status_fingerprint(object.1),
     get_status_fingerprint(object.0)
   ),
-  ParentStatus = c(status(object.1), status(object.0))
+  ParentStatus = c(status(object.1), status(object.0)),
+  stringsAsFactors = FALSE
+)
+this.parent.status.factor <- data.frame(
+  ParentAnalysis = c(
+    get_file_fingerprint(object.1),
+    get_file_fingerprint(object.0)
+  ),
+  ParentStatusFingerprint = c(
+    get_status_fingerprint(object.1),
+    get_status_fingerprint(object.0)
+  ),
+  ParentStatus = c(status(object.1), status(object.0)),
+  stringsAsFactors = TRUE
 )
 
 # Check function arguments
@@ -109,4 +122,25 @@ expect_true(
       )
     )
   )
+)
+
+
+## parent.status
+
+### doesn't contain factors
+expect_error(
+  n2k_lrt_glmer(
+    parent = get_file_fingerprint(object.1),
+    parent.0 = get_file_fingerprint(object.0),
+    parent.status = this.parent.status.factor,
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = this.formula,
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date
+  ),
+  "Wrong class for following variable\\(s\\)"
 )
