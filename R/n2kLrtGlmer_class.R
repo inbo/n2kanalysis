@@ -3,7 +3,7 @@
 setClassUnion("maybeAnova", c("anova", "NULL"))
 
 #' The n2kLrtGlmer class
-#' 
+#'
 #' Calculate composite indices from multiple analysis
 #' @section Slots:
 #'   \describe{
@@ -31,12 +31,12 @@ setClass(
 )
 
 #' @importFrom methods setValidity
-#' @importFrom n2khelper check_single_character check_dataframe_variable
+#' @importFrom assertthat assert_that is.string
 setValidity(
   "n2kLrtGlmer",
   function(object){
-    check_single_character(object@Parent0, name = "Parent0")
-    
+    assert_that(is.string(object@Parent0))
+
     if (nrow(object@AnalysisRelation) != 2) {
       stop("'AnalysisRelation' slot must have exactly 2 rows")
     }
@@ -46,34 +46,38 @@ setValidity(
     if (!object@Parent0 %in% object@AnalysisRelation$ParentAnalysis) {
       stop("'Parent0' is not available in 'AnalysisRelation' slot")
     }
-    
+
     file.fingerprint <- get_sha1(
       list(
-        object@AnalysisMetadata$SchemeID, object@AnalysisMetadata$SpeciesGroupID,
-        object@AnalysisMetadata$LocationGroupID, object@AnalysisMetadata$ModelType, 
-        object@AnalysisMetadata$Formula, object@AnalysisMetadata$FirstImportedYear,
-        object@AnalysisMetadata$LastImportedYear, object@AnalysisMetadata$Duration, 
-        object@AnalysisMetadata$LastAnalysedYear, object@AnalysisMetadata$AnalysisDate, 
-        object@AnalysisMetadata$Seed, object@Parent0, object@AnalysisRelation$ParentAnalysis
+        object@AnalysisMetadata$SchemeID,
+        object@AnalysisMetadata$SpeciesGroupID,
+        object@AnalysisMetadata$LocationGroupID,
+        object@AnalysisMetadata$ModelType, object@AnalysisMetadata$Formula,
+        object@AnalysisMetadata$FirstImportedYear,
+        object@AnalysisMetadata$LastImportedYear,
+        object@AnalysisMetadata$Duration,
+        object@AnalysisMetadata$LastAnalysedYear,
+        object@AnalysisMetadata$AnalysisDate, object@AnalysisMetadata$Seed,
+        object@Parent0, object@AnalysisRelation$ParentAnalysis
       )
     )
     if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
       stop("Corrupt FileFingerprint")
     }
-    
+
     status.fingerprint <- get_sha1(
       list(
-        object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status, 
-        coef(object@Model), coef(object@Model0), object@Anova, 
-        object@AnalysisMetadata$AnalysisVersion, 
-        object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage, 
+        object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
+        coef(object@Model), coef(object@Model0), object@Anova,
+        object@AnalysisMetadata$AnalysisVersion,
+        object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation
       )
     )
     if (object@AnalysisMetadata$StatusFingerprint != status.fingerprint) {
       stop("Corrupt StatusFingerprint")
     }
-    
+
     return(TRUE)
   }
 )

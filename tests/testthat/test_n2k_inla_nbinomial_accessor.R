@@ -14,7 +14,7 @@ describe("get_model", {
     data = cbpp
   )
   model.object <- INLA::inla(
-    incidence ~ offset(log(size)) + period + f(herd, model = "iid"), 
+    incidence ~ offset(log(size)) + period + f(herd, model = "iid"),
     data = object@Data,
     family = "nbinomial"
   )

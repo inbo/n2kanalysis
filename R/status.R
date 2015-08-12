@@ -7,7 +7,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "status", 
+  name = "status",
   def = function(x){
     standard.generic("status")
   }
@@ -28,7 +28,7 @@ setMethod(
 #' @rdname status
 #' @aliases status,character-methods
 #' @importFrom methods setMethod
-#' @importFrom n2khelper check_path
+#' @importFrom n2khelper check_path read_object_environment
 setMethod(
   f = "status",
   signature = signature(x = "character"),
@@ -50,7 +50,10 @@ setMethod(
         x <- check_path(x, type = "file")
         local.environment <- new.env()
         load(x, envir = local.environment)
-        analysis <- read_object_environment(object = "analysis", env = local.environment)
+        analysis <- read_object_environment(
+          object = "analysis",
+          env = local.environment
+        )
         return(
           data.frame(
             Filename = x,
@@ -75,7 +78,7 @@ setMethod(
 #' @importFrom methods setGeneric
 #' @include n2kAnalysisMetadata_class.R
 setGeneric(
-  name = "status<-", 
+  name = "status<-",
   def = function(x, value){
     standard.generic("status<-")
   }
@@ -92,8 +95,8 @@ setReplaceMethod(
     x@AnalysisMetadata$StatusFingerprint <- get_sha1(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        coef(x@Model), x@AnalysisMetadata$AnalysisVersion, 
-        x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage, 
+        coef(x@Model), x@AnalysisMetadata$AnalysisVersion,
+        x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
       )
     )
@@ -112,7 +115,7 @@ setReplaceMethod(
     x@AnalysisMetadata$Status <- value
     x@AnalysisMetadata$StatusFingerprint <- get_sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Model, 
+        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Model,
         x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
         x@AnalysisVersionRPackage, x@AnalysisRelation
       )
@@ -142,10 +145,10 @@ setReplaceMethod(
     }
     x@AnalysisMetadata$StatusFingerprint <- get_sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, 
-        coef(x@Model), coef(x@Model0), x@Anova, 
-        x@AnalysisMetadata$AnalysisVersion, 
-        x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage, 
+        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
+        coef(x@Model), coef(x@Model0), x@Anova,
+        x@AnalysisMetadata$AnalysisVersion,
+        x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
       )
     )
@@ -164,9 +167,10 @@ setReplaceMethod(
     x@AnalysisMetadata$Status <- value
     x@AnalysisMetadata$StatusFingerprint <- get_sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Parameter, 
-        x@Index, x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
-        x@AnalysisVersionRPackage, x@AnalysisRelation
+        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
+        x@Parameter, x@Index, x@AnalysisMetadata$AnalysisVersion,
+        x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
+        x@AnalysisRelation
       )
     )
     validObject(x)

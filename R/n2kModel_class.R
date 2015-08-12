@@ -1,5 +1,5 @@
 #' The n2kModel class
-#' 
+#'
 #' A virtual superclass to contain the analysis models
 #' @name n2kModel-class
 #' @rdname n2kModel-class
@@ -17,7 +17,6 @@ setClass(
 )
 
 #' @importFrom methods setValidity
-#' @importFrom n2khelper check_single_strictly_positive_integer check_single_character check_single_posix
 setValidity(
   "n2kModel",
   function(object){
@@ -25,8 +24,13 @@ setValidity(
       stop("The 'AnalysisMetadata' slot must contain exactly one row")
     }
     if (nrow(object@AnalysisRelation) > 0) {
-      if (any(object@AnalysisRelation$Analysis != object@AnalysisMetadata$FileFingerprint)) {
-        stop("Some Analysis in 'AnalysisRelation' slot don't match FileFingerprint")
+      if (any(
+        object@AnalysisRelation$Analysis !=
+          object@AnalysisMetadata$FileFingerprint
+      )) {
+        stop(
+          "Some Analysis in 'AnalysisRelation' slot don't match FileFingerprint"
+        )
       }
     }
     return(TRUE)

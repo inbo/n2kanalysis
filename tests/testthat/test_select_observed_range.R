@@ -5,11 +5,11 @@ describe("select_observed_range", {
     Year = 1:10
   )
   variable <- "Year"
-  
+
   it("selects correctly", {
     expect_that(
       select_observed_range(
-        observation = observation, 
+        observation = observation,
         variable = variable
       ),
       is_identical_to(observation[3:7, ])
@@ -19,10 +19,15 @@ describe("select_observed_range", {
     observation$Year[5] <- NA
     expect_that(
       select_observed_range(
-        observation = observation, 
+        observation = observation,
         variable = variable
       ),
-      gives_warning(paste(variable, "contains missing values. Corresponding rows are removed."))
+      gives_warning(
+        paste(
+          variable,
+          "contains missing values. Corresponding rows are removed."
+        )
+      )
     )
   })
 })

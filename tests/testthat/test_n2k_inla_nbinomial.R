@@ -5,7 +5,8 @@ this.species.group.id <- 2L
 this.location.group.id <- 3L
 this.analysis.date <- Sys.time()
 this.model.type <- "inla nbinomial: period + herd"
-this.formula <- "incidence ~ offset(log(size)) + period + f(herd, model = 'iid')"  
+this.formula <-
+  "incidence ~ offset(log(size)) + period + f(herd, model = 'iid')"
 this.first.imported.year <- 1990L
 this.last.imported.year <- 2015L
 this.last.analysed.year <- 2014L
@@ -20,20 +21,20 @@ object <- n2k_inla_nbinomial(
   first.imported.year = this.first.imported.year,
   last.imported.year = this.last.imported.year,
   analysis.date = this.analysis.date,
-  data = cbpp 
+  data = cbpp
 )
 model.object <- INLA::inla(
-  incidence ~ offset(log(size)) + period + f(herd, model = "iid"), 
+  incidence ~ offset(log(size)) + period + f(herd, model = "iid"),
   data = object@Data,
   family = "nbinomial"
 )
 model.truth <- INLA::inla(
-  incidence ~ offset(log(size)) + period + f(herd, model = "iid"), 
+  incidence ~ offset(log(size)) + period + f(herd, model = "iid"),
   data = cbpp,
   family = "nbinomial"
 )
 describe("n2k_inla_nbinomial", {
-  
+
   it("adds the data as a data.frame", {
     expect_that(
       object@Data,
@@ -137,22 +138,6 @@ describe("n2k_inla_nbinomial", {
       )@AnalysisMetadata$Seed,
       is_identical_to(as.integer(this.seed))
     )
-    this.seed <- 12345L
-    expect_that(
-      n2k_inla_nbinomial(
-        data = cbpp,
-        scheme.id = this.scheme.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        seed = this.seed + 1e-11
-      )@AnalysisMetadata$Seed,
-      is_identical_to(this.seed)
-    )
     expect_that(
       n2k_inla_nbinomial(
         data = cbpp,
@@ -165,7 +150,7 @@ describe("n2k_inla_nbinomial", {
         analysis.date = this.analysis.date,
         seed = this.seed + 0.1
       ),
-      throws_error("seed is not integer")
+      throws_error("seed is not a count \\(a single positive integer\\)")
     )
   })
   it("sets a random seed when not provided", {
@@ -174,7 +159,7 @@ describe("n2k_inla_nbinomial", {
       is_a("integer")
     )
   })
-  
+
   it("sets the correct SchemeID", {
     expect_that(
       n2k_inla_nbinomial(
@@ -216,26 +201,12 @@ describe("n2k_inla_nbinomial", {
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id + 1e-11
-      )@AnalysisMetadata$SchemeID,
-      is_identical_to(this.scheme.id)
-    )
-    expect_that(
-      n2k_inla_nbinomial(
-        data = cbpp,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
         scheme.id = this.scheme.id + 0.1
       ),
-      throws_error("scheme.id is not integer")
+      throws_error("scheme.id is not a count \\(a single positive integer\\)")
     )
   })
-  
+
   it("sets the correct SpeciesGroupID", {
     expect_that(
       n2k_inla_nbinomial(
@@ -270,20 +241,6 @@ describe("n2k_inla_nbinomial", {
     expect_that(
       n2k_inla_nbinomial(
         data = cbpp,
-        species.group.id = this.species.group.id + 1e-11,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$SpeciesGroupID,
-      is_identical_to(this.species.group.id)
-    )
-    expect_that(
-      n2k_inla_nbinomial(
-        data = cbpp,
         species.group.id = this.species.group.id + 0.1,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -293,10 +250,12 @@ describe("n2k_inla_nbinomial", {
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("species.group.id is not integer")
+      throws_error(
+        "species.group.id is not a count \\(a single positive integer\\)"
+      )
     )
   })
-  
+
   it("sets the correct LocationGroupID", {
     expect_that(
       n2k_inla_nbinomial(
@@ -332,20 +291,6 @@ describe("n2k_inla_nbinomial", {
       n2k_inla_nbinomial(
         data = cbpp,
         species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id + 1e-11,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$LocationGroupID,
-      is_identical_to(this.location.group.id)
-    )
-    expect_that(
-      n2k_inla_nbinomial(
-        data = cbpp,
-        species.group.id = this.species.group.id,
         location.group.id = this.location.group.id + 0.1,
         model.type = this.model.type,
         formula = this.formula,
@@ -354,10 +299,12 @@ describe("n2k_inla_nbinomial", {
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("location.group.id is not integer")
+      throws_error(
+        "location.group.id is not a count \\(a single positive integer\\)"
+      )
     )
   })
-  
+
   it("sets the correct FirstImportedYear", {
     expect_that(
       n2k_inla_nbinomial(
@@ -396,26 +343,14 @@ describe("n2k_inla_nbinomial", {
         location.group.id = this.location.group.id,
         model.type = this.model.type,
         formula = this.formula,
-        first.imported.year = this.first.imported.year + 1e-11,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$FirstImportedYear,
-      is_identical_to(this.first.imported.year)
-    )
-    expect_that(
-      n2k_inla_nbinomial(
-        data = cbpp,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
         first.imported.year = this.first.imported.year + 0.1,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("first.imported.year is not integer")
+      throws_error(
+        "first.imported.year is not a count \\(a single positive integer\\)"
+      )
     )
   })
   it("checks that FirstImportedYear is from the past", {
@@ -448,7 +383,7 @@ describe("n2k_inla_nbinomial", {
       is_a("n2kInlaNbinomial")
     )
   })
-  
+
   it("sets the correct LastImportedYear", {
     expect_that(
       n2k_inla_nbinomial(
@@ -488,25 +423,13 @@ describe("n2k_inla_nbinomial", {
         model.type = this.model.type,
         formula = this.formula,
         first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year + 1e-11,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$LastImportedYear,
-      is_identical_to(this.last.imported.year)
-    )
-    expect_that(
-      n2k_inla_nbinomial(
-        data = cbpp,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year + 0.1,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("last.imported.year is not integer")
+      throws_error(
+        "last.imported.year is not a count \\(a single positive integer\\)"
+      )
     )
   })
   it("checks that LastImportedYear is from the past", {
@@ -541,7 +464,7 @@ describe("n2k_inla_nbinomial", {
       throws_error("FirstImportedYear cannot exceed LastImportedYear")
     )
   })
-  
+
   it("sets the correct Duration", {
     expect_that(
       n2k_inla_nbinomial(
@@ -599,29 +522,17 @@ describe("n2k_inla_nbinomial", {
         formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
-        duration = this.duration + 1e-11,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$Duration,
-      is_identical_to(this.duration)
-    )
-    expect_that(
-      n2k_inla_nbinomial(
-        data = cbpp,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
         duration = this.duration + 0.1,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("duration is not integer")
+      throws_error("duration is not a count \\(a single positive integer\\)")
     )
   })
-  it("checks that Duration is not outside the FirstImportYear - LastImportedYear ranges", {
+  it(
+"checks that Duration is not outside the FirstImportYear - LastImportedYear
+ranges"
+  , {
     expect_that(
       n2k_inla_nbinomial(
         data = cbpp,
@@ -635,7 +546,10 @@ describe("n2k_inla_nbinomial", {
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Duration longer than the interval from FirstImportedYear to LastImportedYear")
+      throws_error(
+"Some Duration longer than the interval from FirstImportedYear to
+LastImportedYear"
+      )
     )
     expect_that(
       n2k_inla_nbinomial(
@@ -650,10 +564,12 @@ describe("n2k_inla_nbinomial", {
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("duration must be strictly positive")
+      throws_error(
+        "dots\\$duration is not a count \\(a single positive integer\\)"
+      )
     )
   })
-  
+
   it("sets the correct LastAnalysedYear", {
     expect_that(
       n2k_inla_nbinomial(
@@ -713,27 +629,13 @@ describe("n2k_inla_nbinomial", {
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         duration = 1,
-        last.analysed.year = this.last.analysed.year + 1e-11,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$LastAnalysedYear,
-      is_identical_to(this.last.analysed.year)
-    )
-    expect_that(
-      n2k_inla_nbinomial(
-        data = cbpp,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        duration = 1,
         last.analysed.year = this.last.analysed.year + 0.1,
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("last.analysed.year is not integer")
+      throws_error(
+        "last.analysed.year is not a count \\(a single positive integer\\)"
+      )
     )
   })
   it("checks that LastAnalysedYear is within the range", {
@@ -768,10 +670,13 @@ describe("n2k_inla_nbinomial", {
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("LastAnalysedYear smaller than FirstImportedYear \\+ Duration \\- 1\\. Window outside imported range\\.")
+      throws_error(
+"LastAnalysedYear smaller than FirstImportedYear \\+ Duration \\- 1\\. Window
+outside imported range\\."
+      )
     )
   })
-  
+
   it("checks if analysis date is from the past", {
     expect_that(
       n2k_inla_nbinomial(
@@ -785,9 +690,9 @@ describe("n2k_inla_nbinomial", {
         analysis.date = Sys.time() + 24 * 60 * 60,
         scheme.id = this.scheme.id
       ),
-      throws_error("analysis.date is in the future")
+      throws_error("AnalysisDate must be in the past")
     )
-  })  
+  })
   it("checks if all variable in formula are available in the data", {
     expect_that(
       n2k_inla_nbinomial(
@@ -845,7 +750,7 @@ describe("n2k_inla_nbinomial", {
       ),
       throws_error("Variables missing in df: herd")
     )
-  })  
+  })
 })
 
 
@@ -897,7 +802,10 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = object, model.fit = model.object, status = "converged", scheme.id = 999
+        data = object,
+        model.fit = model.object,
+        status = "converged",
+        scheme.id = 999
       )@AnalysisMetadata$SchemeID,
       is_identical_to(object@AnalysisMetadata$SchemeID)
     )
@@ -907,9 +815,9 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = object, 
-        model.fit = model.object, 
-        status = "converged", 
+        data = object,
+        model.fit = model.object,
+        status = "converged",
         species.group.id = 999
       )@AnalysisMetadata$SpeciesGroupID,
       is_identical_to(object@AnalysisMetadata$SpeciesGroupID)
@@ -920,9 +828,9 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = object, 
-        model.fit = model.object, 
-        status = "converged", 
+        data = object,
+        model.fit = model.object,
+        status = "converged",
         location.group.id = 999
       )@AnalysisMetadata$LocationGroupID,
       is_identical_to(object@AnalysisMetadata$LocationGroupID)
@@ -933,7 +841,10 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = object, model.fit = model.object, status = "converged", model.type = 999
+        data = object,
+        model.fit = model.object,
+        status = "converged",
+        model.type = 999
       )@AnalysisMetadata$ModelType,
       is_identical_to(object@AnalysisMetadata$ModelType)
     )
@@ -943,7 +854,10 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = object, model.fit = model.object, status = "converged", covariate = 999
+        data = object,
+        model.fit = model.object,
+        status = "converged",
+        covariate = 999
       )@AnalysisMetadata$Covariate,
       is_identical_to(object@AnalysisMetadata$Covariate)
     )
@@ -957,18 +871,18 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = object, 
-        model.fit = model.object, 
-        status = "converged", 
+        data = object,
+        model.fit = model.object,
+        status = "converged",
         duration = 999
       )@AnalysisMetadata$Duration,
       is_identical_to(object@AnalysisMetadata$Duration)
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = object, 
-        model.fit = model.object, 
-        status = "converged", 
+        data = object,
+        model.fit = model.object,
+        status = "converged",
         first.imported.year = 999
       )@AnalysisMetadata$FirstImportedYear,
       is_identical_to(object@AnalysisMetadata$FirstImportedYear)
@@ -979,9 +893,9 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = object, 
-        model.fit = model.object, 
-        status = "converged", 
+        data = object,
+        model.fit = model.object,
+        status = "converged",
         last.imported.year = 999
       )@AnalysisMetadata$LastImportedYear,
       is_identical_to(object@AnalysisMetadata$LastImportedYear)
@@ -992,9 +906,9 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = object, 
-        model.fit = model.object, 
-        status = "converged", 
+        data = object,
+        model.fit = model.object,
+        status = "converged",
         last.analysed.year = 3000
       )@AnalysisMetadata$LastAnalysedYear,
       is_identical_to(object@AnalysisMetadata$LastAnalysedYear)
@@ -1005,7 +919,10 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = object, model.fit = model.object, status = "converged", analysis.data = 999
+        data = object,
+        model.fit = model.object,
+        status = "converged",
+        analysis.data = 999
       )@AnalysisMetadata$AnalysisDate,
       is_identical_to(object@AnalysisMetadata$AnalysisDate)
     )
@@ -1023,7 +940,7 @@ describe("n2k_inla_nbinomial", {
     )
   })
   model.poisson <- INLA::inla(
-    incidence ~ offset(log(size)) + period + f(herd, model = "iid"), 
+    incidence ~ offset(log(size)) + period + f(herd, model = "iid"),
     data = object@Data,
     family = "poisson"
   )

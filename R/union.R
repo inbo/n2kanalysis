@@ -3,7 +3,15 @@
 #' @export
 union <- function(...){
   dots <- list(...)
-  r.package <- do.call(rbind, lapply(dots, function(x){x@RPackage}))
+  r.package <- do.call(
+    rbind,
+    lapply(
+      dots,
+      function(x){
+        x@RPackage
+      }
+    )
+  )
   r.package <- unique(r.package)
   r.package <- r.package[order(r.package$Description, r.package$Version), ]
   rownames(r.package) <- NULL

@@ -1,5 +1,5 @@
 #' Find and mark obsolete datasets
-#' 
+#'
 #' A dataset is obsolete when a newer version is available
 #' @export
 #' @param channel An open ODBC channl
@@ -21,22 +21,22 @@ mark_obsolete_dataset <- function(channel){
       INNER JOIN
         (
           SELECT
-            FileName, 
-            PathName, 
+            FileName,
+            PathName,
             Max(ImportDate) AS MostRecent
           FROM
             Dataset
           GROUP BY
-            FileName, 
+            FileName,
             PathName
         ) AS Recent
-      ON 
-        Dataset.FileName = Recent.FileName AND 
+      ON
+        Dataset.FileName = Recent.FileName AND
         Dataset.PathName = Recent.PathName
     WHERE
       Obsolete = 0 AND
       ImportDate < MostRecent
   "
-  sql.status <- sqlQuery(channel = channel, query = sql)  
+  sql.status <- sqlQuery(channel = channel, query = sql)
   return(sql.status)
 }

@@ -14,7 +14,7 @@ object <- n2k_glmer_poisson(
   data = cbpp
 )
 model.object <- lme4::glmer(
-  incidence ~ offset(log(size)) + period + (1 | herd), 
+  incidence ~ offset(log(size)) + period + (1 | herd),
   data = object@Data,
   family = poisson
 )

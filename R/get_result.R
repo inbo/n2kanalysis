@@ -7,7 +7,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "get_result", 
+  name = "get_result",
   def = function(x, ...){
     standard.generic("get_result")
   }
@@ -43,7 +43,7 @@ setMethod(
 
 #' @rdname get_result
 #' @importFrom methods setMethod validObject
-#' @importFrom n2khelper check_single_character check_single_logical
+#' @importFrom assertthat assert_that is.string is.flag is.count
 #' @param keep.fingerprint Keep the character fingerprints? Otherwise change them into integers
 #' @param n.cluster the number of clusters to run this function in parallel. Defaults to 1 (= no parallel computing).
 setMethod(
@@ -51,23 +51,26 @@ setMethod(
   signature = signature(x = "character"),
   definition = function(x, keep.fingerprint = TRUE, n.cluster = 1, ...){
     # check arguments
-    x <- check_single_character(x)
-    keep.fingerprint <- check_single_logical(keep.fingerprint, name = "keep.fingerprint")
-    n.cluster <- check_single_strictly_positive_integer(n.cluster, name = "n.cluster")
+    assert_that(is.string(x))
+    assert_that(is.flag(keep.fingerprint))
+    assert_that(is.count(n.cluster))
 
     # x is an existing file
     if (file_test("-f", x)) {
       message(x)
       local.environment <- new.env()
       load(x, envir = local.environment)
-      analysis <- read_object_environment(object = "analysis", env = local.environment)
+      analysis <- read_object_environment(
+        object = "analysis",
+        env = local.environment
+      )
       return(get_result(x = analysis, ...))
     }
-  
+
     if (!file_test("-d", x)) {
       stop("'x' is neither an existing file, neither an existing directory")
     }
-    
+
     # x is an existing directory
     x <- normalizePath(x, winslash = "/", mustWork = TRUE)
     files <- list.files(path = x, pattern = "\\.rda$", full.names = TRUE)
@@ -77,29 +80,39 @@ setMethod(
       if (requireNamespace("parallel", quietly = TRUE)) {
         available.cluster <- parallel::detectCores()
         if (n.cluster > available.cluster) {
-          message("Requesting ", n.cluster, " clusters but only ", available.cluster, " available.")
+          message(
+            "Requesting ", n.cluster, " clusters but only ", available.cluster,
+            " available."
+          )
           n.cluster <- available.cluster
         }
         message("Reading results in parallel on ", n.cluster, " clusters")
         utils::flush.console()
         cl <- parallel::makeCluster(n.cluster)
-        result <- parallel::clusterApplyLB(cl = cl, x = files, fun = get_result, ...)
+        result <- parallel::clusterApplyLB(
+          cl = cl,
+          x = files,
+          fun = get_result,
+          ...
+        )
         parallel::stopCluster(cl)
       } else {
-        message("Cannot load the parallel package. Falling back to non-parallel computing.")
+        message(
+"Cannot load the parallel package. Falling back to non-parallel computing."
+        )
         utils::flush.console()
         result <- lapply(files, get_result, ...)
       }
     }
-    
+
     message("Combining results")
     utils::flush.console()
     result <- do.call(combine, result)
-    
+
     if (keep.fingerprint) {
       return(result)
     }
-    
+
     message("Converting sha1 to integer")
     utils::flush.console()
     # convert analysis fingerprint from sha1 to factor
@@ -108,7 +121,7 @@ setMethod(
       result@AnalysisRelation$ParentAnalysis
     )
     analysis.level <- sort(unique(analysis.level))
-    
+
     result@AnalysisRelation$Analysis <- factor(
       result@AnalysisRelation$Analysis,
       levels = analysis.level
@@ -129,7 +142,7 @@ setMethod(
       result@AnalysisMetadata$FileFingerprint,
       levels = analysis.level
     )
-    
+
     # convert parameter fingerprint from sha1 to integer
     result@Anomaly$Parameter <- as.integer(factor(
       result@Anomaly$Parameter,
@@ -157,7 +170,7 @@ setMethod(
       result@AnomalyType$Fingerprint,
       levels = result@AnomalyType$Fingerprint
     ))
-    
+
     # convert R package fingerprint from sha1 to integer
     result@AnalysisVersionRPackage$RPackage <- as.integer(factor(
       result@AnalysisVersionRPackage$RPackage,
@@ -181,7 +194,7 @@ setMethod(
       result@AnalysisVersion$Fingerprint,
       levels = result@AnalysisVersion$Fingerprint
     )
-    
+
     # convert observationID to factor
     result@AnalysisRelation$ParentStatusFingerprint <- factor(
       result@AnalysisRelation$ParentStatusFingerprint
@@ -199,7 +212,7 @@ setMethod(
       result@AnalysisMetadata$ModelType
     )
     result@Anomaly$Datafield <- factor(result@Anomaly$Datafield)
-    
+
     validObject(result)
     return(result)
   }

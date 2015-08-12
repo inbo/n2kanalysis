@@ -6,7 +6,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "get_model_parameter", 
+  name = "get_model_parameter",
   def = function(analysis){
     standard.generic("get_model_parameter")
   }
@@ -26,38 +26,42 @@ setMethod(
       return(new("n2kParameter"))
     }
     parameter <- data.frame(
-      Description = c("Fixed effect", "Random effect BLUP", "Random effect variance", "Fitted"),
+      Description = c(
+        "Fixed effect", "Random effect BLUP", "Random effect variance", "Fitted"
+      ),
       Parent = NA,
       stringsAsFactors = FALSE
     )
     parameter$Fingerprint <- apply(parameter, 1, get_sha1)
-    
+
     # add fixed effect parameters
     message("    reading model parameters: fixed effects", appendLF = FALSE)
     utils::flush.console()
     variable <- c(
-      "\\(Intercept\\)", 
+      "\\(Intercept\\)",
       attr(attr(analysis@Model@frame, "terms"), "term.labels")
     )
     fixed.effect <- summary(analysis@Model)$coefficients
     parameter.estimate <- data.frame(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
-      Parameter = row.names(fixed.effect),    
+      Parameter = row.names(fixed.effect),
       Estimate = fixed.effect[, "Estimate"],
       LowerConfidenceLimit = qnorm(
-        p = 0.025, 
-        mean = fixed.effect[, "Estimate"], 
+        p = 0.025,
+        mean = fixed.effect[, "Estimate"],
         sd = fixed.effect[, "Std. Error"]
       ),
       UpperConfidenceLimit = qnorm(
-        p = 0.975, 
-        mean = fixed.effect[, "Estimate"], 
+        p = 0.975,
+        mean = fixed.effect[, "Estimate"],
         sd = fixed.effect[, "Std. Error"]
       ),
       stringsAsFactors = FALSE
     )
     row.names(parameter.estimate) <- NULL
-    fixed.parent <- parameter$Fingerprint[parameter$Description == 'Fixed effect']
+    fixed.parent <- parameter$Fingerprint[
+      parameter$Description == "Fixed effect"
+    ]
     for (i in variable) {
       present <- grep(paste0("^", i), parameter.estimate$Parameter)
       if (length(present) == 0) {
@@ -76,7 +80,11 @@ setMethod(
         next
       }
       extra.factor <- data.frame(
-        Description = gsub(paste0("^", i), "" , parameter.estimate$Parameter[present]),
+        Description = gsub(
+          paste0("^", i),
+          "" ,
+          parameter.estimate$Parameter[present]
+        ),
         Parent = extra$Fingerprint,
         stringsAsFactors = FALSE
       )
@@ -84,7 +92,7 @@ setMethod(
       parameter <- rbind(parameter, extra.factor)
       parameter.estimate$Parameter[present] <- extra.factor$Fingerprint
     }
-    
+
     # add random effect variance
     message(", random effect variance", appendLF = FALSE)
     utils::flush.console()
@@ -94,7 +102,9 @@ setMethod(
     }
     extra <- data.frame(
       Description = names(random.variance),
-      Parent = parameter$Fingerprint[parameter$Description == 'Random effect variance'],
+      Parent = parameter$Fingerprint[
+        parameter$Description == "Random effect variance"
+      ],
       stringsAsFactors = FALSE
     )
     extra$Fingerprint <- apply(extra, 1, get_sha1)
@@ -109,14 +119,16 @@ setMethod(
     )
     rownames(tmp) <- NULL
     parameter.estimate <- rbind(parameter.estimate, tmp)
-  
+
     # add random effect BLUP's
     message(", random effect BLUP's", appendLF = FALSE)
     utils::flush.console()
     random.effect <- ranef(analysis@Model, condVar = TRUE)
     extra <- data.frame(
       Description = names(random.effect),
-      Parent = parameter$Fingerprint[parameter$Description == 'Random effect BLUP'],
+      Parent = parameter$Fingerprint[
+        parameter$Description == "Random effect BLUP"
+      ],
       stringsAsFactors = FALSE
     )
     extra$Fingerprint <- apply(extra, 1, get_sha1)
@@ -129,7 +141,7 @@ setMethod(
       )
       extra.blup$Fingerprint <- apply(extra.blup, 1, get_sha1)
       parameter <- rbind(parameter, extra.blup)
-      
+
       re <- random.effect[[i]][, 1]
       re.sd <- sqrt(attr(random.effect[[i]], "postVar")[1, 1, ])
       tmp <- data.frame(
@@ -142,15 +154,15 @@ setMethod(
       )
       rownames(tmp) <- NULL
       parameter.estimate <- rbind(parameter.estimate, tmp)
-    }  
-    
+    }
+
     # add fitted values
     message(", fitted values")
     utils::flush.console()
-    
+
     extra.fitted <- data.frame(
       Description = analysis@Data$ObservationID,
-      Parent = parameter$Fingerprint[parameter$Description == 'Fitted'],
+      Parent = parameter$Fingerprint[parameter$Description == "Fitted"],
       stringsAsFactors = FALSE
     )
     extra.fitted$Fingerprint <- apply(extra.fitted, 1, get_sha1)
@@ -192,18 +204,22 @@ setMethod(
       stringsAsFactors = FALSE
     )
     parameter$Fingerprint <- apply(parameter, 1, get_sha1)
-    
+
     parameter.estimate <- data.frame(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
-      Parameter = parameter$Fingerprint,    
+      Parameter = parameter$Fingerprint,
       Estimate = analysis@Anova[2, "Pr(>Chisq)"],
       LowerConfidenceLimit = NA,
       UpperConfidenceLimit = NA,
       stringsAsFactors = FALSE
     )
     row.names(parameter.estimate) <- NULL
-    
-    new("n2kParameter", Parameter = parameter, ParameterEstimate = parameter.estimate)
+
+    new(
+      "n2kParameter",
+      Parameter = parameter,
+      ParameterEstimate = parameter.estimate
+    )
   }
 )
 
@@ -218,14 +234,14 @@ setMethod(
     if (analysis@AnalysisMetadata$Status != "converged") {
       return(new("n2kParameter"))
     }
-    
+
     parameter <- data.frame(
       Description = "Composite index",
       Parent = NA,
       stringsAsFactors = FALSE
     )
     parameter$Fingerprint <- apply(parameter, 1, get_sha1)
-    
+
     parameter.estimate <- cbind(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
       analysis@Index,
@@ -233,8 +249,10 @@ setMethod(
     )
     colnames(parameter.estimate)[2] <- "Parameter"
     row.names(parameter.estimate) <- NULL
-    parameter.estimate$Parameter <- levels(parameter.estimate$Parameter)[parameter.estimate$Parameter]
-    
+    parameter.estimate$Parameter <- levels(parameter.estimate$Parameter)[
+      parameter.estimate$Parameter
+    ]
+
     extra <- data.frame(
       Description = parameter.estimate$Parameter,
       Parent = parameter$Fingerprint,
@@ -242,9 +260,13 @@ setMethod(
     )
     extra$Fingerprint <- apply(extra, 1, get_sha1)
     parameter <- rbind(parameter, extra)
-    
+
     parameter.estimate$Parameter <- extra$Fingerprint
 
-    new("n2kParameter", Parameter = parameter, ParameterEstimate = parameter.estimate)
+    new(
+      "n2kParameter",
+      Parameter = parameter,
+      ParameterEstimate = parameter.estimate
+    )
   }
 )

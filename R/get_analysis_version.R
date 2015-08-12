@@ -6,7 +6,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "get_analysis_version", 
+  name = "get_analysis_version",
   def = function(version){
     standard.generic("get_analysis_version")
   }
@@ -22,8 +22,8 @@ setMethod(
   signature = signature(version = "data.frame"),
   definition = function(version){
     check_dataframe_variable(
-      df = version, 
-      variable = c("Description", "Version", "Fingerprint"), 
+      df = version,
+      variable = c("Description", "Version", "Fingerprint"),
       name = "version"
     )
     if(is.null(attr(version, "AnalysisVersion"))){

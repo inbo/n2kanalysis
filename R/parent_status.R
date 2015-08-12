@@ -7,7 +7,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "parent_status", 
+  name = "parent_status",
   def = function(x){
     standard.generic("parent_status")
   }
@@ -34,7 +34,7 @@ setMethod(
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "parent_status<-", 
+  name = "parent_status<-",
   def = function(x, value){
     standard.generic("parent_status<-")
   }
@@ -50,8 +50,9 @@ setReplaceMethod(
     x@AnalysisRelation <- value
     x@StatusFingerprint <- get_sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Model, x@Model0, 
-        x@Anova, x@AnalysisMetadata$AnalysisVersion, x@AnalysisRelation
+        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Model,
+        x@Model0,  x@Anova, x@AnalysisMetadata$AnalysisVersion,
+        x@AnalysisRelation
       )
     )
     validObject(x)
@@ -69,8 +70,9 @@ setReplaceMethod(
     x@ParentStatus <- value
     x@StatusFingerprint <- get_sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Parameter, x@Index,
-        x@AnalysisMetadata$AnalysisVersion, x@AnalysisRelation
+        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
+        x@Parameter, x@Index, x@AnalysisMetadata$AnalysisVersion,
+        x@AnalysisRelation
       )
     )
     validObject(x)

@@ -8,12 +8,12 @@ describe("select_factor_threshold", {
   variable <- "LocationFactor"
   variable.numeric <- "LocationID"
   threshold <- 0.05
-  
+
   it("selects correctly", {
     expect_that(
       select_factor_threshold(
-        observation = observation, 
-        variable = variable, 
+        observation = observation,
+        variable = variable,
         threshold = threshold
       ),
       is_identical_to(subset(observation, LocationID %in% 1:2))
@@ -22,18 +22,23 @@ describe("select_factor_threshold", {
   it("checks the number of observations", {
     expect_that(
       select_factor_threshold(
-        observation = head(observation, -1), 
-        variable = variable, 
+        observation = head(observation, -1),
+        variable = variable,
         threshold = threshold
       ),
-      throws_error(paste("The number of observations much be at least twice the number of levels in", variable))
+      throws_error(
+        paste(
+"The number of observations much be at least twice the number of levels in",
+variable
+        )
+      )
     )
   })
   it("warns when the variable is not a factor", {
     expect_that(
       select_factor_threshold(
-        observation = observation, 
-        variable = variable.numeric, 
+        observation = observation,
+        variable = variable.numeric,
         threshold = threshold
       ),
       gives_warning(paste(variable.numeric, "was converted to a factor"))

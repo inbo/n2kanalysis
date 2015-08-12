@@ -25,7 +25,7 @@ describe("file fingerprint", {
       throws_error("Corrupt FileFingerprint")
     )
   })
-  
+
   it("detects changes in SchemeID", {
     change.object <- object
     change.object@AnalysisMetadata$SchemeID <- 999L
@@ -61,7 +61,7 @@ describe("file fingerprint", {
       throws_error("Corrupt FileFingerprint")
     )
   })
-  
+
   it("detects changes in ModelType", {
     change.object <- object
     change.object@AnalysisMetadata$ModelType <- "inla nbinomial: period"
@@ -70,16 +70,18 @@ describe("file fingerprint", {
       throws_error("Corrupt FileFingerprint")
     )
   })
-  
+
   it("detects changes in Formula", {
     change.object <- object
     change.object@AnalysisMetadata$Formula <- "incidence ~ period"
     expect_that(
       validObject(change.object),
-      throws_error("Formulas in 'AnalysisMetadata' don't match 'AnalysisFormula'")
+      throws_error(
+        "Formulas in 'AnalysisMetadata' don't match 'AnalysisFormula'"
+      )
     )
   })
-  
+
   it("detects changes in FirstImportedYear", {
     change.object <- object
     change.object@AnalysisMetadata$FirstImportedYear <- 999L
@@ -88,7 +90,7 @@ describe("file fingerprint", {
       throws_error("Corrupt FileFingerprint")
     )
   })
-  
+
   it("detects changes in LastImportedYear", {
     change.object <- object
     change.object@AnalysisMetadata$LastImportedYear <- 2000L
@@ -97,7 +99,7 @@ describe("file fingerprint", {
       throws_error("Corrupt FileFingerprint")
     )
   })
-  
+
   it("detects changes in Duration", {
     change.object <- object
     change.object@AnalysisMetadata$Duration <- 2L
@@ -106,7 +108,7 @@ describe("file fingerprint", {
       throws_error("Corrupt FileFingerprint")
     )
   })
-  
+
   it("detects changes in LastAnalysedYear", {
     change.object <- object
     change.object@AnalysisMetadata$LastAnalysedYear <- 2000L
@@ -127,7 +129,7 @@ describe("status fingerprint", {
       throws_error("Corrupt StatusFingerprint")
     )
   })
-  
+
   it("detects changes in AnalysisVersion", {
     change.object <- object
     change.object@AnalysisMetadata$AnalysisVersion <- ""
@@ -136,12 +138,12 @@ describe("status fingerprint", {
       throws_error("Corrupt StatusFingerprint")
     )
   })
-  
-  
+
+
   it("detects changes in Model", {
     require(INLA)
     model.object <- INLA::inla(
-      incidence ~ offset(log(size)) + period + f(herd, model = "iid"), 
+      incidence ~ offset(log(size)) + period + f(herd, model = "iid"),
       data = object@Data,
       family = "nbinomial"
     )
@@ -149,7 +151,7 @@ describe("status fingerprint", {
       data = object, model.fit = model.object, status = "converged"
     )
     change.model <- INLA::inla(
-      incidence ~ period + f(herd, model = "iid"), 
+      incidence ~ period + f(herd, model = "iid"),
       data = object@Data,
       family = "nbinomial"
     )

@@ -6,12 +6,12 @@
 #' @importFrom lme4 ranef
 #' @param x the glmerMod object
 setMethod(
-  f = "get_sha1", 
+  f = "get_sha1",
   signature = "glmerMod",
   definition = function(x){
     get_sha1(
       list(
-        coef(summary(x)), 
+        coef(summary(x)),
         do.call(c, ranef(x))
       )
     )

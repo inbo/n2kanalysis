@@ -7,7 +7,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "get_file_fingerprint", 
+  name = "get_file_fingerprint",
   def = function(x){
     standard.generic("get_file_fingerprint")
   }

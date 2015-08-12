@@ -17,14 +17,29 @@ setClass(
 setValidity(
   "n2kResult",
   function(object){
-    if (!all(object@AnalysisMetadata$AnalysisVersion %in% object@AnalysisVersion$Fingerprint)) {
-      stop("Some AnalysisVersion in 'AnalysisMetadata' slot are not present in 'AnalysisVersion' slot")
+    if (!all(
+      object@AnalysisMetadata$AnalysisVersion %in%
+        object@AnalysisVersion$Fingerprint
+    )) {
+      stop(
+"Some AnalysisVersion in 'AnalysisMetadata' slot are not present in
+'AnalysisVersion' slot"
+      )
     }
-    if (!all(object@ParameterEstimate$Analysis %in% object@AnalysisMetadata$FileFingerprint)) {
-      stop("Some Analysis in 'ParameterEstimate' slot are not present in 'AnalysisMetadata' slot")
+    if (!all(
+object@ParameterEstimate$Analysis %in% object@AnalysisMetadata$FileFingerprint
+    )) {
+      stop(
+"Some Analysis in 'ParameterEstimate' slot are not present in 'AnalysisMetadata'
+slot"
+      )
     }
-    if (!all(object@Anomaly$Analysis %in% object@AnalysisMetadata$FileFingerprint)) {
-      stop("Some Analysis in 'Anomaly' slot are not present in 'AnalysisMetadata' slot")
+    if (!all(
+      object@Anomaly$Analysis %in% object@AnalysisMetadata$FileFingerprint
+    )) {
+      stop(
+"Some Analysis in 'Anomaly' slot are not present in 'AnalysisMetadata' slot"
+      )
     }
     return(TRUE)
   }

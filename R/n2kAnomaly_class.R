@@ -56,13 +56,16 @@ setValidity(
       variable = required.class,
       name = "Anomaly"
     )
-    
+
     if (!all(object@Anomaly$AnomalyType %in% object@AnomalyType$Fingerprint)) {
       stop("Some Anomaly have no matching Fingerprint in 'AnomalyType'")
     }
-    
+
     current <- object@Anomaly[, c("Analysis", "Parameter")]
-    merged <- merge(current, object@ParameterEstimate[, c("Analysis", "Parameter")])
+    merged <- merge(
+      current,
+      object@ParameterEstimate[, c("Analysis", "Parameter")]
+    )
     if (nrow(current) != nrow(merged)) {
       stop("Mismatch on Parameter between Anomaly and ParameterEstimate slot")
     }

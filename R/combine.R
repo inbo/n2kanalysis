@@ -23,20 +23,42 @@ setMethod(
     dots <- list(...)
     analysis.version <- unique(do.call(
       rbind,
-      lapply(dots, function(x){x@AnalysisVersion})
+      lapply(
+        dots,
+        function(x){
+          x@AnalysisVersion
+        }
+      )
     ))
-    analysis.version <- analysis.version[order(analysis.version$Fingerprint), , drop = FALSE]
+    analysis.version <- analysis.version[
+      order(analysis.version$Fingerprint),
+      ,
+      drop = FALSE
+    ]
     r.package <- unique(do.call(
       rbind,
-      lapply(dots, function(x){x@RPackage})
+      lapply(
+        dots,
+        function(x){
+          x@RPackage
+        }
+      )
     ))
     r.package <- r.package[order(r.package$Description, r.package$Version), ]
     analysis.version.r.package <- unique(do.call(
       rbind,
-      lapply(dots, function(x){x@AnalysisVersionRPackage})
+      lapply(
+        dots,
+        function(x){
+          x@AnalysisVersionRPackage
+        }
+      )
     ))
     analysis.version.r.package <- analysis.version.r.package[
-      order(analysis.version.r.package$AnalysisVersion, analysis.version.r.package$RPackage), 
+      order(
+        analysis.version.r.package$AnalysisVersion,
+        analysis.version.r.package$RPackage
+      ),
     ]
     new(
       "n2kAnalysisVersion",
@@ -58,11 +80,21 @@ setMethod(
     dots <- list(...)
     parameter <- unique(do.call(
       rbind,
-      lapply(dots, function(x){x@Parameter})
+      lapply(
+        dots,
+        function(x){
+          x@Parameter
+        }
+      )
     ))
     parameter.estimate <- unique(do.call(
       rbind,
-      lapply(dots, function(x){x@ParameterEstimate})
+      lapply(
+        dots,
+        function(x){
+          x@ParameterEstimate
+        }
+      )
     ))
     new(
       "n2kParameter",
@@ -83,11 +115,21 @@ setMethod(
     dots <- list(...)
     anomaly.type <- unique(do.call(
       rbind,
-      lapply(dots, function(x){x@AnomalyType})
+      lapply(
+        dots,
+        function(x){
+          x@AnomalyType
+        }
+      )
     ))
     anomaly <- unique(do.call(
       rbind,
-      lapply(dots, function(x){x@Anomaly})
+      lapply(
+        dots,
+        function(x){
+          x@Anomaly
+        }
+      )
     ))
     new(
       "n2kAnomaly",

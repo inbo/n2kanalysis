@@ -9,12 +9,12 @@ describe("select_factor_count_strictly_positive", {
     Count = rep(1, 11),
     Year = c(rep(1, 10), 2)
   )
-  
+
   it("selects correctly", {
     expect_that(
       select_factor_count_strictly_positive(
-        observation = observation, 
-        variable = "LocationID", 
+        observation = observation,
+        variable = "LocationID",
         threshold = 3,
         dimension = 1
       ),
@@ -22,8 +22,8 @@ describe("select_factor_count_strictly_positive", {
     )
     expect_that(
       select_factor_count_strictly_positive(
-        observation = observation, 
-        variable = c("LocationID", "Year"), 
+        observation = observation,
+        variable = c("LocationID", "Year"),
         threshold = 2,
         dimension = 1
       ),
@@ -31,8 +31,8 @@ describe("select_factor_count_strictly_positive", {
     )
     expect_that(
       select_factor_count_strictly_positive(
-        observation = observation, 
-        variable = c("LocationID", "Year"), 
+        observation = observation,
+        variable = c("LocationID", "Year"),
         threshold = 2,
         dimension = 2
       ),
@@ -40,8 +40,8 @@ describe("select_factor_count_strictly_positive", {
     )
     expect_that(
       select_factor_count_strictly_positive(
-        observation = observation.relative, 
-        variable = "Year", 
+        observation = observation.relative,
+        variable = "Year",
         threshold = 0.15,
         dimension = 1,
         relative = TRUE
@@ -52,8 +52,8 @@ describe("select_factor_count_strictly_positive", {
   it("checks the number of dimensions", {
     expect_that(
       select_factor_count_strictly_positive(
-        observation = observation, 
-        variable = "LocationID", 
+        observation = observation,
+        variable = "LocationID",
         threshold = 3,
         dimension = 2
       ),
@@ -61,7 +61,7 @@ describe("select_factor_count_strictly_positive", {
     )
     expect_that(
       select_factor_count_strictly_positive(
-        observation = observation, 
+        observation = observation,
         variable = c("LocationID", "Year"),
         threshold = 3,
         dimension = 2,
@@ -73,18 +73,18 @@ describe("select_factor_count_strictly_positive", {
   it("checks the correct class of threshold", {
     expect_that(
       select_factor_count_strictly_positive(
-        observation = observation, 
-        variable = "LocationID", 
+        observation = observation,
+        variable = "LocationID",
         threshold = 0.15,
         dimension = 1,
         relative = FALSE
       ),
-      throws_error("threshold is not integer")
+      throws_error("threshold is not a count \\(a single positive integer\\)")
     )
     expect_that(
       select_factor_count_strictly_positive(
-        observation = observation, 
-        variable = "LocationID", 
+        observation = observation,
+        variable = "LocationID",
         threshold = 3,
         dimension = 1,
         relative = TRUE

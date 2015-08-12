@@ -19,6 +19,7 @@ Imports:
     MASS,
     lme4,
     RODBC,
+    assertthat,
     n2khelper
 Collate:
     'n2kParameter_class.R'

@@ -24,7 +24,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "n2k_glmer_poisson", 
+  name = "n2k_glmer_poisson",
   def = function(
     data, ..., model.fit
   ){
@@ -36,10 +36,10 @@ setGeneric(
 #' @rdname n2k_glmer_poisson
 #' @aliases n2k_glmer_poisson,n2kGlmerPoisson-methods
 #' @importFrom methods setMethod
-#' @importFrom n2khelper check_single_strictly_positive_integer check_single_character
+#' @importFrom assertthat assert_that is.count is.string is.time
 #' @include n2kGlmerPoisson_class.R
 setMethod(
-  f = "n2k_glmer_poisson", 
+  f = "n2k_glmer_poisson",
   signature = signature(data = "data.frame"),
   definition = function(
     data, ..., model.fit
@@ -52,61 +52,44 @@ setMethod(
     if (is.null(dots$seed)) {
       dots$seed <- sample(.Machine$integer.max, 1)
     } else {
-      dots$seed <- check_single_strictly_positive_integer(dots$seed, name = "seed")
+      assert_that(is.count(dots$seed))
+      dots$seed <- as.integer(dots$seed)
     }
-    dots$scheme.id <- check_single_strictly_positive_integer(
-      dots$scheme.id, 
-      name = "scheme.id"
-    )
-    dots$species.group.id <- check_single_strictly_positive_integer(
-      dots$species.group.id, 
-      name = "species.group.id"
-    )
-    dots$location.group.id <- check_single_strictly_positive_integer(
-      dots$location.group.id, 
-      name = "location.group.id"
-    )
-    dots$model.type <- check_single_character(dots$model.type, name = "model.type")
-    dots$formula <- check_single_character(dots$formula, name = "formula")
-    dots$first.imported.year <- check_single_strictly_positive_integer(
-      dots$first.imported.year, 
-      name = "first.imported.year"
-    )
-    dots$last.imported.year <- check_single_strictly_positive_integer(
-      dots$last.imported.year, 
-      name = "last.imported.year"
-    )
+    assert_that(is.count(dots$scheme.id))
+    dots$scheme.id <- as.integer(dots$scheme.id)
+    assert_that(is.count(dots$species.group.id))
+    dots$species.group.id <- as.integer(dots$species.group.id)
+    assert_that(is.count(dots$location.group.id))
+    dots$location.group.id <- as.integer(dots$location.group.id)
+    assert_that(is.string(dots$model.type))
+    assert_that(is.string(dots$formula))
+    assert_that(is.count(dots$first.imported.year))
+    dots$first.imported.year <- as.integer(dots$first.imported.year)
+    assert_that(is.count(dots$last.imported.year))
+    dots$last.imported.year <- as.integer(dots$last.imported.year)
     if (is.null(dots$duration)) {
       dots$duration <- dots$last.imported.year - dots$first.imported.year + 1L
     } else {
-      dots$duration <- check_single_strictly_positive_integer(
-        dots$duration, 
-        name = "duration"
-      )
+      assert_that(is.count(dots$duration))
+      dots$duration <- as.integer(dots$duration)
     }
     if (is.null(dots$last.analysed.year)) {
       dots$last.analysed.year <- dots$last.imported.year
     } else {
-      dots$last.analysed.year <- check_single_strictly_positive_integer(
-        dots$last.analysed.year, 
-        name = "last.analysed.year"
-      )
+      assert_that(is.count(dots$last.analysed.year))
+      dots$last.analysed.year <- as.integer(dots$last.analysed.year)
     }
-    dots$analysis.date <- check_single_posix(
-      dots$analysis.date, 
-      name = "analysis.date", 
-      past = TRUE
-    )
+    assert_that(is.time(dots$analysis.date))
     if (is.null(dots$parent)) {
       dots$parent <- character(0)
     } else {
-      dots$parent <- check_single_character(dots$parent, name = "parent")
+      assert_that(is.string(dots$parent))
     }
     file.fingerprint <- get_sha1(
       list(
-        data, dots$scheme.id, dots$species.group.id, dots$location.group.id, 
-        dots$model.type, dots$formula, dots$first.imported.year, 
-        dots$last.imported.year, dots$duration, dots$last.analysed.year, 
+        data, dots$scheme.id, dots$species.group.id, dots$location.group.id,
+        dots$model.type, dots$formula, dots$first.imported.year,
+        dots$last.imported.year, dots$duration, dots$last.analysed.year,
         dots$analysis.date, dots$seed, dots$parent
       )
     )
@@ -126,7 +109,9 @@ setMethod(
         dots$parent.status.fingerprint <- get_sha1(dots$parent.status)
       } else {
         if (is.null(dots$parent.status)) {
-          stop("'parent.status' is required when 'parent.status.fingerprint' is provided")
+          stop(
+"'parent.status' is required when 'parent.status.fingerprint' is provided"
+          )
         }
       }
       analysis.relation <- data.frame(
@@ -140,13 +125,13 @@ setMethod(
     version <- get_analysis_version(sessionInfo())
     status.fingerprint <- get_sha1(
       list(
-        file.fingerprint, dots$status, NULL, 
-        version@AnalysisVersion$Fingerprint, 
-        version@AnalysisVersion, version@RPackage, version@AnalysisVersionRPackage,
-        analysis.relation
+        file.fingerprint, dots$status, NULL,
+        version@AnalysisVersion$Fingerprint,
+        version@AnalysisVersion, version@RPackage,
+        version@AnalysisVersionRPackage, analysis.relation
       )
     )
-    
+
     new(
       "n2kGlmerPoisson",
       AnalysisVersion = version@AnalysisVersion,
@@ -184,15 +169,15 @@ setMethod(
 #' @importFrom methods setMethod validObject
 #' @include n2kGlmerPoisson_class.R
 setMethod(
-  f = "n2k_glmer_poisson", 
+  f = "n2k_glmer_poisson",
   signature = signature(data = "n2kGlmerPoisson", model.fit = "glmerMod"),
   definition = function(
     data, ..., model.fit
   ){
     dots <- list(...)
-    
+
     data@Model <- model.fit
-    
+
     version <- get_analysis_version(sessionInfo())
     new.version <- union(data, version)
     data@AnalysisVersion <- new.version$Union@AnalysisVersion
@@ -200,7 +185,7 @@ setMethod(
     data@AnalysisVersionRPackage <- new.version$Union@AnalysisVersionRPackage
 
     data@AnalysisMetadata$AnalysisVersion <- new.version$UnionFingerprint
-    
+
     status(data) <- dots$status
     return(data)
   }

@@ -30,7 +30,7 @@ weighted.object <- n2k_glmer_poisson(
 
 context("illegal changes in the file fingerprint")
 describe("file fingerprint", {
-  
+
   it("detects changes in Data", {
     change.object <- object
     change.object@Data <- head(cbpp, 1)
@@ -39,7 +39,7 @@ describe("file fingerprint", {
       throws_error("Corrupt FileFingerprint")
     )
   })
-  
+
   it("detects changes in SchemeID", {
     change.object <- object
     change.object@AnalysisMetadata$SchemeID <- 999L
@@ -75,7 +75,7 @@ describe("file fingerprint", {
       throws_error("Corrupt FileFingerprint")
     )
   })
-  
+
   it("detects changes in LastImportedYear", {
     change.object <- object
     change.object@AnalysisMetadata$LastImportedYear <- 2010L
@@ -84,7 +84,7 @@ describe("file fingerprint", {
       throws_error("Corrupt FileFingerprint")
     )
   })
-  
+
   it("detects changes in Duration", {
     change.object <- object
     change.object@AnalysisMetadata$Duration <- 2L
@@ -93,7 +93,7 @@ describe("file fingerprint", {
       throws_error("Corrupt FileFingerprint")
     )
   })
-  
+
   it("detects changes in LastAnalysedYear", {
     change.object <- object
     change.object@AnalysisMetadata$LastAnalysedYear <- 1994L
@@ -102,8 +102,8 @@ describe("file fingerprint", {
       throws_error("Corrupt FileFingerprint")
     )
   })
-  
-  
+
+
   it("detects changes in AnalysisDate", {
     change.object <- object
     change.object@AnalysisMetadata$AnalysisDate <- Sys.time()
@@ -112,7 +112,7 @@ describe("file fingerprint", {
       throws_error("Corrupt FileFingerprint")
     )
   })
-  
+
   it("detects changes in ModelType", {
     change.object <- object
     change.object@AnalysisMetadata$ModelType <- "glmer poisson: period"
@@ -121,21 +121,23 @@ describe("file fingerprint", {
       throws_error("Corrupt FileFingerprint")
     )
   })
-  
+
   it("detects changes in Formula", {
     change.object <- object
     change.object@AnalysisMetadata$Formula <- "incidence ~ period"
     expect_that(
       validObject(change.object),
-      throws_error("Formulas in 'AnalysisMetadata' don't match 'AnalysisFormula'")
+      throws_error(
+        "Formulas in 'AnalysisMetadata' don't match 'AnalysisFormula'"
+      )
     )
   })
-  
+
 })
 
 context("illegal changes in the status fingerprint")
 describe("status fingerprint", {
-  
+
   it("detects changes in Status", {
     change.object <- object
     change.object@AnalysisMetadata$Status <- "error"
@@ -144,10 +146,10 @@ describe("status fingerprint", {
       throws_error("Corrupt StatusFingerprint")
     )
   })
-  
+
   it("detects changes in Model", {
     model.object <- lme4::glmer(
-      incidence ~ offset(log(size)) + period + (1 | herd), 
+      incidence ~ offset(log(size)) + period + (1 | herd),
       data = object@Data,
       family = poisson
     )
@@ -155,7 +157,7 @@ describe("status fingerprint", {
       data = object, model.fit = model.object, status = "converged"
     )
     change.model <- lme4::glmer(
-      incidence ~ period + (1 | herd), 
+      incidence ~ period + (1 | herd),
       data = object@Data,
       family = poisson
     )
@@ -165,7 +167,7 @@ describe("status fingerprint", {
       throws_error("Corrupt StatusFingerprint")
     )
   })
-  
+
   it("detects changes in AnalysisVersion", {
     change.object <- object
     change.object@AnalysisMetadata$AnalysisVersion <- ""

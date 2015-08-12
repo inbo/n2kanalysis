@@ -10,7 +10,7 @@ import_result <- function(result, result.channel){
   if (!inherits(result, "n2kResult")) {
     stop("result must be a 'n2kResult' object")
   }
-  
+
   # Store R package versions
   message("Storing ", nrow(result@RPackage), " used R packages")
   r.package <- odbc_get_multi_id(
@@ -33,7 +33,7 @@ import_result <- function(result, result.channel){
   analysis.version.r.package$ID <- NULL
   rm(r.package)
   gc()
-  
+
   # Store analysis versions
   message("Storing ", nrow(result@AnalysisVersion), " analysis versions")
   analysis.version <- result@AnalysisVersion
@@ -55,10 +55,16 @@ import_result <- function(result, result.channel){
   )
   analysis.version.r.package$AnalysisVersion <- analysis.version.r.package$ID
   analysis.version.r.package$ID <- NULL
-  colnames(analysis.version.r.package) <- paste0(colnames(analysis.version.r.package), "ID")
-  
+  colnames(analysis.version.r.package) <- paste0(
+    colnames(analysis.version.r.package),
+    "ID"
+  )
+
   # store used R packages per analysis version
-  message("Storing used packages per analysis version: ", nrow(analysis.version.r.package), " rows")
+  message(
+    "Storing used packages per analysis version: ",
+    nrow(analysis.version.r.package), " rows"
+  )
   odbc_get_multi_id(
     analysis.version.r.package,
     id.field = "ID",
@@ -70,7 +76,7 @@ import_result <- function(result, result.channel){
   )
   rm(analysis.version.r.package)
   gc()
-  
+
   # add analysis version ID to metadata
   analysis.metadata <- merge(
     result@AnalysisMetadata,
@@ -86,7 +92,7 @@ import_result <- function(result, result.channel){
   analysis.metadata$StatusFingerprint <- NULL
   rm(analysis.version)
   gc()
-  
+
   # store model type
   model.type <- unique(analysis.metadata[, "ModelType", drop = FALSE])
   message("Storing ", nrow(model.type), " model types")
@@ -101,9 +107,9 @@ import_result <- function(result, result.channel){
     select = TRUE
   )
   analysis.metadata <- merge(
-    analysis.metadata, 
-    model.type, 
-    by.x = "ModelType", 
+    analysis.metadata,
+    model.type,
+    by.x = "ModelType",
     by.y = "Description"
   )
   analysis.metadata$ModelTypeID <- analysis.metadata$ID
@@ -111,13 +117,13 @@ import_result <- function(result, result.channel){
   analysis.metadata$ModelType <- NULL
   rm(model.type)
   gc()
-  
+
   # store model set
   model.set <- unique(analysis.metadata[
     , c("ModelTypeID", "FirstImportedYear", "LastImportedYear", "Duration")
   ])
   message("Storing ", nrow(model.set), " model sets")
-  colnames(model.set)[2:3] <- c("FirstYear", "LastYear") 
+  colnames(model.set)[2:3] <- c("FirstYear", "LastYear")
   model.set <- odbc_get_multi_id(
     model.set,
     id.field = "ID",
@@ -127,7 +133,9 @@ import_result <- function(result, result.channel){
     create = TRUE,
     select = TRUE
   )
-  colnames(model.set)[1:3] <- c("ModelSetID", "FirstImportedYear", "LastImportedYear") 
+  colnames(model.set)[1:3] <- c(
+    "ModelSetID", "FirstImportedYear", "LastImportedYear"
+  )
   analysis.metadata <- merge(analysis.metadata, model.set)
   rm(model.set)
   analysis.metadata$ModelTypeID <- NULL
@@ -135,7 +143,7 @@ import_result <- function(result, result.channel){
   analysis.metadata$LastImportedYear <- NULL
   analysis.metadata$Duration <- NULL
   gc()
-  
+
   # get status id
   status.id <- data.frame(
     Description = unique(analysis.metadata$Status)
@@ -155,16 +163,16 @@ import_result <- function(result, result.channel){
   rm(status.id)
   analysis.metadata$Status <- NULL
   gc()
-  
+
   # store analysis metadata
   message("Storing metadata of ", nrow(analysis.metadata), " analysis")
   colnames(analysis.metadata) <- gsub(
-    "^LastAnalysedYear", 
+    "^LastAnalysedYear",
     "LastYear",
     colnames(analysis.metadata)
   )
   colnames(analysis.metadata) <- gsub(
-    "^FileFingerprint", 
+    "^FileFingerprint",
     "Fingerprint",
     colnames(analysis.metadata)
   )
@@ -177,7 +185,7 @@ import_result <- function(result, result.channel){
     create = TRUE,
     select = TRUE
   )
-  
+
   # store analysis relation
   message("Storing ", nrow(result@AnalysisRelation), " analysis relations")
   analysis.relation <- merge(
@@ -200,9 +208,9 @@ import_result <- function(result, result.channel){
     select = TRUE
   )
   analysis.relation <- merge(
-    analysis.relation, 
-    parent.analysis, 
-    by.x = "ParentAnalysis", 
+    analysis.relation,
+    parent.analysis,
+    by.x = "ParentAnalysis",
     by.y = "Fingerprint"
   )
   analysis.relation$SourceAnalysisID <- analysis.relation$ID
@@ -223,19 +231,23 @@ import_result <- function(result, result.channel){
     by.x = "Analysis",
     by.y = "Fingerprint"
   )
-  colnames(parameter.estimate) <- gsub("^ID$", "AnalysisID", colnames(parameter.estimate))
+  colnames(parameter.estimate) <- gsub(
+    "^ID$",
+    "AnalysisID",
+    colnames(parameter.estimate)
+  )
   parameter.estimate$Analysis <- NULL
   anomaly <- merge(
-    result@Anomaly, 
-    analysis.metadata, 
-    by.x = "Analysis", 
+    result@Anomaly,
+    analysis.metadata,
+    by.x = "Analysis",
     by.y = "Fingerprint"
   )
   colnames(anomaly) <- gsub("^ID$", "AnalysisID", colnames(anomaly))
   anomaly$Analysis <- NULL
   rm(analysis.metadata)
   gc()
-  
+
   # Store the anomaly type
   message("Storing ", nrow(result@AnomalyType), " anomaly types")
   anomaly.type <- odbc_get_multi_id(
@@ -247,13 +259,17 @@ import_result <- function(result, result.channel){
     create = TRUE
   )
   anomaly.type <- merge(result@AnomalyType, anomaly.type)
-  colnames(anomaly.type) <- gsub("^Fingerprint$", "AnomalyType", colnames(anomaly.type))
+  colnames(anomaly.type) <- gsub(
+    "^Fingerprint$",
+    "AnomalyType",
+    colnames(anomaly.type)
+  )
   colnames(anomaly.type) <- gsub("^ID$", "TypeID", colnames(anomaly.type))
   anomaly <- merge(anomaly, anomaly.type[, c("AnomalyType", "TypeID")])
   rm(anomaly.type)
   gc()
   anomaly$AnomalyType <- NULL
-  
+
   # set the datafield
   datafield.type <- odbc_get_multi_id(
     data = data.frame(Description = unique(anomaly$Datafield)),
@@ -264,12 +280,17 @@ import_result <- function(result, result.channel){
     create = FALSE,
     select = TRUE
   )
-  anomaly <- merge(anomaly, datafield.type, by.x = "Datafield", by.y = "Description")
+  anomaly <- merge(
+    anomaly,
+    datafield.type,
+    by.x = "Datafield",
+    by.y = "Description"
+  )
   rm(datafield.type)
   gc()
   anomaly$Datafield <- anomaly$ID
   anomaly$ID <- NULL
-  
+
   anomaly.df <- unique(anomaly[, c("DatasourceID", "Datafield")])
   colnames(anomaly.df) <- gsub("^Datafield$", "TypeID", colnames(anomaly.df))
   anomaly.df <- odbc_get_multi_id(
@@ -282,9 +303,9 @@ import_result <- function(result, result.channel){
     select = TRUE
   )
   anomaly <- merge(
-    anomaly, 
-    anomaly.df, 
-    by.x = c("DatasourceID", "Datafield"), 
+    anomaly,
+    anomaly.df,
+    by.x = c("DatasourceID", "Datafield"),
     by.y = c("DatasourceID", "TypeID")
   )
   rm(anomaly.df)
@@ -292,7 +313,7 @@ import_result <- function(result, result.channel){
   anomaly$DatasourceID <- NULL
   anomaly$Datafield <- NULL
   colnames(anomaly) <- gsub("^ID$", "DatafieldID", colnames(anomaly))
-  
+
   # store parameters: first parents, then childern, then grandchildren, ...
   message("Storing ", nrow(result@Parameter), " parameters: ", appendLF = FALSE)
   parameter <- result@Parameter
@@ -300,7 +321,7 @@ import_result <- function(result, result.channel){
   parameter$ParentParameterID <- NA
   while (TRUE) {
     selection <- which(
-      is.na(parameter$ID) & 
+      is.na(parameter$ID) &
       (is.na(parameter$Parent) | !is.na(parameter$ParentParameterID))
     )
     if (length(selection) == 0) {
@@ -332,32 +353,32 @@ import_result <- function(result, result.channel){
   parameter <- parameter[, c("Fingerprint", "ParameterID")]
   gc()
   parameter.estimate <- merge(
-    parameter, 
-    parameter.estimate, 
-    by.x = "Fingerprint", 
+    parameter,
+    parameter.estimate,
+    by.x = "Fingerprint",
     by.y = "Parameter"
   )
   parameter.estimate$Fingerprint <- NULL
   anomaly <- merge(
-    parameter, 
-    anomaly, 
-    by.x = "Fingerprint", 
+    parameter,
+    anomaly,
+    by.x = "Fingerprint",
     by.y = "Parameter"
   )
   anomaly$Fingerprint <- NULL
   rm(parameter)
   gc()
-  
+
   # Storing parameter estimates
   message("\nStoring ", nrow(parameter.estimate), " parameter estimates")
   colnames(parameter.estimate) <- gsub(
-    "^LowerConfidenceLimit$", 
-    "LCL", 
+    "^LowerConfidenceLimit$",
+    "LCL",
     colnames(parameter.estimate)
   )
   colnames(parameter.estimate) <- gsub(
-    "^UpperConfidenceLimit$", 
-    "UCL", 
+    "^UpperConfidenceLimit$",
+    "UCL",
     colnames(parameter.estimate)
   )
   parameter.estimate <- odbc_get_multi_id(
@@ -370,26 +391,28 @@ import_result <- function(result, result.channel){
     select = TRUE
   )
   colnames(parameter.estimate) <- gsub(
-    "^ID$", 
-    "ParameterEstimateID", 
+    "^ID$",
+    "ParameterEstimateID",
     colnames(parameter.estimate)
   )
   anomaly <- merge(anomaly, parameter.estimate)
   rm(parameter.estimate)
   anomaly$ParameterID <- NULL
   gc()
-  
+
   # Storing anomalies
   message("Storing ", nrow(anomaly), " anomalies")
   odbc_get_multi_id(
     anomaly,
     id.field = "ID",
-    merge.field = c("AnalysisID", "TypeID", "ParameterEstimateID", "DatafieldID"),
+    merge.field = c(
+      "AnalysisID", "TypeID", "ParameterEstimateID", "DatafieldID"
+    ),
     table = "Anomaly",
     channel = result.channel,
     create = TRUE,
     select = FALSE
   )
-  
+
   return(invisible(NULL))
 }

@@ -7,7 +7,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "get_anomaly", 
+  name = "get_anomaly",
   def = function(analysis, ...){
     standard.generic("get_anomaly")
   }
@@ -16,7 +16,7 @@ setGeneric(
 #' @rdname get_anomaly
 #' @aliases get_anomaly,n2kGlmerPoisson-methods
 #' @importFrom methods setMethod
-#' @importFrom n2khelper check_single_strictly_positive_integer check_single_numeric
+#' @importFrom assertthat assert_that is.count is.number
 #' @importFrom lme4 ranef
 #' @include n2kGlmerPoisson_class.R
 #' @include n2kAnomaly_class.R
@@ -29,32 +29,20 @@ setMethod(
   f = "get_anomaly",
   signature = signature(analysis = "n2kGlmerPoisson"),
   definition = function(
-    analysis, 
+    analysis,
     datasource.id,
-    n = 20, 
-    log.expected.ratio = log(5), 
-    log.expected.absent = log(5), 
-    random.treshold = log(5), 
+    n = 20,
+    log.expected.ratio = log(5),
+    log.expected.absent = log(5),
+    random.treshold = log(5),
     ...
   ){
-    datasource.id <- check_single_strictly_positive_integer(
-      datasource.id, 
-      name = "datasource.id"
-    )
-    n <- check_single_strictly_positive_integer(n, name = "n")
-    log.expected.ratio <- check_single_numeric(
-      log.expected.ratio, 
-      name = "log.expected.ratio"
-    )
-    log.expected.absent <- check_single_numeric(
-      log.expected.absent, 
-      name = "log.expected.absent"
-    )
-    random.treshold <- check_single_numeric(
-      random.treshold, 
-      name = "random.treshold"
-    )
-    
+    assert_that(is.count(datasource.id))
+    assert_that(is.count(n))
+    assert_that(is.number(log.expected.ratio))
+    assert_that(is.number(log.expected.absent))
+    assert_that(is.number(random.treshold))
+
     parameter <- get_model_parameter(analysis = analysis)
     if (status(analysis) != "converged") {
       return(
@@ -65,7 +53,7 @@ setMethod(
         )
       )
     }
-    
+
     message("    reading anomaly", appendLF = FALSE)
     utils::flush.console()
 
@@ -82,7 +70,7 @@ setMethod(
       Datafield = character(0),
       stringsAsFactors = FALSE
     )
-    
+
     response <- as.character(analysis@AnalysisFormula[[1]][2])
     data <- get_data(analysis)
     if (!class(data$ObservationID) %in% c("character", "factor")) {
@@ -93,14 +81,15 @@ setMethod(
       parameter@Parameter$Description == "Fitted"
     ]
     parameter.sha <- parameter@Parameter[
-      !is.na(parameter@Parameter$Parent) & parameter@Parameter$Parent == fitted.sha, 
+      !is.na(parameter@Parameter$Parent) &
+        parameter@Parameter$Parent == fitted.sha,
       c("Fingerprint", "Description")
     ]
     data <- merge(
-      data, 
-      parameter.sha, 
-      by.x = "ObservationID", 
-      by.y = "Description", 
+      data,
+      parameter.sha,
+      by.x = "ObservationID",
+      by.y = "Description",
       all.x = TRUE
     )
 
@@ -110,7 +99,7 @@ setMethod(
     data.subset$LogRatio <- log(data.subset[, response]) - data.subset$Expected
     data.subset <- data.subset[abs(data.subset$LogRatio) > log.expected.ratio, ]
     data.subset <- data.subset[order(abs(data.subset$LogRatio)), ]
-    
+
     combination <- c("Large" = 1, "Small" = -1)
     for (i in seq_along(combination)) {
       selection <- tail(
@@ -123,12 +112,15 @@ setMethod(
         next
       }
       extra <- data.frame(
-        Description = paste(names(combination)[i], "ratio of observed vs expected"),
+        Description = paste(
+          names(combination)[i],
+          "ratio of observed vs expected"
+        ),
         stringsAsFactors = FALSE
       )
       extra$Fingerprint <- apply(extra, 1, get_sha1)
       anomaly.type <- rbind(anomaly.type, extra)
-      
+
       extra.observation <- data.frame(
         AnomalyType = extra$Fingerprint,
         Analysis = get_file_fingerprint(analysis),
@@ -141,7 +133,9 @@ setMethod(
     }
 
     message(", observed == 0 vs fit", appendLF = FALSE)
-    data.subset <- data[data[, response] == 0 & data$Expected > log.expected.absent, ]
+    data.subset <- data[
+      data[, response] == 0 & data$Expected > log.expected.absent,
+    ]
     if (nrow(data.subset) > 0) {
       data.subset <- tail(
         data.subset[order(data.subset$Expected), ],
@@ -163,7 +157,7 @@ setMethod(
       )
       anomaly <- rbind(anomaly, extra.observation)
     }
-    
+
     # select anomalies on random effects
     message(", random effect")
     re <- ranef(get_model(analysis))
@@ -186,7 +180,7 @@ setMethod(
         parameter@Parameter$Parent == main.sha &
         parameter@Parameter$Description == names(re)[i]
       ]
-      
+
       for (j in combination) {
         selection <- tail(
           this.re[sign(this.re[, 1]) == combination[j], , drop = FALSE],
@@ -195,26 +189,26 @@ setMethod(
         if (nrow(selection) == 0) {
           next
         }
-        
+
         extra <- data.frame(
           Description = paste(names(combination)[j], "random intercept"),
           stringsAsFactors = FALSE
         )
         extra$Fingerprint <- apply(extra, 1, get_sha1)
         anomaly.type <- unique(rbind(anomaly.type, extra))
-        
+
         selection[names(re)[i]] <- row.names(selection)
         parameter.sha <- parameter@Parameter[
-          parameter@Parameter$Parent == parent.sha, 
+          parameter@Parameter$Parent == parent.sha,
           c("Description", "Fingerprint")
         ]
         selection <- merge(
-          selection, 
-          parameter.sha, 
-          by.x = names(re)[i], 
+          selection,
+          parameter.sha,
+          by.x = names(re)[i],
           by.y = "Description"
         )
-        
+
         extra.observation <- data.frame(
           AnomalyType = extra$Fingerprint,
           Analysis = get_file_fingerprint(analysis),

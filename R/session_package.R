@@ -7,7 +7,7 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "session_package", 
+  name = "session_package",
   def = function(session){
     standard.generic("session_package")
   }
@@ -23,9 +23,9 @@ setMethod(
     package <- data.frame(
       Description = c(session$running, "R"),
       Version = c(
-        session$R.version$platform, 
+        session$R.version$platform,
         paste(
-          session$R.version[c("major", "minor")], 
+          session$R.version[c("major", "minor")],
           collapse = "."
         )
       ),
