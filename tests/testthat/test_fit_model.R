@@ -1,5 +1,6 @@
 context("fit_model")
 describe("fit_model() on GlmerPoisson based objects", {
+  temp.dir <- tempdir()
   data(cbpp, package = "lme4")
   cbpp$Weight <- cbpp$size
   cbpp$DatasourceID <- 1
