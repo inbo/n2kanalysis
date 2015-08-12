@@ -38,6 +38,18 @@ describe("fit_model() on GlmerPoisson based objects", {
       is_true()
     )
   })
-  it("fits the correct model", {
+  it("works with objects saved in rda files", {
+    analysis <- object
+    filename <- paste0(temp.dir, "\\", get_file_fingerprint(analysis), ".rda")
+    save(analysis, file = filename)
+    expect_identical(status(filename)$Status, "new")
+    fit_model(filename)
+    expect_identical(status(filename)$Status, "converged")
+    analysis <- weighted.object
+    filename <- paste0(temp.dir, "\\", get_file_fingerprint(analysis), ".rda")
+    save(analysis, file = filename)
+    expect_identical(status(filename)$Status, "new")
+    fit_model(filename)
+    expect_identical(status(filename)$Status, "converged")
   })
 })
