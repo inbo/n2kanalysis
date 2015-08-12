@@ -36,7 +36,7 @@ setGeneric(
 #' @rdname n2k_glmer_poisson
 #' @aliases n2k_glmer_poisson,n2kGlmerPoisson-methods
 #' @importFrom methods setMethod
-#' @importFrom assertthat assert_that is.count is.string is.time
+#' @importFrom assertthat assert_that is.count is.string is.time noNA
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "n2k_glmer_poisson",
@@ -83,7 +83,8 @@ setMethod(
     if (is.null(dots$parent)) {
       dots$parent <- character(0)
     } else {
-      assert_that(is.string(dots$parent))
+      assert_that(is.character(dots$parent))
+      assert_that(noNA(dots$parent))
     }
     file.fingerprint <- get_sha1(
       list(

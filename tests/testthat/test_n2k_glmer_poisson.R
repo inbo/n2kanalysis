@@ -151,6 +151,40 @@ describe("n2k_glmer_poisson", {
       )@AnalysisRelation$ParentAnalysis,
       this.parent
     )
+    this.parent <- c("12345", "abc")
+    expect_identical(
+      n2k_glmer_poisson(
+        data = cbpp,
+        scheme.id = this.scheme.id,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        formula = this.formula,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        analysis.date = this.analysis.date,
+        seed = this.seed,
+        parent = this.parent
+      )@AnalysisRelation$ParentAnalysis,
+      this.parent
+    )
+    expect_error(
+      n2k_glmer_poisson(
+        data = cbpp,
+        scheme.id = this.scheme.id,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        formula = this.formula,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        analysis.date = this.analysis.date,
+        seed = this.seed,
+        parent = 1
+      ),
+      "dots\\$parent is not a character vector"
+    )
+  })
   it("sets the correct seed", {
     this.seed <- 12345L
     expect_that(
