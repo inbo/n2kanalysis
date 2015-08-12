@@ -49,8 +49,12 @@ setMethod(
     if (is.null(dots$status)) {
       dots$status <- "waiting"
     }
-    assert_that(is.count(dots$seed))
-    dots$seed <- is.integer(dots$seed)
+    if (is.null(dots$seed)) {
+      dots$seed <- sample(.Machine$integer.max, 1)
+    } else {
+      assert_that(is.count(dots$seed))
+      dots$seed <- as.integer(dots$seed)
+    }
     assert_that(is.count(dots$scheme.id))
     dots$scheme.id <- as.integer(dots$scheme.id)
     assert_that(is.count(dots$species.group.id))
@@ -79,7 +83,11 @@ setMethod(
     check_dataframe_variable(
       df = dots$parent.status,
       name = "parent.status",
-      variable = c("ParentAnalysis", "ParentStatusFingerprint", "ParentStatus")
+      variable = list(
+        ParentAnalysis = "character",
+        ParentStatusFingerprint = "character",
+        ParentStatus = "character"
+      )
     )
     dots$parent.status <- dots$parent.status[
       order(dots$parent.status$ParentAnalysis),
