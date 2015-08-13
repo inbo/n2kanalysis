@@ -5,7 +5,7 @@ describe("status fingerprint for n2k_glmer_poisson", {
   cbpp$Weight <- cbpp$size
   cbpp$DatasourceID <- 1
   cbpp$ObservationID <- seq_len(nrow(cbpp))
-  this.analysis.date <- as.POSIXct("2015-01-01")
+  this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
   this.scheme.id <- 1L
   this.species.group.id <- 2L
   this.location.group.id <- 3L

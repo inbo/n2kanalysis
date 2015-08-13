@@ -5,7 +5,7 @@ describe("fit_model() on GlmerPoisson based objects", {
   cbpp$Weight <- cbpp$size
   cbpp$DatasourceID <- 1
   cbpp$ObservationID <- seq_len(nrow(cbpp))
-  this.analysis.date <- as.POSIXct("2015-01-01")
+  this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
   this.seed <- 1L
   object <- n2k_glmer_poisson(
     scheme.id = 1L,
@@ -40,15 +40,15 @@ describe("fit_model() on GlmerPoisson based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "618fad39e8a56646994f008d90cfa33b2998e5b1"
-  weighted.object.file <- "e95e3f3fa6a1ddf259fe3518c6827dca8d7bc3f1"
+  object.file <- "83105a866f2397ac0f42cf4e3b4f2edca581f003"
+  weighted.object.file <- "a0eca2e2ae2642e1635c5128895598424d3ab254"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
-#     expect_identical(object.file, get_file_fingerprint(object))
-#     expect_identical(
-#       weighted.object.file,
-#       get_file_fingerprint(weighted.object)
-#     )
+    expect_identical(object.file, get_file_fingerprint(object))
+    expect_identical(
+      weighted.object.file,
+      get_file_fingerprint(weighted.object)
+    )
   })
   it("doesn't alter the file fingerprint when fitting a model", {
     expect_identical(
