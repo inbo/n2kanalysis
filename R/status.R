@@ -41,7 +41,7 @@ setMethod(
       # ignore elements of x which are not existing files
       return(do.call(rbind, lapply(files, status)))
     } else {
-      # assume x are files when length(x) > 1
+      # assume x is a file or directory when length(x) == 1
       if (file_test("-d", x)) {
         # handle a directory
         path <- check_path(x, type = "directory")
