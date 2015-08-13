@@ -5,6 +5,8 @@ describe("fit_model() on GlmerPoisson based objects", {
   cbpp$Weight <- cbpp$size
   cbpp$DatasourceID <- 1
   cbpp$ObservationID <- seq_len(nrow(cbpp))
+  this.analysis.date <- as.POSIXct("2015-01-01")
+  this.seed <- 1L
   object <- n2k_glmer_poisson(
     scheme.id = 1L,
     species.group.id = 2L,
@@ -13,7 +15,8 @@ describe("fit_model() on GlmerPoisson based objects", {
     formula = "incidence ~ offset(log(size)) + period + (1|herd)",
     first.imported.year = 1990L,
     last.imported.year = 2015L,
-    analysis.date = Sys.time(),
+    analysis.date = this.analysis.date,
+    seed = this.seed,
     data = cbpp
   )
   weighted.object <- n2k_glmer_poisson(
@@ -24,11 +27,39 @@ describe("fit_model() on GlmerPoisson based objects", {
     formula = "incidence ~ offset(log(size)) + period + (1|herd)",
     first.imported.year = 1990L,
     last.imported.year = 2015L,
-    analysis.date = Sys.time(),
+    analysis.date = this.analysis.date,
+    seed = this.seed,
     data = cbpp
   )
   object.fit <- fit_model(object)
   weighted.object.fit <- fit_model(weighted.object)
+  cat(
+    "object.file <- \"", get_file_fingerprint(object), "\"\n",
+    "weighted.object.file <- \"",
+      get_file_fingerprint(weighted.object), "\"\n",
+    sep = ""
+  )
+  # 32-bit windows
+  object.file <- "618fad39e8a56646994f008d90cfa33b2998e5b1"
+  weighted.object.file <- "e95e3f3fa6a1ddf259fe3518c6827dca8d7bc3f1"
+
+  it("returns the same file fingerprints on 32-bit and 64-bit", {
+    expect_identical(object.file, get_file_fingerprint(object))
+    expect_identical(
+      weighted.object.file,
+      get_file_fingerprint(weighted.object)
+    )
+  })
+  it("doesn't alter the file fingerprint when fitting a model", {
+    expect_identical(
+      get_file_fingerprint(object),
+      get_file_fingerprint(object.fit)
+    )
+    expect_identical(
+      get_file_fingerprint(weighted.object),
+      get_file_fingerprint(weighted.object.fit)
+    )
+  })
   it("returns valid objects", {
     expect_that(
       validObject(object.fit),
