@@ -84,4 +84,13 @@ describe("fit_model() on GlmerPoisson based objects", {
     fit_model(filename)
     expect_identical(status(filename)$Status, "converged")
   })
+
+  # clean temp files
+  file.remove(
+    list.files(
+      temp.dir,
+      pattern = "^[0-9a-f]{40}\\.rda$",
+      full.names = TRUE
+    )
+  )
 })
