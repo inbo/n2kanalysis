@@ -9,7 +9,9 @@
 setGeneric(
   name = "status",
   def = function(x){
+    # nocov start
     standard.generic("status")
+    # nocov end
   }
 )
 
@@ -80,7 +82,9 @@ setMethod(
 setGeneric(
   name = "status<-",
   def = function(x, value){
+    # nocov start
     standard.generic("status<-")
+    # nocov end
   }
 )
 
