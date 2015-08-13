@@ -33,55 +33,41 @@ describe("file fingerprint for n2k_glmer_poisson", {
     this.duration
   )
 
-  file.fingerprint <- list(
+  test.element <- list(
     cbpp, this.scheme.id, this.species.group.id, this.location.group.id,
     this.model.type, this.formula, this.first.imported.year,
     this.last.imported.year, this.duration, this.last.analysed.year,
     this.analysis.date, this.seed, this.parent
   )
+  # generate the correct values
+  cat("\ncorrect <- c(\n")
   cat(
-    "\nfile.sha1 <- \"", get_sha1(file.fingerprint), "\"\n",
-    sep = ""
-  )
-  file.sha1 <- "66917be07650f5faa52f1a4ffe38a2edb50858ec"
-  expect_identical(file.sha1, get_sha1(file.fingerprint))
-
-  cat("\ntarget <- c(\n")
-  cat(
-    sprintf(
-      "  \"%s\"",
-      sapply(
-        seq_along(file.fingerprint),
-        function(i){
-          get_sha1(file.fingerprint[-i])
-        }
-      )
-    ),
+    sprintf("  \"%s\"", sapply(test.element, get_sha1)),
     sep = ",\n"
   )
   cat(")\n")
-  target <- c(
-    "83697b60657a8d8093d006f0c9e6b32a6d5b83d1",
-    "3969746842445cb6b5801c0c72dc97effe1fbe46",
-    "a7ee7eaa4c3472ca7488e92a9a5b0c3243b39afb",
-    "6cb76ec92667eccb6878395fd8080f6c596c1c84",
-    "94c314e7cdb0420bb167cf4b4248af102c08a17c",
-    "87511f2d251e183b6c2e1dac28fdd6478038f117",
-    "8a0724dba1b5bdfa7675eddbf71d91b48d53c0b3",
-    "44d49b2ea267a2f832b83236f34b27dda6c3926d",
-    "6c76659264b1cf9929bcc1194121fb5ef9f64067",
-    "73c5cec3ff977e8f35c5dbe0d1e64e273ec15c88",
-    "d8d8934de5f25031da05ee13b1f3d35f43e58769",
-    "84a1d9f9a371b583f2f9174b688dfce4429fa078",
-    "0d1a0e2dd018da17a89d3ca51353874d3a355ff2"
+  # 32-bit windows 7
+  correct <- c(
+    "d76d8dabc44cbac47c61f054652f723585c0b7b9",
+    "6c30934a0ea2c0473d37b6d8bb5b955b435a8bc1",
+    "315a5aa84aa6cfa4f3fb4b652a596770be0365e8",
+    "a05091ea911bb9665d685c99b42f20e08c8a1927",
+    "092dfcc3af5141bd836da53309a1bdae437594c5",
+    "42961f9c6bf0d14db87ed7c87ce286417b1d9b3a",
+    "7d7c9bfc4ef9092bff67f4e2b381f55eb7662db9",
+    "d571e1cfe37d51537693902580bfe07573131acd",
+    "a97053267d374e75ae832e541ece558ef2a5cebc",
+    "d571e1cfe37d51537693902580bfe07573131acd",
+    "e6f700c38215a9dfb3ba54d8a7daac08f27230e4",
+    "f4477038cc95efbea855596fcc42fa28bc7dc9da",
+    "a89ee68a22ad35e374650960b21c6ffaf0561ff5"
   )
-  sapply(
-    seq_along(file.fingerprint),
-    function(i){
-      expect_identical(
-        target[i],
-        get_sha1(file.fingerprint[-i])
-      )
-    }
-  )
+
+  it("returns the same SHA1 on both 32-bit and 64-bit OS", {
+    expect_identical(
+      correct,
+      unname(sapply(test.element, get_sha1))
+    )
+  })
+
 })
