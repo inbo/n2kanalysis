@@ -99,7 +99,7 @@ setReplaceMethod(
     x@AnalysisMetadata$StatusFingerprint <- get_sha1(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        coef(x@Model), x@AnalysisMetadata$AnalysisVersion,
+        x@Model, x@AnalysisMetadata$AnalysisVersion,
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
       )
@@ -150,7 +150,7 @@ setReplaceMethod(
     x@AnalysisMetadata$StatusFingerprint <- get_sha1(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        coef(x@Model), coef(x@Model0), x@Anova,
+        x@Model, x@Model0, x@Anova,
         x@AnalysisMetadata$AnalysisVersion,
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation

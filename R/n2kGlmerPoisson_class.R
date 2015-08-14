@@ -79,7 +79,7 @@ setValidity(
     status.fingerprint <- get_sha1(
       list(
         object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
-        coef(object@Model), object@AnalysisMetadata$AnalysisVersion,
+        object@Model, object@AnalysisMetadata$AnalysisVersion,
         object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation
       )
