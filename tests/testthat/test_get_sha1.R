@@ -10,11 +10,20 @@ describe("get_sha1() on models", {
       data = cbpp,
       family = poisson
     )
-    fixed <- coef(summary(model))
-    random <- do.call(c, lme4::ranef(model))
-    expect_that(
+    signif.digits <- 4
+    signif.coef <- lapply(
+      lme4::ranef(model),
+      function(y){
+        signif(y, digits = signif.digits)
+      }
+    )
+    signif.coef <- c(
+      signif.coef,
+      list(signif(coef(summary(model)), digits = signif.digits))
+    )
+    expect_identical(
       get_sha1(model),
-      is_identical_to(get_sha1(list(fixed, random)))
+      get_sha1(signif.coef)
     )
 
     model <- lme4::glmer(
@@ -22,11 +31,19 @@ describe("get_sha1() on models", {
       data = cbpp,
       family = poisson
     )
-    fixed <- coef(summary(model))
-    random <- do.call(c, lme4::ranef(model))
-    expect_that(
+    signif.coef <- lapply(
+      lme4::ranef(model),
+      function(y){
+        signif(y, digits = signif.digits)
+      }
+    )
+    signif.coef <- c(
+      signif.coef,
+      list(signif(coef(summary(model)), digits = signif.digits))
+    )
+    expect_identical(
       get_sha1(model),
-      is_identical_to(get_sha1(list(fixed, random)))
+      get_sha1(signif.coef)
     )
   })
 })

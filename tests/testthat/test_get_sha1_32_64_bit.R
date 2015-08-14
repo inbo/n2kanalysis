@@ -69,4 +69,18 @@ describe("file fingerprint for n2k_glmer_poisson", {
     )
   })
 
+  gm1 <- lme4::glmer(
+    cbind(incidence, size - incidence) ~ period + (1 | herd),
+    data = cbpp,
+    family = binomial
+  )
+  cat("\n  correct <- \"", get_sha1(gm1), "\"\n", sep = "")
+  # 32-bit windows
+  correct <- "ef24f26f78f1ff3c955012f4438fe8fe115eedef"
+  expect_identical(
+    correct,
+    get_sha1(gm1)
+  )
+
+
 })
