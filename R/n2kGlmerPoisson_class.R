@@ -84,7 +84,7 @@ setValidity(
         object@AnalysisRelation
       )
     )
-    if(object@AnalysisMetadata$StatusFingerprint != status.fingerprint) {
+    if (object@AnalysisMetadata$StatusFingerprint != status.fingerprint) {
       stop("Corrupt StatusFingerprint")
     }
 
