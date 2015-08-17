@@ -76,7 +76,7 @@ describe("file fingerprint for n2k_glmer_poisson", {
   )
   cat("\n  correct <- \"", get_sha1(gm1), "\"\n", sep = "")
   # 32-bit windows
-  correct <- "ef24f26f78f1ff3c955012f4438fe8fe115eedef"
+  correct <- "5ef48141f5479aa48db6f01bbc76167e9c6c2b55"
   expect_identical(
     correct,
     get_sha1(gm1)

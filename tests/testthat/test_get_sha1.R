@@ -19,7 +19,7 @@ describe("get_sha1() on models", {
     )
     signif.coef <- c(
       signif.coef,
-      list(signif(coef(summary(model)), digits = signif.digits))
+      list(signif(lme4::fixef(model), digits = signif.digits))
     )
     expect_identical(
       get_sha1(model),
@@ -39,7 +39,7 @@ describe("get_sha1() on models", {
     )
     signif.coef <- c(
       signif.coef,
-      list(signif(coef(summary(model)), digits = signif.digits))
+      list(signif(lme4::fixef(model), digits = signif.digits))
     )
     expect_identical(
       get_sha1(model),

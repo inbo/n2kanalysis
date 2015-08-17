@@ -3,7 +3,7 @@
 #' @importFrom methods setMethod
 #' @importMethodsFrom n2khelper get_sha1
 #' @importClassesFrom lme4 glmerMod
-#' @importFrom lme4 ranef
+#' @importFrom lme4 ranef fixef
 #' @param x the glmerMod object
 setMethod(
   f = "get_sha1",
@@ -20,7 +20,7 @@ setMethod(
     )
     signif.coef <- c(
       signif.coef,
-      list(signif(coef(summary(x)), digits = signif.digits))
+      list(signif(fixef(x), digits = signif.digits))
     )
     get_sha1(signif.coef)
   }
