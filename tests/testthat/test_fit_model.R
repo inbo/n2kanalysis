@@ -34,14 +34,14 @@ describe("fit_model() on GlmerPoisson based objects", {
   object.fit <- fit_model(object)
   weighted.object.fit <- fit_model(weighted.object)
   cat(
-    "object.file <- \"", get_file_fingerprint(object), "\"\n",
+    "\nobject.file <- \"", get_file_fingerprint(object), "\"\n",
     "weighted.object.file <- \"",
       get_file_fingerprint(weighted.object), "\"\n",
     sep = ""
   )
   # 32-bit windows
-  object.file <- "83105a866f2397ac0f42cf4e3b4f2edca581f003"
-  weighted.object.file <- "a0eca2e2ae2642e1635c5128895598424d3ab254"
+  object.file <- "00c6d5114271a5e895dab648d32179fe19027b11"
+  weighted.object.file <- "89a3c5ea179502846db21632ffc5613d837fc512"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))

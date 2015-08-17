@@ -10,16 +10,17 @@ describe("get_sha1() on models", {
       data = cbpp,
       family = poisson
     )
-    signif.digits <- 4
     signif.coef <- lapply(
       lme4::ranef(model),
       function(y){
-        signif(y, digits = signif.digits)
+        signif(y, digits = n2khelper::sha1_digits("coef"))
       }
     )
     signif.coef <- c(
       signif.coef,
-      list(signif(lme4::fixef(model), digits = signif.digits))
+      list(
+        signif(lme4::fixef(model), digits = n2khelper::sha1_digits("coef"))
+      )
     )
     expect_identical(
       get_sha1(model),
@@ -34,12 +35,14 @@ describe("get_sha1() on models", {
     signif.coef <- lapply(
       lme4::ranef(model),
       function(y){
-        signif(y, digits = signif.digits)
+        signif(y, digits = n2khelper::sha1_digits("coef"))
       }
     )
     signif.coef <- c(
       signif.coef,
-      list(signif(lme4::fixef(model), digits = signif.digits))
+      list(
+        signif(lme4::fixef(model), digits = n2khelper::sha1_digits("coef"))
+      )
     )
     expect_identical(
       get_sha1(model),

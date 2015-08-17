@@ -32,12 +32,18 @@ describe("file fingerprint for n2k_glmer_poisson", {
     parent = this.parent,
     this.duration
   )
+  gm1 <- lme4::glmer(
+    cbind(incidence, size - incidence) ~ period + (1 | herd),
+    data = cbpp,
+    family = binomial
+  )
+
 
   test.element <- list(
     cbpp, this.scheme.id, this.species.group.id, this.location.group.id,
     this.model.type, this.formula, this.first.imported.year,
     this.last.imported.year, this.duration, this.last.analysed.year,
-    this.analysis.date, this.seed, this.parent
+    this.analysis.date, this.seed, this.parent, gm1
   )
   # generate the correct values
   cat("\ncorrect <- c(\n")
@@ -48,7 +54,7 @@ describe("file fingerprint for n2k_glmer_poisson", {
   cat(")\n")
   # 32-bit windows 7
   correct <- c(
-    "d76d8dabc44cbac47c61f054652f723585c0b7b9",
+    "310bbf8f6f68f1112a2103e633178ee5bb1f4e0a",
     "6c30934a0ea2c0473d37b6d8bb5b955b435a8bc1",
     "315a5aa84aa6cfa4f3fb4b652a596770be0365e8",
     "a05091ea911bb9665d685c99b42f20e08c8a1927",
@@ -60,27 +66,16 @@ describe("file fingerprint for n2k_glmer_poisson", {
     "d571e1cfe37d51537693902580bfe07573131acd",
     "32558a12c667699e9ee985f0f98a7e27308c4c81",
     "f4477038cc95efbea855596fcc42fa28bc7dc9da",
-    "a89ee68a22ad35e374650960b21c6ffaf0561ff5"
+    "a89ee68a22ad35e374650960b21c6ffaf0561ff5",
+    "a3b3d8932261f04bea4921e7a4c50865ad5c402e"
   )
-  it("returns the same SHA1 on both 32-bit and 64-bit OS", {
-    expect_identical(
-      correct,
-      unname(sapply(test.element, get_sha1))
-    )
+  it("return the same SHA1 on both 32-bit and 64-bit OS", {
+    for (i in seq_along(test.element)) {
+      expect_identical(
+        get_sha1(test.element[[i]]),
+        correct[i],
+        label = paste0("test.element[[", i, "]]")
+      )
+    }
   })
-
-  gm1 <- lme4::glmer(
-    cbind(incidence, size - incidence) ~ period + (1 | herd),
-    data = cbpp,
-    family = binomial
-  )
-  cat("\n  correct <- \"", get_sha1(gm1), "\"\n", sep = "")
-  # 32-bit windows
-  correct <- "5ef48141f5479aa48db6f01bbc76167e9c6c2b55"
-  expect_identical(
-    correct,
-    get_sha1(gm1)
-  )
-
-
 })
