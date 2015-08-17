@@ -20,7 +20,7 @@ describe("get_sha1() on models", {
         apply(z, 1, function(y){
           sprintf(
             paste0("%.", sha1_digits("coef"), "e"),
-            zapsmall(y, digits = sha1_digits("zapsmall"))
+            n2khelper::zap_small(y, digits = sha1_digits("zapsmall"))
           )
         })
       }
@@ -45,7 +45,7 @@ describe("get_sha1() on models", {
         apply(z, 1, function(y){
           sprintf(
             paste0("%.", sha1_digits("coef"), "e"),
-            zapsmall(y, digits = sha1_digits("zapsmall"))
+            n2khelper::zap_small(y, digits = sha1_digits("zapsmall"))
           )
         })
       }

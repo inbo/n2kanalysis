@@ -4,7 +4,7 @@
 #' @importMethodsFrom n2khelper get_sha1
 #' @importClassesFrom lme4 glmerMod
 #' @importFrom lme4 ranef
-#' @importFrom n2khelper sha1_digits
+#' @importFrom n2khelper sha1_digits zap_small
 #' @param x the glmerMod object
 #' @exportMethod get_sha1
 setMethod(
@@ -22,7 +22,7 @@ setMethod(
         apply(z, 1, function(y){
           sprintf(
             paste0("%.", sha1_digits("coef"), "e"),
-            zapsmall(y, digits = sha1_digits("zapsmall"))
+            zap_small(y, digits = sha1_digits("zapsmall"))
           )
         })
       }
