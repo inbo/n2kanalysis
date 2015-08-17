@@ -43,7 +43,8 @@ describe("file fingerprint for n2k_glmer_poisson", {
     cbpp, this.scheme.id, this.species.group.id, this.location.group.id,
     this.model.type, this.formula, this.first.imported.year,
     this.last.imported.year, this.duration, this.last.analysed.year,
-    this.analysis.date, this.seed, this.parent, gm1
+    this.analysis.date, this.seed, this.parent, gm1,
+    -0.005754 # gives error when using signif(x, 4)
   )
   # generate the correct values
   cat("\ncorrect <- c(\n")
@@ -54,20 +55,21 @@ describe("file fingerprint for n2k_glmer_poisson", {
   cat(")\n")
   # 32-bit windows 7
   correct <- c(
-    "310bbf8f6f68f1112a2103e633178ee5bb1f4e0a",
-    "6c30934a0ea2c0473d37b6d8bb5b955b435a8bc1",
-    "315a5aa84aa6cfa4f3fb4b652a596770be0365e8",
-    "a05091ea911bb9665d685c99b42f20e08c8a1927",
+    "546aaf082716b09663c29d3bab818a50bd5ed5ce",
+    "1ff7ec513ca937d95071b47e30f851941a92bb1a",
+    "4d1e599d09ad910c1d489011fcd0a323504d891e",
+    "b68b33f773c469ad4545f178bb008eaae1f3f364",
     "092dfcc3af5141bd836da53309a1bdae437594c5",
     "42961f9c6bf0d14db87ed7c87ce286417b1d9b3a",
-    "7d7c9bfc4ef9092bff67f4e2b381f55eb7662db9",
-    "d571e1cfe37d51537693902580bfe07573131acd",
-    "a97053267d374e75ae832e541ece558ef2a5cebc",
-    "d571e1cfe37d51537693902580bfe07573131acd",
+    "61337ecca7b22e35acfd49f0573a36acfaeab230",
+    "82941a5f3ace6a8f5e00abc052b390d445e96ce4",
+    "e7bebd7a85541cd5ccb386e178b2c9a32ec98c23",
+    "82941a5f3ace6a8f5e00abc052b390d445e96ce4",
     "32558a12c667699e9ee985f0f98a7e27308c4c81",
-    "f4477038cc95efbea855596fcc42fa28bc7dc9da",
+    "d219c0181a373e300b3105f725c38f2c671ad8e4",
     "a89ee68a22ad35e374650960b21c6ffaf0561ff5",
-    "a3b3d8932261f04bea4921e7a4c50865ad5c402e"
+    "77d54438215ee1194f78dbdaa493a8bfd40e71c0",
+    "476f639d51b78eca9bb60aaf9b095e58e3a8d3f9"
   )
   it("return the same SHA1 on both 32-bit and 64-bit OS", {
     for (i in seq_along(test.element)) {

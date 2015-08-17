@@ -3,7 +3,7 @@
 #' @importFrom methods setMethod
 #' @importMethodsFrom n2khelper get_sha1
 #' @importClassesFrom lme4 glmerMod
-#' @importFrom lme4 ranef fixef
+#' @importFrom lme4 ranef
 #' @importFrom n2khelper sha1_digits
 #' @param x the glmerMod object
 #' @exportMethod get_sha1
@@ -12,19 +12,20 @@ setMethod(
   signature = "glmerMod",
   definition = function(x){
     # the rounding of the coef must be quit aggressive
-    # signif.digits <- 5 yields a different SHA1 on 32-bit and 64-bit
-    signif.digits <-
-    signif.coef <- lapply(
-      ranef(x),
-      function(y){
-        signif(y, digits = sha1_digits("coef"))
-      }
-    )
     signif.coef <- c(
+      fixed = list(coef(summary(x))),
+      ranef(x)
+    )
+    signif.coef <- lapply(
       signif.coef,
-      list(
-        signif(fixef(x), digits = sha1_digits("coef"))
-      )
+      function(z){
+        apply(z, 1, function(y){
+          sprintf(
+            paste0("%.", sha1_digits("coef"), "e"),
+            zapsmall(y, digits = sha1_digits("zapsmall"))
+          )
+        })
+      }
     )
     get_sha1(signif.coef)
   }

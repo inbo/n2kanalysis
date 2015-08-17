@@ -40,8 +40,8 @@ describe("fit_model() on GlmerPoisson based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "00c6d5114271a5e895dab648d32179fe19027b11"
-  weighted.object.file <- "89a3c5ea179502846db21632ffc5613d837fc512"
+  object.file <- "130d9599a7809ca88720fdf9fd04f89e7ad2511d"
+  weighted.object.file <- "889192cfc6bfbd5b43145711e8c3406499aceb3f"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))

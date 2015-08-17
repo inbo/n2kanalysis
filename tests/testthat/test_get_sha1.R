@@ -10,17 +10,20 @@ describe("get_sha1() on models", {
       data = cbpp,
       family = poisson
     )
-    signif.coef <- lapply(
-      lme4::ranef(model),
-      function(y){
-        signif(y, digits = n2khelper::sha1_digits("coef"))
-      }
-    )
     signif.coef <- c(
+      fixed = list(coef(summary(model))),
+      lme4::ranef(model)
+    )
+    signif.coef <- lapply(
       signif.coef,
-      list(
-        signif(lme4::fixef(model), digits = n2khelper::sha1_digits("coef"))
-      )
+      function(z){
+        apply(z, 1, function(y){
+          sprintf(
+            paste0("%.", sha1_digits("coef"), "e"),
+            zapsmall(y, digits = sha1_digits("zapsmall"))
+          )
+        })
+      }
     )
     expect_identical(
       get_sha1(model),
@@ -32,17 +35,20 @@ describe("get_sha1() on models", {
       data = cbpp,
       family = poisson
     )
-    signif.coef <- lapply(
-      lme4::ranef(model),
-      function(y){
-        signif(y, digits = n2khelper::sha1_digits("coef"))
-      }
-    )
     signif.coef <- c(
+      fixed = list(coef(summary(model))),
+      lme4::ranef(model)
+    )
+    signif.coef <- lapply(
       signif.coef,
-      list(
-        signif(lme4::fixef(model), digits = n2khelper::sha1_digits("coef"))
-      )
+      function(z){
+        apply(z, 1, function(y){
+          sprintf(
+            paste0("%.", sha1_digits("coef"), "e"),
+            zapsmall(y, digits = sha1_digits("zapsmall"))
+          )
+        })
+      }
     )
     expect_identical(
       get_sha1(model),
