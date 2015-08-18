@@ -6,7 +6,7 @@ build:
         code: |
           apt-get update -y
           apt-get install -y r-cran-RODBC
-          Rscript -e 'devtools::install_bitbucket("thierry_onkelinx/n2khelper@ca30f7b")'
+          Rscript -e 'devtools::install_bitbucket("thierry_onkelinx/n2khelper@e9bce6")'
           Rscript -e 'install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")'
     - jimhester/r-dependencies
     - jimhester/r-check
