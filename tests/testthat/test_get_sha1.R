@@ -10,20 +10,26 @@ describe("get_sha1() on models", {
       data = cbpp,
       family = poisson
     )
-    signif.coef <- c(
-      fixed = list(coef(summary(model))),
-      lme4::ranef(model)
-    )
     signif.coef <- lapply(
-      signif.coef,
-      function(z){
-        apply(z, 1, function(y){
-          sprintf(
-            paste0("%.", sha1_digits("coef"), "e"),
-            n2khelper::zap_small(y, digits = sha1_digits("zapsmall"))
-          )
-        })
+      lme4::ranef(model),
+      function(x){
+        sapply(
+          x,
+          num_32_64,
+          digits = sha1_digits("coef"),
+          zapsmall = sha1_digits("zapsmall")
+        )
       }
+    )
+    signif.coef <- c(
+      fixed = list(
+        num_32_64(
+          coef(summary(model)),
+          digits = sha1_digits("coef"),
+          zapsmall = sha1_digits("zapsmall")
+        )
+      ),
+      signif.coef
     )
     expect_identical(
       get_sha1(model),
@@ -35,20 +41,26 @@ describe("get_sha1() on models", {
       data = cbpp,
       family = poisson
     )
-    signif.coef <- c(
-      fixed = list(coef(summary(model))),
-      lme4::ranef(model)
-    )
     signif.coef <- lapply(
-      signif.coef,
-      function(z){
-        apply(z, 1, function(y){
-          sprintf(
-            paste0("%.", sha1_digits("coef"), "e"),
-            n2khelper::zap_small(y, digits = sha1_digits("zapsmall"))
-          )
-        })
+      lme4::ranef(model),
+      function(x){
+        sapply(
+          x,
+          num_32_64,
+          digits = sha1_digits("coef"),
+          zapsmall = sha1_digits("zapsmall")
+        )
       }
+    )
+    signif.coef <- c(
+      fixed = list(
+        num_32_64(
+          coef(summary(model)),
+          digits = sha1_digits("coef"),
+          zapsmall = sha1_digits("zapsmall")
+        )
+      ),
+      signif.coef
     )
     expect_identical(
       get_sha1(model),

@@ -55,21 +55,21 @@ describe("file fingerprint for n2k_glmer_poisson", {
   cat(")\n")
   # 32-bit windows 7
   correct <- c(
-    "546aaf082716b09663c29d3bab818a50bd5ed5ce",
-    "1ff7ec513ca937d95071b47e30f851941a92bb1a",
-    "4d1e599d09ad910c1d489011fcd0a323504d891e",
-    "b68b33f773c469ad4545f178bb008eaae1f3f364",
+    "e14c9825a12b51ca89cd9d431e72dc34ffaaa175",
+    "49731da30df853ee8959035e3e309df129ad5348",
+    "d1fafdecb299e9f16ba224ecb4a0601fd31859f5",
+    "cac51e723748aae54d21b79b40b48f9000f5e90e",
     "092dfcc3af5141bd836da53309a1bdae437594c5",
     "42961f9c6bf0d14db87ed7c87ce286417b1d9b3a",
-    "61337ecca7b22e35acfd49f0573a36acfaeab230",
-    "82941a5f3ace6a8f5e00abc052b390d445e96ce4",
-    "e7bebd7a85541cd5ccb386e178b2c9a32ec98c23",
-    "82941a5f3ace6a8f5e00abc052b390d445e96ce4",
+    "a88bee33ab1d3bc100f4182d27051b9986851665",
+    "60795657ffb9d3e0de4be99f3185c1519d794d10",
+    "d5bafa2a9c4bf01bc354128329eddce6eb3e713c",
+    "60795657ffb9d3e0de4be99f3185c1519d794d10",
     "32558a12c667699e9ee985f0f98a7e27308c4c81",
-    "d219c0181a373e300b3105f725c38f2c671ad8e4",
+    "91619e26fbae8cd58c353ee18689728c0c87d002",
     "a89ee68a22ad35e374650960b21c6ffaf0561ff5",
-    "3be1c8a903237a0089bdee7cb3917399776c4900",
-    "476f639d51b78eca9bb60aaf9b095e58e3a8d3f9"
+    "77768ffada1653937efc78cfb2ecc9833664c7fa",
+    "12a3be85ecf18d166df28e042af1e7ead03bfd35"
   )
   it("return the same SHA1 on both 32-bit and 64-bit OS", {
     for (i in seq_along(test.element)) {

@@ -3,7 +3,7 @@ describe("file fingerprint for n2k_glmer_poisson", {
 
   data(cbpp, package = "lme4")
   cbpp$Weight <- cbpp$size
-  cbpp$DatasourceID <- 1
+  cbpp$DatasourceID <- 1L
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
   this.scheme.id <- 1L
@@ -16,7 +16,7 @@ describe("file fingerprint for n2k_glmer_poisson", {
   this.last.imported.year <- 2015L
   this.last.analysed.year <- 2015L
   this.parent <- "abcdef"
-  this.duration <- this.last.imported.year - this.first.imported.year + 1
+  this.duration <- this.last.imported.year - this.first.imported.year + 1L
 
   it("sets the correct fingerprint for an new object", {
     object <- n2k_glmer_poisson(
