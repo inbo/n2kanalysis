@@ -68,7 +68,7 @@ describe("file fingerprint for n2k_glmer_poisson", {
     "32558a12c667699e9ee985f0f98a7e27308c4c81",
     "91619e26fbae8cd58c353ee18689728c0c87d002",
     "a89ee68a22ad35e374650960b21c6ffaf0561ff5",
-    "c04b2b4a34e0385bf67be1298245f10bb776c65e",
+    "cd5521cfbe6fff3e187a1e003510f253ac5f927e",
     "12a3be85ecf18d166df28e042af1e7ead03bfd35"
   )
   it("return the same SHA1 on both 32-bit and 64-bit OS", {

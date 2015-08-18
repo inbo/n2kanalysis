@@ -24,7 +24,7 @@ describe("get_sha1() on models", {
     signif.coef <- c(
       fixed = list(
         num_32_64(
-          coef(summary(model)),
+          lme4::fixef(model),
           digits = sha1_digits("coef"),
           zapsmall = sha1_digits("zapsmall")
         )
@@ -55,7 +55,7 @@ describe("get_sha1() on models", {
     signif.coef <- c(
       fixed = list(
         num_32_64(
-          coef(summary(model)),
+          lme4::fixef(model),
           digits = sha1_digits("coef"),
           zapsmall = sha1_digits("zapsmall")
         )

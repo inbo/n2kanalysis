@@ -3,7 +3,7 @@
 #' @importFrom methods setMethod
 #' @importMethodsFrom n2khelper get_sha1
 #' @importClassesFrom lme4 glmerMod
-#' @importFrom lme4 ranef
+#' @importFrom lme4 ranef fixef
 #' @importFrom n2khelper sha1_digits num_32_64 get_sha1
 #' @param x the glmerMod object
 #' @exportMethod get_sha1
@@ -25,7 +25,7 @@ setMethod(
     signif.coef <- c(
       fixed = list(
         num_32_64(
-          coef(summary(x)),
+          fixef(x),
           digits = sha1_digits("coef"),
           zapsmall = sha1_digits("zapsmall")
         )
