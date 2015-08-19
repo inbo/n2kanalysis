@@ -9,7 +9,9 @@
 setGeneric(
   name = "status",
   def = function(x){
+    # nocov start
     standard.generic("status")
+    # nocov end
   }
 )
 
@@ -39,7 +41,7 @@ setMethod(
       # ignore elements of x which are not existing files
       return(do.call(rbind, lapply(files, status)))
     } else {
-      # assume x are files when length(x) > 1
+      # assume x is a file or directory when length(x) == 1
       if (file_test("-d", x)) {
         # handle a directory
         path <- check_path(x, type = "directory")
@@ -80,7 +82,9 @@ setMethod(
 setGeneric(
   name = "status<-",
   def = function(x, value){
+    # nocov start
     standard.generic("status<-")
+    # nocov end
   }
 )
 
@@ -95,7 +99,7 @@ setReplaceMethod(
     x@AnalysisMetadata$StatusFingerprint <- get_sha1(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        coef(x@Model), x@AnalysisMetadata$AnalysisVersion,
+        x@Model, x@AnalysisMetadata$AnalysisVersion,
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
       )
@@ -146,7 +150,7 @@ setReplaceMethod(
     x@AnalysisMetadata$StatusFingerprint <- get_sha1(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        coef(x@Model), coef(x@Model0), x@Anova,
+        x@Model, x@Model0, x@Anova,
         x@AnalysisMetadata$AnalysisVersion,
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation

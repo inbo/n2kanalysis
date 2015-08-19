@@ -10,7 +10,7 @@ describe("get_model", {
     formula = "incidence ~ offset(log(size)) + period + f(herd, model = 'iid')",
     first.imported.year = 1990,
     last.imported.year = 2015,
-    analysis.date = as.POSIXct("2000-01-01"),
+    analysis.date = as.POSIXct("2000-01-01 12:13:14", tz = "UTC"),
     data = cbpp
   )
   model.object <- INLA::inla(

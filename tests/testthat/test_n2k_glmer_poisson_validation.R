@@ -13,7 +13,7 @@ object <- n2k_glmer_poisson(
   last.imported.year = 2015,
   last.analysed.year = 1995,
   duration = 1,
-  analysis.date = as.POSIXct("2000-01-01"),
+  analysis.date = as.POSIXct("2000-01-01 12:13:14", tz = "UTC"),
   data = cbpp
 )
 weighted.object <- n2k_glmer_poisson(
@@ -24,7 +24,7 @@ weighted.object <- n2k_glmer_poisson(
   formula = "incidence ~ offset(log(size)) + period + (1|herd)",
   first.imported.year = 1990,
   last.imported.year = 2015,
-  analysis.date = as.POSIXct("2000-01-01"),
+  analysis.date = as.POSIXct("2000-01-01 12:13:14", tz = "UTC"),
   data = cbpp
 )
 

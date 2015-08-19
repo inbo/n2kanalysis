@@ -2,6 +2,7 @@ context("prepare a n2kGlmerPoisson object")
 this.scheme.id <- 1L
 this.species.group.id <- 2L
 this.location.group.id <- 3L
+this.seed <- 4L
 this.analysis.date <- Sys.time()
 this.model.type <- "glmer poisson: period + herd"
 this.formula <- "incidence ~ offset(log(size)) + period + (1|herd)"
@@ -114,6 +115,75 @@ describe("n2k_glmer_poisson", {
         analysis.date = this.analysis.date
       ),
       throws_error("ModelType should be 'glmer poisson'")
+    )
+  })
+  it("sets the correct parent", {
+    expect_identical(
+      nrow(
+        n2k_glmer_poisson(
+          data = cbpp,
+          scheme.id = this.scheme.id,
+          species.group.id = this.species.group.id,
+          location.group.id = this.location.group.id,
+          model.type = this.model.type,
+          formula = this.formula,
+          first.imported.year = this.first.imported.year,
+          last.imported.year = this.last.imported.year,
+          analysis.date = this.analysis.date,
+          seed = this.seed
+        )@AnalysisRelation
+      ),
+      0L
+    )
+    this.parent <- "12345"
+    expect_identical(
+      n2k_glmer_poisson(
+        data = cbpp,
+        scheme.id = this.scheme.id,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        formula = this.formula,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        analysis.date = this.analysis.date,
+        seed = this.seed,
+        parent = this.parent
+      )@AnalysisRelation$ParentAnalysis,
+      this.parent
+    )
+    this.parent <- c("12345", "abc")
+    expect_identical(
+      n2k_glmer_poisson(
+        data = cbpp,
+        scheme.id = this.scheme.id,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        formula = this.formula,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        analysis.date = this.analysis.date,
+        seed = this.seed,
+        parent = this.parent
+      )@AnalysisRelation$ParentAnalysis,
+      this.parent
+    )
+    expect_error(
+      n2k_glmer_poisson(
+        data = cbpp,
+        scheme.id = this.scheme.id,
+        species.group.id = this.species.group.id,
+        location.group.id = this.location.group.id,
+        model.type = this.model.type,
+        formula = this.formula,
+        first.imported.year = this.first.imported.year,
+        last.imported.year = this.last.imported.year,
+        analysis.date = this.analysis.date,
+        seed = this.seed,
+        parent = 1
+      ),
+      "dots\\$parent is not a character vector"
     )
   })
   it("sets the correct seed", {

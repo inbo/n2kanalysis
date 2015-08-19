@@ -67,3 +67,4 @@ Collate:
     'session_package.R'
     'status.R'
     'union.R'
+    'validOject.R'

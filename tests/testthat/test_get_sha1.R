@@ -10,11 +10,30 @@ describe("get_sha1() on models", {
       data = cbpp,
       family = poisson
     )
-    fixed <- coef(summary(model))
-    random <- do.call(c, lme4::ranef(model))
-    expect_that(
+    signif.coef <- lapply(
+      lme4::ranef(model),
+      function(x){
+        sapply(
+          x,
+          num_32_64,
+          digits = sha1_digits("coef"),
+          zapsmall = sha1_digits("zapsmall")
+        )
+      }
+    )
+    signif.coef <- c(
+      fixed = list(
+        num_32_64(
+          lme4::fixef(model),
+          digits = sha1_digits("coef"),
+          zapsmall = sha1_digits("zapsmall")
+        )
+      ),
+      signif.coef
+    )
+    expect_identical(
       get_sha1(model),
-      is_identical_to(get_sha1(list(fixed, random)))
+      get_sha1(signif.coef)
     )
 
     model <- lme4::glmer(
@@ -22,11 +41,30 @@ describe("get_sha1() on models", {
       data = cbpp,
       family = poisson
     )
-    fixed <- coef(summary(model))
-    random <- do.call(c, lme4::ranef(model))
-    expect_that(
+    signif.coef <- lapply(
+      lme4::ranef(model),
+      function(x){
+        sapply(
+          x,
+          num_32_64,
+          digits = sha1_digits("coef"),
+          zapsmall = sha1_digits("zapsmall")
+        )
+      }
+    )
+    signif.coef <- c(
+      fixed = list(
+        num_32_64(
+          lme4::fixef(model),
+          digits = sha1_digits("coef"),
+          zapsmall = sha1_digits("zapsmall")
+        )
+      ),
+      signif.coef
+    )
+    expect_identical(
       get_sha1(model),
-      is_identical_to(get_sha1(list(fixed, random)))
+      get_sha1(signif.coef)
     )
   })
 })

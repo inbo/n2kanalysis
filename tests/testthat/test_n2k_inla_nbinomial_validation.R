@@ -11,7 +11,7 @@ object <- n2k_inla_nbinomial(
   last.imported.year = 2015,
   duration = 1,
   last.analysed.year = 1995,
-  analysis.date = as.POSIXct("2000-01-01"),
+  analysis.date = as.POSIXct("2000-01-01 12:13:14", tz = "UTC"),
   data = cbpp
 )
 

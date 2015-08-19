@@ -127,13 +127,13 @@ setMethod(
       return(x)
     }
     vc <- VarCorr(model)
-    if ("fRow" %in% names(vc)) {
+    if ("fObservation" %in% names(vc)) {
       olre.ratio <- exp(
         diff(
           qnorm(
             p = c(0.025, 0.975),
             mean = 0,
-            sd = sqrt(vc[["fRow"]])
+            sd = sqrt(vc[["fObservation"]])
           )
         )
       )
