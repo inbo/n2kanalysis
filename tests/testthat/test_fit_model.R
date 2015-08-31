@@ -94,3 +94,134 @@ describe("fit_model() on GlmerPoisson based objects", {
     )
   )
 })
+
+describe("fit_model() on INLA nbinomial based objects", {
+  temp.dir <- tempdir()
+  data(cbpp, package = "lme4")
+  this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
+  this.scheme.id <- 1L
+  this.species.group.id <- 2L
+  this.location.group.id <- 3L
+  this.model.type <- "inla nbinomial: period + herd"
+  this.formula <-
+    "incidence ~ offset(log(size)) + period + f(herd, model = 'iid')"
+  this.first.imported.year <- 1990L
+  this.last.imported.year <- 2015L
+  this.last.analysed.year <- 2014L
+  this.duration <- 1L
+  lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
+  bad.lin.comb <- lin.comb[, -1]
+  object <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = this.formula,
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = cbpp
+  )
+  object.lc <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = this.formula,
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = cbpp,
+    lin.comb = lin.comb
+  )
+  object.badlc <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = this.formula,
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = cbpp,
+    lin.comb = bad.lin.comb
+  )
+  object.fit <- fit_model(object)
+  object.lc.fit <- fit_model(object.lc)
+  object.badlc.fit <- fit_model(object.badlc)
+  cat(
+    "\nobject.file <- \"", get_file_fingerprint(object), "\"\n",
+    "object.lc.file <- \"", get_file_fingerprint(object.lc), "\"\n",
+    "object.badlc.file <- \"", get_file_fingerprint(object.badlc), "\"\n",
+    sep = ""
+  )
+  # 32-bit windows
+  object.file <- "34af5ce4445c364ef65d1513838b882eaf744379"
+  object.lc.file <- "c5d7f8f731a60ab531692225cae22b09f107489b"
+  object.badlc.file <- "65385b5dfb5938ded978d9979dae2b3900cf49ad"
+
+  it("returns the same file fingerprints on 32-bit and 64-bit", {
+    expect_identical(object.file, get_file_fingerprint(object))
+    expect_identical(object.lc.file, get_file_fingerprint(object.lc))
+  })
+  it("doesn't alter the file fingerprint when fitting a model", {
+    expect_identical(
+      get_file_fingerprint(object),
+      get_file_fingerprint(object.fit)
+    )
+    expect_identical(
+      get_file_fingerprint(object.lc),
+      get_file_fingerprint(object.lc.fit)
+    )
+  })
+  it("returns valid objects", {
+    expect_that(
+      validObject(object.fit),
+      is_true()
+    )
+    expect_that(
+      validObject(object.lc.fit),
+      is_true()
+    )
+  })
+  it("works with objects saved in rda files", {
+    analysis <- object
+    filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
+    save(analysis, file = filename)
+    expect_identical(status(filename)$Status, "new")
+    fit_model(filename)
+    expect_identical(status(filename)$Status, "converged")
+    analysis <- object.lc
+    filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
+    save(analysis, file = filename)
+    expect_identical(status(filename)$Status, "new")
+    fit_model(filename)
+    expect_identical(status(filename)$Status, "converged")
+  })
+
+  it("doesn't refit converged models with the default status", {
+    expect_identical(
+      fit_model(object.fit),
+      object.fit
+    )
+    expect_identical(
+      fit_model(object.lc.fit),
+      object.lc.fit
+    )
+  })
+  it("returns an error when the linear combination is not valid", {
+    expect_identical(
+      status(object.badlc.fit),
+      "error"
+    )
+  })
+
+  # clean temp files
+  file.remove(
+    list.files(
+      temp.dir,
+      pattern = "^[0-9a-f]{40}\\.rda$",
+      full.names = TRUE
+    )
+  )
+})
