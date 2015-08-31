@@ -159,6 +159,7 @@ setMethod(
 
 #' @rdname fit_model
 #' @importFrom methods setMethod
+#' @importFrom assertthat assert_that
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "fit_model",
@@ -174,9 +175,7 @@ setMethod(
       return(x)
     }
 
-    if (!requireNamespace("INLA", quietly = TRUE)) {
-      stop("The INLA package is required but not installed.")
-    }
+    assert_that(requireNamespace("INLA", quietly = TRUE))
 
     set.seed(get_seed(x))
 
