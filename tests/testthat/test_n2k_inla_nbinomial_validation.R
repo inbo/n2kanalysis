@@ -1,6 +1,7 @@
 context("n2kInlaNbinomial validation")
 
 data("cbpp", package = "lme4")
+lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
 object <- n2k_inla_nbinomial(
   scheme.id = 1,
   species.group.id = 2,
@@ -112,6 +113,15 @@ describe("file fingerprint", {
   it("detects changes in LastAnalysedYear", {
     change.object <- object
     change.object@AnalysisMetadata$LastAnalysedYear <- 2000L
+    expect_that(
+      validObject(change.object),
+      throws_error("Corrupt FileFingerprint")
+    )
+  })
+
+  it("detects changes in LinearCombination", {
+    change.object <- object
+    change.object@LinearCombination <- lin.comb
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
