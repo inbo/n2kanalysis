@@ -201,16 +201,17 @@ setMethod(
       lc <- INLA::inla.make.lincombs(tmp)
       names(lc) <- rownames(x@LinearCombination)
     }
-    inla.models <- INLA::inla.models
-    model <- try(INLA::inla(
-      formula = model.formula,
-      family = "nbinomial",
-      data = data,
-      lincomb = lc,
-      control.compute = list(dic = TRUE, cpo = TRUE),
-      control.predictor = list(compute = TRUE, link = link),
-      control.fixed = list(prec.intercept = 1)
-    ))
+    model <- try(
+      INLA::inla(
+        formula = model.formula,
+        family = "nbinomial",
+        data = data,
+        lincomb = lc,
+        control.compute = list(dic = TRUE, cpo = TRUE),
+        control.predictor = list(compute = TRUE, link = link),
+        control.fixed = list(prec.intercept = 1)
+      )
+    )
     if ("try-error" %in% class(model)) {
       status(x) <- "error"
       return(x)
