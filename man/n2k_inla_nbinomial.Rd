@@ -41,6 +41,7 @@ In case \code{data} a n2kInlaNbinomial object is, then only the model and status
    \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
+   \item{\code{lin.comb}}{A model matrix to calculate linear combinations}
   }
 }
 

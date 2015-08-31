@@ -12,6 +12,7 @@ this.last.imported.year <- 2015L
 this.last.analysed.year <- 2014L
 this.duration <- 1L
 data("cbpp", package = "lme4")
+lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
 object <- n2k_inla_nbinomial(
   scheme.id = this.scheme.id,
   species.group.id = this.species.group.id,
@@ -950,6 +951,44 @@ describe("n2k_inla_nbinomial", {
         data = object, model.fit = model.poisson, status = "converged"
       ),
       throws_error("The model must be from the nbinomial family")
+    )
+  })
+})
+describe("n2kInlaNbinomial handles linear combinations", {
+  expect_error(
+    n2k_inla_nbinomial(
+      scheme.id = this.scheme.id,
+      species.group.id = this.species.group.id,
+      location.group.id = this.location.group.id,
+      model.type = this.model.type,
+      formula = this.formula,
+      first.imported.year = this.first.imported.year,
+      last.imported.year = this.last.imported.year,
+      analysis.date = this.analysis.date,
+      data = cbpp,
+      lin.comb = "lin.comb"
+    ),
+    "dots\\$lin.comb does not inherit from class matrix"
+  )
+  expect_is(
+    object <- n2k_inla_nbinomial(
+      scheme.id = this.scheme.id,
+      species.group.id = this.species.group.id,
+      location.group.id = this.location.group.id,
+      model.type = this.model.type,
+      formula = this.formula,
+      first.imported.year = this.first.imported.year,
+      last.imported.year = this.last.imported.year,
+      analysis.date = this.analysis.date,
+      data = cbpp,
+      lin.comb = lin.comb
+    ),
+    "n2kInlaNbinomial"
+  )
+  it("adds them to the object", {
+    expect_identical(
+      object@LinearCombination,
+      lin.comb
     )
   })
 })
