@@ -185,11 +185,26 @@ setMethod(
     link <- rep(NA, nrow(data))
     link[is.na(data$Count)] <- 1
 
+    if (is.null(x@LinearCombination)) {
+      lc <- NULL
+    } else {
+      lc <- x@LinearCombination
+      tmp <- lapply(
+        colnames(lc),
+        function(i){
+          lc[, i]
+        }
+      )
+      names(tmp) <- colnames(lc)
+      lc <- INLA::inla.make.lincombs(tmp)
+      names(lc) <- rownames(x@LinearCombination)
+    }
     inla.models <- INLA::inla.models
     model <- try(INLA::inla(
       formula = model.formula,
       family = "nbinomial",
       data = data,
+      lincomb = lc,
       control.compute = list(dic = TRUE, cpo = TRUE),
       control.predictor = list(compute = TRUE, link = link),
       control.fixed = list(prec.intercept = 1)
