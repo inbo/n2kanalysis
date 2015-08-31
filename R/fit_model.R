@@ -175,7 +175,9 @@ setMethod(
       return(x)
     }
 
-    assert_that(requireNamespace("INLA", quietly = TRUE))
+    if (!require("INLA")) {
+      stop("The INLA package is required but not installed.")
+    }
 
     set.seed(get_seed(x))
 
