@@ -1,6 +1,7 @@
 #' @importFrom methods setClassUnion
 #' @include import_S3_classes.R
 setClassUnion("maybeInla", c("inla", "NULL"))
+setClassUnion("maybeMatrix", c("matrix", "NULL"))
 
 #' The n2kInlaNBinomial class
 #'
@@ -8,6 +9,8 @@ setClassUnion("maybeInla", c("inla", "NULL"))
 #' @section Slots:
 #'   \describe{
 #'    \item{\code{Data}}{a data.frame with the data}
+#'    \item{\code{LinearCombination}}{an optional matrix with the linear
+#'        combinations}
 #'    \item{\code{Model}}{Either NULL or the resulting INLA model.}
 #'   }
 #' @name n2kInlaNbinomial-class
@@ -21,6 +24,7 @@ setClass(
   "n2kInlaNbinomial",
   representation = representation(
     Data = "data.frame",
+    LinearCombination = "maybeMatrix",
     Model = "maybeInla"
   ),
   contains = "n2kModel"
@@ -56,7 +60,8 @@ setValidity(
         object@AnalysisMetadata$Duration,
         object@AnalysisMetadata$LastAnalysedYear,
         object@AnalysisMetadata$AnalysisDate, object@AnalysisMetadata$Seed,
-        object@AnalysisRelation$ParentAnalysis
+        object@AnalysisRelation$ParentAnalysis,
+        object@LinearCombination
       )
     )
     if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
