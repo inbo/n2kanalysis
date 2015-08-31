@@ -184,8 +184,8 @@ setMethod(
     data <- get_data(x)
     model.formula <- x@AnalysisFormula[[1]]
 
-    link <- rep(NA, nrow(data))
-    link[is.na(data$Count)] <- 1
+    response <- data[, as.character(x@AnalysisFormula[[1]][[2]])]
+    link <- ifelse(is.na(response), 1, NA)
 
     if (is.null(x@LinearCombination)) {
       lc <- NULL
