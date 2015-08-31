@@ -9,7 +9,7 @@
 setGeneric(
   name = "fit_model",
   def = function(x, ...){
-    standard.generic("fit_model")
+    standard.generic("fit_model") # nocov
   }
 )
 
