@@ -117,7 +117,7 @@ setMethod(
       analysis.relation <- data.frame(
         Analysis = file.fingerprint,
         ParentAnalysis = dots$parent,
-        ParentStatusFingerprint = dots$parent.status.fingerprint,
+        ParentStatusFingerprint = dots$parent.statusfingerprint,
         ParentStatus = dots$parent.status,
         stringsAsFactors = FALSE
       )
