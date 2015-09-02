@@ -20,6 +20,7 @@ Imports:
     lme4,
     RODBC,
     assertthat,
+    dplyr,
     n2khelper
 Collate:
     'n2kParameter_class.R'
