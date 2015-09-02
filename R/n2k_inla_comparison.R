@@ -35,6 +35,7 @@ setGeneric(
 #' @importFrom methods setMethod
 #' @importFrom n2khelper check_dataframe_variable
 #' @importFrom assertthat assert_that noNA is.count is.string
+#' @importFrom dplyr %>% select_ arrange_
 #' @include n2kInlaComparison_class.R
 setMethod(
   f = "n2k_inla_comparison",
@@ -89,9 +90,8 @@ setMethod(
         ParentStatus = "character"
       )
     )
-    dots$parent.status <- dots$parent.status[
-      order(dots$parent.status$ParentAnalysis),
-    ]
+    dots$parent.status <- dots$parent.status %>%
+      arrange_(~ ParentAnalysis)
     file.fingerprint <- get_sha1(
       list(
         dots$scheme.id, dots$species.group.id, dots$location.group.id,
@@ -101,11 +101,10 @@ setMethod(
         dots$parent.status$ParentAnalysis
       )
     )
+
     dots$parent.status$Analysis <- file.fingerprint
-    dots$parent.status <- dots$parent.status[
-      ,
-      c("Analysis", "ParentAnalysis", "ParentStatusFingerprint", "ParentStatus")
-    ]
+    dots$parent.status <- dots$parent.status %>%
+      select_(~Analysis, ~ParentAnalysis, ~ParentStatusFingerprint, ~ParentStatus)
     version <- get_analysis_version(sessionInfo())
     status.fingerprint <- get_sha1(
       list(
@@ -114,6 +113,7 @@ setMethod(
         version@RPackage, version@AnalysisVersionRPackage, dots$parent.status
       )
     )
+
 
     new(
       "n2kInlaComparison",
