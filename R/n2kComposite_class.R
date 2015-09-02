@@ -3,6 +3,7 @@
 #' Calculate composite indices from multiple analysis
 #' @section Slots:
 #'   \describe{
+#'    \item{\code{Extractor}}{A function to extract the relevant parameters from the model}
 #'    \item{\code{Parameter}}{A data.frame with the relevant parameter estimates of each parent analysis}
 #'    \item{\code{Index}}{The composite index based on the parameters}
 #'   }
@@ -16,6 +17,7 @@
 setClass(
   "n2kComposite",
   representation = representation(
+    Extractor = "function",
     Parameter = "data.frame",
     Index = "data.frame"
   ),
@@ -45,7 +47,8 @@ setValidity(
         object@AnalysisMetadata$Duration,
         object@AnalysisMetadata$LastAnalysedYear,
         object@AnalysisMetadata$AnalysisDate, object@AnalysisMetadata$Seed,
-        object@AnalysisRelation$ParentAnalysis
+        object@AnalysisRelation$ParentAnalysis,
+        object@Extractor
       )
     )
     if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {

@@ -14,6 +14,7 @@
 #'    \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
 #'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
+#'    \item{\code{extractor}}{a function to extract the relevant parameters from the model}
 #'   }
 #' @name n2k_composite
 #' @rdname n2k_composite
@@ -84,12 +85,14 @@ setMethod(
       dots$last.analysed.year <- as.integer(dots$last.analysed.year)
     }
     assert_that(is.time(dots$analysis.date))
+    assert_that(inherits(dots$extractor, "function"))
     file.fingerprint <- get_sha1(
       list(
         dots$scheme.id, dots$species.group.id, dots$location.group.id,
         dots$model.type, dots$formula, dots$first.imported.year,
         dots$last.imported.year, dots$duration, dots$last.analysed.year,
-        dots$analysis.date, dots$seed, parent.status$ParentAnalysis
+        dots$analysis.date, dots$seed, parent.status$ParentAnalysis,
+        dots$extractor
       )
     )
     parent.status$Analysis <- file.fingerprint
@@ -149,6 +152,7 @@ setMethod(
       ),
       AnalysisFormula = list(as.formula(dots$formula)),
       AnalysisRelation = parent.status,
+      Extractor = dots$extractor,
       Parameter = parameter,
       Index = index
     )
