@@ -207,7 +207,7 @@ setMethod(
         family = "nbinomial",
         data = data,
         lincomb = lc,
-        control.compute = list(dic = TRUE, cpo = TRUE),
+        control.compute = list(dic = TRUE, waic = TRUE, cpo = TRUE),
         control.predictor = list(compute = TRUE, link = link),
         control.fixed = list(prec.intercept = 1)
       )
