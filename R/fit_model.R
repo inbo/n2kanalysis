@@ -381,6 +381,8 @@ setMethod(
       status(x) <- "converged"
       return(x)
     }
+
+    # status == "waiting"
     if (is.null(dots$path)) {
       dots$path <- "."
     }
@@ -426,21 +428,21 @@ setMethod(
 
     new.parameter <- do.call(rbind, lapply(to.update, function(parent){
       this.model <- get_model(paste0(dots$path, "/", parent, ".rda"))
-      if (class(this.model) != "glmerMod") {
-        stop("Composite with other class")
+      if (inherits(this.model, "glmerMod")) {
+        this.coef <- coef(summary(this.model))[, c("Estimate", "Std. Error")]
+        this.coef <- as.data.frame(this.coef, stringsAsFactors = FALSE)
+        this.coef$Variance <- this.coef$"Std. Error" ^ 2
+        this.coef$"Std. Error" <- NULL
+        this.coef$Parent <- parent
+        this.coef$Value <- row.names(this.coef)
+        rownames(this.coef) <- NULL
+        covariate <- as.character(x@AnalysisFormula[[1]][2])
+        this.coef <- this.coef[grep(covariate, this.coef$Value), ]
+        this.coef$Value <- gsub(covariate, "", this.coef$Value)
+        this.coef$Value <- factor(this.coef$Value, levels = this.coef$Value)
+        return(this.coef)
       }
-      this.coef <- coef(summary(this.model))[, c("Estimate", "Std. Error")]
-      this.coef <- as.data.frame(this.coef, stringsAsFactors = FALSE)
-      this.coef$Variance <- this.coef$"Std. Error" ^ 2
-      this.coef$"Std. Error" <- NULL
-      this.coef$Parent <- parent
-      this.coef$Value <- row.names(this.coef)
-      rownames(this.coef) <- NULL
-      covariate <- as.character(x@AnalysisFormula[[1]][2])
-      this.coef <- this.coef[grep(covariate, this.coef$Value), ]
-      this.coef$Value <- gsub(covariate, "", this.coef$Value)
-      this.coef$Value <- factor(this.coef$Value, levels = this.coef$Value)
-      return(this.coef)
+      stop("Composite with ", class(this.model), " not yet handled")
     }))
     x@Parameter <- new.parameter[
       order(new.parameter$Parent, new.parameter$Value),
