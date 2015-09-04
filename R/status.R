@@ -181,3 +181,25 @@ setReplaceMethod(
     return(x)
   }
 )
+
+#' @rdname status.change
+#' @importFrom methods setReplaceMethod
+#' @include n2kInlaComparison_class.R
+setReplaceMethod(
+  "status",
+  "n2kInlaComparison",
+  function(x, value){
+    x@AnalysisMetadata$Status <- value
+    x@AnalysisMetadata$StatusFingerprint <- get_sha1(
+      list(
+        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
+        x@Models, x@WAIC, x@AnalysisMetadata$AnalysisVersion,
+        x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
+        x@AnalysisRelation
+      )
+    )
+    validObject(x)
+    return(x)
+  }
+)
+
