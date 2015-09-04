@@ -328,6 +328,7 @@ setMethod(
 
 #' @rdname fit_model
 #' @importFrom methods setMethod
+#' @importFrom dplyr %>% select_ group_by_ summarise_ distinct_ filter_ anti_join arrange_ inner_join
 #' @include n2kComposite_class.R
 setMethod(
   f = "fit_model",
@@ -348,36 +349,20 @@ setMethod(
         return(x)
       }
       # ignore parents which are missing in one of more years
-      missing.parent <- unique(parameter$Parent[parameter$Estimate < -10])
-      parameter <- parameter[!parameter$Parent %in% missing.parent, ]
-      reference <- parameter[
-        parameter$Value == levels(parameter$Value)[1],
-        c("Parent", "Estimate")
-      ]
-      colnames(reference)[2] <- "Reference"
-      parameter <- merge(parameter, reference)
-      parameter$Estimate <- parameter$Estimate - parameter$Reference
-      index <- aggregate(
-        cbind(parameter[, c("Estimate", "Variance")], N = 1),
-        parameter[, "Value", drop = FALSE],
-        FUN = sum
-      )
-      index$Estimate <- index$Estimate / index$N
-      index$Variance <- index$Variance / (index$N ^ 2)
-      index$LowerConfidenceLimit <- qnorm(
-        p = 0.025,
-        mean = index$Estimate,
-        sd = sqrt(index$Variance)
-      )
-      index$UpperConfidenceLimit <- qnorm(
-        p = 0.975,
-        mean = index$Estimate,
-        sd = sqrt(index$Variance)
-      )
-      x@Index <- index[
-        order(index$Value),
-        c("Value", "Estimate", "LowerConfidenceLimit", "UpperConfidenceLimit")
-      ]
+      missing.parent <- parameter %>%
+        filter_(~Estimate < -10) %>%
+        select_(~Parent) %>%
+        distinct_()
+      x@Index <- anti_join(parameter, missing.parent, by = "Parent") %>%
+        group_by_(~Value) %>%
+        summarise_(
+          Estimate = ~mean(Estimate),
+          SE = ~ sqrt(sum(Variance) / n()),
+          LowerConfidenceInterval = ~qnorm(0.025, mean = Estimate, sd = SE),
+          UpperConfidenceInterval = ~qnorm(0.975, mean = Estimate, sd = SE)
+        ) %>%
+        select_(~-SE) %>%
+        as.data.frame()
       status(x) <- "converged"
       return(x)
     }
@@ -396,61 +381,151 @@ setMethod(
       status(x) <- "error"
       return(x)
     }
-    colnames(old.parent.status)[3:4] <- c("OldStatusFingerprint", "OldStatus")
-    current.parent.status <- status(files.to.check)[
-      , c("FileFingerprint", "StatusFingerprint", "Status")
-    ]
-    colnames(current.parent.status) <- c(
-      "ParentAnalysis", "ParentStatusFingerprint", "ParentStatus"
-    )
-    compare <- merge(old.parent.status, current.parent.status)
-    converged <- which(compare$ParentStatus == "converged")
-    x@AnalysisRelation <- compare[
-      order(compare$ParentAnalysis),
-      c("Analysis", "ParentAnalysis", "ParentStatusFingerprint", "ParentStatus")
-    ]
+    old.parent.status <- old.parent.status %>%
+      rename_(
+        OldStatusFingerprint = ~ParentStatusFingerprint,
+        OldStatus = ~ParentStatus
+      )
+    compare <-
+      status(files.to.check) %>%
+      select_(
+        ParentAnalysis = ~FileFingerprint,
+        ParentStatusFingerprint = ~StatusFingerprint,
+        ParentStatus = ~Status
+      ) %>%
+      inner_join(old.parent.status, by = "ParentAnalysis") %>%
+      arrange_(~ParentAnalysis)
 
-    if (any(current.parent.status$ParentStatus == "error")) {
+    to.update <- compare %>% filter_(~ParentStatus == "converged")
+    x@AnalysisRelation <- compare %>%
+      select_(
+        ~Analysis,
+        ~ParentAnalysis,
+        ~ParentStatusFingerprint,
+        ~ParentStatus
+      )
+
+    if (any(x@AnalysisRelation$ParentStatus == "error")) {
       status(x) <- "error"
       return(x)
     }
-    if (any(current.parent.status$ParentStatus == "false convergence")) {
+
+    x@Parameter <- extract(
+      extractor = x@Extractor,
+      object = to.update$ParentAnalysis,
+      path = dots$path
+    ) %>% arrange_(~Parent, ~Value)
+
+    if (all(
+      x@AnalysisRelation$ParentStatus %in% c("converged", "unstable")
+    )) {
+      status(x) <- "new"
+      return(fit_model(x, ...))
+    }
+    status(x) <- "waiting"
+    return(x)
+  }
+)
+
+
+#' @rdname fit_model
+#' @importFrom methods setMethod
+#' @importFrom dplyr rename_ select_ inner_join arrange_ filter_ mutate_
+#' @include n2kInlaComparison_class.R
+setMethod(
+  f = "fit_model",
+  signature = signature(x = "n2kInlaComparison"),
+  definition = function(x, ...){
+    validObject(x)
+    dots <- list(...)
+    if (is.null(dots$status)) {
+      dots$status <- c("new", "waiting")
+    }
+    if (!(status(x) %in% dots$status)) {
+      return(x)
+    }
+
+    # status == "new"
+    if (status(x) == "new") {
+      x@WAIC <- do.call(
+        rbind,
+        lapply(
+          names(x@Models),
+          function(parent){
+            data.frame(
+              Parent = parent,
+              WAIC = x@Models[[parent]]$waic$waic,
+              Peff = x@Models[[parent]]$waic$p.eff
+            )
+          }
+        )
+      )
+      status(x) <- "converged"
+      return(x)
+    }
+
+    # status == "waiting"
+    if (is.null(dots$path)) {
+      dots$path <- "."
+    }
+    old.parent.status <- parent_status(x)
+    files.to.check <- normalizePath(
+      paste0(dots$path, "/", old.parent.status$ParentAnalysis, ".rda"),
+      winslash = "/",
+      mustWork = FALSE
+    )
+    if (!all(file_test("-f", files.to.check))) {
+      status(x) <- "error"
+      return(x)
+    }
+    old.parent.status <- old.parent.status %>%
+      rename_(
+        OldStatusFingerprint = ~ParentStatusFingerprint,
+        OldStatus = ~ParentStatus
+      )
+    compare <-
+      status(files.to.check) %>%
+      select_(
+        ParentAnalysis = ~FileFingerprint,
+        ParentStatusFingerprint = ~StatusFingerprint,
+        ParentStatus = ~Status
+      ) %>%
+      inner_join(old.parent.status, by = "ParentAnalysis") %>%
+      arrange_(~ParentAnalysis)
+
+    to.update <- compare %>% filter_(~ParentStatus == "converged")
+    x@AnalysisRelation <- compare %>%
+      select_(
+        ~Analysis,
+        ~ParentAnalysis,
+        ~ParentStatusFingerprint,
+        ~ParentStatus
+      )
+
+    if (any(x@AnalysisRelation$ParentStatus == "error")) {
+      status(x) <- "error"
+      return(x)
+    }
+    if (any(x@AnalysisRelation$ParentStatus == "false convergence")) {
       status(x) <- "false convergence"
       return(x)
     }
-    if (length(converged) == 0) {
-      if (all(current.parent.status$ParentStatus == "unstable")) {
+    if (nrow(to.update) == 0) {
+      if (all(x@AnalysisRelation$ParentStatus == "unstable")) {
         status(x) <- "unstable"
       }
       return(x)
     }
-    to.update <- compare$ParentAnalysis[converged]
 
-    new.parameter <- do.call(rbind, lapply(to.update, function(parent){
-      this.model <- get_model(paste0(dots$path, "/", parent, ".rda"))
-      if (inherits(this.model, "glmerMod")) {
-        this.coef <- coef(summary(this.model))[, c("Estimate", "Std. Error")]
-        this.coef <- as.data.frame(this.coef, stringsAsFactors = FALSE)
-        this.coef$Variance <- this.coef$"Std. Error" ^ 2
-        this.coef$"Std. Error" <- NULL
-        this.coef$Parent <- parent
-        this.coef$Value <- row.names(this.coef)
-        rownames(this.coef) <- NULL
-        covariate <- as.character(x@AnalysisFormula[[1]][2])
-        this.coef <- this.coef[grep(covariate, this.coef$Value), ]
-        this.coef$Value <- gsub(covariate, "", this.coef$Value)
-        this.coef$Value <- factor(this.coef$Value, levels = this.coef$Value)
-        return(this.coef)
-      }
-      stop("Composite with ", class(this.model), " not yet handled")
-    }))
-    x@Parameter <- new.parameter[
-      order(new.parameter$Parent, new.parameter$Value),
-      c("Parent", "Value", "Estimate", "Variance")
-    ]
+    to.update <- to.update %>%
+      mutate_(Filename = ~ paste0(dots$path, "/", ParentAnalysis, ".rda")) %>%
+      select_(~ParentAnalysis, ~Filename)
+    models <- lapply(to.update$Filename, get_model)
+    names(models) <- to.update$ParentAnalysis
+    x@Models <- models
 
     if (all(
-      current.parent.status$ParentStatus %in% c("converged", "unstable")
+      x@AnalysisRelation$ParentStatus %in% c("converged", "unstable")
     )) {
       status(x) <- "new"
       return(fit_model(x, ...))
