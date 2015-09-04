@@ -56,6 +56,7 @@ setMethod(
 #' @rdname extract
 #' @aliases extract,n2kInlaNbinomial-methods
 #' @importFrom methods setMethod
+#' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "extract",
   signature = signature(object = "n2kInlaNbinomial"),
