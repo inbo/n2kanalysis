@@ -92,7 +92,8 @@ setMethod(
         dots$model.type, dots$formula, dots$first.imported.year,
         dots$last.imported.year, dots$duration, dots$last.analysed.year,
         dots$analysis.date, dots$seed, parent.status$ParentAnalysis,
-        dots$extractor
+        formals(dots$extractor),
+        as.character(body(dots$extractor))
       )
     )
     parent.status$Analysis <- file.fingerprint

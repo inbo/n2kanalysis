@@ -48,7 +48,8 @@ setValidity(
         object@AnalysisMetadata$LastAnalysedYear,
         object@AnalysisMetadata$AnalysisDate, object@AnalysisMetadata$Seed,
         object@AnalysisRelation$ParentAnalysis,
-        object@Extractor
+        formals(object@Extractor),
+        as.character(body(object@Extractor))
       )
     )
     if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
