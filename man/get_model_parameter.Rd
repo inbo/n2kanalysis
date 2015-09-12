@@ -7,6 +7,8 @@
 \alias{get_model_parameter,n2kComposite-methods}
 \alias{get_model_parameter,n2kGlmerPoisson-method}
 \alias{get_model_parameter,n2kGlmerPoisson-methods}
+\alias{get_model_parameter,n2kInlaNbinomial-method}
+\alias{get_model_parameter,n2kInlaNbinomial-methods}
 \alias{get_model_parameter,n2kLrtGlmer-method}
 \alias{get_model_parameter,n2kLrtGlmer-methods}
 \title{Add the model parameters from a model}
@@ -18,6 +20,8 @@ get_model_parameter(analysis)
 \S4method{get_model_parameter}{n2kLrtGlmer}(analysis)
 
 \S4method{get_model_parameter}{n2kComposite}(analysis)
+
+\S4method{get_model_parameter}{n2kInlaNbinomial}(analysis)
 }
 \arguments{
 \item{analysis}{The model to add}
