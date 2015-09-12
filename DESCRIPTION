@@ -11,12 +11,13 @@ LazyData: true
 Suggests:
     optimx,
     Matrix,
-    INLA,
     parallel,
+    INLA,
     testthat
 Imports:
     methods,
     MASS,
+    INLA,
     lme4,
     RODBC,
     assertthat,
@@ -58,6 +59,7 @@ Collate:
     'get_species_group_id.R'
     'get_status_fingerprint.R'
     'import_result.R'
+    'inla_inverse.R'
     'mark_obsolete_dataset.R'
     'n2k_composite.R'
     'n2k_glmer_poisson.R'
