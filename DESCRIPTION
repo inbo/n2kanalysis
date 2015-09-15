@@ -13,7 +13,6 @@ Suggests:
     Matrix,
     parallel,
     INLA,
-    lintr,
     testthat
 Imports:
     methods,

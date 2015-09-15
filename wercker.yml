@@ -7,8 +7,8 @@ build:
           apt-get update -y
           apt-get install -y r-cran-RODBC
           Rscript -e 'devtools::install_bitbucket("thierry_onkelinx/n2khelper@develop")'
-          Rscript -e 'devtools::install_github("jimhester/lintr")'
           Rscript -e 'install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")'
     - jimhester/r-dependencies
     - jimhester/r-check
     - jimhester/r-coverage
+    - jimhester/r-lint
