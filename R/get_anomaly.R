@@ -270,3 +270,189 @@ setMethod(
     )
   }
 )
+
+#' @rdname get_anomaly
+#' @aliases get_anomaly,n2kInlaNbinomial-methods
+#' @importFrom methods setMethod
+#' @importFrom assertthat assert_that is.count is.number
+#' @importFrom dplyr data_frame add_rownames select_ filter_ mutate_ bind_cols arrange_
+#' @include n2kInlaNbinomial_class.R
+setMethod(
+  f = "get_anomaly",
+  signature = signature(analysis = "n2kInlaNbinomial"),
+  definition = function(
+    analysis,
+    datasource.id,
+    n = 20,
+    log.expected.ratio = log(5),
+    log.expected.absent = log(5),
+    random.treshold = log(1.05),
+    ...
+  ){
+    assert_that(is.count(datasource.id))
+    datasource.id <- as.integer(datasource.id)
+    assert_that(is.count(n))
+    assert_that(is.number(log.expected.ratio))
+    assert_that(is.number(log.expected.absent))
+    assert_that(is.number(random.treshold))
+
+    parameter <- get_model_parameter(analysis = analysis)
+    if (status(analysis) != "converged") {
+      return(
+        new(
+          "n2kAnomaly",
+          Parameter = parameter@Parameter,
+          ParameterEstimate = parameter@ParameterEstimate
+        )
+      )
+    }
+
+    message("    reading anomaly", appendLF = FALSE)
+    utils::flush.console()
+
+    anomaly.type <- data_frame(
+      Description = c(
+        "Large ratio of observed vs expected",
+        "Small ratio of observed vs expected",
+        "Zero observed and high expected"
+      )
+    ) %>%
+      rowwise() %>%
+      mutate_(
+        Fingerprint = ~get_sha1(c(Description = Description))
+      )
+    anomaly <- data_frame(
+      AnomalyType = character(0),
+      Analysis = character(0),
+      Parameter = character(0),
+      DatasourceID = integer(0),
+      Datafield = character(0)
+    )
+
+    response <- as.character(analysis@AnalysisFormula[[1]][2])
+    data <- get_data(analysis)
+    if (!class(data$ObservationID) %in% c("character", "factor")) {
+      data$ObservationID <- as.character(data$ObservationID)
+    }
+    data <- data %>%
+      as.tbl() %>%
+      mutate_(
+        Response = response,
+        Expected = ~analysis@Model$summary.fitted.values[, "mean"],
+        LogRatio = ~Expected - log(Response),
+        Analysis = ~get_file_fingerprint(analysis)
+      )
+
+    parameter.id <- parameter@Parameter %>%
+      filter_(~Description == "Fitted") %>%
+      select_(~Fingerprint) %>%
+      inner_join(parameter@Parameter, by = c("Fingerprint" = "Parent")) %>%
+      select_(Parameter = ~Fingerprint.y, ~Description)
+    length.antijoin <- data %>%
+      anti_join(parameter.id, by = c("ObservationID" = "Description")) %>%
+      nrow()
+    assert_that(length.antijoin == 0)
+
+    data <- data %>%
+      inner_join(parameter.id, by = c("ObservationID" = "Description")) %>%
+      arrange_(~desc(abs(LogRatio)), ~desc(Expected))
+
+    # check observed counts versus expected counts
+    message(": observed > 0 vs fit", appendLF = FALSE)
+    high.ratio <- data %>%
+      select_(~Analysis, ~Parameter, ~DatasourceID, Estimate = ~LogRatio) %>%
+      filter_(~is.finite(Estimate), ~Estimate > log.expected.ratio) %>%
+      head(n)
+    if (nrow(high.ratio) > 0) {
+      anomaly <- anomaly.type %>%
+        filter_(~ Description == "Large ratio of observed vs expected") %>%
+        select_(AnomalyType = ~Fingerprint) %>%
+        merge(high.ratio) %>%
+        mutate_(Datafield = ~"Observation") %>%
+        bind_rows(anomaly)
+    }
+    low.ratio <- data %>%
+      select_(~Analysis, ~Parameter, ~DatasourceID, Estimate = ~LogRatio) %>%
+      filter_(~is.finite(Estimate), ~-Estimate > log.expected.ratio) %>%
+      head(n)
+    if (nrow(low.ratio) > 0) {
+      anomaly <- anomaly.type %>%
+        filter_(~ Description == "Small ratio of observed vs expected") %>%
+        select_(AnomalyType = ~Fingerprint) %>%
+        merge(low.ratio) %>%
+        mutate_(Datafield = ~"Observation") %>%
+        bind_rows(anomaly)
+    }
+
+    message(", observed == 0 vs fit", appendLF = FALSE)
+    high.absent <- data %>%
+      select_(
+        ~Analysis,
+        ~Parameter,
+        ~DatasourceID,
+        Estimate = ~Expected,
+        ~Response
+      ) %>%
+      filter_(~Response == 0, ~Estimate > log.expected.absent) %>%
+      select_(~-Response) %>%
+      head(n)
+    if (nrow(high.absent) > 0) {
+      anomaly <- anomaly.type %>%
+        filter_(~ Description == "Zero observed and high expected") %>%
+        select_(AnomalyType = ~Fingerprint) %>%
+        merge(high.absent) %>%
+        mutate_(Datafield = ~"Observation") %>%
+        bind_rows(anomaly)
+    }
+    # select anomalies on random effects
+    message(", random effect")
+    re.anomaly <- parameter@Parameter %>%
+      filter_(~Description == "Random effect BLUP") %>%
+      select_(Parent = ~Fingerprint) %>%
+      inner_join(parameter@Parameter, by = "Parent") %>%
+      transmute_(
+        AnomalyType = ~paste(Description, "random intercept"),
+        Datafield = ~Description,
+        Parent = ~Fingerprint
+      ) %>%
+      inner_join(parameter@Parameter, by = "Parent") %>%
+      select_(~AnomalyType, ~Datafield, Parameter = ~Fingerprint) %>%
+      as.tbl() %>%
+      inner_join(
+        parameter@ParameterEstimate %>%
+          filter_(~abs(Estimate) > random.treshold) %>%
+          select_(~Analysis, ~Parameter, ~Estimate),
+        by = "Parameter"
+      ) %>%
+      mutate_(Sign = ~sign(Estimate)) %>%
+      arrange_(~desc(abs(Estimate))) %>%
+      group_by_(~AnomalyType, ~Sign) %>%
+      slice(seq_len(n)) %>%
+      ungroup() %>%
+      select_(~-Sign)
+    anomaly.type <- re.anomaly %>%
+      group_by_(~AnomalyType) %>%
+      summarise_() %>%
+      select_(Description = ~ AnomalyType) %>%
+      rowwise() %>%
+      mutate_(
+        Fingerprint = ~get_sha1(c(Description = Description))
+      ) %>%
+      bind_rows(anomaly.type)
+    anomaly <- re.anomaly %>%
+      inner_join(anomaly.type, by = c("AnomalyType" = "Description")) %>%
+      select_(~-AnomalyType, AnomalyType = ~ Fingerprint) %>%
+      mutate(DatasourceID = datasource.id) %>%
+      bind_rows(anomaly)
+
+    return(
+      new(
+        "n2kAnomaly",
+        Parameter = parameter@Parameter,
+        ParameterEstimate = parameter@ParameterEstimate,
+        AnomalyType = as.data.frame(anomaly.type),
+        Anomaly = as.data.frame(anomaly)
+      )
+    )
+  }
+)

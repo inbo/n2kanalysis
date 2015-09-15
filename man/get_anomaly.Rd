@@ -7,6 +7,8 @@
 \alias{get_anomaly,n2kComposite-methods}
 \alias{get_anomaly,n2kGlmerPoisson-method}
 \alias{get_anomaly,n2kGlmerPoisson-methods}
+\alias{get_anomaly,n2kInlaNbinomial-method}
+\alias{get_anomaly,n2kInlaNbinomial-methods}
 \alias{get_anomaly,n2kLrtGlmer-method}
 \alias{get_anomaly,n2kLtrGlmer-methods}
 \title{Get the anomalies from a model}
@@ -20,6 +22,10 @@ get_anomaly(analysis, ...)
 \S4method{get_anomaly}{n2kLrtGlmer}(analysis, ...)
 
 \S4method{get_anomaly}{n2kComposite}(analysis, ...)
+
+\S4method{get_anomaly}{n2kInlaNbinomial}(analysis, datasource.id, n = 20,
+  log.expected.ratio = log(5), log.expected.absent = log(5),
+  random.treshold = log(1.05), ...)
 }
 \arguments{
 \item{analysis}{The model to add}
