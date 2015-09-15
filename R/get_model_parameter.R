@@ -509,7 +509,7 @@ setMethod(
           random.effect <- get_model(analysis)$summary.random[[i]]
           blup <- data_frame(
             Analysis = analysis@AnalysisMetadata$FileFingerprint,
-            Parent = i,
+            Parent = gsub("^f", "", i),
             Parameter = random.effect$ID,
             Estimate = random.effect[, "mean"],
             LowerConfidenceLimit = random.effect[, "0.025quant"],
@@ -555,14 +555,13 @@ setMethod(
     fitted <- data_frame(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
       Parent = fitted.parent$Parent,
-      Parameter = row.names(fitted),
       Estimate = fitted[, "mean"],
       LowerConfidenceLimit = fitted[, "0.025quant"],
       UpperConfidenceLimit = fitted[, "0.975quant"]
     ) %>%
-      mutate_(
-        Parameter = ~gsub("fitted\\.predictor\\.", "", Parameter),
-        Parameter = ~as.character(as.integer(Parameter))
+      bind_cols(
+        get_data(analysis) %>%
+          transmute_(Parameter = ~as.character(ObservationID))
       )
 
     parameter <- fitted.parent %>%
