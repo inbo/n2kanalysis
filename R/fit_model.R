@@ -367,7 +367,7 @@ setMethod(
       return(x)
     }
 
-    # status == "waiting"
+    # status: "waiting"
     if (is.null(dots$path)) {
       dots$path <- "."
     }
@@ -445,7 +445,7 @@ setMethod(
       return(x)
     }
 
-    # status == "new"
+    # status: "new"
     if (status(x) == "new") {
       x@WAIC <- do.call(
         rbind,
@@ -464,7 +464,7 @@ setMethod(
       return(x)
     }
 
-    # status == "waiting"
+    # status: "waiting"
     if (is.null(dots$path)) {
       dots$path <- "."
     }
