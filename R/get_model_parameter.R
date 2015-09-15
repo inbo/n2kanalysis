@@ -39,9 +39,9 @@ setMethod(
     utils::flush.console()
     variable <- c(
       "\\(Intercept\\)",
-      attr(attr(analysis@Model@frame, "terms"), "term.labels")
+      attr(attr(get_model(analysis)@frame, "terms"), "term.labels")
     )
-    fixed.effect <- summary(analysis@Model)$coefficients
+    fixed.effect <- summary(get_model(analysis))$coefficients
     parameter.estimate <- data.frame(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
       Parameter = row.names(fixed.effect),
@@ -96,7 +96,7 @@ setMethod(
     # add random effect variance
     message(", random effect variance", appendLF = FALSE)
     utils::flush.console()
-    random.variance <- VarCorr(analysis@Model)
+    random.variance <- VarCorr(get_model(analysis))
     if (any(sapply(random.variance, length) > 1)) {
       stop("get_model_parameters doesn't handle random slopes yet.")
     }
@@ -123,7 +123,7 @@ setMethod(
     # add random effect BLUP's
     message(", random effect BLUP's", appendLF = FALSE)
     utils::flush.console()
-    random.effect <- ranef(analysis@Model, condVar = TRUE)
+    random.effect <- ranef(get_model(analysis), condVar = TRUE)
     extra <- data.frame(
       Description = names(random.effect),
       Parent = parameter$Fingerprint[
@@ -170,7 +170,7 @@ setMethod(
     tmp <- data.frame(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
       Parameter = extra.fitted$Fingerprint,
-      Estimate = fitted(analysis@Model),
+      Estimate = fitted(get_model(analysis)),
       LowerConfidenceLimit = NA,
       UpperConfidenceLimit = NA,
       stringsAsFactors = FALSE
@@ -308,7 +308,7 @@ setMethod(
     )
     variable <- variable[-grep("f\\(", variable)]
 
-    fixed.effect <- analysis@Model$summary.fixed
+    fixed.effect <- get_model(analysis)$summary.fixed
     parameter.estimate <- data_frame(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
       Parameter = row.names(fixed.effect),
@@ -433,10 +433,10 @@ setMethod(
     # add random effect variance
     message(", random effect variance", appendLF = FALSE)
     utils::flush.console()
-    re.names <- names(analysis@Model$marginals.hyperpar)
+    re.names <- names(get_model(analysis)$marginals.hyperpar)
     re.names <- re.names[grep("^Precision for ", re.names)]
     re.variance <- t(sapply(
-      analysis@Model$marginals.hyperpar[re.names],
+      get_model(analysis)$marginals.hyperpar[re.names],
       inla_inverse
     )) %>%
       as.data.frame() %>%
@@ -465,7 +465,7 @@ setMethod(
     # add overdispersion
     message(", overdispersion", appendLF = FALSE)
     utils::flush.console()
-    overdispersion <- analysis@Model$summary.hyperpar[
+    overdispersion <- get_model(analysis)$summary.hyperpar[
       "size for the nbinomial observations (overdispersion)",
     ]
     parent <- parameter %>%
@@ -492,7 +492,7 @@ setMethod(
         data_frame(
           Analysis = analysis@AnalysisMetadata$FileFingerprint,
           Parameter = parent$Fingerprint,
-          Estimate = analysis@Model$waic$waic,
+          Estimate = get_model(analysis)$waic$waic,
           LowerConfidenceLimit = NA,
           UpperConfidenceLimit = NA
         )
@@ -504,9 +504,9 @@ setMethod(
     blup <- do.call(
       rbind,
       lapply(
-        names(analysis@Model$summary.random),
+        names(get_model(analysis)$summary.random),
         function(i){
-          random.effect <- analysis@Model$summary.random[[i]]
+          random.effect <- get_model(analysis)$summary.random[[i]]
           blup <- data_frame(
             Analysis = analysis@AnalysisMetadata$FileFingerprint,
             Parent = i,
@@ -551,7 +551,7 @@ setMethod(
     fitted.parent <- parameter %>%
       filter_(~is.na(Parent), ~Description == "Fitted") %>%
       select_(Parent = ~Fingerprint)
-    fitted <- analysis@Model$summary.fitted.values
+    fitted <- get_model(analysis)$summary.fitted.values
     fitted <- data_frame(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
       Parent = fitted.parent$Parent,
