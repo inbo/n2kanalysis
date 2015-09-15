@@ -274,7 +274,7 @@ setMethod(
 #' @rdname get_model_parameter
 #' @aliases get_model_parameter,n2kInlaNbinomial-methods
 #' @importFrom methods setMethod
-#' @importFrom dplyr data_frame rowwise mutate_ filter_ select_ left_join mutate_ bind_rows add_rownames
+#' @importFrom dplyr data_frame rowwise mutate_ filter_ select_ left_join mutate_ bind_rows add_rownames transmute_
 #' @importFrom n2khelper get_sha1
 #' @include n2kInlaNbinomial_class.R
 #' @include n2kParameter_class.R

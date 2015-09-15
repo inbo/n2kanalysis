@@ -275,7 +275,7 @@ setMethod(
 #' @aliases get_anomaly,n2kInlaNbinomial-methods
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.count is.number
-#' @importFrom dplyr data_frame add_rownames select_ filter_ mutate_ bind_cols arrange_
+#' @importFrom dplyr data_frame add_rownames select_ filter_ mutate_ bind_cols arrange_ ungroup slice transmute_
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "get_anomaly",
@@ -335,7 +335,6 @@ setMethod(
       data$ObservationID <- as.character(data$ObservationID)
     }
     data <- data %>%
-      as.tbl() %>%
       mutate_(
         Response = response,
         Expected = ~analysis@Model$summary.fitted.values[, "mean"],
@@ -417,7 +416,6 @@ setMethod(
       ) %>%
       inner_join(parameter@Parameter, by = "Parent") %>%
       select_(~AnomalyType, ~Datafield, Parameter = ~Fingerprint) %>%
-      as.tbl() %>%
       inner_join(
         parameter@ParameterEstimate %>%
           filter_(~abs(Estimate) > random.treshold) %>%
@@ -442,7 +440,7 @@ setMethod(
     anomaly <- re.anomaly %>%
       inner_join(anomaly.type, by = c("AnomalyType" = "Description")) %>%
       select_(~-AnomalyType, AnomalyType = ~ Fingerprint) %>%
-      mutate(DatasourceID = datasource.id) %>%
+      mutate_(DatasourceID = datasource.id) %>%
       bind_rows(anomaly)
 
     return(
