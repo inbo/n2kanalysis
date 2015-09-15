@@ -104,7 +104,12 @@ setMethod(
 
     dots$parent.status$Analysis <- file.fingerprint
     dots$parent.status <- dots$parent.status %>%
-      select_(~Analysis, ~ParentAnalysis, ~ParentStatusFingerprint, ~ParentStatus)
+      select_(
+        ~Analysis,
+        ~ParentAnalysis,
+        ~ParentStatusFingerprint,
+        ~ParentStatus
+      )
     version <- get_analysis_version(sessionInfo())
     status.fingerprint <- get_sha1(
       list(

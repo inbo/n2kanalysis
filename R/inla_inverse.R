@@ -5,7 +5,12 @@
 #' @importFrom INLA inla.tmarginal inla.emarginal inla.qmarginal
 #' @export
 inla_inverse <- function(marginal){
-  inverse <- inla.tmarginal(fun = function(x){1/x}, marginal)
+  inverse <- inla.tmarginal(
+    fun = function(x){
+      1/x
+    },
+    marginal
+  )
   result <- c(
     inla.emarginal(function(x){x}, inverse),
     inla.qmarginal(c(0.025, 0.975), inverse)

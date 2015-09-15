@@ -287,8 +287,8 @@ setMethod(
     }
     parameter <- data_frame(
       Description = c(
-        "Fixed effect", "Random effect BLUP", "Random effect variance", "Fitted",
-        "Overdispersion", "WAIC"
+        "Fixed effect", "Random effect BLUP", "Random effect variance",
+        "Fitted", "Overdispersion", "WAIC"
       ),
       Parent = NA
     ) %>%
