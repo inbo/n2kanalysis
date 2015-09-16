@@ -97,10 +97,14 @@ setValidity(
     if (anyDuplicated(object@Contrast$Fingerprint)) {
       stop("Duplicated Fingerprint in 'Contrast' slot")
     }
-    if (anyDuplicated(object@Contrast[, c("Description", "Analysis", "Type")])) {
+    if (anyDuplicated(
+      object@Contrast[, c("Description", "Analysis", "Type")]
+    )) {
       stop("Duplicated rows in 'Contrast' slot")
     }
-    if (anyDuplicated(object@ContrastCoefficient[, c("Contrast", "Parameter")])) {
+    if (anyDuplicated(
+      object@ContrastCoefficient[, c("Contrast", "Parameter")]
+    )) {
       stop("Duplicated rows in 'ContrastCoefficient' slot")
     }
     if (anyDuplicated(object@ContrastEstimate$Contrast)) {
