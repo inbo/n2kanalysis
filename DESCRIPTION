@@ -61,6 +61,7 @@ Collate:
     'import_result.R'
     'inla_inverse.R'
     'mark_obsolete_dataset.R'
+    'n2kContrast_class.R'
     'n2k_composite.R'
     'n2k_glmer_poisson.R'
     'n2k_inla_comparison.R'
