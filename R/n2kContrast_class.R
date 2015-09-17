@@ -9,21 +9,14 @@ setClass(
   "n2kContrast",
   representation = representation(
     Contrast = "data.frame",
-    ContrastType = "data.frame",
     ContrastCoefficient = "data.frame",
     ContrastEstimate = "data.frame"
   ),
   prototype = prototype(
-    ContrastType = data.frame(
-      Description = character(0),
-      Fingerprint = character(0),
-      stringsAsFactors = FALSE
-    ),
     Contrast = data.frame(
       Fingerprint = character(0),
       Description = character(0),
       Analysis = character(0),
-      Type = character(0),
       stringsAsFactors = FALSE
     ),
     ContrastCoefficient = data.frame(
@@ -49,13 +42,8 @@ setValidity(
   function(object){
     check_dataframe_variable(
       df = object@Contrast,
-      variable = c("Fingerprint", "Description", "Analysis", "Type"),
+      variable = c("Fingerprint", "Description", "Analysis"),
       name = "Contrast"
-    )
-    check_dataframe_variable(
-      df = object@ContrastType,
-      variable = c("Fingerprint", "Description"),
-      name = "ContrastType"
     )
     check_dataframe_variable(
       df = object@ContrastCoefficient,
@@ -71,11 +59,6 @@ setValidity(
       name = "ContrastEstimate"
     )
     if (!all(
-      na.omit(object@Contrast$Type) %in% object@ContrastType$Fingerprint
-    )) {
-      stop("Some Type in 'Constrast' slot not found")
-    }
-    if (!all(
       na.omit(object@ContrastCoefficient$Contrast) %in%
         object@Contrast$Fingerprint
     )) {
@@ -88,17 +71,11 @@ setValidity(
       stop("Some Contrast in 'ConstrastEstimate' slot not found")
     }
 
-    if (anyDuplicated(object@ContrastType$Fingerprint)) {
-      stop("Duplicated Fingerprint in 'ContrastType' slot")
-    }
-    if (anyDuplicated(object@ContrastType$Description)) {
-      stop("Duplicated Description in 'ContrastType' slot")
-    }
     if (anyDuplicated(object@Contrast$Fingerprint)) {
       stop("Duplicated Fingerprint in 'Contrast' slot")
     }
     if (anyDuplicated(
-      object@Contrast[, c("Description", "Analysis", "Type")]
+      object@Contrast[, c("Description", "Analysis")]
     )) {
       stop("Duplicated rows in 'Contrast' slot")
     }
