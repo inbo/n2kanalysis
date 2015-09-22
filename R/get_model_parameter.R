@@ -13,7 +13,6 @@ setGeneric(
 )
 
 #' @rdname get_model_parameter
-#' @aliases get_model_parameter,n2kGlmerPoisson-methods
 #' @importFrom methods setMethod
 #' @importFrom lme4 ranef VarCorr
 #' @include n2kGlmerPoisson_class.R
@@ -187,7 +186,6 @@ setMethod(
 )
 
 #' @rdname get_model_parameter
-#' @aliases get_model_parameter,n2kLrtGlmer-methods
 #' @importFrom methods setMethod
 #' @include n2kLrtGlmer_class.R
 setMethod(
@@ -224,7 +222,6 @@ setMethod(
 )
 
 #' @rdname get_model_parameter
-#' @aliases get_model_parameter,n2kComposite-methods
 #' @importFrom methods setMethod
 #' @include n2kComposite_class.R
 setMethod(
@@ -272,7 +269,6 @@ setMethod(
 )
 
 #' @rdname get_model_parameter
-#' @aliases get_model_parameter,n2kInlaNbinomial-methods
 #' @importFrom methods setMethod
 #' @importFrom dplyr data_frame rowwise mutate_ filter_ select_ left_join mutate_ bind_rows add_rownames transmute_
 #' @importFrom n2khelper get_sha1
@@ -585,5 +581,18 @@ setMethod(
       Parameter = as.data.frame(parameter),
       ParameterEstimate = as.data.frame(parameter.estimate)
     )
+  }
+)
+
+
+#' @rdname get_model_parameter
+#' @importFrom methods setMethod
+#' @include n2kInlaComparison_class.R
+#' @include n2kParameter_class.R
+setMethod(
+  f = "get_model_parameter",
+  signature = signature(analysis = "n2kInlaComparison"),
+  definition = function(analysis){
+    return(new("n2kParameter"))
   }
 )
