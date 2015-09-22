@@ -13,18 +13,151 @@ setGeneric(
   }
 )
 
+
 #' @rdname get_result
-#' @aliases get_result,n2kModel-methods
 #' @importFrom methods setMethod
-#' @include n2kAnalysisMetadata_class.R
+#' @include n2kGlmerPoisson_class.R
 #' @include n2kResult_class.R
-#' @include n2kModel_class.R
 setMethod(
   f = "get_result",
-  signature = signature(x = "n2kModel"),
+  signature = signature(x = "n2kGlmerPoisson"),
   definition = function(x, ...){
     validObject(x)
     anomaly <- get_anomaly(analysis = x, ...)
+    return(
+      new(
+        "n2kResult",
+        AnalysisMetadata = x@AnalysisMetadata,
+        AnalysisFormula = lapply(x@AnalysisMetadata$Formula, as.formula),
+        AnalysisRelation = x@AnalysisRelation,
+        AnalysisVersion = x@AnalysisVersion,
+        RPackage = x@RPackage,
+        AnalysisVersionRPackage = x@AnalysisVersionRPackage,
+        Parameter = anomaly@Parameter,
+        ParameterEstimate = anomaly@ParameterEstimate,
+        AnomalyType = anomaly@AnomalyType,
+        Anomaly = anomaly@Anomaly
+      )
+    )
+  }
+)
+
+#' @rdname get_result
+#' @importFrom methods setMethod
+#' @importFrom dplyr %>% rowwise mutate_ add_rownames inner_join select_ transmute_ arrange_ filter_
+#' @importFrom n2khelper get_sha1
+#' @importFrom tidyr gather_
+#' @include n2kResult_class.R
+#' @include n2kInlaNbinomial_class.R
+setMethod(
+  f = "get_result",
+  signature = signature(x = "n2kInlaNbinomial"),
+  definition = function(x, ...){
+    validObject(x)
+    anomaly <- get_anomaly(analysis = x, ...)
+    if (is.null(x@LinearCombination)) {
+      return(
+        new(
+          "n2kResult",
+          AnalysisMetadata = x@AnalysisMetadata,
+          AnalysisFormula = lapply(x@AnalysisMetadata$Formula, as.formula),
+          AnalysisRelation = x@AnalysisRelation,
+          AnalysisVersion = x@AnalysisVersion,
+          RPackage = x@RPackage,
+          AnalysisVersionRPackage = x@AnalysisVersionRPackage,
+          Parameter = anomaly@Parameter,
+          ParameterEstimate = anomaly@ParameterEstimate,
+          AnomalyType = anomaly@AnomalyType,
+          Anomaly = anomaly@Anomaly
+        )
+      )
+    }
+    contrast <- data_frame(
+      Description = rownames(x@LinearCombination),
+      Analysis = get_file_fingerprint(x)
+    ) %>%
+      rowwise() %>%
+      mutate_(
+        Fingerprint = ~get_sha1(
+          c(Description = Description, Analysis = Analysis)
+        )
+      ) %>%
+      select_(~Fingerprint, ~Description, ~Analysis) %>%
+      arrange_(~Analysis, ~Description) %>%
+      as.data.frame()
+    contrast.coefficient <- x@LinearCombination %>%
+      as.data.frame() %>%
+      add_rownames("Description") %>%
+      gather_("ParameterID", "Coefficient", -1) %>%
+      inner_join(
+        contrast %>%
+          select_(~-Analysis),
+        by = "Description"
+      ) %>%
+      select_(~-Description, Contrast = ~Fingerprint) %>%
+      mutate_(ParameterID = ~levels(ParameterID)[ParameterID]) %>%
+      filter_(~ abs(Coefficient) > 1e-8)
+    concat <- function(parent, child){
+      parent.split <- strsplit(parent, ":")
+      child.split <- strsplit(child, ":")
+      too.short <- sapply(child.split, length) < sapply(parent.split, length)
+      child.split[too.short] <- lapply(child.split[too.short], c, "")
+      sapply(
+        seq_along(parent.split),
+        function(i){
+          rbind(parent.split[[i]], child.split[[i]])
+        }
+      )
+      apply(
+        cbind(parent.split, child.split),
+        1,
+        function(z){
+          do.call(
+            function(...){
+              paste0(..., collapse = ":")
+            },
+            z
+          )
+        }
+      )
+    }
+    fixed.fingerprint <- anomaly@Parameter %>%
+      filter_(~Description == "Fixed effect") %>%
+      select_(~Fingerprint)
+    contrast.coefficient <- anomaly@Parameter %>%
+      filter_(~Parent == fixed.fingerprint$Fingerprint) %>%
+      select_(ParentDescription = ~Description, Parent = ~Fingerprint) %>%
+      left_join(anomaly@Parameter, by = "Parent") %>%
+      transmute_(
+        Parameter = ~ifelse(is.na(Fingerprint), Parent, Fingerprint),
+        ParameterID = ~concat(child = Description, parent = ParentDescription)
+      ) %>%
+      inner_join(contrast.coefficient, by = "ParameterID") %>%
+      select_(~Contrast, ~Parameter, ~Coefficient) %>%
+      arrange_(~Contrast, ~Parameter)
+    if (nrow(x@Model$summary.lincomb) == 0) {
+      lc <- x@Model$summary.lincomb.derived
+    } else {
+      lc <- x@Model$summary.lincomb
+    }
+    contrast.estimate <- data_frame(
+      Description = rownames(lc),
+      Estimate = lc$mean,
+      LowerConfidenceLimit = lc[, "0.025quant"],
+      UpperConfidenceLimit = lc[, "0.975quant"]
+    ) %>%
+      inner_join(
+        contrast %>% select_(~-Analysis),
+        by = "Description"
+      ) %>%
+      select_(
+        Contrast = ~Fingerprint,
+        ~Estimate,
+        ~LowerConfidenceLimit,
+        ~UpperConfidenceLimit
+      ) %>%
+      arrange_(~Contrast) %>%
+      as.data.frame()
     new(
       "n2kResult",
       AnalysisMetadata = x@AnalysisMetadata,
@@ -36,7 +169,10 @@ setMethod(
       Parameter = anomaly@Parameter,
       ParameterEstimate = anomaly@ParameterEstimate,
       AnomalyType = anomaly@AnomalyType,
-      Anomaly = anomaly@Anomaly
+      Anomaly = anomaly@Anomaly,
+      Contrast = contrast,
+      ContrastCoefficient = contrast.coefficient,
+      ContrastEstimate = contrast.estimate
     )
   }
 )
@@ -217,3 +353,4 @@ setMethod(
     return(result)
   }
 )
+
