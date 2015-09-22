@@ -320,8 +320,8 @@ setMethod(
     fixed.parent <- parameter$Fingerprint[
       parameter$Description == "Fixed effect"
     ]
-    interaction <- grep(":", variable)
-    main.effect <- variable[-interaction]
+    interaction <- grepl(":", variable)
+    main.effect <- variable[!interaction]
     interaction <- variable[interaction]
     for (i in main.effect) {
       present <- grep(paste0("^", i), parameter.estimate$Parameter)
