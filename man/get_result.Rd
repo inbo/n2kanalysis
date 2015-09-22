@@ -4,13 +4,13 @@
 \name{get_result}
 \alias{get_result}
 \alias{get_result,character-method}
-\alias{get_result,n2kGlmerPoisson-method}
 \alias{get_result,n2kInlaNbinomial-method}
+\alias{get_result,n2kModel-method}
 \title{Add the results from an analysis}
 \usage{
 get_result(x, ...)
 
-\S4method{get_result}{n2kGlmerPoisson}(x, ...)
+\S4method{get_result}{n2kModel}(x, ...)
 
 \S4method{get_result}{n2kInlaNbinomial}(x, ...)
 

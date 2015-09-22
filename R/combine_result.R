@@ -1,6 +1,7 @@
 #' @rdname combine
 #' @aliases combine,n2kResult-methods
 #' @importFrom methods setMethod
+#' @importFrom dplyr %>% arrange_ distinct_
 #' @include n2kResult_class.R
 setMethod(
   f = "combine",
@@ -16,10 +17,8 @@ setMethod(
           x@AnalysisMetadata
         }
       )
-    )
-    analysis.metadata <- analysis.metadata[
-      order(analysis.metadata$FileFingerprint),
-    ]
+    ) %>%
+      arrange_(~FileFingerprint)
 
     analysis.formula <- lapply(analysis.metadata$Formula, as.formula)
 
@@ -30,12 +29,10 @@ setMethod(
         function(x){
           x@AnalysisRelation
         }
-    ))
-    analysis.relation <- analysis.relation[
-      order(analysis.relation$Analysis, analysis.relation$ParentAnalysis),
-    ]
+    )) %>%
+      arrange_(~Analysis, ~ParentAnalysis)
 
-    analysis.version <- unique(do.call(
+    analysis.version <- do.call(
       rbind,
       lapply(
         dots,
@@ -43,14 +40,11 @@ setMethod(
           x@AnalysisVersion
         }
       )
-    ))
-    analysis.version <- analysis.version[
-      order(analysis.version$Fingerprint),
-      ,
-      drop = FALSE
-    ]
+    ) %>%
+      distinct_() %>%
+      arrange_(~Fingerprint)
 
-    r.package <- unique(do.call(
+    r.package <- do.call(
       rbind,
       lapply(
         dots,
@@ -58,10 +52,11 @@ setMethod(
           x@RPackage
         }
       )
-    ))
-    r.package <- r.package[order(r.package$Fingerprint), ]
+    ) %>%
+      distinct_() %>%
+      arrange_(~Fingerprint)
 
-    analysis.version.r.package <- unique(do.call(
+    analysis.version.r.package <- do.call(
       rbind,
       lapply(
         dots,
@@ -69,15 +64,11 @@ setMethod(
           x@AnalysisVersionRPackage
         }
       )
-    ))
-    analysis.version.r.package <- analysis.version.r.package[
-      order(
-        analysis.version.r.package$AnalysisVersion,
-        analysis.version.r.package$RPackage
-      ),
-    ]
+    ) %>%
+      distinct_() %>%
+      arrange_(~AnalysisVersion, ~RPackage)
 
-    parameter <- unique(do.call(
+    parameter <- do.call(
       rbind,
       lapply(
         dots,
@@ -85,10 +76,11 @@ setMethod(
           x@Parameter
         }
       )
-    ))
-    parameter <- parameter[order(parameter$Fingerprint), ]
+    ) %>%
+      distinct_() %>%
+      arrange_(~Fingerprint)
 
-    parameter.estimate <- unique(do.call(
+    parameter.estimate <- do.call(
       rbind,
       lapply(
         dots,
@@ -96,12 +88,11 @@ setMethod(
           x@ParameterEstimate
         }
       )
-    ))
-    parameter.estimate <- parameter.estimate[
-      order(parameter.estimate$Analysis, parameter.estimate$Parameter),
-    ]
+    ) %>%
+      distinct_() %>%
+      arrange_(~Analysis, ~Parameter)
 
-    anomaly.type <- unique(do.call(
+    anomaly.type <- do.call(
       rbind,
       lapply(
         dots,
@@ -109,10 +100,11 @@ setMethod(
           x@AnomalyType
         }
       )
-    ))
-    anomaly.type <- anomaly.type[order(anomaly.type$Fingerprint), ]
+    ) %>%
+      distinct_() %>%
+      arrange_(~Fingerprint)
 
-    anomaly <- unique(do.call(
+    anomaly <- do.call(
       rbind,
       lapply(
         dots,
@@ -120,10 +112,9 @@ setMethod(
           x@Anomaly
         }
       )
-    ))
-    anomaly <- anomaly[
-      order(anomaly$Analysis, anomaly$AnomalyType, anomaly$Parameter),
-    ]
+    ) %>%
+      distinct_() %>%
+      arrange_(~Analysis, ~AnomalyType, ~Parameter)
 
     new(
       "n2kResult",
