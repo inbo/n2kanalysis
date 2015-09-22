@@ -303,12 +303,13 @@ setMethod(
 
 
     variable <- c(
-      "\\(Intercept\\)",
+      "Intercept",
       attr(terms(analysis@AnalysisFormula[[1]]), "term.labels")
     )
     variable <- variable[-grep("f\\(", variable)]
 
     fixed.effect <- get_model(analysis)$summary.fixed
+    row.names(fixed.effect) <- gsub("[\\(|\\)]", "", row.names(fixed.effect))
     parameter.estimate <- data_frame(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
       Parameter = row.names(fixed.effect),
@@ -329,7 +330,7 @@ setMethod(
         next
       }
       extra <- data_frame(
-        Description = gsub("(\\\\|\\(|\\))", "", i),
+        Description = i,
         Parent = fixed.parent
       ) %>%
         rowwise() %>%
