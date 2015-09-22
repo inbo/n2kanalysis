@@ -234,31 +234,11 @@ setMethod(
 )
 
 #' @rdname get_anomaly
-#' @aliases get_anomaly,n2kLtrGlmer-methods
 #' @importFrom methods setMethod
-#' @include n2kLrtGlmer_class.R
+#' @include n2kModel_class.R
 setMethod(
   f = "get_anomaly",
-  signature = signature(analysis = "n2kLrtGlmer"),
-  definition = function(analysis, ...){
-    parameter <- get_model_parameter(analysis = analysis)
-    return(
-      new(
-        "n2kAnomaly",
-        Parameter = parameter@Parameter,
-        ParameterEstimate = parameter@ParameterEstimate
-      )
-    )
-  }
-)
-
-#' @rdname get_anomaly
-#' @aliases get_anomaly,n2kComposite-methods
-#' @importFrom methods setMethod
-#' @include n2kComposite_class.R
-setMethod(
-  f = "get_anomaly",
-  signature = signature(analysis = "n2kComposite"),
+  signature = signature(analysis = "n2kModel"),
   definition = function(analysis, ...){
     parameter <- get_model_parameter(analysis = analysis)
     return(
