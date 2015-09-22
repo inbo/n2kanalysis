@@ -421,27 +421,30 @@ setMethod(
           filter_(~abs(Estimate) > random.treshold) %>%
           select_(~Analysis, ~Parameter, ~Estimate),
         by = "Parameter"
-      ) %>%
-      mutate_(Sign = ~sign(Estimate)) %>%
-      arrange_(~desc(abs(Estimate))) %>%
-      group_by_(~AnomalyType, ~Sign) %>%
-      slice(seq_len(n)) %>%
-      ungroup() %>%
-      select_(~-Sign)
-    anomaly.type <- re.anomaly %>%
-      group_by_(~AnomalyType) %>%
-      summarise_() %>%
-      select_(Description = ~ AnomalyType) %>%
-      rowwise() %>%
-      mutate_(
-        Fingerprint = ~get_sha1(c(Description = Description))
-      ) %>%
-      bind_rows(anomaly.type)
-    anomaly <- re.anomaly %>%
-      inner_join(anomaly.type, by = c("AnomalyType" = "Description")) %>%
-      select_(~-AnomalyType, AnomalyType = ~ Fingerprint) %>%
-      mutate_(DatasourceID = datasource.id) %>%
-      bind_rows(anomaly)
+      )
+    if (nrow(re.anomaly) > 0) {
+      re.anomaly <- re.anomaly %>%
+        mutate_(Sign = ~sign(Estimate)) %>%
+        arrange_(~desc(abs(Estimate))) %>%
+        group_by_(~AnomalyType, ~Sign) %>%
+        slice(seq_len(n)) %>%
+        ungroup() %>%
+        select_(~-Sign)
+      anomaly.type <- re.anomaly %>%
+        group_by_(~AnomalyType) %>%
+        summarise_() %>%
+        select_(Description = ~ AnomalyType) %>%
+        rowwise() %>%
+        mutate_(
+          Fingerprint = ~get_sha1(c(Description = Description))
+        ) %>%
+        bind_rows(anomaly.type)
+      anomaly <- re.anomaly %>%
+        inner_join(anomaly.type, by = c("AnomalyType" = "Description")) %>%
+        select_(~-AnomalyType, AnomalyType = ~ Fingerprint) %>%
+        mutate_(DatasourceID = datasource.id) %>%
+        bind_rows(anomaly)
+    }
 
     return(
       new(
