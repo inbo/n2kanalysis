@@ -116,6 +116,40 @@ setMethod(
       distinct_() %>%
       arrange_(~Analysis, ~AnomalyType, ~Parameter)
 
+    contrast <- do.call(
+      rbind,
+      lapply(
+        dots,
+        function(x){
+          x@Contrast
+        }
+      )
+    ) %>%
+      distinct_() %>%
+      arrange_(~Fingerprint)
+    contrast.coefficient <- do.call(
+      rbind,
+      lapply(
+        dots,
+        function(x){
+          x@ContrastCoefficient
+        }
+      )
+    ) %>%
+      distinct_() %>%
+      arrange_(~Contrast, ~Parameter)
+    contrast.estimate <- do.call(
+      rbind,
+      lapply(
+        dots,
+        function(x){
+          x@ContrastEstimate
+        }
+      )
+    ) %>%
+      distinct_() %>%
+      arrange_(~Contrast)
+
     new(
       "n2kResult",
       AnalysisMetadata = analysis.metadata,
@@ -127,7 +161,10 @@ setMethod(
       Parameter = parameter,
       ParameterEstimate = parameter.estimate,
       AnomalyType = anomaly.type,
-      Anomaly = anomaly
+      Anomaly = anomaly,
+      Contrast = contrast,
+      ContrastCoefficient = contrast.coefficient,
+      ContrastEstimate = contrast.estimate
     )
   }
 )
