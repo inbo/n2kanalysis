@@ -344,18 +344,19 @@ setMethod(
         ),
         Parent = extra$Fingerprint
       ) %>%
-        filter_(~Description != "") %>%
-        rowwise() %>%
-        mutate_(
-          Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
-        )
-      if (nrow(extra.factor) > 0) {
+        filter_(~Description != "")
+      if (nrow(extra.factor) == 0) {
+        to.merge <- extra %>%
+          select_(~-Parent)
+      } else {
+        extra.factor <- extra.factor %>%
+          rowwise() %>%
+          mutate_(
+            Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+          )
         to.merge <- extra.factor %>%
           select_(~-Parent) %>%
           mutate_(Description = ~paste0(i, Description))
-      } else {
-        to.merge <- extra %>%
-          select_(~-Parent)
       }
       parameter.estimate <- left_join(
         parameter.estimate,
