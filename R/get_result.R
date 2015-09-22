@@ -20,7 +20,7 @@ setGeneric(
 #' @include n2kResult_class.R
 setMethod(
   f = "get_result",
-  signature = signature(x = "n2kGlmerPoisson"),
+  signature = signature(x = "n2kModel"),
   definition = function(x, ...){
     validObject(x)
     anomaly <- get_anomaly(analysis = x, ...)
@@ -274,6 +274,10 @@ setMethod(
       result@Anomaly$Analysis,
       levels = analysis.level
     )
+    result@Contrast$Analysis <- factor(
+      result@Contrast$Analysis,
+      levels = analysis.level
+    )
     result@AnalysisMetadata$FileFingerprint <- factor(
       result@AnalysisMetadata$FileFingerprint,
       levels = analysis.level
@@ -288,6 +292,10 @@ setMethod(
       result@ParameterEstimate$Parameter,
       levels = result@Parameter$Fingerprint
     ))
+    result@ContrastCoefficient$Parameter <- as.integer(factor(
+      result@ContrastCoefficient$Parameter,
+      levels = result@Parameter$Fingerprint
+    ))
     result@Parameter$Parent <- as.integer(factor(
       result@Parameter$Parent,
       levels = result@Parameter$Fingerprint
@@ -295,6 +303,20 @@ setMethod(
     result@Parameter$Fingerprint <- as.integer(factor(
       result@Parameter$Fingerprint,
       levels = result@Parameter$Fingerprint
+    ))
+
+    # convert contrast fingerprint from sha1 to integer
+    result@ContrastCoefficient$Contrast <- as.integer(factor(
+      result@ContrastCoefficient$Contrast,
+      levels = result@Contrast$Fingerprint
+    ))
+    result@ContrastEstimate$Contrast <- as.integer(factor(
+      result@ContrastEstimate$Contrast,
+      levels = result@Contrast$Fingerprint
+    ))
+    result@Contrast$Fingerprint <- as.integer(factor(
+      result@Contrast$Fingerprint,
+      levels = result@Contrast$Fingerprint
     ))
 
     # convert anomaly type fingerprint from sha1 to integer
