@@ -358,8 +358,8 @@ setMethod(
         summarise_(
           Estimate = ~mean(Estimate),
           SE = ~ sqrt(sum(Variance) / n()),
-          LowerConfidenceInterval = ~qnorm(0.025, mean = Estimate, sd = SE),
-          UpperConfidenceInterval = ~qnorm(0.975, mean = Estimate, sd = SE)
+          LowerConfidenceLimit = ~qnorm(0.025, mean = Estimate, sd = SE),
+          UpperConfidenceLimit = ~qnorm(0.975, mean = Estimate, sd = SE)
         ) %>%
         select_(~-SE) %>%
         as.data.frame()
