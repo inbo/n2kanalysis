@@ -246,7 +246,7 @@ setMethod(
       if (any(is.null(x@Model), is.null(x@Model0))) {
         x@AnalysisRelation$ParentStatusFingerprint <- "zzz"
         status(x) <- "waiting"
-        return(fit_model(x, ...))
+        return(fit_model(x, status = "waiting", ...))
       }
       x@Anova <- anova(x@Model, x@Model0)
       status(x) <- "converged"
@@ -320,7 +320,7 @@ setMethod(
       status(x) <- "waiting"
     }
     if (status(x) == "new") {
-      return(fit_model(x, ...))
+      return(fit_model(x, status = "new", ...))
     }
     return(x)
   }
@@ -420,7 +420,7 @@ setMethod(
       x@AnalysisRelation$ParentStatus %in% c("converged", "unstable")
     )) {
       status(x) <- "new"
-      return(fit_model(x, ...))
+      return(fit_model(x, status = "new", ...))
     }
     status(x) <- "waiting"
     return(x)
@@ -528,7 +528,7 @@ setMethod(
       x@AnalysisRelation$ParentStatus %in% c("converged", "unstable")
     )) {
       status(x) <- "new"
-      return(fit_model(x, ...))
+      return(fit_model(x, status = "new", ...))
     }
     status(x) <- "waiting"
     return(x)
