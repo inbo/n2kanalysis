@@ -246,9 +246,6 @@ setMethod(
     )
     colnames(parameter.estimate)[2] <- "Parameter"
     row.names(parameter.estimate) <- NULL
-    parameter.estimate$Parameter <- levels(parameter.estimate$Parameter)[
-      parameter.estimate$Parameter
-    ]
 
     extra <- data.frame(
       Description = parameter.estimate$Parameter,
