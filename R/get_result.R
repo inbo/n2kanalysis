@@ -16,7 +16,7 @@ setGeneric(
 
 #' @rdname get_result
 #' @importFrom methods setMethod
-#' @include n2kGlmerPoisson_class.R
+#' @include n2kModel_class.R
 #' @include n2kResult_class.R
 setMethod(
   f = "get_result",
