@@ -346,7 +346,9 @@ setMethod(
         extra.factor <- extra.factor %>%
           rowwise() %>%
           mutate_(
-            Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+            Fingerprint = ~get_sha1(
+              c(Description = Description, Parent = Parent)
+            )
           )
         to.merge <- extra.factor %>%
           select_(~-Parent) %>%
