@@ -245,7 +245,69 @@ import_result <- function(result, result.channel){
   )
   colnames(anomaly) <- gsub("^ID$", "AnalysisID", colnames(anomaly))
   anomaly$Analysis <- NULL
+  contrast <- merge(
+    result@Contrast,
+    analysis.metadata,
+    by.x = "Analysis",
+    by.y = "Fingerprint"
+  )
+  colnames(contrast) <- gsub("^ID$", "AnalysisID", colnames(contrast))
+  contrast$Analysis <- NULL
   rm(analysis.metadata)
+  gc()
+
+  # Store the contrast
+  message("Storing ", nrow(contrast), " contrasts")
+  contrast.id <- odbc_get_multi_id(
+    contrast[, c("AnalysisID", "Description")],
+    id.field = "ID",
+    merge.field = c("AnalysisID", "Description"),
+    table = "Contrast",
+    channel = result.channel,
+    create = TRUE
+  )
+  contrast <- merge(contrast, contrast.id)[, c("Fingerprint", "ID")]
+  rm(contrast.id)
+  colnames(contrast) <- gsub("^ID$", "ContrastID", colnames(contrast))
+  contrast.estimate <- merge(
+    result@ContrastEstimate,
+    contrast,
+    by.x = "Contrast",
+    by.y = "Fingerprint"
+  )
+  contrast.estimate$Contrast <- NULL
+  contrast.coefficient <- merge(
+    result@ContrastCoefficient,
+    contrast,
+    by.x = "Contrast",
+    by.y = "Fingerprint"
+  )
+  contrast.coefficient$Contrast <- NULL
+  rm(contrast)
+  gc()
+
+  # Store the contrast estimate
+  message("Storing ", nrow(contrast.estimate), " contrast estimates")
+  colnames(contrast.estimate) <- gsub(
+    "^LowerConfidenceLimit$",
+    "LCL",
+    colnames(contrast.estimate)
+  )
+  colnames(contrast.estimate) <- gsub(
+    "^UpperConfidenceLimit$",
+    "UCL",
+    colnames(contrast.estimate)
+  )
+  odbc_get_multi_id(
+    contrast.estimate,
+    id.field = "ID",
+    merge.field = "ContrastID",
+    table = "ContrastEstimate",
+    channel = result.channel,
+    create = TRUE,
+    select = FALSE
+  )
+  rm(contrast.estimate)
   gc()
 
   # Store the anomaly type
@@ -366,7 +428,33 @@ import_result <- function(result, result.channel){
     by.y = "Parameter"
   )
   anomaly$Fingerprint <- NULL
+  contrast.coefficient <- merge(
+    parameter,
+    contrast.coefficient,
+    by.x = "Fingerprint",
+    by.y = "Parameter"
+  )
+  contrast.coefficient$Fingerprint <- NULL
   rm(parameter)
+  gc()
+
+  # Storing contrast coefficients
+  message("Storing ", nrow(contrast.coefficient), " contrast coefficients")
+  colnames(contrast.coefficient) <- gsub(
+    "^Coefficient$",
+    "Constant",
+    colnames(contrast.coefficient)
+  )
+  odbc_get_multi_id(
+    contrast.coefficient,
+    id.field = "ID",
+    merge.field = c("ContrastID", "ParameterID"),
+    table = "ContrastCoefficient",
+    channel = result.channel,
+    create = TRUE,
+    select = FALSE
+  )
+  rm(contrast.coefficient)
   gc()
 
   # Storing parameter estimates
@@ -402,6 +490,7 @@ import_result <- function(result, result.channel){
 
   # Storing anomalies
   message("Storing ", nrow(anomaly), " anomalies")
+  anomaly$Estimate <- NULL
   odbc_get_multi_id(
     anomaly,
     id.field = "ID",
