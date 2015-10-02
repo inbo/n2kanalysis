@@ -1,5 +1,6 @@
 context("status")
 temp.dir <- tempdir()
+file.remove(list.files(temp.dir, pattern = "\\.rda$", full.names = TRUE))
 
 describe("n2kGlmerPoisson", {
   data(cbpp, package = "lme4")
