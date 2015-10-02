@@ -233,11 +233,13 @@ setMethod(
         )
         parallel::stopCluster(cl)
       } else {
+        # nocov start
         message(
 "Cannot load the parallel package. Falling back to non-parallel computing."
         )
         utils::flush.console()
         result <- lapply(files, get_result, ...)
+        # nocov end
       }
     }
 

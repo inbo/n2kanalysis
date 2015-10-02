@@ -77,6 +77,50 @@ describe("get_result on n2kInlaNbinomial", {
   )
 })
 
+expect_error(
+  get_result("junk"),
+  "'x' is neither an existing file, neither an existing directory"
+)
+expect_is(
+  get_result(temp.dir, datasource.id = this.datasource, n.cluster = 1),
+  "n2kResult"
+)
+expect_is(
+  get_result(temp.dir, datasource.id = this.datasource, n.cluster = 2),
+  "n2kResult"
+)
+expect_is(
+  get_result(
+    temp.dir,
+    datasource.id = this.datasource,
+    n.cluster = 2 * parallel::detectCores()
+  ),
+  "n2kResult"
+)
+expect_message(
+  get_result(
+    temp.dir,
+    datasource.id = this.datasource,
+    n.cluster = 2 * parallel::detectCores()
+  ),
+  paste(
+    "Requesting", 2 * parallel::detectCores(), "clusters but only",
+    parallel::detectCores(), "available."
+  )
+)
+result <- get_result(
+  temp.dir,
+  datasource.id = this.datasource,
+  keep.fingerprint = TRUE
+)
+expect_is(result, "n2kResult")
+result <- get_result(
+  temp.dir,
+  datasource.id = this.datasource,
+  keep.fingerprint = FALSE
+)
+expect_is(result, "n2kResult")
+
 # clean temp files
 file.remove(
   list.files(
