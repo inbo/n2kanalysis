@@ -89,7 +89,6 @@ import_result <- function(result, result.channel){
   analysis.metadata$AnalysisVersion <- NULL
   analysis.metadata$Formula <- NULL
   analysis.metadata$SchemeID <- NULL
-  analysis.metadata$StatusFingerprint <- NULL
   rm(analysis.version)
   gc()
 
