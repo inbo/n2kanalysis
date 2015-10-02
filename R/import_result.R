@@ -438,7 +438,7 @@ import_result <- function(result, result.channel){
   gc()
 
   # Storing contrast coefficients
-  message("Storing ", nrow(contrast.coefficient), " contrast coefficients")
+  message("\nStoring ", nrow(contrast.coefficient), " contrast coefficients")
   colnames(contrast.coefficient) <- gsub(
     "^Coefficient$",
     "Constant",
@@ -457,7 +457,7 @@ import_result <- function(result, result.channel){
   gc()
 
   # Storing parameter estimates
-  message("\nStoring ", nrow(parameter.estimate), " parameter estimates")
+  message("Storing ", nrow(parameter.estimate), " parameter estimates")
   colnames(parameter.estimate) <- gsub(
     "^LowerConfidenceLimit$",
     "LCL",
