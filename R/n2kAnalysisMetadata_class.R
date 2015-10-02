@@ -133,8 +133,7 @@ setValidity(
         object@AnalysisMetadata$FirstImportedYear + 1
     )) {
       stop(
-"Some Duration longer than the interval from FirstImportedYear to
-LastImportedYear"
+"Duration longer than the interval from FirstImportedYear to LastImportedYear"
       )
     }
 
