@@ -2,6 +2,8 @@ context("get_model() handles n2kInlaNbinomial objects")
 describe("get_model", {
   require(INLA)
   data("cbpp", package = "lme4")
+  cbpp$DatasourceID <- 1
+  cbpp$ObservationID <- seq_len(nrow(cbpp))
   object <- n2k_inla_nbinomial(
     scheme.id = 1,
     species.group.id = 2,

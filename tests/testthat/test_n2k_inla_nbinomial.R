@@ -12,6 +12,8 @@ this.last.imported.year <- 2015L
 this.last.analysed.year <- 2014L
 this.duration <- 1L
 data("cbpp", package = "lme4")
+cbpp$DatasourceID <- 1
+cbpp$ObservationID <- seq_len(nrow(cbpp))
 lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
 object <- n2k_inla_nbinomial(
   scheme.id = this.scheme.id,
@@ -548,8 +550,7 @@ ranges"
         scheme.id = this.scheme.id
       ),
       throws_error(
-"Some Duration longer than the interval from FirstImportedYear to
-LastImportedYear"
+"Duration longer than the interval from FirstImportedYear to LastImportedYear"
       )
     )
     expect_that(

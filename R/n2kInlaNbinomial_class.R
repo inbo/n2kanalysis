@@ -37,7 +37,10 @@ setValidity(
   function(object){
     check_dataframe_variable(
       df = object@Data[1, ],
-      variable = all.vars(object@AnalysisFormula[[1]]),
+      variable = c(
+        all.vars(object@AnalysisFormula[[1]]),
+        "DatasourceID", "ObservationID"
+      ),
       error = TRUE
     )
     if (!grepl("^inla nbinomial", object@AnalysisMetadata$ModelType)) {

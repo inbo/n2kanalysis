@@ -98,6 +98,8 @@ describe("fit_model() on GlmerPoisson based objects", {
 describe("fit_model() on INLA nbinomial based objects", {
   temp.dir <- tempdir()
   data(cbpp, package = "lme4")
+  cbpp$ObservationID <- seq_len(nrow(cbpp))
+  cbpp$DatasourceID <- 2L
   this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
   this.scheme.id <- 1L
   this.species.group.id <- 2L
@@ -156,9 +158,9 @@ describe("fit_model() on INLA nbinomial based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "34af5ce4445c364ef65d1513838b882eaf744379"
-  object.lc.file <- "c5d7f8f731a60ab531692225cae22b09f107489b"
-  object.badlc.file <- "65385b5dfb5938ded978d9979dae2b3900cf49ad"
+  object.file <- "baa8c09603d73b5d83787f7470c483ec5d4cca47"
+  object.lc.file <- "324e8c4868d4f786b37a8045461222527cda1325"
+  object.badlc.file <- "c9bffef83ce581835781f32def67cd616aaabaa9"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))

@@ -1,6 +1,8 @@
 context("n2kInlaNbinomial validation")
 
 data("cbpp", package = "lme4")
+cbpp$DatasourceID <- 1
+cbpp$ObservationID <- seq_len(nrow(cbpp))
 lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
 object <- n2k_inla_nbinomial(
   scheme.id = 1,
