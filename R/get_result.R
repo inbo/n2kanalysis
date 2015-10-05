@@ -85,6 +85,24 @@ setMethod(
       select_(~Fingerprint, ~Description, ~Analysis) %>%
       arrange_(~Analysis, ~Description) %>%
       as.data.frame()
+    if (is.null(x@Model)) {
+      return(
+        new(
+          "n2kResult",
+          AnalysisMetadata = x@AnalysisMetadata,
+          AnalysisFormula = lapply(x@AnalysisMetadata$Formula, as.formula),
+          AnalysisRelation = x@AnalysisRelation,
+          AnalysisVersion = x@AnalysisVersion,
+          RPackage = x@RPackage,
+          AnalysisVersionRPackage = x@AnalysisVersionRPackage,
+          Parameter = anomaly@Parameter,
+          ParameterEstimate = anomaly@ParameterEstimate,
+          AnomalyType = anomaly@AnomalyType,
+          Anomaly = anomaly@Anomaly,
+          Contrast = contrast
+        )
+      )
+    }
     contrast.coefficient <- x@LinearCombination %>%
       as.data.frame() %>%
       add_rownames("Description") %>%
