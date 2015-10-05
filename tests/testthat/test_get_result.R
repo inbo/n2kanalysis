@@ -75,6 +75,87 @@ describe("get_result on n2kInlaNbinomial", {
     get_result(filename, datasource.id = this.datasource),
     result
   )
+
+  # with linear combination
+  lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
+  this.parent <- "abcd"
+  analysis <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = this.formula,
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = cbpp,
+    lin.comb = lin.comb,
+    parent = this.parent
+  )
+  result <- get_result(analysis, datasource.id = this.datasource)
+  it("return a n2kResult", {
+    expect_is(result, "n2kResult")
+  })
+  it("returns senbile output on unfitted objects", {
+    expect_identical(
+      nrow(result@Parameter),
+      0L
+    )
+    expect_identical(
+      nrow(result@Contrast),
+      nrow(lin.comb)
+    )
+    expect_identical(
+      nrow(result@ContrastCoefficient),
+      0L
+    )
+    expect_identical(
+      nrow(result@ContrastEstimate),
+      0L
+    )
+    expect_identical(
+      nrow(result@Anomaly),
+      0L
+    )
+  })
+  filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
+  save(analysis, file = filename)
+  expect_equal(
+    get_result(filename, datasource.id = this.datasource),
+    result
+  )
+  fit_model(filename)
+  load(filename)
+  result <- get_result(analysis, datasource.id = this.datasource)
+  it("return a n2kResult", {
+    expect_is(result, "n2kResult")
+  })
+  it("returns senbile output on fitted objects", {
+    expect_less_than(
+      0,
+      nrow(result@Parameter)
+    )
+    expect_identical(
+      nrow(result@Contrast),
+      nrow(lin.comb)
+    )
+    expect_less_than(
+      0,
+      nrow(result@ContrastCoefficient)
+    )
+    expect_less_than(
+      0,
+      nrow(result@ContrastEstimate)
+    )
+    expect_less_than(
+      0,
+      nrow(result@Anomaly)
+    )
+  })
+  expect_equal(
+    get_result(filename, datasource.id = this.datasource),
+    result
+  )
 })
 
 expect_error(
