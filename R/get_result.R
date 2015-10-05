@@ -105,8 +105,13 @@ setMethod(
     }
     contrast.coefficient <- x@LinearCombination %>%
       as.data.frame() %>%
-      add_rownames("Description") %>%
-      gather_("ParameterID", "Coefficient", -1) %>%
+      add_rownames("Description")
+    contrast.coefficient <- contrast.coefficient %>%
+      gather_(
+        "ParameterID",
+        "Coefficient",
+        tail(colnames(contrast.coefficient), -1)
+      ) %>%
       inner_join(
         contrast %>%
           select_(~-Analysis),
