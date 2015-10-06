@@ -166,29 +166,29 @@ expect_is(
   get_result(temp.dir, datasource.id = this.datasource, n.cluster = 1),
   "n2kResult"
 )
-expect_is(
-  get_result(temp.dir, datasource.id = this.datasource, n.cluster = 2),
-  "n2kResult"
-)
-expect_is(
-  get_result(
-    temp.dir,
-    datasource.id = this.datasource,
-    n.cluster = 2 * parallel::detectCores()
-  ),
-  "n2kResult"
-)
-expect_message(
-  get_result(
-    temp.dir,
-    datasource.id = this.datasource,
-    n.cluster = 2 * parallel::detectCores()
-  ),
-  paste(
-    "Requesting", 2 * parallel::detectCores(), "clusters but only",
-    parallel::detectCores(), "available."
-  )
-)
+# expect_is(
+#   get_result(temp.dir, datasource.id = this.datasource, n.cluster = 2),
+#   "n2kResult"
+# )
+# expect_is(
+#   get_result(
+#     temp.dir,
+#     datasource.id = this.datasource,
+#     n.cluster = 2 * parallel::detectCores()
+#   ),
+#   "n2kResult"
+# )
+# expect_message(
+#   get_result(
+#     temp.dir,
+#     datasource.id = this.datasource,
+#     n.cluster = 2 * parallel::detectCores()
+#   ),
+#   paste(
+#     "Requesting", 2 * parallel::detectCores(), "clusters but only",
+#     parallel::detectCores(), "available."
+#   )
+# )
 result.fp <- get_result(
   temp.dir,
   datasource.id = this.datasource,
