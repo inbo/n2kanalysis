@@ -236,6 +236,7 @@ setMethod(
     if (n.cluster == 1) {
       result <- lapply(files, get_result, ...)
     } else {
+      # nocov start
       if (requireNamespace("parallel", quietly = TRUE)) {
         available.cluster <- parallel::detectCores()
         if (n.cluster > available.cluster) {
@@ -256,14 +257,13 @@ setMethod(
         )
         parallel::stopCluster(cl)
       } else {
-        # nocov start
         message(
 "Cannot load the parallel package. Falling back to non-parallel computing."
         )
         utils::flush.console()
         result <- lapply(files, get_result, ...)
-        # nocov end
       }
+      # nocov end
     }
 
     message("Combining results")
