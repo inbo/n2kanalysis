@@ -166,6 +166,7 @@ expect_is(
   get_result(temp.dir, datasource.id = this.datasource, n.cluster = 1),
   "n2kResult"
 )
+# nolint start
 # expect_is(
 #   get_result(temp.dir, datasource.id = this.datasource, n.cluster = 2),
 #   "n2kResult"
@@ -189,6 +190,7 @@ expect_is(
 #     parallel::detectCores(), "available."
 #   )
 # )
+# nolint end
 result.fp <- get_result(
   temp.dir,
   datasource.id = this.datasource,
@@ -263,7 +265,11 @@ contrast <- result.fp@Contrast %>%
 aj.contrast <- contrast %>%
   anti_join(
     result.id@Contrast,
-    by = c("ContrastID" = "Fingerprint", "Description", "AnalysisID" = "Analysis")
+    by = c(
+      "ContrastID" = "Fingerprint",
+      "Description",
+      "AnalysisID" = "Analysis"
+    )
   )
 expect_identical(nrow(aj.contrast), 0L)
 
@@ -282,7 +288,11 @@ aj.contrastcoefficient <- result.fp@ContrastCoefficient %>%
   ) %>%
   anti_join(
     result.id@ContrastCoefficient,
-    by = c("ContrastID" = "Contrast", "ParameterID" = "Parameter", "Coefficient")
+    by = c(
+      "ContrastID" = "Contrast",
+      "ParameterID" = "Parameter",
+      "Coefficient"
+    )
   )
 expect_identical(nrow(aj.contrastcoefficient), 0L)
 
