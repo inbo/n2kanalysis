@@ -73,6 +73,7 @@ Collate:
     'select_factor_threshold.R'
     'select_observed_range.R'
     'session_package.R'
+    'simplify_result.R'
     'status.R'
     'union.R'
     'validOject.R'
