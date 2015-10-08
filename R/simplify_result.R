@@ -8,6 +8,7 @@
 #' @export
 #' @include n2kResult_class.R
 #' @importFrom assertthat assert_that
+#' @importFrom dplyr %>% select_ distinct arrange_ mutate_ anti_join inner_join
 #' @param result a n2kResult object
 simplify_result <- function(result){
   assert_that(inherits(result, "n2kResult"))
@@ -46,27 +47,45 @@ simplify_result <- function(result){
   )
 
   # convert parameter fingerprint from sha1 to integer
-  parameter.level <- sort(unique(result@Parameter$Fingerprint))
-  result@Anomaly$Parameter <- as.integer(factor(
-    result@Anomaly$Parameter,
-    levels = parameter.level
-  ))
-  result@ParameterEstimate$Parameter <- as.integer(factor(
-    result@ParameterEstimate$Parameter,
-    levels = parameter.level
-  ))
-  result@ContrastCoefficient$Parameter <- as.integer(factor(
-    result@ContrastCoefficient$Parameter,
-    levels = parameter.level
-  ))
-  result@Parameter$Parent <- as.integer(factor(
-    result@Parameter$Parent,
-    levels = parameter.level
-  ))
-  result@Parameter$Fingerprint <- as.integer(factor(
-    result@Parameter$Fingerprint,
-    levels = parameter.level
-  ))
+  parameter <- result@Parameter %>%
+    select_(~Fingerprint) %>%
+    distinct() %>%
+    arrange_(~Fingerprint) %>%
+    mutate_(ParameterID = ~seq_along(Fingerprint))
+
+  antijoin.ap <- result@Anomaly %>%
+    anti_join(parameter, by = c("Parameter" = "Fingerprint"))
+  assert_that(nrow(antijoin.ap) == 0)
+  result@Anomaly <- result@Anomaly %>%
+    inner_join(parameter, by = c("Parameter" = "Fingerprint")) %>%
+    select_(~-Parameter, Parameter = ~ParameterID)
+
+  antijoin.pep <- result@ParameterEstimate %>%
+    anti_join(parameter, by = c("Parameter" = "Fingerprint"))
+  assert_that(nrow(antijoin.pep) == 0)
+  result@ParameterEstimate <- result@ParameterEstimate %>%
+    inner_join(parameter, by = c("Parameter" = "Fingerprint")) %>%
+    select_(~-Parameter, Parameter = ~ParameterID)
+
+  antijoin.ccp <- result@ContrastCoefficient %>%
+    anti_join(parameter, by = c("Parameter" = "Fingerprint"))
+  assert_that(nrow(antijoin.ccp) == 0)
+  result@ContrastCoefficient <- result@ContrastCoefficient %>%
+    inner_join(parameter, by = c("Parameter" = "Fingerprint")) %>%
+    select_(~-Parameter, Parameter = ~ParameterID)
+
+  antijoin.pp <- result@Parameter %>%
+    anti_join(parameter, by = "Fingerprint")
+  assert_that(nrow(antijoin.pp) == 0)
+  antijoin.pp2 <- result@Parameter %>%
+    filter_(~!is.na(Parent)) %>%
+    anti_join(parameter, by = c("Parent" = "Fingerprint"))
+  assert_that(nrow(antijoin.pp2) == 0)
+  result@Parameter <- result@Parameter %>%
+    inner_join(parameter, by = "Fingerprint") %>%
+    select_(~-Fingerprint, Fingerprint = ~ParameterID) %>%
+    left_join(parameter, by = c("Parent" = "Fingerprint")) %>%
+    select_(~-Parent, Parent = ~ParameterID)
 
   # convert contrast fingerprint from sha1 to integer
   contrast.level <- sort(unique(result@Contrast$Fingerprint))
