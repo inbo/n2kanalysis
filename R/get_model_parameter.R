@@ -8,7 +8,7 @@
 setGeneric(
   name = "get_model_parameter",
   def = function(analysis){
-    standard.generic("get_model_parameter")
+    standard.generic("get_model_parameter") # nocov
   }
 )
 

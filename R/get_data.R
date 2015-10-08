@@ -9,7 +9,7 @@
 setGeneric(
   name = "get_data",
   def = function(x){
-    standard.generic("get_data")
+    standard.generic("get_data") # nocov
   }
 )
 

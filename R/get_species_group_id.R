@@ -9,7 +9,7 @@
 setGeneric(
   name = "get_species_group_id",
   def = function(x){
-    standard.generic("get_species_group_id")
+    standard.generic("get_species_group_id") # nocov
   }
 )
 

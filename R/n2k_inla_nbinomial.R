@@ -25,7 +25,7 @@ setGeneric(
   def = function(
     data, ..., model.fit
   ){
-    standard.generic("n2k_inla_nbinomial")
+    standard.generic("n2k_inla_nbinomial") # nocov
   }
 )
 

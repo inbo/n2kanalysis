@@ -9,7 +9,7 @@
 setGeneric(
   name = "get_anomaly",
   def = function(analysis, ...){
-    standard.generic("get_anomaly")
+    standard.generic("get_anomaly") # nocov
   }
 )
 

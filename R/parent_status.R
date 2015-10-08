@@ -9,7 +9,7 @@
 setGeneric(
   name = "parent_status",
   def = function(x){
-    standard.generic("parent_status")
+    standard.generic("parent_status") # nocov
   }
 )
 
@@ -36,7 +36,7 @@ setMethod(
 setGeneric(
   name = "parent_status<-",
   def = function(x, value){
-    standard.generic("parent_status<-")
+    standard.generic("parent_status<-") # nocov
   }
 )
 

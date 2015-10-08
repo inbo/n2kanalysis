@@ -25,7 +25,7 @@ setGeneric(
   def = function(
     parent, ...
   ){
-    standard.generic("n2k_inla_comparison")
+    standard.generic("n2k_inla_comparison") # nocov
   }
 )
 

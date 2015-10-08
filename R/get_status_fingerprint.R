@@ -9,7 +9,7 @@
 setGeneric(
   name = "get_status_fingerprint",
   def = function(x){
-    standard.generic("get_status_fingerprint")
+    standard.generic("get_status_fingerprint") # nocov
   }
 )
 

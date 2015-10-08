@@ -26,7 +26,7 @@ setGeneric(
   def = function(
     parent.status, ...
   ){
-    standard.generic("n2k_composite")
+    standard.generic("n2k_composite") # nocov
   }
 )
 
