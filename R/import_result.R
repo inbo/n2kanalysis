@@ -10,6 +10,7 @@ import_result <- function(result, result.channel){
   if (!inherits(result, "n2kResult")) {
     stop("result must be a 'n2kResult' object")
   }
+  # nocov start
 
   # Store R package versions
   message("Storing ", nrow(result@RPackage), " used R packages")
@@ -503,4 +504,6 @@ import_result <- function(result, result.channel){
   )
 
   return(invisible(NULL))
+
+  # nocov end
 }
