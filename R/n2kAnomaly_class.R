@@ -75,8 +75,20 @@ setValidity(
 "Mismatch on Analysis and Parameter between Anomaly and ParameterEstimate slot"
       )
     }
+
+    anomalytype.duplicate <- object@AnomalyType %>%
+      select_(~Fingerprint) %>%
+      anyDuplicated()
+    if (anomalytype.duplicate > 0) {
+      stop("Duplicated anomalytypes")
     }
 
+    anomaly.duplicate <- object@Anomaly %>%
+      select_(~Analysis, ~AnomalyType, ~Parameter) %>%
+      anyDuplicated()
+    if (anomaly.duplicate > 0) {
+      stop("Duplicated anomalies")
+    }
     return(TRUE)
   }
 )
