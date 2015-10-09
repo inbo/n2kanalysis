@@ -103,15 +103,24 @@ simplify_result <- function(result){
   ))
 
   # convert anomaly type fingerprint from sha1 to integer
-  anoamytype.level <- sort(unique(result@AnomalyType$Fingerprint))
-  result@Anomaly$AnomalyType <- as.integer(factor(
-    result@Anomaly$AnomalyType,
-    levels = anoamytype.level
-  ))
-  result@AnomalyType$Fingerprint <- as.integer(factor(
-    result@AnomalyType$Fingerprint,
-    levels = anoamytype.level
-  ))
+  anomalytype.id <- result@AnomalyType %>%
+    select_(~Fingerprint) %>%
+    distinct_() %>%
+    mutate_(AnomalyTypeID = ~seq_along(Fingerprint))
+
+  antijoin.aat <- result@Anomaly %>%
+    anti_join(anomalytype.id, by = c("AnomalyType" = "Fingerprint"))
+  assert_that(nrow(antijoin.aat) == 0)
+  result@Anomaly <- result@Anomaly %>%
+    inner_join(anomalytype.id, by = c("AnomalyType" = "Fingerprint")) %>%
+    select_(~-AnomalyType, AnomalyType = ~AnomalyTypeID)
+
+  antijoin.atat <- result@AnomalyType %>%
+    anti_join(anomalytype.id, by = "Fingerprint")
+  assert_that(nrow(antijoin.atat) == 0)
+  result@AnomalyType <- result@AnomalyType %>%
+    inner_join(anomalytype.id, by = "Fingerprint") %>%
+    select_(~-Fingerprint, Fingerprint = ~AnomalyTypeID)
 
   # convert R package fingerprint from sha1 to integer
   rpackage.level <- sort(unique(result@RPackage$Fingerprint))
