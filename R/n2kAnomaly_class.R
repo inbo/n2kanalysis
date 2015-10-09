@@ -24,6 +24,7 @@ setClass(
       Parameter = character(0),
       DatasourceID = integer(0),
       Datafield = character(0),
+      Estimate = numeric(0),
       stringsAsFactors = FALSE
     )
   )
@@ -49,7 +50,8 @@ setValidity(
       Analysis = c("character", "factor"),
       Parameter = c("character", "factor", "integer"),
       DatasourceID = "integer",
-      Datafield = c("character", "factor")
+      Datafield = c("character", "factor"),
+      Estimate = c("numeric", "integer", "logical")
     )
     check_dataframe_variable(
       df = object@Anomaly,
