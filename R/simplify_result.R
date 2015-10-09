@@ -8,7 +8,7 @@
 #' @export
 #' @include n2kResult_class.R
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr %>% select_ distinct arrange_ mutate_ anti_join inner_join
+#' @importFrom dplyr %>% select_ distinct_ arrange_ mutate_ anti_join inner_join
 #' @param result a n2kResult object
 simplify_result <- function(result){
   assert_that(inherits(result, "n2kResult"))
@@ -49,7 +49,7 @@ simplify_result <- function(result){
   # convert parameter fingerprint from sha1 to integer
   parameter <- result@Parameter %>%
     select_(~Fingerprint) %>%
-    distinct() %>%
+    distinct_() %>%
     arrange_(~Fingerprint) %>%
     mutate_(ParameterID = ~seq_along(Fingerprint))
 
