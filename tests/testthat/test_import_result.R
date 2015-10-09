@@ -131,13 +131,12 @@ describe("import result", {
         Fingerprint = ~get_sha1(c(Description = Description, Analysis = Analysis))
       ) %>%
       as.data.frame()
-    n.coef <- sample(3, size = nrow(contrast), replace = TRUE)
-    contrast.coefficient <- data.frame(
-      Contrast = rep(contrast$Fingerprint, n.coef),
-      Parameter = sample(parameter$Fingerprint, sum(n.coef), replace = TRUE)
-    )
-    contrast.coefficient <- contrast.coefficient[!duplicated(contrast.coefficient), ]
-    contrast.coefficient$Coefficient <- rnorm(nrow(contrast.coefficient))
+    contrast.coefficient <- expand.grid(
+      Contrast = contrast$Fingerprint,
+      Parameter = sample(parameter$Fingerprint, min(4, nrow(parameter))),
+      stringsAsFactors = FALSE
+    ) %>%
+      mutate_(Coefficient = ~seq_along(Contrast))
     contrast.estimate <- data.frame(
       Contrast = contrast$Fingerprint,
       stringsAsFactors = FALSE
