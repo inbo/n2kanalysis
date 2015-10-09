@@ -77,7 +77,10 @@ describe("import result", {
       Description = "Unit test",
       Parent = NA,
       stringsAsFactors = FALSE
-    ) %>% mutate_(Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent)))
+    ) %>%
+      mutate_(
+        Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+      )
     parameter <-
     data.frame(
       Description = paste("Unit test", 1:10),
@@ -128,7 +131,9 @@ describe("import result", {
     ) %>%
       rowwise() %>%
       mutate_(
-        Fingerprint = ~get_sha1(c(Description = Description, Analysis = Analysis))
+        Fingerprint = ~get_sha1(
+          c(Description = Description, Analysis = Analysis)
+        )
       ) %>%
       as.data.frame()
     contrast.coefficient <- expand.grid(
@@ -260,7 +265,11 @@ describe("import result", {
     ORDER BY
       Fingerprint
     "
-    exported <- sqlQuery(channel = channel, query = sql, stringsAsFactors = FALSE)
+    exported <- sqlQuery(
+      channel = channel,
+      query = sql,
+      stringsAsFactors = FALSE
+    )
     expect_equal(
       exported %>%
         mutate_(AnalysisDate = ~format(AnalysisDate, "%F %T %Z")),
@@ -300,7 +309,11 @@ describe("import result", {
     ORDER BY
       Analysis.Fingerprint, Parameter.Description
     "
-    exported <- sqlQuery(channel = channel, query = sql, stringsAsFactors = FALSE)
+    exported <- sqlQuery(
+      channel = channel,
+      query = sql,
+      stringsAsFactors = FALSE
+    )
     expect_equal(
       exported,
       parameterestimate %>%
