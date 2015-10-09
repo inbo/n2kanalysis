@@ -123,15 +123,22 @@ simplify_result <- function(result){
     select_(~-Fingerprint, Fingerprint = ~AnomalyTypeID)
 
   # convert R package fingerprint from sha1 to integer
-  rpackage.level <- sort(unique(result@RPackage$Fingerprint))
-  result@AnalysisVersionRPackage$RPackage <- as.integer(factor(
-    result@AnalysisVersionRPackage$RPackage,
-    levels = rpackage.level
-  ))
-  result@RPackage$Fingerprint <- as.integer(factor(
-    result@RPackage$Fingerprint,
-    levels = rpackage.level
-  ))
+  rpackage <- result@RPackage %>%
+    select_(~Fingerprint) %>%
+    distinct_() %>%
+    mutate_(RPackageID = ~seq_along(Fingerprint))
+  antijoin.avrprp <- result@AnalysisVersionRPackage %>%
+    anti_join(rpackage, by = c("RPackage" = "Fingerprint"))
+  assert_that(nrow(antijoin.avrprp) == 0)
+  result@AnalysisVersionRPackage <- result@AnalysisVersionRPackage %>%
+    inner_join(rpackage, by = c("RPackage" = "Fingerprint")) %>%
+    select_(~-RPackage, RPackage = ~RPackageID)
+  antijoin.rprp <- result@RPackage %>%
+    anti_join(rpackage, by = "Fingerprint")
+  assert_that(nrow(antijoin.rprp) == 0)
+  result@RPackage <- result@RPackage %>%
+    inner_join(rpackage, by = "Fingerprint") %>%
+    select_(~-Fingerprint, Fingerprint = ~RPackageID)
 
   # convert analysis version fingerprint to factor
   version.level <- sort(unique(result@AnalysisVersion$Fingerprint))
