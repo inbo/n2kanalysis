@@ -94,7 +94,7 @@ describe("import result", {
       as.data.frame()
     parameterestimate <- expand.grid(
       Analysis = metadata$FileFingerprint,
-      Parameter = parameter$Fingerprint,
+      Parameter = parameter$Fingerprint[!is.na(parameter$Parent)],
       stringsAsFactors = FALSE
     ) %>%
       mutate_(
