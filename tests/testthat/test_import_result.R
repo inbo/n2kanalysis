@@ -288,6 +288,90 @@ describe("import result", {
     )
 
     sql <- "
+      WITH
+        cteParameter AS (
+          SELECT
+            ID,
+            Description,
+            ParentParameterID
+          FROM
+            Parameter
+          WHERE
+            Description = 'Unit test'
+          UNION ALL
+          SELECT
+            Parameter.ID,
+            Parameter.Description,
+            Parameter.ParentParameterID
+          FROM
+            Parameter
+          INNER JOIN
+            cteParameter
+          ON
+            Parameter.ParentParameterID = cteParameter.ID
+        )
+
+      SELECT
+        ID,
+        Description,
+        ParentParameterID
+      FROM
+        cteParameter
+      ORDER BY
+        Description
+    "
+    exported <- sqlQuery(
+      channel = channel,
+      query = sql,
+      stringsAsFactors = FALSE
+    )
+    expect_equal(
+      exported %>%
+        select_(~Description),
+      parameter %>%
+        arrange_(~Description) %>%
+        select_(~Description)
+    )
+    parameter.simple <- exported %>%
+      inner_join(parameter, by = "Description") %>%
+      select_(~ID, ~Fingerprint)
+    expect_true(assertthat::noNA(parameter.simple))
+    expect_identical(anyDuplicated(parameter.simple), 0L)
+
+    sql <- "
+      SELECT
+        P1.Description AS Main,
+        P2.Description AS Sub
+      FROM
+        Parameter AS P1
+      INNER JOIN
+        Parameter AS P2
+      ON
+        P1.ID = P2.ParentParameterID
+      WHERE
+        P1.Description = 'Unit test'
+      ORDER BY
+        P2.Description
+    "
+    exported <- sqlQuery(
+      channel = channel,
+      query = sql,
+      stringsAsFactors = FALSE
+    )
+    expect_equal(
+      exported,
+      parameter %>%
+        filter(is.na(Parent)) %>%
+        select_(Main = ~Description, ~Fingerprint) %>%
+        inner_join(
+          parameter %>% select_(Sub = ~Description, ~Parent),
+          by = c("Fingerprint" = "Parent")
+        ) %>%
+        select_(~-Fingerprint) %>%
+        arrange_(~Sub)
+    )
+
+    sql <- "
     SELECT
       Analysis.Fingerprint AS Analysis,
       Parameter.Description AS Description,
