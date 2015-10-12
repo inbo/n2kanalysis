@@ -186,7 +186,11 @@ describe("import result", {
       SpeciesGroup.Description LIKE 'Unit test%' OR
       Scheme.Description = 'Unit test'
     "
-    exported <- sqlQuery(channel = channel, query = sql)
+    exported <- sqlQuery(
+      channel = channel,
+      query = sql,
+      stringsAsFactors = FALSE
+    )
     expect_identical(nrow(exported), length(speciesid))
     expect_false(anyNA(exported))
     expect_true(all(exported$SchemeID == schemeid))
@@ -208,7 +212,11 @@ describe("import result", {
       LocationGroup.Description LIKE 'Unit test%' OR
       Scheme.Description = 'Unit test'
     "
-    exported <- sqlQuery(channel = channel, query = sql)
+    exported <- sqlQuery(
+      channel = channel,
+      query = sql,
+      stringsAsFactors = FALSE
+    )
     expect_identical(nrow(exported), length(locationgroupid))
     expect_false(anyNA(exported))
     expect_true(all(exported$SchemeID == schemeid))
