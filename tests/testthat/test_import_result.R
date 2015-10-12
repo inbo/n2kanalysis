@@ -463,6 +463,16 @@ describe("import result", {
 
     sql <- "
     DELETE
+      p
+    FROM
+      Parameter AS p
+    WHERE
+      p.Description LIKE 'Unit test%'
+    "
+    expect_equal(sqlQuery(channel = channel, query = sql), character(0))
+
+    sql <- "
+    DELETE
       c
     FROM
       Contrast AS c
@@ -492,6 +502,50 @@ describe("import result", {
       a.SpeciesGroupID = s.ID
     WHERE
       s.Description LIKE 'Unit test%'
+    "
+    expect_equal(sqlQuery(channel = channel, query = sql), character(0))
+
+    sql <- "
+    DELETE
+      s
+    FROM
+      SpeciesGroup AS s
+    WHERE
+      s.Description LIKE 'Unit test%'
+    "
+    expect_equal(sqlQuery(channel = channel, query = sql), character(0))
+
+    sql <- "
+    DELETE
+      l
+    FROM
+      LocationGroup AS l
+    WHERE
+      l.Description LIKE 'Unit test%'
+    "
+    expect_equal(sqlQuery(channel = channel, query = sql), character(0))
+
+    sql <- "
+    DELETE
+      ms
+    FROM
+      ModelSet AS ms
+    INNER JOIN
+      ModelType AS mt
+    ON
+      ms.ModelTypeID = mt.ID
+    WHERE
+      mt.Description LIKE 'Unit test%'
+    "
+    expect_equal(sqlQuery(channel = channel, query = sql), character(0))
+
+    sql <- "
+    DELETE
+      mt
+    FROM
+      ModelType AS mt
+    WHERE
+      mt.Description LIKE 'Unit test%'
     "
     expect_equal(sqlQuery(channel = channel, query = sql), character(0))
 
