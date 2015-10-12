@@ -554,7 +554,11 @@ setMethod(
       Parent = fitted.parent$Parent,
       Estimate = fitted[, "mean"],
       LowerConfidenceLimit = fitted[, "0.025quant"],
-      UpperConfidenceLimit = fitted[, "0.975quant"]
+      UpperConfidenceLimit = ifelse(
+        fitted[, "mean"] > fitted[, "0.975quant"],
+        NA,
+        fitted[, "0.975quant"]
+      )
     ) %>%
       bind_cols(
         get_data(analysis) %>%
