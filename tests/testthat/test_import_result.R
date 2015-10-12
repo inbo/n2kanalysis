@@ -445,7 +445,7 @@ describe("import result", {
     DELETE
       pe
     FROM
-      ParameterEstimate pe
+      ParameterEstimate AS pe
     INNER JOIN
       (
         Analysis AS a
@@ -459,7 +459,7 @@ describe("import result", {
     WHERE
       s.Description LIKE 'Unit test%'
     "
-    sqlQuery(channel = channel, query = sql)
+    expect_equal(sqlQuery(channel = channel, query = sql), character(0))
 
     sql <- "
     DELETE
@@ -493,7 +493,7 @@ describe("import result", {
     WHERE
       s.Description LIKE 'Unit test%'
     "
-    sqlQuery(channel = channel, query = sql)
+    expect_equal(sqlQuery(channel = channel, query = sql), character(0))
 
     odbcClose(channel)
   })
