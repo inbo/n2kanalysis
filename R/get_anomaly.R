@@ -255,7 +255,7 @@ setMethod(
 #' @aliases get_anomaly,n2kInlaNbinomial-methods
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.count is.number
-#' @importFrom dplyr data_frame add_rownames select_ filter_ mutate_ bind_cols arrange_ ungroup slice transmute_
+#' @importFrom dplyr data_frame add_rownames select_ filter_ mutate_ bind_cols arrange_ ungroup slice_ transmute_
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "get_anomaly",
@@ -407,7 +407,7 @@ setMethod(
         mutate_(Sign = ~sign(Estimate)) %>%
         arrange_(~desc(abs(Estimate))) %>%
         group_by_(~AnomalyType, ~Sign) %>%
-        slice(seq_len(n)) %>%
+        slice_(seq_len(n)) %>%
         ungroup() %>%
         select_(~-Sign)
       anomaly.type <- re.anomaly %>%
