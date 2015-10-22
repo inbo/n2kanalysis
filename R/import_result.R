@@ -5,17 +5,18 @@
 #'
 #' @return invisble NULL
 #' @export
+#' @importFrom assertthat assert_that
 #' @importFrom n2khelper odbc_get_multi_id odbc_get_id
+#' @importFrom dplyr %>% anti_join inner_join select_ rename_ distinct_ slice_
 import_result <- function(result, result.channel){
-  if (!inherits(result, "n2kResult")) {
-    stop("result must be a 'n2kResult' object")
-  }
+  assert_that(inherits(result, "n2kResult"))
+  assert_that(validObject(result))
   # nocov start
 
   # Store R package versions
   message("Storing ", nrow(result@RPackage), " used R packages")
   r.package <- odbc_get_multi_id(
-    result@RPackage[, c("Description", "Version")],
+    data = result@RPackage[, c("Description", "Version")],
     id.field = "ID",
     merge.field = c("Description", "Version"),
     table = "RPackage",
@@ -23,51 +24,44 @@ import_result <- function(result, result.channel){
     create = TRUE,
     select = TRUE
   )
-  r.package <- merge(result@RPackage, r.package)[, c("Fingerprint", "ID")]
-  analysis.version.r.package <- merge(
-    result@AnalysisVersionRPackage,
-    r.package,
-    by.x = "RPackage",
-    by.y = "Fingerprint"
-  )
-  analysis.version.r.package$RPackage <- analysis.version.r.package$ID
-  analysis.version.r.package$ID <- NULL
-  rm(r.package)
-  gc()
+  antijoin.rp <- result@RPackage %>%
+    anti_join(r.package, by = c("Description", "Version")) %>%
+    nrow()
+  assert_that(antijoin.rp == 0)
 
   # Store analysis versions
   message("Storing ", nrow(result@AnalysisVersion), " analysis versions")
-  analysis.version <- result@AnalysisVersion
-  colnames(analysis.version) <- "Description"
   analysis.version <- odbc_get_multi_id(
-    analysis.version,
+    result@AnalysisVersion %>%
+      select_(Description = ~Fingerprint),
     id.field = "ID",
     merge.field = "Description",
     table = "AnalysisVersion",
     channel = result.channel,
     create = TRUE,
     select = TRUE
-  )
-  analysis.version.r.package <- merge(
-    analysis.version.r.package,
-    analysis.version,
-    by.x = "AnalysisVersion",
-    by.y = "Description"
-  )
-  analysis.version.r.package$AnalysisVersion <- analysis.version.r.package$ID
-  analysis.version.r.package$ID <- NULL
-  colnames(analysis.version.r.package) <- paste0(
-    colnames(analysis.version.r.package),
-    "ID"
-  )
+  ) %>%
+    rename_(AnalysisVersionID = ~ID, AnalysisVersion = ~Description)
+  antijoin.av <- result@AnalysisVersion %>%
+    anti_join(analysis.version, by = c("Fingerprint" = "AnalysisVersion")) %>%
+    nrow()
+  assert_that(antijoin.av == 0)
+  analysisversion.rpackage <- result@RPackage %>%
+    inner_join(r.package, by = c("Description", "Version")) %>%
+    select_(RPackage = ~Fingerprint, RPackageID = ~ID) %>%
+    inner_join(result@AnalysisVersionRPackage, by = "RPackage") %>%
+    inner_join(analysis.version, by = "AnalysisVersion") %>%
+    select_(~AnalysisVersionID, ~RPackageID)
+  rm(r.package)
+  gc()
 
   # store used R packages per analysis version
   message(
     "Storing used packages per analysis version: ",
-    nrow(analysis.version.r.package), " rows"
+    nrow(analysisversion.rpackage), " rows"
   )
   odbc_get_multi_id(
-    analysis.version.r.package,
+    analysisversion.rpackage,
     id.field = "ID",
     merge.field = c("AnalysisVersionID", "RPackageID"),
     table = "AnalysisVersionRPackage",
@@ -75,231 +69,188 @@ import_result <- function(result, result.channel){
     create = TRUE,
     select = FALSE
   )
-  rm(analysis.version.r.package)
-  gc()
-
-  # add analysis version ID to metadata
-  analysis.metadata <- merge(
-    result@AnalysisMetadata,
-    analysis.version,
-    by.x = "AnalysisVersion",
-    by.y = "Description"
-  )
-  analysis.metadata$AnalysisVersionID <- analysis.metadata$ID
-  analysis.metadata$ID <- NULL
-  analysis.metadata$AnalysisVersion <- NULL
-  analysis.metadata$Formula <- NULL
-  analysis.metadata$SchemeID <- NULL
-  rm(analysis.version)
+  rm(analysisversion.rpackage)
   gc()
 
   # store model type
-  model.type <- unique(analysis.metadata[, "ModelType", drop = FALSE])
-  message("Storing ", nrow(model.type), " model types")
-  colnames(model.type) <- "Description"
-  model.type <- odbc_get_multi_id(
-    model.type,
+  modeltype <- result@AnalysisMetadata %>%
+    select_(Description = ~ModelType) %>%
+    distinct_()
+  message("Storing ", nrow(modeltype), " model types")
+  modeltype <- odbc_get_multi_id(
+    modeltype,
     id.field = "ID",
     merge.field = "Description",
     table = "ModelType",
     channel = result.channel,
     create = TRUE,
     select = TRUE
-  )
-  analysis.metadata <- merge(
-    analysis.metadata,
-    model.type,
-    by.x = "ModelType",
-    by.y = "Description"
-  )
-  analysis.metadata$ModelTypeID <- analysis.metadata$ID
-  analysis.metadata$ID <- NULL
-  analysis.metadata$ModelType <- NULL
-  rm(model.type)
-  gc()
+  ) %>%
+    rename_(ModelType = ~Description, ModelTypeID = ~ID)
+  antijoin.ammt <- result@AnalysisMetadata %>%
+    anti_join(modeltype, by = "ModelType") %>%
+    nrow()
+  assert_that(antijoin.ammt == 0)
 
   # store model set
-  model.set <- unique(analysis.metadata[
-    , c("ModelTypeID", "FirstImportedYear", "LastImportedYear", "Duration")
-  ])
-  message("Storing ", nrow(model.set), " model sets")
-  colnames(model.set)[2:3] <- c("FirstYear", "LastYear")
-  model.set <- odbc_get_multi_id(
-    model.set,
+  modelset <- result@AnalysisMetadata %>%
+    select_(
+      ~ModelType,
+      FirstYear = ~FirstImportedYear,
+      LastYear = ~LastImportedYear,
+      ~Duration
+    ) %>%
+    distinct_() %>%
+    inner_join(modeltype, by = "ModelType") %>%
+    select_(~-ModelType)
+  message("Storing ", nrow(modelset), " model sets")
+  modelset <- odbc_get_multi_id(
+    modelset,
     id.field = "ID",
     merge.field = c("FirstYear", "LastYear", "Duration", "ModelTypeID"),
     table = "ModelSet",
     channel = result.channel,
     create = TRUE,
     select = TRUE
-  )
-  colnames(model.set)[1:3] <- c(
-    "ModelSetID", "FirstImportedYear", "LastImportedYear"
-  )
-  analysis.metadata <- merge(analysis.metadata, model.set)
-  rm(model.set)
-  analysis.metadata$ModelTypeID <- NULL
-  analysis.metadata$FirstImportedYear <- NULL
-  analysis.metadata$LastImportedYear <- NULL
-  analysis.metadata$Duration <- NULL
-  gc()
+  ) %>%
+    rename_(
+      ModelSetID = ~ID,
+      FirstImportedYear = ~FirstYear,
+      LastImportedYear = ~LastYear
+    )
+  antijoin.amms <- result@AnalysisMetadata %>%
+    anti_join(
+      modelset %>%
+        inner_join(modeltype, by = "ModelTypeID"),
+      by = c("ModelType", "FirstImportedYear", "LastImportedYear", "Duration")
+    ) %>%
+    nrow()
+  assert_that(antijoin.amms == 0)
 
   # get status id
-  status.id <- data.frame(
-    Description = unique(analysis.metadata$Status)
-  )
-  message("Storing ", nrow(status.id), " statuses")
-  status.id <- odbc_get_multi_id(
-    status.id,
+  status <- result@AnalysisMetadata %>%
+    select_(Description = ~Status) %>%
+    distinct_()
+  message("Storing ", nrow(status), " statuses")
+  status <- odbc_get_multi_id(
+    status,
     id.field = "ID",
     merge.field = "Description",
     table = "AnalysisStatus",
     channel = result.channel,
     create = TRUE,
     select = TRUE
-  )
-  colnames(status.id) <- c("StatusID", "Status")
-  analysis.metadata <- merge(analysis.metadata, status.id)
-  rm(status.id)
-  analysis.metadata$Status <- NULL
-  gc()
+  ) %>%
+    rename_(Status = ~Description, StatusID = ~ID)
+  antijoin.ams <- result@AnalysisMetadata %>%
+    anti_join(status, by = "Status") %>%
+    nrow()
+  assert_that(antijoin.ams == 0)
 
   # store analysis metadata
-  message("Storing metadata of ", nrow(analysis.metadata), " analysis")
-  colnames(analysis.metadata) <- gsub(
-    "^LastAnalysedYear",
-    "LastYear",
-    colnames(analysis.metadata)
-  )
-  colnames(analysis.metadata) <- gsub(
-    "^FileFingerprint",
-    "Fingerprint",
-    colnames(analysis.metadata)
-  )
-  analysis.metadata <- odbc_get_multi_id(
-    analysis.metadata,
+  metadata <- result@AnalysisMetadata %>%
+    inner_join(analysis.version, by = "AnalysisVersion") %>%
+    inner_join(modeltype, by = "ModelType") %>%
+    inner_join(
+      modelset,
+      by = c("ModelTypeID", "FirstImportedYear", "LastImportedYear", "Duration")
+    ) %>%
+    inner_join(status, by = "Status") %>%
+    select_(
+      ~SpeciesGroupID, ~LocationGroupID, LastYear = ~LastAnalysedYear,
+      Fingerprint = ~FileFingerprint, ~AnalysisDate, ~Seed, ~StatusFingerprint,
+      ~AnalysisVersionID, ~ModelSetID, ~StatusID
+    )
+  rm(analysis.version, modeltype, modelset, status)
+  gc()
+  message("Storing metadata of ", nrow(metadata), " analysis")
+  metadata <- odbc_get_multi_id(
+    metadata,
     id.field = "ID",
     merge.field = "Fingerprint",
     table = "Analysis",
     channel = result.channel,
     create = TRUE,
     select = TRUE
-  )
+  ) %>%
+    rename_(AnalysisID = ~ID, Analysis = ~Fingerprint)
+  antijoin.amam <- result@AnalysisMetadata %>%
+    anti_join(metadata, by = c("FileFingerprint" = "Analysis")) %>%
+    nrow()
+  assert_that(antijoin.amam == 0)
 
   # store analysis relation
   message("Storing ", nrow(result@AnalysisRelation), " analysis relations")
-  analysis.relation <- merge(
-    result@AnalysisRelation[, c("Analysis", "ParentAnalysis")],
-    analysis.metadata,
-    by.x = "Analysis",
-    by.y = "Fingerprint"
-  )
-  analysis.relation$AnalysisID <- analysis.relation$ID
-  analysis.relation$ID <- NULL
-  parent.analysis <- odbc_get_multi_id(
-    data = data.frame(
-      Fingerprint = unique(analysis.relation$ParentAnalysis)
-    ),
+  parentanalysis <- odbc_get_multi_id(
+    data = result@AnalysisRelation %>%
+      select_(Fingerprint = ~ParentAnalysis) %>%
+      distinct(),
     id.field = "ID",
     merge.field = "Fingerprint",
     table = "Analysis",
     channel = result.channel,
     create = FALSE,
     select = TRUE
-  )
-  analysis.relation <- merge(
-    analysis.relation,
-    parent.analysis,
-    by.x = "ParentAnalysis",
-    by.y = "Fingerprint"
-  )
-  analysis.relation$SourceAnalysisID <- analysis.relation$ID
-  analysis.relation <- odbc_get_multi_id(
-    analysis.relation[, c("AnalysisID", "SourceAnalysisID")],
+  ) %>%
+    rename_(SourceAnalysisID = ~ID, ParentAnalysis = ~Fingerprint)
+  antijoin.arpa <- result@AnalysisRelation %>%
+    anti_join(parentanalysis, by = "ParentAnalysis") %>%
+    nrow()
+  assert_that(antijoin.arpa == 0)
+  relation <-
+    result@AnalysisRelation %>%
+    inner_join(parentanalysis, by = "ParentAnalysis") %>%
+    inner_join(metadata, by = "Analysis") %>%
+    select_(~AnalysisID, ~SourceAnalysisID)
+  odbc_get_multi_id(
+    relation,
     id.field = "ID",
     merge.field = c("AnalysisID", "SourceAnalysisID"),
     table = "AnalysisRelation",
     channel = result.channel,
     create = TRUE,
-    select = TRUE
+    select = FALSE
   )
-  rm(parent.analysis, analysis.relation)
-  gc()
-  parameter.estimate <- merge(
-    result@ParameterEstimate,
-    analysis.metadata,
-    by.x = "Analysis",
-    by.y = "Fingerprint"
-  )
-  colnames(parameter.estimate) <- gsub(
-    "^ID$",
-    "AnalysisID",
-    colnames(parameter.estimate)
-  )
-  parameter.estimate$Analysis <- NULL
-  anomaly <- merge(
-    result@Anomaly,
-    analysis.metadata,
-    by.x = "Analysis",
-    by.y = "Fingerprint"
-  )
-  colnames(anomaly) <- gsub("^ID$", "AnalysisID", colnames(anomaly))
-  anomaly$Analysis <- NULL
-  contrast <- merge(
-    result@Contrast,
-    analysis.metadata,
-    by.x = "Analysis",
-    by.y = "Fingerprint"
-  )
-  colnames(contrast) <- gsub("^ID$", "AnalysisID", colnames(contrast))
-  contrast$Analysis <- NULL
-  rm(analysis.metadata)
+  rm(parentanalysis, relation)
   gc()
 
+
   # Store the contrast
-  message("Storing ", nrow(contrast), " contrasts")
-  contrast.id <- odbc_get_multi_id(
-    contrast[, c("AnalysisID", "Description")],
+  message("Storing ", nrow(result@Contrast), " contrasts")
+  contrast <- result@Contrast %>%
+    inner_join(metadata, by = "Analysis") %>%
+    select_(~-Analysis)
+  contrastid <- odbc_get_multi_id(
+    contrast %>% select_(~-Fingerprint),
     id.field = "ID",
     merge.field = c("AnalysisID", "Description"),
     table = "Contrast",
     channel = result.channel,
     create = TRUE
-  )
-  contrast <- merge(contrast, contrast.id)[, c("Fingerprint", "ID")]
-  rm(contrast.id)
-  colnames(contrast) <- gsub("^ID$", "ContrastID", colnames(contrast))
-  contrast.estimate <- merge(
-    result@ContrastEstimate,
-    contrast,
-    by.x = "Contrast",
-    by.y = "Fingerprint"
-  )
-  contrast.estimate$Contrast <- NULL
-  contrast.coefficient <- merge(
-    result@ContrastCoefficient,
-    contrast,
-    by.x = "Contrast",
-    by.y = "Fingerprint"
-  )
-  contrast.coefficient$Contrast <- NULL
-  rm(contrast)
-  gc()
+  ) %>%
+    rename_(ContrastID = ~ID)
+  antijoin.cc <- contrast %>%
+    anti_join(contrastid, by = c("AnalysisID", "Description")) %>%
+    nrow()
+  assert_that(antijoin.cc == 0)
+
+
+
 
   # Store the contrast estimate
-  message("Storing ", nrow(contrast.estimate), " contrast estimates")
-  colnames(contrast.estimate) <- gsub(
-    "^LowerConfidenceLimit$",
-    "LCL",
-    colnames(contrast.estimate)
-  )
-  colnames(contrast.estimate) <- gsub(
-    "^UpperConfidenceLimit$",
-    "UCL",
-    colnames(contrast.estimate)
-  )
+  contrastestimate <- contrast %>%
+    inner_join(contrastid, by = c("AnalysisID", "Description")) %>%
+    select_(~ContrastID, Contrast = ~Fingerprint) %>%
+    inner_join(result@ContrastEstimate, by = "Contrast") %>%
+    select_(
+      ~-Contrast,
+      LCL = ~LowerConfidenceLimit,
+      UCL = ~UpperConfidenceLimit
+    )
+
+  message("Storing ", nrow(contrastestimate), " contrast estimates")
   odbc_get_multi_id(
-    contrast.estimate,
+    contrastestimate,
     id.field = "ID",
     merge.field = "ContrastID",
     table = "ContrastEstimate",
@@ -307,56 +258,55 @@ import_result <- function(result, result.channel){
     create = TRUE,
     select = FALSE
   )
-  rm(contrast.estimate)
+  rm(contrastestimate)
   gc()
 
   # Store the anomaly type
   message("Storing ", nrow(result@AnomalyType), " anomaly types")
-  anomaly.type <- odbc_get_multi_id(
-    result@AnomalyType[, "Description", drop = FALSE],
+  anomalytype <- odbc_get_multi_id(
+    result@AnomalyType %>%
+      select_(~Description),
     id.field = "ID",
     merge.field = "Description",
     table = "AnomalyType",
     channel = result.channel,
     create = TRUE
-  )
-  anomaly.type <- merge(result@AnomalyType, anomaly.type)
-  colnames(anomaly.type) <- gsub(
-    "^Fingerprint$",
-    "AnomalyType",
-    colnames(anomaly.type)
-  )
-  colnames(anomaly.type) <- gsub("^ID$", "TypeID", colnames(anomaly.type))
-  anomaly <- merge(anomaly, anomaly.type[, c("AnomalyType", "TypeID")])
-  rm(anomaly.type)
-  gc()
-  anomaly$AnomalyType <- NULL
+  ) %>%
+    rename_(AnomalyTypeID = ~ID)
+  antijoin.atat <- result@AnomalyType %>%
+    anti_join(anomalytype, by = "Description") %>%
+    nrow()
+  assert_that(antijoin.atat == 0)
+  anomalytype <- result@AnomalyType %>%
+    inner_join(anomalytype, by = "Description") %>%
+    select_(~-Description, AnomalyType = ~Fingerprint)
+
 
   # set the datafield
   datafield.type <- odbc_get_multi_id(
-    data = data.frame(Description = unique(anomaly$Datafield)),
+    data = result@Anomaly %>%
+      select_(Description = ~Datafield) %>%
+      distinct_(),
     id.field = "ID",
     merge.field = "Description",
     table = "DatafieldType",
     channel = result.channel,
     create = FALSE,
     select = TRUE
-  )
-  anomaly <- merge(
-    anomaly,
-    datafield.type,
-    by.x = "Datafield",
-    by.y = "Description"
-  )
-  rm(datafield.type)
-  gc()
-  anomaly$Datafield <- anomaly$ID
-  anomaly$ID <- NULL
+  ) %>%
+    rename_(TypeID = ~ID, Datafield = ~Description)
+  antijoin.adf <- result@Anomaly %>%
+    anti_join(datafield.type, by = "Datafield") %>%
+    nrow()
+  assert_that(antijoin.adf == 0)
 
-  anomaly.df <- unique(anomaly[, c("DatasourceID", "Datafield")])
-  colnames(anomaly.df) <- gsub("^Datafield$", "TypeID", colnames(anomaly.df))
-  anomaly.df <- odbc_get_multi_id(
-    data = anomaly.df,
+  datafield <- result@Anomaly %>%
+    select_(~DatasourceID, ~Datafield) %>%
+    distinct_() %>%
+    inner_join(datafield.type, by = "Datafield")
+  df2 <- odbc_get_multi_id(
+    data = datafield %>%
+      select_(~-Datafield),
     id.field = "ID",
     merge.field = c("DatasourceID", "TypeID"),
     table = "Datafield",
@@ -364,89 +314,75 @@ import_result <- function(result, result.channel){
     create = FALSE,
     select = TRUE
   )
-  anomaly <- merge(
-    anomaly,
-    anomaly.df,
-    by.x = c("DatasourceID", "Datafield"),
-    by.y = c("DatasourceID", "TypeID")
-  )
-  rm(anomaly.df)
-  gc()
-  anomaly$DatasourceID <- NULL
-  anomaly$Datafield <- NULL
-  colnames(anomaly) <- gsub("^ID$", "DatafieldID", colnames(anomaly))
+  antijoin.df <- datafield %>%
+    anti_join(df2, by = c("DatasourceID", "TypeID")) %>%
+    nrow()
+  assert_that(antijoin.df == 0)
+  datafield <- datafield %>%
+    inner_join(df2, by = c("DatasourceID", "TypeID")) %>%
+    rename_(DatafieldID = ~ID)
 
   # store parameters: first parents, then childern, then grandchildren, ...
   message("Storing ", nrow(result@Parameter), " parameters: ", appendLF = FALSE)
-  parameter <- result@Parameter
-  parameter$ID <- NA
-  parameter$ParentParameterID <- NA
+  parameter <- result@Parameter %>%
+    mutate_(ID = NA, ParentParameterID = NA)
   while (TRUE) {
-    selection <- which(
-      is.na(parameter$ID) &
-      (is.na(parameter$Parent) | !is.na(parameter$ParentParameterID))
-    )
-    if (length(selection) == 0) {
+    selection <- parameter %>%
+      filter_(~is.na(ID), ~is.na(Parent) | !is.na(ParentParameterID))
+    if (nrow(selection) == 0) {
       if (anyNA(parameter$ID)) {
         stop("Some parameters have missing ID")
       }
       break
     }
-    message(length(selection), " ", appendLF = FALSE)
+    message(nrow(selection), " ", appendLF = FALSE)
     parameter.id <- odbc_get_multi_id(
-      parameter[selection, c("ParentParameterID", "Description")],
+      selection %>%
+        select_(~ParentParameterID, ~Description),
       id.field = "ID",
       merge.field = c("ParentParameterID", "Description"),
       table = "Parameter",
       channel = result.channel,
       create = TRUE,
       select = TRUE
-    )
-    parameter$ID[selection] <- parameter.id$ID
-    parent <- parameter[selection, c("Fingerprint", "ID")]
-    colnames(parent) <- c("Parent", "ParentID")
-    parameter <- merge(parameter, parent, all.x = TRUE)
-    selection <- which(!is.na(parameter$ParentID))
-    parameter$ParentParameterID[selection] <- parameter$ParentID[selection]
-    parameter$ParentID <- NULL
+    ) %>%
+      rename_(newID = ~ID)
+    parameter <- parameter %>%
+      left_join(parameter.id, by = c("ParentParameterID", "Description")) %>%
+      mutate_(ID = ~ifelse(is.na(newID), ID, newID)) %>%
+      select_(~-newID) %>%
+      left_join(
+        selection %>%
+          select_(Parent = ~Fingerprint, ~ParentParameterID, ~Description) %>%
+          inner_join(
+            parameter.id,
+            by = c("ParentParameterID", "Description")
+          ) %>%
+          select_(~Parent, ~newID),
+        by = "Parent"
+      ) %>%
+      mutate_(
+        ParentParameterID = ~ifelse(is.na(newID), ParentParameterID, newID)
+      ) %>%
+      select_(~-newID)
   }
-  rm(parameter.id, parent)
-  colnames(parameter) <- gsub("^ID$", "ParameterID", colnames(parameter))
-  parameter <- parameter[, c("Fingerprint", "ParameterID")]
+  rm(parameter.id)
   gc()
-  parameter.estimate <- merge(
-    parameter,
-    parameter.estimate,
-    by.x = "Fingerprint",
-    by.y = "Parameter"
-  )
-  parameter.estimate$Fingerprint <- NULL
-  anomaly <- merge(
-    parameter,
-    anomaly,
-    by.x = "Fingerprint",
-    by.y = "Parameter"
-  )
-  anomaly$Fingerprint <- NULL
-  contrast.coefficient <- merge(
-    parameter,
-    contrast.coefficient,
-    by.x = "Fingerprint",
-    by.y = "Parameter"
-  )
-  contrast.coefficient$Fingerprint <- NULL
-  rm(parameter)
-  gc()
+  parameter <- parameter %>% select_(Parameter = ~Fingerprint, ParameterID = ~ID)
 
   # Storing contrast coefficients
-  message("\nStoring ", nrow(contrast.coefficient), " contrast coefficients")
-  colnames(contrast.coefficient) <- gsub(
-    "^Coefficient$",
-    "Constant",
-    colnames(contrast.coefficient)
-  )
+  message("\nStoring ", nrow(result@ContrastCoefficient), " contrast coefficients")
   odbc_get_multi_id(
-    contrast.coefficient,
+    result@ContrastCoefficient %>%
+      inner_join(
+        contrast %>%
+          inner_join(contrastid, by = c("AnalysisID", "Description")) %>%
+          select_(Contrast = ~Fingerprint, ~ContrastID),
+        by = "Contrast"
+      ) %>%
+      inner_join(parameter, by = "Parameter") %>%
+      select_(~-Contrast, ~-Parameter, Constant = ~Coefficient)
+,
     id.field = "ID",
     merge.field = c("ContrastID", "ParameterID"),
     table = "ContrastCoefficient",
@@ -454,45 +390,38 @@ import_result <- function(result, result.channel){
     create = TRUE,
     select = FALSE
   )
-  rm(contrast.coefficient)
+  rm(contrast, contrastid)
   gc()
 
   # Storing parameter estimates
-  message("Storing ", nrow(parameter.estimate), " parameter estimates")
-  colnames(parameter.estimate) <- gsub(
-    "^LowerConfidenceLimit$",
-    "LCL",
-    colnames(parameter.estimate)
-  )
-  colnames(parameter.estimate) <- gsub(
-    "^UpperConfidenceLimit$",
-    "UCL",
-    colnames(parameter.estimate)
-  )
-  parameter.estimate <- odbc_get_multi_id(
-    parameter.estimate,
+  message("Storing ", nrow(result@ParameterEstimate), " parameter estimates")
+  parameterestimate <- odbc_get_multi_id(
+    result@ParameterEstimate %>%
+      inner_join(metadata, by = "Analysis") %>%
+      inner_join(parameter, by = "Parameter") %>%
+      select_(
+        ~AnalysisID, ~ParameterID, ~Estimate,
+        LCL = ~LowerConfidenceLimit, UCL = ~UpperConfidenceLimit
+      ),
     id.field = "ID",
     merge.field = c("AnalysisID", "ParameterID"),
     table = "ParameterEstimate",
     channel = result.channel,
     create = TRUE,
     select = TRUE
-  )
-  colnames(parameter.estimate) <- gsub(
-    "^ID$",
-    "ParameterEstimateID",
-    colnames(parameter.estimate)
-  )
-  anomaly <- merge(anomaly, parameter.estimate)
-  rm(parameter.estimate)
-  anomaly$ParameterID <- NULL
-  gc()
+  ) %>%
+    rename_(ParameterEstimateID = ~ID)
 
   # Storing anomalies
-  message("Storing ", nrow(anomaly), " anomalies")
-  anomaly$Estimate <- NULL
+  message("Storing ", nrow(result@Anomaly), " anomalies")
   odbc_get_multi_id(
-    anomaly,
+    result@Anomaly %>%
+      inner_join(metadata, by = "Analysis") %>%
+      inner_join(anomalytype, by = "AnomalyType") %>%
+      inner_join(datafield, by = c("DatasourceID", "Datafield")) %>%
+      inner_join(parameter, by = "Parameter") %>%
+      inner_join(parameterestimate, by = c("AnalysisID", "ParameterID")) %>%
+      select_(~AnalysisID, ~ParameterEstimateID, TypeID = ~AnomalyTypeID, ~DatafieldID),
     id.field = "ID",
     merge.field = c(
       "AnalysisID", "TypeID", "ParameterEstimateID", "DatafieldID"
@@ -502,6 +431,9 @@ import_result <- function(result, result.channel){
     create = TRUE,
     select = FALSE
   )
+
+  rm(metadata, anomalytype, datafield.type, parameter)
+  gc()
 
   return(invisible(NULL))
 
