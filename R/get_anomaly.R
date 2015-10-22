@@ -339,8 +339,9 @@ setMethod(
     # check observed counts versus expected counts
     message(": observed > 0 vs fit", appendLF = FALSE)
     high.ratio <- data %>%
-      select_(~Analysis, ~Parameter, ~DatasourceID, Estimate = ~LogRatio) %>%
-      filter_(~is.finite(Estimate), ~Estimate > log.expected.ratio) %>%
+      select_(~Analysis, ~Parameter, ~DatasourceID, ~LogRatio) %>%
+      filter_(~is.finite(LogRatio), ~LogRatio > log.expected.ratio) %>%
+      select_(~-LogRatio) %>%
       head(n)
     if (nrow(high.ratio) > 0) {
       anomaly <- anomaly.type %>%
@@ -351,8 +352,9 @@ setMethod(
         bind_rows(anomaly)
     }
     low.ratio <- data %>%
-      select_(~Analysis, ~Parameter, ~DatasourceID, Estimate = ~LogRatio) %>%
-      filter_(~is.finite(Estimate), ~-Estimate > log.expected.ratio) %>%
+      select_(~Analysis, ~Parameter, ~DatasourceID, ~LogRatio) %>%
+      filter_(~is.finite(LogRatio), ~-LogRatio > log.expected.ratio) %>%
+      select_(~-LogRatio) %>%
       head(n)
     if (nrow(low.ratio) > 0) {
       anomaly <- anomaly.type %>%
@@ -369,11 +371,11 @@ setMethod(
         ~Analysis,
         ~Parameter,
         ~DatasourceID,
-        Estimate = ~Expected,
+        ~Expected,
         ~Response
       ) %>%
-      filter_(~Response == 0, ~Estimate > log.expected.absent) %>%
-      select_(~-Response) %>%
+      filter_(~Response == 0, ~Expected > log.expected.absent) %>%
+      select_(~-Response, ~-Expected) %>%
       head(n)
     if (nrow(high.absent) > 0) {
       anomaly <- anomaly.type %>%
@@ -409,7 +411,7 @@ setMethod(
         group_by_(~AnomalyType, ~Sign) %>%
         slice_(seq_len(n)) %>%
         ungroup() %>%
-        select_(~-Sign)
+        select_(~-Sign, ~-Estimate)
       anomaly.type <- re.anomaly %>%
         group_by_(~AnomalyType) %>%
         summarise_() %>%

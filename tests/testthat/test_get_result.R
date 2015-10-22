@@ -341,7 +341,7 @@ aj.anomaly <- result.fp@Anomaly %>%
     result.id@Anomaly,
     by = c(
       "AnomalyTypeID" = "AnomalyType", "AnalysisID" = "Analysis",
-      "ParameterID" = "Parameter", "DatasourceID", "Estimate", "Datafield")
+      "ParameterID" = "Parameter", "DatasourceID", "Datafield")
   )
 expect_identical(nrow(aj.anomaly), 0L)
 
