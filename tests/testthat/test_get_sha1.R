@@ -15,18 +15,18 @@ describe("get_sha1() on models", {
       function(x){
         sapply(
           x,
-          num_32_64,
-          digits = sha1_digits("coef"),
-          zapsmall = sha1_digits("zapsmall")
+          n2khelper::num_32_64,
+          digits = n2khelper::sha1_digits("coef"),
+          zapsmall = n2khelper::sha1_digits("zapsmall")
         )
       }
     )
     signif.coef <- c(
       fixed = list(
-        num_32_64(
+        n2khelper::num_32_64(
           lme4::fixef(model),
-          digits = sha1_digits("coef"),
-          zapsmall = sha1_digits("zapsmall")
+          digits = n2khelper::sha1_digits("coef"),
+          zapsmall = n2khelper::sha1_digits("zapsmall")
         )
       ),
       signif.coef
@@ -46,18 +46,18 @@ describe("get_sha1() on models", {
       function(x){
         sapply(
           x,
-          num_32_64,
-          digits = sha1_digits("coef"),
-          zapsmall = sha1_digits("zapsmall")
+          n2khelper::num_32_64,
+          digits = n2khelper::sha1_digits("coef"),
+          zapsmall = n2khelper::sha1_digits("zapsmall")
         )
       }
     )
     signif.coef <- c(
       fixed = list(
-        num_32_64(
+        n2khelper::num_32_64(
           lme4::fixef(model),
-          digits = sha1_digits("coef"),
-          zapsmall = sha1_digits("zapsmall")
+          digits = n2khelper::sha1_digits("coef"),
+          zapsmall = n2khelper::sha1_digits("zapsmall")
         )
       ),
       signif.coef
