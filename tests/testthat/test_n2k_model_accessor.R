@@ -22,8 +22,7 @@ object.model <- n2k_glmer_poisson(
   data = object, model.fit = model.object, status = "converged"
 )
 
-context("status() handles n2kModel objects")
-describe("status", {
+describe("status() handles n2kModel objects", {
   it("returns the status", {
     expect_that(
       status(object),
@@ -47,8 +46,7 @@ describe("status", {
   })
 })
 
-context("get_data() handles n2kModel objects")
-describe("get_data", {
+describe("get_data() handles n2kModel objects", {
   it("returns the Data slot", {
     expect_that(
       get_data(object),
@@ -61,8 +59,7 @@ describe("get_data", {
   })
 })
 
-context("get_seed() handles n2kModel objects")
-describe("get_seed", {
+describe("get_seed() handles n2kModel objects", {
   it("returns the Seed slot", {
     expect_that(
       get_seed(object),
@@ -71,8 +68,7 @@ describe("get_seed", {
   })
 })
 
-context("get_scheme_id() handles n2kModel objects")
-describe("get_scheme_id", {
+describe("get_scheme_id() handles n2kModel objects", {
   it("returns the SchemeID slot", {
     expect_that(
       get_scheme_id(object),
@@ -81,8 +77,7 @@ describe("get_scheme_id", {
   })
 })
 
-context("get_species_group_id() handles n2kModel objects")
-describe("get_species_group_id", {
+describe("get_species_group_id() handles n2kModel objects", {
   it("returns the SpeciesGroupID slot", {
     expect_that(
       get_species_group_id(object),
@@ -91,8 +86,7 @@ describe("get_species_group_id", {
   })
 })
 
-context("get_location_group_id() handles n2kModel objects")
-describe("get_location_group_id", {
+describe("get_location_group_id() handles n2kModel objects", {
   it("returns the LocationGroupID slot", {
     expect_that(
       get_location_group_id(object),
@@ -101,8 +95,7 @@ describe("get_location_group_id", {
   })
 })
 
-context("get_analysis_date() handles n2kModel objects")
-describe("get_analysis_date", {
+describe("get_analysis_date() handles n2kModel objects", {
   it("returns the AnalysisDate slot", {
     expect_that(
       get_analysis_date(object),
@@ -111,8 +104,7 @@ describe("get_analysis_date", {
   })
 })
 
-context("get_model_type() handles n2kModel objects")
-describe("get_model_type", {
+describe("get_model_type() handles n2kModel objects", {
   it("returns the ModelType slot", {
     expect_that(
       get_model_type(object),
@@ -121,8 +113,7 @@ describe("get_model_type", {
   })
 })
 
-context("get_formula() handles n2kModel objects")
-describe("get_formula", {
+describe("get_formula() handles n2kModel objects", {
   it("returns the AnalysisFormula slot", {
     expect_that(
       get_formula(object),
@@ -131,8 +122,7 @@ describe("get_formula", {
   })
 })
 
-context("get_file_fingerprint() handles n2kModel objects")
-describe("get_file_fingerprint()", {
+describe("get_file_fingerprint() handles n2kModel objects", {
   it("returns the FileFingerprint slot", {
     expect_that(
       get_file_fingerprint(object),
@@ -141,8 +131,7 @@ describe("get_file_fingerprint()", {
   })
 })
 
-context("get_status_fingerprint() handles n2kModel objects")
-describe("get_status_fingerprint()", {
+describe("get_status_fingerprint() handles n2kModel objects", {
   it("returns the StatusFingerprint slot", {
     expect_that(
       get_status_fingerprint(object),

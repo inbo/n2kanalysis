@@ -766,8 +766,7 @@ outside imported range\\."
 
 
 
-context("add a model to a n2kInlaNbinomial object")
-describe("n2k_inla_nbinomial", {
+describe("add a model to a n2kInlaNbinomial object", {
   object.model <- n2k_inla_nbinomial(
     data = object, model.fit = model.object, status = "converged"
   )

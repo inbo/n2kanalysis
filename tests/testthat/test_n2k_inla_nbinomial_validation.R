@@ -18,8 +18,7 @@ object <- n2k_inla_nbinomial(
   data = cbpp
 )
 
-context("illegal changes in the file fingerprint")
-describe("file fingerprint", {
+describe("illegal changes in the file fingerprint", {
   it("detects changes in Data", {
     change.object <- object
     change.object@Data <- head(cbpp, 1)
@@ -131,8 +130,7 @@ describe("file fingerprint", {
   })
 })
 
-context("illegal changes in the status fingerprint")
-describe("status fingerprint", {
+describe("illegal changes in the status fingerprint", {
   it("detects changes in Status", {
     change.object <- object
     change.object@AnalysisMetadata$Status <- "error"

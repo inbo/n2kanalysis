@@ -28,8 +28,7 @@ weighted.object <- n2k_glmer_poisson(
   data = cbpp
 )
 
-context("illegal changes in the file fingerprint")
-describe("file fingerprint", {
+describe("illegal changes in the file fingerprint", {
 
   it("detects changes in Data", {
     change.object <- object
@@ -135,8 +134,7 @@ describe("file fingerprint", {
 
 })
 
-context("illegal changes in the status fingerprint")
-describe("status fingerprint", {
+describe("illegal changes in the status fingerprint", {
 
   it("detects changes in Status", {
     change.object <- object

@@ -850,8 +850,7 @@ outside imported range."
 
 
 
-context("add a model to a n2kGlmerPoisson object")
-describe("n2k_glmer_poisson", {
+describe("add a model to a n2kGlmerPoisson object", {
   object.model <- n2k_glmer_poisson(
     data = object, model.fit = model.object, status = "converged"
   )
