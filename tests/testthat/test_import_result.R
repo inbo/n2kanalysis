@@ -1023,7 +1023,7 @@ describe("import result", {
     expect_true(
       anomalytype %>%
         full_join(exported, by = "Description") %>%
-        noNA()
+        assertthat::noNA()
     )
 
     sql <- "
@@ -1102,7 +1102,7 @@ describe("import result", {
             "AnomalyType", "Description", "TypeID"
           )
         ) %>%
-        noNA()
+        assertthat::noNA()
     )
 
     sql <- "
@@ -1133,7 +1133,7 @@ describe("import result", {
     expect_true(
       contrast %>%
         full_join(exported, by = c("Description", "Analysis")) %>%
-        noNA()
+        assertthat::noNA()
     )
 
     sql <- "
@@ -1230,7 +1230,7 @@ describe("import result", {
             "UpperConfidenceLimit" = "UCL"
           )
         ) %>%
-        noNA()
+        assertthat::noNA()
     )
 
     sql <- "
