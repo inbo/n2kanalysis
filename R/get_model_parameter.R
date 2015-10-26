@@ -1,5 +1,6 @@
 #' Add the model parameters from a model
 #' @param analysis The model to add
+#' @param ... extra options
 #' @name get_model_parameter
 #' @rdname get_model_parameter
 #' @exportMethod get_model_parameter
@@ -7,7 +8,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "get_model_parameter",
-  def = function(analysis){
+  def = function(analysis, ...){
     standard.generic("get_model_parameter") # nocov
   }
 )
@@ -15,12 +16,17 @@ setGeneric(
 #' @rdname get_model_parameter
 #' @importFrom methods setMethod
 #' @importFrom lme4 ranef VarCorr
+#' @importFrom assertthat assert_that is.flag noNA
 #' @include n2kGlmerPoisson_class.R
 #' @include n2kParameter_class.R
+#' @param verbose Print extra information on the screen
 setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kGlmerPoisson"),
-  definition = function(analysis){
+  definition = function(analysis, verbose = TRUE, ...){
+    assert_that(is.flag(verbose))
+    assert_that(noNA(verbose))
+
     if (analysis@AnalysisMetadata$Status != "converged") {
       return(new("n2kParameter"))
     }
@@ -34,7 +40,9 @@ setMethod(
     parameter$Fingerprint <- apply(parameter, 1, get_sha1)
 
     # add fixed effect parameters
-    message("    reading model parameters: fixed effects", appendLF = FALSE)
+    if (verbose) {
+      message("    reading model parameters: fixed effects", appendLF = FALSE)
+    }
     utils::flush.console()
     variable <- c(
       "\\(Intercept\\)",
@@ -93,7 +101,9 @@ setMethod(
     }
 
     # add random effect variance
-    message(", random effect variance", appendLF = FALSE)
+    if (verbose) {
+      message(", random effect variance", appendLF = FALSE)
+    }
     utils::flush.console()
     random.variance <- VarCorr(get_model(analysis))
     if (any(sapply(random.variance, length) > 1)) {
@@ -120,7 +130,9 @@ setMethod(
     parameter.estimate <- rbind(parameter.estimate, tmp)
 
     # add random effect BLUP's
-    message(", random effect BLUP's", appendLF = FALSE)
+    if (verbose) {
+      message(", random effect BLUP's", appendLF = FALSE)
+    }
     utils::flush.console()
     random.effect <- ranef(get_model(analysis), condVar = TRUE)
     extra <- data.frame(
@@ -156,7 +168,9 @@ setMethod(
     }
 
     # add fitted values
-    message(", fitted values")
+    if (verbose) {
+      message(", fitted values")
+    }
     utils::flush.console()
 
     extra.fitted <- data.frame(
@@ -191,7 +205,7 @@ setMethod(
 setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kLrtGlmer"),
-  definition = function(analysis){
+  definition = function(analysis, ...){
     if (analysis@AnalysisMetadata$Status != "converged") {
       return(new("n2kParameter"))
     }
@@ -227,7 +241,7 @@ setMethod(
 setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kComposite"),
-  definition = function(analysis){
+  definition = function(analysis, ...){
     if (analysis@AnalysisMetadata$Status != "converged") {
       return(new("n2kParameter"))
     }
@@ -269,12 +283,16 @@ setMethod(
 #' @importFrom methods setMethod
 #' @importFrom dplyr data_frame rowwise mutate_ filter_ select_ left_join mutate_ bind_rows add_rownames transmute_
 #' @importFrom n2khelper get_sha1
+#' @importFrom assertthat assert_that is.flag noNA
 #' @include n2kInlaNbinomial_class.R
 #' @include n2kParameter_class.R
 setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kInlaNbinomial"),
-  definition = function(analysis){
+  definition = function(analysis, verbose = TRUE, ...){
+    assert_that(is.flag(verbose))
+    assert_that(noNA(verbose))
+
     if (analysis@AnalysisMetadata$Status != "converged") {
       return(new("n2kParameter"))
     }
@@ -291,7 +309,9 @@ setMethod(
       )
 
     # add fixed effect parameters
-    message("    reading model parameters: fixed effects", appendLF = FALSE)
+    if (verbose) {
+      message("    reading model parameters: fixed effects", appendLF = FALSE)
+    }
     utils::flush.console()
 
 
@@ -428,7 +448,9 @@ setMethod(
     }
 
     # add random effect variance
-    message(", random effect variance", appendLF = FALSE)
+    if (verbose) {
+      message(", random effect variance", appendLF = FALSE)
+    }
     utils::flush.console()
     re.names <- names(get_model(analysis)$marginals.hyperpar)
     re.names <- re.names[grep("^Precision for ", re.names)]
@@ -460,7 +482,9 @@ setMethod(
     parameter <- parameter %>% bind_rows(extra)
 
     # add overdispersion
-    message(", overdispersion", appendLF = FALSE)
+    if (verbose) {
+      message(", overdispersion", appendLF = FALSE)
+    }
     utils::flush.console()
     overdispersion <- get_model(analysis)$summary.hyperpar[
       "size for the nbinomial observations (overdispersion)",
@@ -480,7 +504,9 @@ setMethod(
 
 
     # add WAIC
-    message(", WAIC", appendLF = FALSE)
+    if (verbose) {
+      message(", WAIC", appendLF = FALSE)
+    }
     utils::flush.console()
     parent <- parameter %>%
       filter_(~is.na(Parent), ~Description == "WAIC")
@@ -496,7 +522,9 @@ setMethod(
       )
 
     # add random effect BLUP's
-    message(", random effect BLUP's", appendLF = FALSE)
+    if (verbose) {
+      message(", random effect BLUP's", appendLF = FALSE)
+    }
     utils::flush.console()
     blup <- do.call(
       rbind,
@@ -542,7 +570,9 @@ setMethod(
       bind_rows(parameter.estimate)
 
     # add fitted values
-    message(", fitted values")
+    if (verbose) {
+      message(", fitted values")
+    }
     utils::flush.console()
 
     fitted.parent <- parameter %>%

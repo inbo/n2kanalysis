@@ -10,17 +10,19 @@
 \usage{
 get_result(x, ...)
 
-\S4method{get_result}{n2kModel}(x, ...)
+\S4method{get_result}{n2kModel}(x, verbose = TRUE, ...)
 
-\S4method{get_result}{n2kInlaNbinomial}(x, ...)
+\S4method{get_result}{n2kInlaNbinomial}(x, verbose = TRUE, ...)
 
 \S4method{get_result}{character}(x, keep.fingerprint = TRUE, n.cluster = 1,
-  ...)
+  verbose = TRUE, ...)
 }
 \arguments{
 \item{x}{object with the current results}
 
 \item{...}{further arguments (see Details)}
+
+\item{verbose}{Print extra information on the screen}
 
 \item{keep.fingerprint}{Keep the character fingerprints? Otherwise change them into integers}
 

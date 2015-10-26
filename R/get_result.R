@@ -16,14 +16,19 @@ setGeneric(
 
 #' @rdname get_result
 #' @importFrom methods setMethod
+#' @importFrom assertthat assert_that is.flag noNA
 #' @include n2kModel_class.R
 #' @include n2kResult_class.R
+#' @param verbose Print extra information on the screen
 setMethod(
   f = "get_result",
   signature = signature(x = "n2kModel"),
-  definition = function(x, ...){
+  definition = function(x, verbose = TRUE, ...){
+    assert_that(is.flag(verbose))
+    assert_that(noNA(verbose))
+
     validObject(x)
-    anomaly <- get_anomaly(analysis = x, ...)
+    anomaly <- get_anomaly(analysis = x, verbose = verbose, ...)
     return(
       new(
         "n2kResult",
@@ -47,14 +52,18 @@ setMethod(
 #' @importFrom dplyr %>% rowwise mutate_ add_rownames inner_join select_ transmute_ arrange_ filter_
 #' @importFrom n2khelper get_sha1
 #' @importFrom tidyr gather_
+#' @importFrom assertthat assert_that is.flag noNA
 #' @include n2kResult_class.R
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "get_result",
   signature = signature(x = "n2kInlaNbinomial"),
-  definition = function(x, ...){
+  definition = function(x, verbose = TRUE, ...){
+    assert_that(is.flag(verbose))
+    assert_that(noNA(verbose))
+
     validObject(x)
-    anomaly <- get_anomaly(analysis = x, ...)
+    anomaly <- get_anomaly(analysis = x, verbose = verbose, ...)
     if (is.null(x@LinearCombination)) {
       return(
         new(
@@ -202,28 +211,32 @@ setMethod(
 
 #' @rdname get_result
 #' @importFrom methods setMethod validObject
-#' @importFrom assertthat assert_that is.string is.flag is.count
+#' @importFrom assertthat assert_that is.string is.flag is.count noNA
 #' @param keep.fingerprint Keep the character fingerprints? Otherwise change them into integers
 #' @param n.cluster the number of clusters to run this function in parallel. Defaults to 1 (= no parallel computing).
 setMethod(
   f = "get_result",
   signature = signature(x = "character"),
-  definition = function(x, keep.fingerprint = TRUE, n.cluster = 1, ...){
+  definition = function(x, keep.fingerprint = TRUE, n.cluster = 1, verbose = TRUE, ...){
     # check arguments
     assert_that(is.string(x))
     assert_that(is.flag(keep.fingerprint))
     assert_that(is.count(n.cluster))
+    assert_that(is.flag(verbose))
+    assert_that(noNA(verbose))
 
     # x is an existing file
     if (file_test("-f", x)) {
-      message(x)
+      if (verbose) {
+        message(x)
+      }
       local.environment <- new.env()
       load(x, envir = local.environment)
       analysis <- read_object_environment(
         object = "analysis",
         env = local.environment
       )
-      return(get_result(x = analysis, ...))
+      return(get_result(x = analysis, verbose = verbose, ...))
     }
 
     if (!file_test("-d", x)) {
@@ -234,7 +247,7 @@ setMethod(
     x <- normalizePath(x, winslash = "/", mustWork = TRUE)
     files <- list.files(path = x, pattern = "\\.rda$", full.names = TRUE)
     if (n.cluster == 1) {
-      result <- lapply(files, get_result, ...)
+      result <- lapply(files, get_result, verbose = verbose, ...)
     } else {
       # nocov start
       if (requireNamespace("parallel", quietly = TRUE)) {
@@ -246,13 +259,16 @@ setMethod(
           )
           n.cluster <- available.cluster
         }
-        message("Reading results in parallel on ", n.cluster, " clusters")
+        if (verbose) {
+          message("Reading results in parallel on ", n.cluster, " clusters")
+        }
         utils::flush.console()
         cl <- parallel::makeCluster(n.cluster)
         result <- parallel::clusterApplyLB(
           cl = cl,
           x = files,
           fun = get_result,
+          verbose = verbose,
           ...
         )
         parallel::stopCluster(cl)
@@ -261,12 +277,14 @@ setMethod(
 "Cannot load the parallel package. Falling back to non-parallel computing."
         )
         utils::flush.console()
-        result <- lapply(files, get_result, ...)
+        result <- lapply(files, get_result, verbose = verbose, ...)
       }
       # nocov end
     }
 
-    message("Combining results")
+    if (verbose) {
+      message("Combining results")
+    }
     utils::flush.console()
     result <- do.call(combine, result)
 
@@ -274,7 +292,9 @@ setMethod(
       return(result)
     }
 
-    message("Converting sha1 to integer")
+    if (verbose) {
+      message("Converting sha1 to integer")
+    }
     utils::flush.console()
     return(simplify_result(result = result))
   }

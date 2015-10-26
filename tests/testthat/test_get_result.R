@@ -27,7 +27,11 @@ describe("get_result on n2kInlaNbinomial", {
     analysis.date = this.analysis.date,
     data = cbpp
   )
-  result <- get_result(analysis, datasource.id = this.datasource)
+  result <- get_result(
+    analysis,
+    datasource.id = this.datasource,
+    verbose = FALSE
+  )
   it("return a n2kResult", {
     expect_is(result, "n2kResult")
   })
@@ -48,12 +52,16 @@ describe("get_result on n2kInlaNbinomial", {
   filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
   save(analysis, file = filename)
   expect_equal(
-    get_result(filename, datasource.id = this.datasource),
+    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
   )
-  fit_model(filename)
+  fit_model(filename, verbose = FALSE)
   load(filename)
-  result <- get_result(analysis, datasource.id = this.datasource)
+  result <- get_result(
+    analysis,
+    datasource.id = this.datasource,
+    verbose = FALSE
+  )
   it("return a n2kResult", {
     expect_is(result, "n2kResult")
   })
@@ -72,7 +80,7 @@ describe("get_result on n2kInlaNbinomial", {
     )
   })
   expect_equal(
-    get_result(filename, datasource.id = this.datasource),
+    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
   )
 
@@ -92,7 +100,11 @@ describe("get_result on n2kInlaNbinomial", {
     lin.comb = lin.comb,
     parent = this.parent
   )
-  result <- get_result(analysis, datasource.id = this.datasource)
+  result <- get_result(
+    analysis,
+    datasource.id = this.datasource,
+    verbose = FALSE
+  )
   it("return a n2kResult", {
     expect_is(result, "n2kResult")
   })
@@ -121,12 +133,16 @@ describe("get_result on n2kInlaNbinomial", {
   filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
   save(analysis, file = filename)
   expect_equal(
-    get_result(filename, datasource.id = this.datasource),
+    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
   )
-  fit_model(filename)
+  fit_model(filename, verbose = FALSE)
   load(filename)
-  result <- get_result(analysis, datasource.id = this.datasource)
+  result <- get_result(
+    analysis,
+    datasource.id = this.datasource,
+    verbose = FALSE
+  )
   it("return a n2kResult", {
     expect_is(result, "n2kResult")
   })
@@ -153,7 +169,7 @@ describe("get_result on n2kInlaNbinomial", {
     )
   })
   expect_equal(
-    get_result(filename, datasource.id = this.datasource),
+    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
   )
 })
@@ -163,7 +179,12 @@ expect_error(
   "'x' is neither an existing file, neither an existing directory"
 )
 expect_is(
-  get_result(temp.dir, datasource.id = this.datasource, n.cluster = 1),
+  get_result(
+    temp.dir,
+    datasource.id = this.datasource,
+    n.cluster = 1,
+    verbose = FALSE
+  ),
   "n2kResult"
 )
 # nolint start
@@ -194,13 +215,15 @@ expect_is(
 result.fp <- get_result(
   temp.dir,
   datasource.id = this.datasource,
-  keep.fingerprint = TRUE
+  keep.fingerprint = TRUE,
+  verbose = FALSE
 )
 expect_is(result.fp, "n2kResult")
 result.id <- get_result(
   temp.dir,
   datasource.id = this.datasource,
-  keep.fingerprint = FALSE
+  keep.fingerprint = FALSE,
+  verbose = FALSE
 )
 expect_is(result.id, "n2kResult")
 

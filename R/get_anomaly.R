@@ -16,7 +16,7 @@ setGeneric(
 #' @rdname get_anomaly
 #' @aliases get_anomaly,n2kGlmerPoisson-methods
 #' @importFrom methods setMethod
-#' @importFrom assertthat assert_that is.count is.number
+#' @importFrom assertthat assert_that is.count is.number is.flag noNA
 #' @importFrom lme4 ranef
 #' @include n2kGlmerPoisson_class.R
 #' @include n2kAnomaly_class.R
@@ -25,6 +25,7 @@ setGeneric(
 #' @param log.expected.ratio observations that have a abs(log(observed/fitted)) above this ratio are potential anomalies. Defaults to log(5), which implies that observed values that are 5 times higher of lower than the fitted values are potential anomalies.
 #' @param log.expected.absent Zero observations with log(fitted) larger than this treshold are potential anomalies.
 #' @param random.treshold random effects with a absolute value above this treshold are potential anomalies
+#' @param verbose Print extra information on the screen
 setMethod(
   f = "get_anomaly",
   signature = signature(analysis = "n2kGlmerPoisson"),
@@ -35,6 +36,7 @@ setMethod(
     log.expected.ratio = log(5),
     log.expected.absent = log(5),
     random.treshold = log(5),
+    verbose = TRUE,
     ...
   ){
     assert_that(is.count(datasource.id))
@@ -42,8 +44,10 @@ setMethod(
     assert_that(is.number(log.expected.ratio))
     assert_that(is.number(log.expected.absent))
     assert_that(is.number(random.treshold))
+    assert_that(is.flag(verbose))
+    assert_that(noNA(verbose))
 
-    parameter <- get_model_parameter(analysis = analysis)
+    parameter <- get_model_parameter(analysis = analysis, verbose = verbose)
     if (status(analysis) != "converged") {
       return(
         new(
@@ -54,7 +58,9 @@ setMethod(
       )
     }
 
-    message("    reading anomaly", appendLF = FALSE)
+    if (verbose) {
+      message("    reading anomaly", appendLF = FALSE)
+    }
     utils::flush.console()
 
     anomaly.type <- data.frame(
@@ -94,7 +100,9 @@ setMethod(
     )
 
     # check observed counts versus expected counts
-    message(": observed > 0 vs fit", appendLF = FALSE)
+    if (verbose) {
+      message(": observed > 0 vs fit", appendLF = FALSE)
+    }
     data.subset <- data[data[, response] > 0, ]
     data.subset$LogRatio <- log(data.subset[, response]) - data.subset$Expected
     data.subset <- data.subset[abs(data.subset$LogRatio) > log.expected.ratio, ]
@@ -132,7 +140,9 @@ setMethod(
       anomaly <- rbind(anomaly, extra.observation)
     }
 
-    message(", observed == 0 vs fit", appendLF = FALSE)
+    if (verbose) {
+      message(", observed == 0 vs fit", appendLF = FALSE)
+    }
     data.subset <- data[
       data[, response] == 0 & data$Expected > log.expected.absent,
     ]
@@ -159,7 +169,9 @@ setMethod(
     }
 
     # select anomalies on random effects
-    message(", random effect")
+    if (verbose) {
+      message(", random effect")
+    }
     re <- ranef(get_model(analysis))
     if (any(sapply(re, ncol) > 1)) {
       stop("get_anomaly cannot handle random slopes yet")
@@ -236,11 +248,15 @@ setMethod(
 #' @rdname get_anomaly
 #' @importFrom methods setMethod
 #' @include n2kModel_class.R
+#' @importFrom assertthat assert_that is.flag noNA
 setMethod(
   f = "get_anomaly",
   signature = signature(analysis = "n2kModel"),
-  definition = function(analysis, ...){
-    parameter <- get_model_parameter(analysis = analysis)
+  definition = function(analysis, verbose = TRUE, ...){
+    assert_that(is.flag(verbose))
+    assert_that(noNA(verbose))
+
+    parameter <- get_model_parameter(analysis = analysis, verbose = verbose)
     return(
       new(
         "n2kAnomaly",
@@ -254,7 +270,7 @@ setMethod(
 #' @rdname get_anomaly
 #' @aliases get_anomaly,n2kInlaNbinomial-methods
 #' @importFrom methods setMethod
-#' @importFrom assertthat assert_that is.count is.number
+#' @importFrom assertthat assert_that is.count is.number is.flag noNA
 #' @importFrom dplyr data_frame add_rownames select_ filter_ mutate_ bind_cols arrange_ ungroup slice_ transmute_
 #' @include n2kInlaNbinomial_class.R
 setMethod(
@@ -267,6 +283,7 @@ setMethod(
     log.expected.ratio = log(5),
     log.expected.absent = log(5),
     random.treshold = log(1.05),
+    verbose = TRUE,
     ...
   ){
     assert_that(is.count(datasource.id))
@@ -275,8 +292,10 @@ setMethod(
     assert_that(is.number(log.expected.ratio))
     assert_that(is.number(log.expected.absent))
     assert_that(is.number(random.treshold))
+    assert_that(is.flag(verbose))
+    assert_that(noNA(verbose))
 
-    parameter <- get_model_parameter(analysis = analysis)
+    parameter <- get_model_parameter(analysis = analysis, verbose = verbose)
     if (status(analysis) != "converged") {
       return(
         new(
@@ -287,7 +306,9 @@ setMethod(
       )
     }
 
-    message("    reading anomaly", appendLF = FALSE)
+    if (verbose) {
+      message("    reading anomaly", appendLF = FALSE)
+    }
     utils::flush.console()
 
     anomaly.type <- data_frame(
@@ -337,7 +358,9 @@ setMethod(
       arrange_(~desc(abs(LogRatio)), ~desc(Expected))
 
     # check observed counts versus expected counts
-    message(": observed > 0 vs fit", appendLF = FALSE)
+    if (verbose) {
+      message(": observed > 0 vs fit", appendLF = FALSE)
+    }
     high.ratio <- data %>%
       select_(~Analysis, ~Parameter, ~DatasourceID, ~LogRatio) %>%
       filter_(~is.finite(LogRatio), ~LogRatio > log.expected.ratio) %>%
@@ -365,7 +388,9 @@ setMethod(
         bind_rows(anomaly)
     }
 
-    message(", observed == 0 vs fit", appendLF = FALSE)
+    if (verbose) {
+      message(", observed == 0 vs fit", appendLF = FALSE)
+    }
     high.absent <- data %>%
       select_(
         ~Analysis,
@@ -386,7 +411,9 @@ setMethod(
         bind_rows(anomaly)
     }
     # select anomalies on random effects
-    message(", random effect")
+    if (verbose) {
+      message(", random effect")
+    }
     re.anomaly <- parameter@Parameter %>%
       filter_(~Description == "Random effect BLUP") %>%
       select_(Parent = ~Fingerprint) %>%

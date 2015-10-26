@@ -14,13 +14,13 @@ get_anomaly(analysis, ...)
 
 \S4method{get_anomaly}{n2kGlmerPoisson}(analysis, datasource.id, n = 20,
   log.expected.ratio = log(5), log.expected.absent = log(5),
-  random.treshold = log(5), ...)
+  random.treshold = log(5), verbose = TRUE, ...)
 
-\S4method{get_anomaly}{n2kModel}(analysis, ...)
+\S4method{get_anomaly}{n2kModel}(analysis, verbose = TRUE, ...)
 
 \S4method{get_anomaly}{n2kInlaNbinomial}(analysis, datasource.id, n = 20,
   log.expected.ratio = log(5), log.expected.absent = log(5),
-  random.treshold = log(1.05), ...)
+  random.treshold = log(1.05), verbose = TRUE, ...)
 }
 \arguments{
 \item{analysis}{The model to add}
@@ -36,6 +36,8 @@ get_anomaly(analysis, ...)
 \item{log.expected.absent}{Zero observations with log(fitted) larger than this treshold are potential anomalies.}
 
 \item{random.treshold}{random effects with a absolute value above this treshold are potential anomalies}
+
+\item{verbose}{Print extra information on the screen}
 }
 \description{
 Get the anomalies from a model

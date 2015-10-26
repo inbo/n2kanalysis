@@ -10,20 +10,25 @@
 \alias{get_model_parameter,n2kLrtGlmer-method}
 \title{Add the model parameters from a model}
 \usage{
-get_model_parameter(analysis)
+get_model_parameter(analysis, ...)
 
-\S4method{get_model_parameter}{n2kGlmerPoisson}(analysis)
+\S4method{get_model_parameter}{n2kGlmerPoisson}(analysis, verbose = TRUE, ...)
 
-\S4method{get_model_parameter}{n2kLrtGlmer}(analysis)
+\S4method{get_model_parameter}{n2kLrtGlmer}(analysis, ...)
 
-\S4method{get_model_parameter}{n2kComposite}(analysis)
+\S4method{get_model_parameter}{n2kComposite}(analysis, ...)
 
-\S4method{get_model_parameter}{n2kInlaNbinomial}(analysis)
+\S4method{get_model_parameter}{n2kInlaNbinomial}(analysis, verbose = TRUE,
+  ...)
 
 \S4method{get_model_parameter}{n2kInlaComparison}(analysis)
 }
 \arguments{
 \item{analysis}{The model to add}
+
+\item{...}{extra options}
+
+\item{verbose}{Print extra information on the screen}
 }
 \description{
 Add the model parameters from a model
