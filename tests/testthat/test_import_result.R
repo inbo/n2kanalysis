@@ -1233,6 +1233,86 @@ describe("import result", {
         noNA()
     )
 
+    sql <- "
+    SELECT
+      Analysis.ID,
+      LocationGroup.Description AS LocationGroup,
+      ModelType.Description AS ModelType,
+      AnomalyType.Description AS AnomalyType,
+      p0.Description AS Parameter0,
+      p1.Description AS Parameter1
+    FROM
+      (
+        (
+          (
+            (
+              (
+                (
+                  (
+                    (
+                      Analysis
+                    INNER JOIN
+                      SpeciesGroup
+                    ON
+                      Analysis.SpeciesGroupID = SpeciesGroup.ID
+                    )
+                  LEFT JOIN
+                    LocationGroup
+                  ON
+                    Analysis.LocationGroupID = LocationGroup.ID
+                  )
+                LEFT JOIN
+                  ModelSet
+                ON
+                  Analysis.ModelSetID = ModelSet.ID
+                )
+              LEFT JOIN
+                ModelType
+              ON
+                ModelSet.ModelTypeID = ModelType.ID
+              )
+            LEFT JOIN
+              Anomaly
+            ON
+              Analysis.ID = Anomaly.AnalysisID
+            )
+          LEFT JOIN
+            AnomalyType
+          ON
+            Anomaly.TypeID = AnomalyType.ID
+          )
+        LEFT JOIN
+          ParameterEstimate
+        ON
+          Analysis.ID = ParameterEstimate.AnalysisID
+        )
+      LEFT JOIN
+        Parameter AS p0
+      ON
+        ParameterEstimate.ParameterID = p0.ID
+      )
+    LEFT JOIN
+      Parameter AS p1
+    ON
+      p0.ParentParameterID = p1.ID
+    WHERE
+      SpeciesGroup.Description Like 'Unit test%'
+    "
+    exported <- sqlQuery(
+      channel = channel,
+      query = sql,
+      stringsAsFactors = FALSE
+    )
+    exported %>%
+      assertthat::noNA() %>%
+      expect_true()
+    exported %>%
+      tidyr::gather_("Key", "Value", colnames(exported)[-1]) %>%
+      mutate_(Correct = ~grepl("^Unit test", Value)) %>%
+      summarise_(~all(Correct)) %>%
+      unlist() %>%
+      expect_true()
+
     # Remove unit test data from database
     sql <- "
     DELETE
