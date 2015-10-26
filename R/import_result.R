@@ -184,7 +184,7 @@ import_result <- function(result, result.channel){
   parentanalysis <- odbc_get_multi_id(
     data = result@AnalysisRelation %>%
       select_(Fingerprint = ~ParentAnalysis) %>%
-      distinct(),
+      distinct_(),
     id.field = "ID",
     merge.field = "Fingerprint",
     table = "Analysis",
