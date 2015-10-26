@@ -160,8 +160,8 @@ describe("import result", {
       AnomalyType = anomalytype$Fingerprint,
       Analysis = metadata$FileFingerprint,
       Parameter = sample(
-        parameterestimate$Parameter,
-        min(5, nrow(parameterestimate)),
+        x = unique(parameterestimate$Parameter),
+        size = min(5, length(unique(unique(parameterestimate$Parameter)))),
         replace = FALSE
       ),
       DatasourceID = datasourceid,
