@@ -31,6 +31,10 @@ import_result <- function(result, result.channel){
 
   # Store analysis versions
   message("Storing ", nrow(result@AnalysisVersion), " analysis versions")
+  if (inherits(result@AnalysisVersion$Fingerprint, "factor")) {
+    result@AnalysisVersion <- result@AnalysisVersion %>%
+      mutate_(Fingerprint = ~levels(Fingerprint)[Fingerprint])
+  }
   analysis.version <- odbc_get_multi_id(
     result@AnalysisVersion %>%
       select_(Description = ~Fingerprint),
@@ -46,6 +50,10 @@ import_result <- function(result, result.channel){
     anti_join(analysis.version, by = c("Fingerprint" = "AnalysisVersion")) %>%
     nrow()
   assert_that(antijoin.av == 0)
+  if (inherits(result@AnalysisVersionRPackage$AnalysisVersion, "factor")) {
+    result@AnalysisVersionRPackage <- result@AnalysisVersionRPackage %>%
+      mutate_(AnalysisVersion = ~levels(AnalysisVersion)[AnalysisVersion])
+  }
   analysisversion.rpackage <- result@RPackage %>%
     inner_join(r.package, by = c("Description", "Version")) %>%
     select_(RPackage = ~Fingerprint, RPackageID = ~ID) %>%
@@ -73,6 +81,10 @@ import_result <- function(result, result.channel){
   gc()
 
   # store model type
+  if (inherits(result@AnalysisMetadata$ModelType, "factor")) {
+    result@AnalysisMetadata <- result@AnalysisMetadata %>%
+      mutate_(ModelType = ~levels(ModelType)[ModelType])
+  }
   modeltype <- result@AnalysisMetadata %>%
     select_(Description = ~ModelType) %>%
     distinct_()
@@ -128,6 +140,10 @@ import_result <- function(result, result.channel){
   assert_that(antijoin.amms == 0)
 
   # get status id
+  if (inherits(result@AnalysisMetadata$Status, "factor")) {
+    result@AnalysisMetadata <- result@AnalysisMetadata %>%
+      mutate_(Status = ~levels(Status)[Status])
+  }
   status <- result@AnalysisMetadata %>%
     select_(Description = ~Status) %>%
     distinct_()
@@ -148,6 +164,14 @@ import_result <- function(result, result.channel){
   assert_that(antijoin.ams == 0)
 
   # store analysis metadata
+  if (inherits(result@AnalysisMetadata$AnalysisVersion, "factor")) {
+    result@AnalysisMetadata <- result@AnalysisMetadata %>%
+      mutate_(AnalysisVersion = ~levels(AnalysisVersion)[AnalysisVersion])
+  }
+  if (inherits(result@AnalysisMetadata$FileFingerprint, "factor")) {
+    result@AnalysisMetadata <- result@AnalysisMetadata %>%
+      mutate_(FileFingerprint = ~levels(FileFingerprint)[FileFingerprint])
+  }
   metadata <- result@AnalysisMetadata %>%
     inner_join(analysis.version, by = "AnalysisVersion") %>%
     inner_join(modeltype, by = "ModelType") %>%
@@ -181,6 +205,14 @@ import_result <- function(result, result.channel){
 
   # store analysis relation
   message("Storing ", nrow(result@AnalysisRelation), " analysis relations")
+  if (inherits(result@AnalysisRelation$Analysis, "factor")) {
+    result@AnalysisRelation  <- result@AnalysisRelation %>%
+      mutate_(Analysis = ~levels(Analysis)[Analysis])
+  }
+  if (inherits(result@AnalysisRelation$ParentAnalysis, "factor")) {
+    result@AnalysisRelation  <- result@AnalysisRelation %>%
+      mutate_(ParentAnalysis = ~levels(ParentAnalysis)[ParentAnalysis])
+  }
   parentanalysis <- odbc_get_multi_id(
     data = result@AnalysisRelation %>%
       select_(Fingerprint = ~ParentAnalysis) %>%
@@ -217,6 +249,10 @@ import_result <- function(result, result.channel){
 
   # Store the contrast
   message("Storing ", nrow(result@Contrast), " contrasts")
+  if (inherits(result@Contrast$Analysis, "factor")) {
+    result@Contrast <- result@Contrast %>%
+      mutate_(Analysis = ~levels(Analysis)[Analysis])
+  }
   contrast <- result@Contrast %>%
     inner_join(metadata, by = "Analysis") %>%
     select_(~-Analysis)
@@ -283,6 +319,10 @@ import_result <- function(result, result.channel){
 
 
   # set the datafield
+  if (inherits(result@Anomaly$Datafield, "factor")) {
+    result@Anomaly <- result@Anomaly %>%
+      mutate_(Datafield = ~levels(Datafield)[Datafield])
+  }
   datafield.type <- odbc_get_multi_id(
     data = result@Anomaly %>%
       select_(Description = ~Datafield) %>%
@@ -395,6 +435,10 @@ import_result <- function(result, result.channel){
 
   # Storing parameter estimates
   message("Storing ", nrow(result@ParameterEstimate), " parameter estimates")
+  if (inherits(result@ParameterEstimate$Analysis, "factor")) {
+    result@ParameterEstimate <- result@ParameterEstimate %>%
+      mutate_(Analysis = ~levels(Analysis)[Analysis])
+  }
   parameterestimate <- odbc_get_multi_id(
     result@ParameterEstimate %>%
       inner_join(metadata, by = "Analysis") %>%
@@ -414,6 +458,10 @@ import_result <- function(result, result.channel){
 
   # Storing anomalies
   message("Storing ", nrow(result@Anomaly), " anomalies")
+  if (result@Anomaly$Analysis %>% inherits("factor")) {
+    result@Anomaly <- result@Anomaly %>%
+      mutate_(Analysis = ~levels(Analysis)[Analysis])
+  }
   odbc_get_multi_id(
     result@Anomaly %>%
       inner_join(metadata, by = "Analysis") %>%
