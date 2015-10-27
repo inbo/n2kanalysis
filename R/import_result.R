@@ -16,7 +16,8 @@ import_result <- function(result, result.channel){
   # Store R package versions
   message("Storing ", nrow(result@RPackage), " used R packages")
   r.package <- odbc_get_multi_id(
-    data = result@RPackage[, c("Description", "Version")],
+    data = result@RPackage %>%
+      select_(~Description, ~Version),
     id.field = "ID",
     merge.field = c("Description", "Version"),
     table = "RPackage",
@@ -408,10 +409,13 @@ import_result <- function(result, result.channel){
   }
   rm(parameter.id)
   gc()
-  parameter <- parameter %>% select_(Parameter = ~Fingerprint, ParameterID = ~ID)
+  parameter <- parameter %>%
+    select_(Parameter = ~Fingerprint, ParameterID = ~ID)
 
   # Storing contrast coefficients
-  message("\nStoring ", nrow(result@ContrastCoefficient), " contrast coefficients")
+  message(
+    "\nStoring ", nrow(result@ContrastCoefficient), " contrast coefficients"
+  )
   odbc_get_multi_id(
     result@ContrastCoefficient %>%
       inner_join(
@@ -421,8 +425,7 @@ import_result <- function(result, result.channel){
         by = "Contrast"
       ) %>%
       inner_join(parameter, by = "Parameter") %>%
-      select_(~-Contrast, ~-Parameter, Constant = ~Coefficient)
-,
+      select_(~-Contrast, ~-Parameter, Constant = ~Coefficient),
     id.field = "ID",
     merge.field = c("ContrastID", "ParameterID"),
     table = "ContrastCoefficient",
@@ -469,7 +472,9 @@ import_result <- function(result, result.channel){
       inner_join(datafield, by = c("DatasourceID", "Datafield")) %>%
       inner_join(parameter, by = "Parameter") %>%
       inner_join(parameterestimate, by = c("AnalysisID", "ParameterID")) %>%
-      select_(~AnalysisID, ~ParameterEstimateID, TypeID = ~AnomalyTypeID, ~DatafieldID),
+      select_(
+        ~AnalysisID, ~ParameterEstimateID, TypeID = ~AnomalyTypeID, ~DatafieldID
+      ),
     id.field = "ID",
     merge.field = c(
       "AnalysisID", "TypeID", "ParameterEstimateID", "DatafieldID"
