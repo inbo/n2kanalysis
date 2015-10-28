@@ -458,7 +458,8 @@ setMethod(
             data.frame(
               Parent = parent,
               WAIC = x@Models[[parent]]$waic$waic,
-              Peff = x@Models[[parent]]$waic$p.eff
+              Peff = x@Models[[parent]]$waic$p.eff,
+              stringsAsFactors = FALSE
             )
           }
         )
