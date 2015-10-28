@@ -218,7 +218,13 @@ setMethod(
 setMethod(
   f = "get_result",
   signature = signature(x = "character"),
-  definition = function(x, keep.fingerprint = TRUE, n.cluster = 1, verbose = TRUE, ...){
+  definition = function(
+    x,
+    keep.fingerprint = TRUE,
+    n.cluster = 1,
+    verbose = TRUE,
+    ...
+  ){
     # check arguments
     assert_that(is.string(x))
     assert_that(is.flag(keep.fingerprint))
