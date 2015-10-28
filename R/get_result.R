@@ -179,7 +179,8 @@ setMethod(
       UpperConfidenceLimit = lc[, "0.975quant"]
     ) %>%
       inner_join(
-        contrast %>% select_(~-Analysis),
+        contrast %>%
+          select_(~-Analysis),
         by = "Description"
       ) %>%
       select_(
