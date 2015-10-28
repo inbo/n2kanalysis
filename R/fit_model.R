@@ -410,11 +410,14 @@ setMethod(
       return(x)
     }
 
-    x@Parameter <- extract(
-      extractor = x@Extractor,
-      object = to.update$ParentAnalysis,
-      path = dots$path
-    ) %>% arrange_(~Parent, ~Value)
+    if (nrow(to.update) > 0) {
+      x@Parameter <- extract(
+        extractor = x@Extractor,
+        object = to.update$ParentAnalysis,
+        path = dots$path
+      ) %>%
+        arrange_(~Parent, ~Value)
+    }
 
     if (all(
       x@AnalysisRelation$ParentStatus %in% c("converged", "unstable")
