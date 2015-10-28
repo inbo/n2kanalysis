@@ -21,7 +21,7 @@ get_model_parameter(analysis, ...)
 \S4method{get_model_parameter}{n2kInlaNbinomial}(analysis, verbose = TRUE,
   ...)
 
-\S4method{get_model_parameter}{n2kInlaComparison}(analysis)
+\S4method{get_model_parameter}{n2kInlaComparison}(analysis, ...)
 }
 \arguments{
 \item{analysis}{The model to add}

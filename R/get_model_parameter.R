@@ -625,7 +625,8 @@ setMethod(
 setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kInlaComparison"),
-  definition = function(analysis){
+  definition = function(analysis, ...){
+    warning("reading model parameters on n2kInlaComparison is to do")
     return(new("n2kParameter"))
   }
 )
