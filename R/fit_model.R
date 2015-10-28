@@ -386,8 +386,7 @@ setMethod(
         OldStatusFingerprint = ~ParentStatusFingerprint,
         OldStatus = ~ParentStatus
       )
-    compare <-
-      status(files.to.check) %>%
+    compare <- status(files.to.check) %>%
       select_(
         ParentAnalysis = ~FileFingerprint,
         ParentStatusFingerprint = ~StatusFingerprint,
@@ -396,7 +395,8 @@ setMethod(
       inner_join(old.parent.status, by = "ParentAnalysis") %>%
       arrange_(~ParentAnalysis)
 
-    to.update <- compare %>% filter_(~ParentStatus == "converged")
+    to.update <- compare %>%
+      filter_(~ParentStatus == "converged")
     x@AnalysisRelation <- compare %>%
       select_(
         ~Analysis,
