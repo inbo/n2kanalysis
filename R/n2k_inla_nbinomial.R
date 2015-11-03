@@ -13,6 +13,7 @@
 #'    \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
 #'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
+#'    \item{\code{lin.comb}}{A model matrix to calculate linear combinations}
 #'   }
 #' @name n2k_inla_nbinomial
 #' @rdname n2k_inla_nbinomial
@@ -24,7 +25,7 @@ setGeneric(
   def = function(
     data, ..., model.fit
   ){
-    standard.generic("n2k_inla_nbinomial")
+    standard.generic("n2k_inla_nbinomial") # nocov
   }
 )
 
@@ -79,12 +80,15 @@ setMethod(
     if (is.null(dots$parent)) {
       dots$parent <- character(0)
     }
+    if (!is.null(dots$lin.comb)) {
+      assert_that(inherits(dots$lin.comb, "matrix"))
+    }
     file.fingerprint <- get_sha1(
       list(
         data, dots$scheme.id, dots$species.group.id, dots$location.group.id,
         dots$model.type, dots$covariate, dots$first.imported.year,
         dots$last.imported.year, dots$duration, dots$last.analysed.year,
-        dots$analysis.date, dots$seed, dots$parent
+        dots$analysis.date, dots$seed, dots$parent, dots$lin.comb
       )
     )
 
@@ -113,7 +117,7 @@ setMethod(
       analysis.relation <- data.frame(
         Analysis = file.fingerprint,
         ParentAnalysis = dots$parent,
-        ParentStatusFingerprint = dots$parent.status.fingerprint,
+        ParentStatusFingerprint = dots$parent.statusfingerprint,
         ParentStatus = dots$parent.status,
         stringsAsFactors = FALSE
       )
@@ -153,6 +157,7 @@ setMethod(
       AnalysisFormula = list(as.formula(dots$formula)),
       AnalysisRelation = analysis.relation,
       Data = data,
+      LinearCombination = dots$lin.comb,
       Model = NULL
     )
   }

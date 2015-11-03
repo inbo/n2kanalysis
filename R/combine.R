@@ -8,7 +8,7 @@
 setGeneric(
   "combine",
   def = function(...){
-    standardGeneric("combine")
+    standardGeneric("combine") # nocov
   }
 )
 

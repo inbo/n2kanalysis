@@ -629,8 +629,7 @@ ranges", {
         scheme.id = this.scheme.id
       ),
       throws_error(
-"Some Duration longer than the interval from FirstImportedYear to
-LastImportedYear"
+"Duration longer than the interval from FirstImportedYear to LastImportedYear"
       )
     )
     expect_that(
@@ -791,7 +790,9 @@ outside imported range."
     )
     expect_that(
       n2k_glmer_poisson(
-        data = cbpp[, c("herd", "period", "incidence")],
+        data = cbpp[,
+          c("herd", "period", "incidence", "DatasourceID", "ObservationID")
+        ],
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -805,7 +806,9 @@ outside imported range."
     )
     expect_that(
       n2k_glmer_poisson(
-        data = cbpp[, c("herd", "size", "incidence")],
+        data = cbpp[,
+          c("herd", "size", "incidence", "DatasourceID", "ObservationID")
+        ],
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -819,7 +822,9 @@ outside imported range."
     )
     expect_that(
       n2k_glmer_poisson(
-        data = cbpp[, c("size", "period", "incidence")],
+        data = cbpp[,
+          c("size", "period", "incidence", "DatasourceID", "ObservationID")
+        ],
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -845,8 +850,7 @@ outside imported range."
 
 
 
-context("add a model to a n2kGlmerPoisson object")
-describe("n2k_glmer_poisson", {
+describe("add a model to a n2kGlmerPoisson object", {
   object.model <- n2k_glmer_poisson(
     data = object, model.fit = model.object, status = "converged"
   )

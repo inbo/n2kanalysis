@@ -1,6 +1,9 @@
 context("n2kInlaNbinomial validation")
 
 data("cbpp", package = "lme4")
+cbpp$DatasourceID <- 1
+cbpp$ObservationID <- seq_len(nrow(cbpp))
+lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
 object <- n2k_inla_nbinomial(
   scheme.id = 1,
   species.group.id = 2,
@@ -15,8 +18,7 @@ object <- n2k_inla_nbinomial(
   data = cbpp
 )
 
-context("illegal changes in the file fingerprint")
-describe("file fingerprint", {
+describe("illegal changes in the file fingerprint", {
   it("detects changes in Data", {
     change.object <- object
     change.object@Data <- head(cbpp, 1)
@@ -117,10 +119,18 @@ describe("file fingerprint", {
       throws_error("Corrupt FileFingerprint")
     )
   })
+
+  it("detects changes in LinearCombination", {
+    change.object <- object
+    change.object@LinearCombination <- lin.comb
+    expect_that(
+      validObject(change.object),
+      throws_error("Corrupt FileFingerprint")
+    )
+  })
 })
 
-context("illegal changes in the status fingerprint")
-describe("status fingerprint", {
+describe("illegal changes in the status fingerprint", {
   it("detects changes in Status", {
     change.object <- object
     change.object@AnalysisMetadata$Status <- "error"

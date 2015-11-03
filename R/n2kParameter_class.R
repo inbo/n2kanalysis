@@ -69,6 +69,26 @@ setValidity(
     if (anyDuplicated(object@ParameterEstimate[, c("Analysis", "Parameter")])) {
       stop("Duplicated rows in 'ParameterEstimate' slot")
     }
+
+    if (nrow(object@ParameterEstimate) > 0) {
+      test <- object@ParameterEstimate %>%
+        summarise_(
+          TestLCL = ~any(Estimate < LowerConfidenceLimit, na.rm = TRUE),
+          TestUCL = ~any(Estimate > UpperConfidenceLimit, na.rm = TRUE)
+        )
+      if (test$TestLCL) {
+        stop(
+  "All Estimate in 'ParameterEstimate' slot must be greather than the
+  LowerConfidenceLimit"
+        )
+      }
+      if (test$TestUCL) {
+        stop(
+  "All Estimate in 'ParameterEstimate' slot must be less than the
+  UpperConfidenceLimit"
+        )
+      }
+    }
     return(TRUE)
   }
 )

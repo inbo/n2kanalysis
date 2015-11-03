@@ -31,6 +31,7 @@ setClass(
 
 #' @importFrom methods setValidity
 #' @importFrom n2khelper check_dataframe_variable
+#' @importFrom dplyr %>% anti_join select_
 setValidity(
   "n2kAnomaly",
   function(object){
@@ -57,19 +58,35 @@ setValidity(
       name = "Anomaly"
     )
 
-    if (!all(object@Anomaly$AnomalyType %in% object@AnomalyType$Fingerprint)) {
+    antijoin.anomalytype <- object@Anomaly %>%
+      anti_join(object@AnomalyType, by = c("AnomalyType" = "Fingerprint")) %>%
+      nrow()
+    if (antijoin.anomalytype > 0) {
       stop("Some Anomaly have no matching Fingerprint in 'AnomalyType'")
     }
 
-    current <- object@Anomaly[, c("Analysis", "Parameter")]
-    merged <- merge(
-      current,
-      object@ParameterEstimate[, c("Analysis", "Parameter")]
-    )
-    if (nrow(current) != nrow(merged)) {
-      stop("Mismatch on Parameter between Anomaly and ParameterEstimate slot")
+    antijoin.anomaly <- object@Anomaly %>%
+      anti_join(object@ParameterEstimate, by = c("Analysis", "Parameter")) %>%
+      nrow()
+    if (antijoin.anomaly > 0) {
+      stop(
+"Mismatch on Analysis and Parameter between Anomaly and ParameterEstimate slot"
+      )
     }
 
+    anomalytype.duplicate <- object@AnomalyType %>%
+      select_(~Fingerprint) %>%
+      anyDuplicated()
+    if (anomalytype.duplicate > 0) {
+      stop("Duplicated anomalytypes")
+    }
+
+    anomaly.duplicate <- object@Anomaly %>%
+      select_(~Analysis, ~AnomalyType, ~Parameter) %>%
+      anyDuplicated()
+    if (anomaly.duplicate > 0) {
+      stop("Duplicated anomalies")
+    }
     return(TRUE)
   }
 )

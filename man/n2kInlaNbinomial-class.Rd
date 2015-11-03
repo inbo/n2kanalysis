@@ -11,6 +11,8 @@ It hold analysis data based on a INLA negative binomial model
 
   \describe{
    \item{\code{Data}}{a data.frame with the data}
+   \item{\code{LinearCombination}}{an optional matrix with the linear
+       combinations}
    \item{\code{Model}}{Either NULL or the resulting INLA model.}
   }
 }

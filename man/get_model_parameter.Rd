@@ -4,23 +4,31 @@
 \name{get_model_parameter}
 \alias{get_model_parameter}
 \alias{get_model_parameter,n2kComposite-method}
-\alias{get_model_parameter,n2kComposite-methods}
 \alias{get_model_parameter,n2kGlmerPoisson-method}
-\alias{get_model_parameter,n2kGlmerPoisson-methods}
+\alias{get_model_parameter,n2kInlaComparison-method}
+\alias{get_model_parameter,n2kInlaNbinomial-method}
 \alias{get_model_parameter,n2kLrtGlmer-method}
-\alias{get_model_parameter,n2kLrtGlmer-methods}
 \title{Add the model parameters from a model}
 \usage{
-get_model_parameter(analysis)
+get_model_parameter(analysis, ...)
 
-\S4method{get_model_parameter}{n2kGlmerPoisson}(analysis)
+\S4method{get_model_parameter}{n2kGlmerPoisson}(analysis, verbose = TRUE, ...)
 
-\S4method{get_model_parameter}{n2kLrtGlmer}(analysis)
+\S4method{get_model_parameter}{n2kLrtGlmer}(analysis, ...)
 
-\S4method{get_model_parameter}{n2kComposite}(analysis)
+\S4method{get_model_parameter}{n2kComposite}(analysis, ...)
+
+\S4method{get_model_parameter}{n2kInlaNbinomial}(analysis, verbose = TRUE,
+  ...)
+
+\S4method{get_model_parameter}{n2kInlaComparison}(analysis, ...)
 }
 \arguments{
 \item{analysis}{The model to add}
+
+\item{...}{extra options}
+
+\item{verbose}{Print extra information on the screen}
 }
 \description{
 Add the model parameters from a model

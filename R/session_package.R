@@ -9,7 +9,7 @@
 setGeneric(
   name = "session_package",
   def = function(session){
-    standard.generic("session_package")
+    standard.generic("session_package") # nocov
   }
 )
 

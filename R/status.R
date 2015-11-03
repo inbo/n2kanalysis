@@ -10,7 +10,7 @@ setGeneric(
   name = "status",
   def = function(x){
     # nocov start
-    standard.generic("status")
+    standard.generic("status") # nocov
     # nocov end
   }
 )
@@ -82,9 +82,7 @@ setMethod(
 setGeneric(
   name = "status<-",
   def = function(x, value){
-    # nocov start
-    standard.generic("status<-")
-    # nocov end
+    standard.generic("status<-") # nocov
   }
 )
 
@@ -173,6 +171,27 @@ setReplaceMethod(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
         x@Parameter, x@Index, x@AnalysisMetadata$AnalysisVersion,
+        x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
+        x@AnalysisRelation
+      )
+    )
+    validObject(x)
+    return(x)
+  }
+)
+
+#' @rdname status.change
+#' @importFrom methods setReplaceMethod
+#' @include n2kInlaComparison_class.R
+setReplaceMethod(
+  "status",
+  "n2kInlaComparison",
+  function(x, value){
+    x@AnalysisMetadata$Status <- value
+    x@AnalysisMetadata$StatusFingerprint <- get_sha1(
+      list(
+        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
+        x@Models, x@WAIC, x@AnalysisMetadata$AnalysisVersion,
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
       )

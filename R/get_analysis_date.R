@@ -9,7 +9,7 @@
 setGeneric(
   name = "get_analysis_date",
   def = function(x){
-    standard.generic("get_analysis_date")
+    standard.generic("get_analysis_date") # nocov
   }
 )
 

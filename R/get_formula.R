@@ -9,7 +9,7 @@
 setGeneric(
   name = "get_formula",
   def = function(x){
-    standard.generic("get_formula")
+    standard.generic("get_formula") # nocov
   }
 )
 

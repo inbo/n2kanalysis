@@ -11,30 +11,36 @@ LazyData: true
 Suggests:
     optimx,
     Matrix,
-    INLA,
     parallel,
+    INLA,
     testthat
 Imports:
     methods,
     MASS,
+    INLA,
     lme4,
     RODBC,
     assertthat,
+    dplyr,
+    tidyr,
     n2khelper
 Collate:
     'n2kParameter_class.R'
     'n2kAnomaly_class.R'
     'n2kAnalysisVersion_class.R'
     'combine.R'
+    'n2kContrast_class.R'
     'n2kAnalysisMetadata_class.R'
     'n2kResult_class.R'
     'combine_result.R'
-    'fit_every_model.R'
     'n2kModel_class.R'
-    'n2kGlmerPoisson_class.R'
     'import_S3_classes.R'
-    'n2kLrtGlmer_class.R'
     'n2kInlaNbinomial_class.R'
+    'extract.R'
+    'fit_every_model.R'
+    'n2kGlmerPoisson_class.R'
+    'n2kLrtGlmer_class.R'
+    'n2kInlaComparison_class.R'
     'n2kComposite_class.R'
     'fit_model.R'
     'get_analysis_date.R'
@@ -55,9 +61,11 @@ Collate:
     'get_species_group_id.R'
     'get_status_fingerprint.R'
     'import_result.R'
+    'inla_inverse.R'
     'mark_obsolete_dataset.R'
     'n2k_composite.R'
     'n2k_glmer_poisson.R'
+    'n2k_inla_comparison.R'
     'n2k_inla_nbinomial.R'
     'n2k_lrt_glmer.R'
     'parent_status.R'
@@ -65,6 +73,7 @@ Collate:
     'select_factor_threshold.R'
     'select_observed_range.R'
     'session_package.R'
+    'simplify_result.R'
     'status.R'
     'union.R'
     'validOject.R'
