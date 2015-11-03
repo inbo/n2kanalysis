@@ -436,7 +436,7 @@ setMethod(
         mutate_(Sign = ~sign(Estimate)) %>%
         arrange_(~desc(abs(Estimate))) %>%
         group_by_(~AnomalyType, ~Sign) %>%
-        slice_(seq_len(n)) %>%
+        slice_(~seq_len(n)) %>%
         ungroup() %>%
         select_(~-Sign, ~-Estimate)
       anomaly.type <- re.anomaly %>%
