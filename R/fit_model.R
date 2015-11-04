@@ -192,12 +192,12 @@ setMethod(
     } else {
       lc <- x@LinearCombination
       tmp <- lapply(
-        colnames(lc),
+        unique(colnames(lc)),
         function(i){
-          lc[, i]
+          lc[, colnames(lc) == i]
         }
       )
-      names(tmp) <- colnames(lc)
+      names(tmp) <- unique(colnames(lc))
       lc <- INLA::inla.make.lincombs(tmp)
       names(lc) <- rownames(x@LinearCombination)
     }
