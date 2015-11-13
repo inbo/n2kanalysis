@@ -420,6 +420,83 @@ aj.analysisparent <- result.fp@AnalysisRelation %>%
   )
 expect_identical(nrow(aj.analysisparent), 0L)
 
+data("cake", package = "lme4")
+cake$ObservationID <- seq_len(nrow(cake))
+cake$DatasourceID <- 2L
+describe("get_result on n2kInlaNbinomial with replicated random effects", {
+  this.model.type <- "inla nbinomial: recipe + replicate + temperature"
+  this.formula <-
+"angle ~ recipe + f(replicate, model = \"iid\") +
+  f(as.integer(temperature), model = \"rw1\", replicate = as.integer(recipe))"
+  analysis <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = this.formula,
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = cake
+  )
+  result <- get_result(
+    analysis,
+    datasource.id = this.datasource,
+    verbose = FALSE
+  )
+  it("return a n2kResult", {
+    expect_is(result, "n2kResult")
+  })
+  it("returns senbile output on unfitted objects", {
+    expect_identical(
+      nrow(result@Parameter),
+      0L
+    )
+    expect_identical(
+      nrow(result@Contrast),
+      0L
+    )
+    expect_identical(
+      nrow(result@Anomaly),
+      0L
+    )
+  })
+  filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
+  save(analysis, file = filename)
+  expect_equal(
+    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
+    result
+  )
+  fit_model(filename, verbose = FALSE)
+  load(filename)
+  result <- get_result(
+    analysis,
+    datasource.id = this.datasource,
+    verbose = FALSE
+  )
+  it("return a n2kResult", {
+    expect_is(result, "n2kResult")
+  })
+  it("returns senbile output on fitted objects", {
+    expect_less_than(
+      0,
+      nrow(result@Parameter)
+    )
+    expect_identical(
+      nrow(result@Contrast),
+      0L
+    )
+    expect_less_than(
+      0,
+      nrow(result@Anomaly)
+    )
+  })
+  expect_equal(
+    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
+    result
+  )
+})
+
 # clean temp files
 file.remove(
   list.files(

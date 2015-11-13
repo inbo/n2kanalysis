@@ -1181,7 +1181,7 @@ describe("import result", {
         inner_join(parameter, by = c("Parameter" = "Fingerprint")) %>%
         select_(~-Parent, A = ~Parameter, Parameter = ~Description) %>%
         full_join(exported, by = c("Contrast", "Parameter", "Coefficient")) %>%
-        noNA
+        assertthat::noNA()
     )
 
     sql <- "
