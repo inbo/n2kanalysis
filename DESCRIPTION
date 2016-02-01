@@ -77,3 +77,4 @@ Collate:
     'status.R'
     'union.R'
     'validOject.R'
+RoxygenNote: 5.0.1
