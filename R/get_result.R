@@ -127,7 +127,6 @@ setMethod(
         by = "Description"
       ) %>%
       select_(~-Description, Contrast = ~Fingerprint) %>%
-      mutate_(ParameterID = ~levels(ParameterID)[ParameterID]) %>%
       filter_(~ abs(Coefficient) > 1e-8)
     concat <- function(parent, child){
       parent.split <- strsplit(parent, ":")

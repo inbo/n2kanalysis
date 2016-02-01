@@ -22,7 +22,7 @@ Imports:
     RODBC,
     assertthat,
     dplyr,
-    tidyr,
+    tidyr (>=0.4.0),
     n2khelper
 Collate:
     'n2kParameter_class.R'
