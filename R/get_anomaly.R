@@ -183,11 +183,11 @@ setMethod(
     ]
     for (i in seq_along(re)) {
       this.re <- re[[i]]
-      this.re <- this.re[this.re[, 1] > random.treshold, , drop = FALSE]
+      this.re <- this.re[this.re[, 1] > random.treshold, , drop = FALSE] #nolint
       if (nrow(this.re) == 0) {
         next
       }
-      this.re <- this.re[order(abs(this.re[, 1])), , drop = FALSE]
+      this.re <- this.re[order(abs(this.re[, 1])), , drop = FALSE] #nolint
       parent.sha <- parameter@Parameter$Fingerprint[
         parameter@Parameter$Parent == main.sha &
         parameter@Parameter$Description == names(re)[i]
@@ -195,7 +195,7 @@ setMethod(
 
       for (j in combination) {
         selection <- tail(
-          this.re[sign(this.re[, 1]) == combination[j], , drop = FALSE],
+          this.re[sign(this.re[, 1]) == combination[j], , drop = FALSE], #nolint
           n = n
         )
         if (nrow(selection) == 0) {

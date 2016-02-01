@@ -26,7 +26,7 @@ setMethod(
       variable = c("Description", "Version", "Fingerprint"),
       name = "version"
     )
-    if(is.null(attr(version, "AnalysisVersion"))){
+    if (is.null(attr(version, "AnalysisVersion"))) {
       stop("Missing AnalysisVersion attribute")
     }
     analysis.version <- data.frame(

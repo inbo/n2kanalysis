@@ -89,7 +89,7 @@ setMethod(
       extra.factor <- data.frame(
         Description = gsub(
           paste0("^", i),
-          "" ,
+          "",
           parameter.estimate$Parameter[present]
         ),
         Parent = extra$Fingerprint,
@@ -353,7 +353,7 @@ setMethod(
       extra.factor <- data_frame(
         Description = gsub(
           paste0("^", i),
-          "" ,
+          "",
           parameter.estimate$Parameter[present]
         ),
         Parent = extra$Fingerprint
