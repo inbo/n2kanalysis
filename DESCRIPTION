@@ -1,0 +1,80 @@
+Package: n2kanalysis
+Title: Generic Functions to Analyse Data from the Natura 2000 Monitoring
+Version: 0.0
+Authors@R: c(person("Thierry", "Onkelinx", email = "thierry.onkelinx@inbo.be", role = c("aut", "cre")))
+Description: All generic functions for the analysis. The full analysis is
+    defined in the analysis package of each monitoring scheme.
+Depends:
+    R (>= 3.1.2)
+License: GPL-3
+LazyData: true
+Suggests:
+    optimx,
+    Matrix,
+    parallel,
+    INLA,
+    testthat
+Imports:
+    methods,
+    MASS,
+    INLA,
+    lme4,
+    RODBC,
+    assertthat,
+    dplyr,
+    tidyr (>= 0.4.0),
+    n2khelper
+Collate:
+    'n2kParameter_class.R'
+    'n2kAnomaly_class.R'
+    'n2kAnalysisVersion_class.R'
+    'combine.R'
+    'n2kContrast_class.R'
+    'n2kAnalysisMetadata_class.R'
+    'n2kResult_class.R'
+    'combine_result.R'
+    'n2kModel_class.R'
+    'import_S3_classes.R'
+    'n2kInlaNbinomial_class.R'
+    'extract.R'
+    'fit_every_model.R'
+    'n2kGlmerPoisson_class.R'
+    'n2kInlaComparison_class.R'
+    'n2kComposite_class.R'
+    'n2kLrtGlmer_class.R'
+    'fit_model.R'
+    'get_analysis_date.R'
+    'get_analysis_version.R'
+    'get_anomaly.R'
+    'get_data.R'
+    'get_file_fingerprint.R'
+    'get_formula.R'
+    'get_location_group_id.R'
+    'get_model.R'
+    'get_model_parameter.R'
+    'get_model_type.R'
+    'get_parent.R'
+    'get_result.R'
+    'get_scheme_id.R'
+    'get_seed.R'
+    'get_sha1.R'
+    'get_species_group_id.R'
+    'get_status_fingerprint.R'
+    'import_result.R'
+    'inla_inverse.R'
+    'mark_obsolete_dataset.R'
+    'n2k_composite.R'
+    'n2k_glmer_poisson.R'
+    'n2k_inla_comparison.R'
+    'n2k_inla_nbinomial.R'
+    'n2k_lrt_glmer.R'
+    'parent_status.R'
+    'select_factor_count_strictly_positive.R'
+    'select_factor_threshold.R'
+    'select_observed_range.R'
+    'session_package.R'
+    'simplify_result.R'
+    'status.R'
+    'union.R'
+    'validOject.R'
+RoxygenNote: 5.0.1
