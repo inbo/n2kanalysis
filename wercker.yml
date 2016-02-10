@@ -1,12 +1,9 @@
-box: rocker/hadleyverse
+box: inbonatura2000/n2khelper:dev-0.1
 build:
   steps:
     - script:
         name: installation of packages not covered by jimhester/r-dependencies
         code: |
-          apt-get update -y
-          apt-get install -y r-cran-rodbc
-          Rscript -e 'devtools::install_bitbucket("thierry_onkelinx/n2khelper@develop")'
           Rscript -e 'install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")'
     - jimhester/r-dependencies
     - jimhester/r-check
