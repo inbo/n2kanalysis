@@ -2,13 +2,63 @@ box: inbonatura2000/n2khelper:dev-0.1
 build:
   steps:
     - script:
-        name: installation of packages not covered by jimhester/r-dependencies
+        name: installation of dependencies
         code: |
-          wget https://cran.rstudio.com/src/contrib/sp_1.2-2.tar.gz
-          R CMD INSTALL sp_1.2-2.tar.gz
-          rm sp_1.2-2.tar.gz
+          wget https://github.com/cran/sp/archive/1.2-2.tar.gz
+          R CMD INSTALL 1.2-2.tar.gz
+          rm 1.2-2.tar.gz
+          wget https://github.com/cran/BB/archive/2014.10-1.tar.gz
+          R CMD INSTALL 2014.10-1.tar.gz
+          rm 2014.10-1.tar.gz
+          wget https://github.com/cran/R6/archive/2.1.2.tar.gz
+          R CMD INSTALL 2.1.2.tar.gz
+          rm 2.1.2.tar.gz
+          wget https://github.com/cran/Rcgmin/archive/2013-2.21.tar.gz
+          R CMD INSTALL 2013-2.21.tar.gz
+          rm 2013-2.21.tar.gz
+          wget http://cran.rstudio.com/src/contrib/RcppEigen_0.3.2.7.0.tar.gz
+          R CMD INSTALL RcppEigen_0.3.2.7.0.tar.gz
+          rm RcppEigen_0.3.2.7.0.tar.gz
+          wget https://github.com/cran/Rvmmin/archive/2013-11.12.tar.gz
+          R CMD INSTALL 2013-11.12.tar.gz
+          rm 2013-11.12.tar.gz
+          wget https://github.com/cran/dfoptim/archive/R-3.0.3.tar.gz
+          R CMD INSTALL R-3.0.3.tar.gz
+          rm R-3.0.3.tar.gz
+          wget https://github.com/cran/lme4/archive/1.1-10.tar.gz
+          R CMD INSTALL 1.1-10.tar.gz
+          rm 1.1-10.tar.gz
+          wget https://github.com/cran/minqa/archive/1.2.4.tar.gz
+          R CMD INSTALL 1.2.4.tar.gz
+          rm 1.2.4.tar.gz
+          wget https://github.com/cran/nloptr/archive/1.0.4.tar.gz
+          R CMD INSTALL 1.0.4.tar.gz
+          rm 1.0.4.tar.gz
+          wget https://github.com/cran/numDeriv/archive/2014.2-1.tar.gz
+          R CMD INSTALL 2014.2-1.tar.gz
+          rm 2014.2-1.tar.gz
+          wget https://github.com/cran/optextras/archive/2013-10.28.tar.gz
+          R CMD INSTALL 2013-10.28.tar.gz
+          rm 2013-10.28.tar.gz
+          wget https://github.com/cran/optimx/archive/2014.5.4.tar.gz
+          R CMD INSTALL 2014.5.4.tar.gz
+          rm 2014.5.4.tar.gz
+          wget https://github.com/cran/quadprog/archive/R-3.0.3.tar.gz
+          R CMD INSTALL R-3.0.3.tar.gz
+          rm R-3.0.3.tar.gz
+          wget https://github.com/cran/setRNG/archive/2013.9-1.tar.gz
+          R CMD INSTALL 2013.9-1.tar.gz
+          rm 2013.9-1.tar.gz
+          wget https://github.com/cran/svUnit/archive/R-3.0.3.tar.gz
+          R CMD INSTALL R-3.0.3.tar.gz
+          rm R-3.0.3.tar.gz
+          wget https://github.com/cran/tidyr/archive/0.4.1.tar.gz
+          R CMD INSTALL 0.4.1.tar.gz
+          rm 0.4.1.tar.gz
+          wget https://github.com/cran/ucminf/archive/R-3.0.3.tar.gz
+          R CMD INSTALL R-3.0.3.tar.gz
+          rm R-3.0.3.tar.gz
           Rscript -e 'install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")'
-    - jimhester/r-dependencies
     - inbobmk/r-check
     - inbobmk/r-coverage
     - inbobmk/r-lint
