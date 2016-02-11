@@ -58,7 +58,9 @@ build:
           wget https://github.com/cran/tidyr/archive/0.4.1.tar.gz
           R CMD INSTALL 0.4.1.tar.gz
           rm 0.4.1.tar.gz
-          Rscript -e 'install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")'
+          wget https://github.com/INBO-BMK/INLA/archive/v0.0-1455098891.tar.gz
+          R CMD INSTALL v0.0-1455098891.tar.gz
+          rm v0.0-1455098891.tar.gz
     - inbobmk/r-check
     - inbobmk/r-coverage
     - inbobmk/r-lint
