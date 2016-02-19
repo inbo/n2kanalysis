@@ -24,7 +24,7 @@ Imports:
     assertthat,
     dplyr,
     tidyr (>= 0.4.0),
-    n2khelper
+    n2khelper (<= 0.1)
 Collate:
     'n2kParameter_class.R'
     'n2kAnomaly_class.R'
