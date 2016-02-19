@@ -66,6 +66,78 @@ build:
     - inbobmk/r-lint
 
 deploy:
+  master:
+    - script:
+        name: install package
+        code: |
+          wget https://github.com/cran/numDeriv/archive/2014.2-1.tar.gz
+          R CMD INSTALL 2014.2-1.tar.gz
+          rm 2014.2-1.tar.gz
+          wget https://github.com/cran/quadprog/archive/R-3.0.3.tar.gz
+          R CMD INSTALL R-3.0.3.tar.gz
+          rm R-3.0.3.tar.gz
+          wget https://github.com/cran/setRNG/archive/2013.9-1.tar.gz
+          R CMD INSTALL 2013.9-1.tar.gz
+          rm 2013.9-1.tar.gz
+          wget https://github.com/cran/BB/archive/2014.10-1.tar.gz
+          R CMD INSTALL 2014.10-1.tar.gz
+          rm 2014.10-1.tar.gz
+          wget https://github.com/cran/dfoptim/archive/R-3.0.3.tar.gz
+          R CMD INSTALL R-3.0.3.tar.gz
+          rm R-3.0.3.tar.gz
+          wget https://github.com/cran/minqa/archive/1.2.4.tar.gz
+          R CMD INSTALL 1.2.4.tar.gz
+          rm 1.2.4.tar.gz
+          wget https://github.com/cran/nloptr/archive/1.0.4.tar.gz
+          R CMD INSTALL 1.0.4.tar.gz
+          rm 1.0.4.tar.gz
+          wget https://github.com/cran/Rcgmin/archive/2013-2.21.tar.gz
+          R CMD INSTALL 2013-2.21.tar.gz
+          rm 2013-2.21.tar.gz
+          wget https://github.com/cran/optextras/archive/2013-10.28.tar.gz
+          R CMD INSTALL 2013-10.28.tar.gz
+          rm 2013-10.28.tar.gz
+          wget https://github.com/cran/Rvmmin/archive/2013-11.12.tar.gz
+          R CMD INSTALL 2013-11.12.tar.gz
+          rm 2013-11.12.tar.gz
+          wget https://github.com/cran/ucminf/archive/R-3.0.3.tar.gz
+          R CMD INSTALL R-3.0.3.tar.gz
+          rm R-3.0.3.tar.gz
+          wget https://github.com/cran/svUnit/archive/R-3.0.3.tar.gz
+          R CMD INSTALL R-3.0.3.tar.gz
+          rm R-3.0.3.tar.gz
+          wget https://github.com/cran/optimx/archive/2014.5.4.tar.gz
+          R CMD INSTALL 2014.5.4.tar.gz
+          rm 2014.5.4.tar.gz
+          wget https://github.com/cran/RcppEigen/archive/0.3.2.7.0.tar.gz
+          R CMD INSTALL 0.3.2.7.0.tar.gz
+          rm 0.3.2.7.0.tar.gz
+          wget https://github.com/cran/lme4/archive/1.1-10.tar.gz
+          R CMD INSTALL 1.1-10.tar.gz
+          rm 1.1-10.tar.gz
+          wget https://github.com/cran/R6/archive/2.1.2.tar.gz
+          R CMD INSTALL 2.1.2.tar.gz
+          rm 2.1.2.tar.gz
+          wget https://github.com/cran/sp/archive/1.2-2.tar.gz
+          R CMD INSTALL 1.2-2.tar.gz
+          rm 1.2-2.tar.gz
+          wget https://github.com/cran/tidyr/archive/0.4.1.tar.gz
+          R CMD INSTALL 0.4.1.tar.gz
+          rm 0.4.1.tar.gz
+          wget https://github.com/INBO-BMK/INLA/archive/v0.0-1455098891.tar.gz
+          R CMD INSTALL v0.0-1455098891.tar.gz
+          rm v0.0-1455098891.tar.gz
+          Rscript -e 'devtools::install(pkg = ".", build_vignettes = TRUE, upgrade_dependencies = FALSE)'
+          export CURRENT_VERSION=$(grep 'Version: .*' DESCRIPTION | awk '{print $2}')
+          rm -r /pipeline
+
+    - internal/docker-push:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        tag: $CURRENT_VERSION
+        repository: inbonatura2000/n2kanalysis
+        cmd: R --no-save --no-restore
+
   develop:
     - script:
         name: install package
