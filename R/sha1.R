@@ -12,12 +12,7 @@ sha1.glmerMod <- function(x, digits = 14L, zapsmall = 7L) {
     digits = as.integer(digits),
     zapsmall = as.integer(zapsmall)
   )
-  signif.coef <- lapply(
-    ranef(x),
-    function(y){
-      sapply(y, sha1, digits = digits, zapsmall = zapsmall)
-    }
-  )
+  signif.coef <- lapply(ranef(x), sha1, digits = digits, zapsmall = zapsmall)
   signif.coef <- c(
     fixed = sha1(fixef(x), digits = digits, zapsmall = zapsmall),
     signif.coef

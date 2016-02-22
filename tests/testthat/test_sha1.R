@@ -37,8 +37,8 @@ describe("sha1() on models", {
       signif.coef
     )
     expect_identical(
-      get_sha1(model),
-      get_sha1(signif.coef)
+      sha1(model),
+      sha1(signif.coef)
     )
   })
 })
