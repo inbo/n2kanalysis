@@ -5,7 +5,10 @@ describe("import result", {
     skip_on_cran()
     require(dplyr)
     require(RODBC)
-    channel <- n2khelper::connect_result()
+    channel <- n2khelper::connect_result(
+      username = Sys.getenv("N2KRESULT_USERNAME"),
+      password = Sys.getenv("N2KRESULT_PASSWORD")
+    )
     schemeid <- n2khelper::odbc_get_id(
       table = "Scheme",
       variable = "Description",
