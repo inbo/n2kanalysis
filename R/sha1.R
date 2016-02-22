@@ -6,7 +6,7 @@ digest::sha1
 #' @importFrom lme4 fixef ranef
 #' @export
 #' @method sha1 glmerMod
-sha1.glmerMod <- function(x, digits = 14L, zapsmall = 7L) {
+sha1.glmerMod <- function(x, digits = 7L, zapsmall = 7L) {
   signif.coef <- vapply(
     ranef(x),
     sha1,
