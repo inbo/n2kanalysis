@@ -36,6 +36,7 @@ setGeneric(
 #' @importFrom methods setMethod
 #' @importFrom n2khelper check_dataframe_variable
 #' @importFrom assertthat assert_that is.count is.string is.time
+#' @importFrom digest sha1
 #' @include n2kLrtGlmer_class.R
 setMethod(
   f = "n2k_composite",
@@ -86,7 +87,7 @@ setMethod(
     }
     assert_that(is.time(dots$analysis.date))
     assert_that(inherits(dots$extractor, "function"))
-    file.fingerprint <- get_sha1(
+    file.fingerprint <- sha1(
       list(
         dots$scheme.id, dots$species.group.id, dots$location.group.id,
         dots$model.type, dots$formula, dots$first.imported.year,
@@ -120,7 +121,7 @@ setMethod(
     )
 
     version <- get_analysis_version(sessionInfo())
-    status.fingerprint <- get_sha1(
+    status.fingerprint <- sha1(
       list(
         file.fingerprint, dots$status, parameter, index,
         version@AnalysisVersion$Fingerprint, version@AnalysisVersion,

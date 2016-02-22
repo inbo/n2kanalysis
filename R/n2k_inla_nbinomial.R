@@ -34,6 +34,7 @@ setGeneric(
 #' @aliases n2k_inla_nbinomial,n2kInlaNbinomial-methods
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.count is.string is.time
+#' @importFrom digest sha1
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "n2k_inla_nbinomial",
@@ -83,7 +84,7 @@ setMethod(
     if (!is.null(dots$lin.comb)) {
       assert_that(inherits(dots$lin.comb, "matrix"))
     }
-    file.fingerprint <- get_sha1(
+    file.fingerprint <- sha1(
       list(
         data, dots$scheme.id, dots$species.group.id, dots$location.group.id,
         dots$model.type, dots$covariate, dots$first.imported.year,
@@ -106,7 +107,7 @@ setMethod(
         if (is.null(dots$parent.status)) {
           dots$parent.status <- "converged"
         }
-        dots$parent.statusfingerprint <- get_sha1(dots$parent.status)
+        dots$parent.statusfingerprint <- sha1(dots$parent.status)
       } else {
         if (is.null(dots$parent.status)) {
           stop(
@@ -123,7 +124,7 @@ setMethod(
       )
     }
     version <- get_analysis_version(sessionInfo())
-    status.fingerprint <- get_sha1(
+    status.fingerprint <- sha1(
       list(
         file.fingerprint, dots$status, NULL,
         version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
@@ -167,6 +168,7 @@ setMethod(
 #' @rdname n2k_inla_nbinomial
 #' @aliases n2k_inla_nbinomial,n2kInlaNbinomial-methods
 #' @importFrom methods setMethod validObject
+#' @importFrom digest sha1
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "n2k_inla_nbinomial",
@@ -183,7 +185,7 @@ setMethod(
     data@RPackage <- new.version$Union@RPackage
     data@AnalysisVersionRPackage <- new.version$Union@AnalysisVersionRPackage
     data@AnalysisMetadata$AnalysisVersion <- new.version$UnionFingerprint
-    data@AnalysisMetadata$StatusFingerprint <- get_sha1(
+    data@AnalysisMetadata$StatusFingerprint <- sha1(
       list(
         data@AnalysisMetadata$FileFingerprint, data@AnalysisMetadata$Status,
         data@Model, data@AnalysisMetadata$AnalysisVersion,

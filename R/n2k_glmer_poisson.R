@@ -37,6 +37,7 @@ setGeneric(
 #' @aliases n2k_glmer_poisson,n2kGlmerPoisson-methods
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.count is.string is.time noNA
+#' @importFrom digest sha1
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "n2k_glmer_poisson",
@@ -86,7 +87,7 @@ setMethod(
       assert_that(is.character(dots$parent))
       assert_that(noNA(dots$parent))
     }
-    file.fingerprint <- get_sha1(
+    file.fingerprint <- sha1(
       list(
         data, dots$scheme.id, dots$species.group.id, dots$location.group.id,
         dots$model.type, dots$formula, dots$first.imported.year,
@@ -107,7 +108,7 @@ setMethod(
         if (is.null(dots$parent.status)) {
           dots$parent.status <- "converged"
         }
-        dots$parent.status.fingerprint <- get_sha1(dots$parent.status)
+        dots$parent.status.fingerprint <- sha1(dots$parent.status)
       } else {
         if (is.null(dots$parent.status)) {
           stop(
@@ -124,7 +125,7 @@ setMethod(
       )
     }
     version <- get_analysis_version(sessionInfo())
-    status.fingerprint <- get_sha1(
+    status.fingerprint <- sha1(
       list(
         file.fingerprint, dots$status, NULL,
         version@AnalysisVersion$Fingerprint,

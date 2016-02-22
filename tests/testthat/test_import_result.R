@@ -63,10 +63,10 @@ describe("import result", {
     )
     metadata$FileFingerprint <- metadata %>%
       select_(~-Status) %>%
-      apply(1, get_sha1)
+      apply(1, sha1)
     metadata$StatusFingerprint <- metadata %>%
       select_(~FileFingerprint, ~Status) %>%
-      apply(1, get_sha1)
+      apply(1, sha1)
     relation <- metadata %>%
       slice_(1) %>%
       select_(
@@ -121,7 +121,7 @@ describe("import result", {
       stringsAsFactors = FALSE
     ) %>%
       mutate_(
-        Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+        Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
       )
     parameter <- data.frame(
       Description = paste("Unit test", 1:10),
@@ -130,7 +130,7 @@ describe("import result", {
     ) %>%
       rowwise() %>%
       mutate_(
-        Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+        Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
       ) %>%
       bind_rows(parameter) %>%
       as.data.frame()
@@ -153,7 +153,7 @@ describe("import result", {
     ) %>%
       rowwise() %>%
       mutate_(
-        Fingerprint = ~get_sha1(c(Description = Description))
+        Fingerprint = ~sha1(c(Description = Description))
       ) %>%
       as.data.frame()
     anomaly <- expand.grid(
@@ -177,7 +177,7 @@ describe("import result", {
     ) %>%
       rowwise() %>%
       mutate_(
-        Fingerprint = ~get_sha1(
+        Fingerprint = ~sha1(
           c(Description = Description, Analysis = Analysis)
         )
       ) %>%

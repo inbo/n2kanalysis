@@ -1,4 +1,4 @@
-context("elaborate comparison of get_sha1() on 32-bit and 64 bit")
+context("elaborate comparison of sha1() on 32-bit and 64 bit")
 describe("file fingerprint for n2k_glmer_poisson", {
 
   data(cbpp, package = "lme4")
@@ -49,7 +49,7 @@ describe("file fingerprint for n2k_glmer_poisson", {
   # generate the correct values
   cat("\ncorrect <- c(\n")
   cat(
-    sprintf("  \"%s\"", sapply(test.element, get_sha1)),
+    sprintf("  \"%s\"", sapply(test.element, sha1)),
     sep = ",\n"
   )
   cat(")\n")
@@ -74,7 +74,7 @@ describe("file fingerprint for n2k_glmer_poisson", {
   it("return the same SHA1 on both 32-bit and 64-bit OS", {
     for (i in seq_along(test.element)) {
       expect_identical(
-        get_sha1(test.element[[i]]),
+        sha1(test.element[[i]]),
         correct[i],
         label = paste0("test.element[[", i, "]]")
       )

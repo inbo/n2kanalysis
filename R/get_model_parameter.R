@@ -17,6 +17,7 @@ setGeneric(
 #' @importFrom methods setMethod
 #' @importFrom lme4 ranef VarCorr
 #' @importFrom assertthat assert_that is.flag noNA
+#' @importFrom digest sha1
 #' @include n2kGlmerPoisson_class.R
 #' @include n2kParameter_class.R
 #' @param verbose Print extra information on the screen
@@ -37,7 +38,7 @@ setMethod(
       Parent = NA,
       stringsAsFactors = FALSE
     )
-    parameter$Fingerprint <- apply(parameter, 1, get_sha1)
+    parameter$Fingerprint <- apply(parameter, 1, sha1)
 
     # add fixed effect parameters
     if (verbose) {
@@ -79,7 +80,7 @@ setMethod(
         Parent = fixed.parent,
         stringsAsFactors = FALSE
       )
-      extra$Fingerprint <- apply(extra, 1, get_sha1)
+      extra$Fingerprint <- apply(extra, 1, sha1)
       parameter <- rbind(parameter, extra)
       continuous <- grep(paste0("^", i, "$"), parameter.estimate$Parameter)
       if (length(continuous) == 1) {
@@ -95,7 +96,7 @@ setMethod(
         Parent = extra$Fingerprint,
         stringsAsFactors = FALSE
       )
-      extra.factor$Fingerprint <- apply(extra.factor, 1, get_sha1)
+      extra.factor$Fingerprint <- apply(extra.factor, 1, sha1)
       parameter <- rbind(parameter, extra.factor)
       parameter.estimate$Parameter[present] <- extra.factor$Fingerprint
     }
@@ -116,7 +117,7 @@ setMethod(
       ],
       stringsAsFactors = FALSE
     )
-    extra$Fingerprint <- apply(extra, 1, get_sha1)
+    extra$Fingerprint <- apply(extra, 1, sha1)
     parameter <- rbind(parameter, extra)
     tmp <- data.frame(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
@@ -142,7 +143,7 @@ setMethod(
       ],
       stringsAsFactors = FALSE
     )
-    extra$Fingerprint <- apply(extra, 1, get_sha1)
+    extra$Fingerprint <- apply(extra, 1, sha1)
     parameter <- rbind(parameter, extra)
     for (i in seq_along(random.effect)) {
       extra.blup <- data.frame(
@@ -150,7 +151,7 @@ setMethod(
         Parent = extra$Fingerprint[i],
         stringsAsFactors = FALSE
       )
-      extra.blup$Fingerprint <- apply(extra.blup, 1, get_sha1)
+      extra.blup$Fingerprint <- apply(extra.blup, 1, sha1)
       parameter <- rbind(parameter, extra.blup)
 
       re <- random.effect[[i]][, 1]
@@ -178,7 +179,7 @@ setMethod(
       Parent = parameter$Fingerprint[parameter$Description == "Fitted"],
       stringsAsFactors = FALSE
     )
-    extra.fitted$Fingerprint <- apply(extra.fitted, 1, get_sha1)
+    extra.fitted$Fingerprint <- apply(extra.fitted, 1, sha1)
     parameter <- rbind(parameter, extra.fitted)
     tmp <- data.frame(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
@@ -215,7 +216,7 @@ setMethod(
       Parent = NA,
       stringsAsFactors = FALSE
     )
-    parameter$Fingerprint <- apply(parameter, 1, get_sha1)
+    parameter$Fingerprint <- apply(parameter, 1, sha1)
 
     parameter.estimate <- data.frame(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
@@ -251,7 +252,7 @@ setMethod(
       Parent = NA,
       stringsAsFactors = FALSE
     )
-    parameter$Fingerprint <- apply(parameter, 1, get_sha1)
+    parameter$Fingerprint <- apply(parameter, 1, sha1)
 
     parameter.estimate <- cbind(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
@@ -266,7 +267,7 @@ setMethod(
       Parent = parameter$Fingerprint,
       stringsAsFactors = FALSE
     )
-    extra$Fingerprint <- apply(extra, 1, get_sha1)
+    extra$Fingerprint <- apply(extra, 1, sha1)
     parameter <- rbind(parameter, extra)
 
     parameter.estimate$Parameter <- extra$Fingerprint
@@ -282,7 +283,7 @@ setMethod(
 #' @rdname get_model_parameter
 #' @importFrom methods setMethod
 #' @importFrom dplyr data_frame rowwise mutate_ filter_ select_ left_join mutate_ bind_rows add_rownames transmute_
-#' @importFrom n2khelper get_sha1
+#' @importFrom digest sha1
 #' @importFrom assertthat assert_that is.flag noNA
 #' @include n2kInlaNbinomial_class.R
 #' @include n2kParameter_class.R
@@ -305,7 +306,7 @@ setMethod(
     ) %>%
       rowwise() %>%
       mutate_(
-        Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+        Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
       )
 
     # add fixed effect parameters
@@ -348,7 +349,7 @@ setMethod(
       ) %>%
         rowwise() %>%
         mutate_(
-          Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+          Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
         )
       extra.factor <- data_frame(
         Description = gsub(
@@ -366,7 +367,7 @@ setMethod(
         extra.factor <- extra.factor %>%
           rowwise() %>%
           mutate_(
-            Fingerprint = ~get_sha1(
+            Fingerprint = ~sha1(
               c(Description = Description, Parent = Parent)
             )
           )
@@ -397,7 +398,7 @@ setMethod(
       ) %>%
         rowwise() %>%
         mutate_(
-          Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+          Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
         )
       parts <- strsplit(i, ":")[[1]]
       level.name <- gsub(
@@ -415,7 +416,7 @@ setMethod(
         filter_(~!grepl("^:*$", Description)) %>%
         rowwise() %>%
         mutate_(
-          Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+          Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
         )
       if (nrow(extra.factor) > 0) {
         to.merge <- extra.factor %>%
@@ -472,7 +473,7 @@ setMethod(
       ) %>%
       rowwise() %>%
       mutate_(
-        Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+        Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
       )
     parameter.estimate <- extra %>%
       select_(~-Parent) %>%
@@ -581,7 +582,7 @@ setMethod(
       bind_rows(blup.parent) %>%
       rowwise() %>%
       mutate_(
-        Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+        Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
       )
     blup.parent <- blup.parent %>%
       left_join(
@@ -595,7 +596,7 @@ setMethod(
       select_(~-ParentFingerprint) %>%
       rowwise() %>%
       mutate_(
-        Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+        Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
       )
     blup <-
       blup.parent %>%
@@ -606,7 +607,7 @@ setMethod(
       select_(~Parent, Description = ~ Parameter) %>%
       rowwise() %>%
       mutate_(
-        Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+        Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
       ) %>%
       bind_rows(parameter, blup.parent %>% select_(~-Original))
     parameter.estimate <- blup %>%
@@ -646,7 +647,7 @@ setMethod(
       ) %>%
       rowwise() %>%
       mutate_(
-        Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+        Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
       ) %>%
       bind_rows(parameter)
     parameter.estimate <- fitted %>%

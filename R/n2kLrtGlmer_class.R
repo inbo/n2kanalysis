@@ -32,6 +32,7 @@ setClass(
 
 #' @importFrom methods setValidity
 #' @importFrom assertthat assert_that is.string
+#' @importFrom digest sha1
 setValidity(
   "n2kLrtGlmer",
   function(object){
@@ -47,7 +48,7 @@ setValidity(
       stop("'Parent0' is not available in 'AnalysisRelation' slot")
     }
 
-    file.fingerprint <- get_sha1(
+    file.fingerprint <- sha1(
       list(
         object@AnalysisMetadata$SchemeID,
         object@AnalysisMetadata$SpeciesGroupID,
@@ -65,7 +66,7 @@ setValidity(
       stop("Corrupt FileFingerprint")
     }
 
-    status.fingerprint <- get_sha1(
+    status.fingerprint <- sha1(
       list(
         object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
         object@Model, object@Model0, object@Anova,

@@ -88,13 +88,14 @@ setGeneric(
 
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
+#' @importFrom digest sha1
 #' @include n2kGlmerPoisson_class.R
 setReplaceMethod(
   "status",
   "n2kGlmerPoisson",
   function(x, value){
     x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- get_sha1(
+    x@AnalysisMetadata$StatusFingerprint <- sha1(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
         x@Model, x@AnalysisMetadata$AnalysisVersion,
@@ -109,13 +110,14 @@ setReplaceMethod(
 
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
+#' @importFrom digest sha1
 #' @include n2kInlaNbinomial_class.R
 setReplaceMethod(
   "status",
   "n2kInlaNbinomial",
   function(x, value){
     x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- get_sha1(
+    x@AnalysisMetadata$StatusFingerprint <- sha1(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Model,
         x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
@@ -129,6 +131,7 @@ setReplaceMethod(
 
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
+#' @importFrom digest sha1
 #' @include n2kLrtGlmer_class.R
 setReplaceMethod(
   "status",
@@ -145,7 +148,7 @@ setReplaceMethod(
     } else {
       model0 <- x@Model0@frame
     }
-    x@AnalysisMetadata$StatusFingerprint <- get_sha1(
+    x@AnalysisMetadata$StatusFingerprint <- sha1(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
         x@Model, x@Model0, x@Anova,
@@ -161,13 +164,14 @@ setReplaceMethod(
 
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
+#' @importFrom digest sha1
 #' @include n2kComposite_class.R
 setReplaceMethod(
   "status",
   "n2kComposite",
   function(x, value){
     x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- get_sha1(
+    x@AnalysisMetadata$StatusFingerprint <- sha1(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
         x@Parameter, x@Index, x@AnalysisMetadata$AnalysisVersion,
@@ -182,13 +186,14 @@ setReplaceMethod(
 
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
+#' @importFrom digest sha1
 #' @include n2kInlaComparison_class.R
 setReplaceMethod(
   "status",
   "n2kInlaComparison",
   function(x, value){
     x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- get_sha1(
+    x@AnalysisMetadata$StatusFingerprint <- sha1(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
         x@Models, x@WAIC, x@AnalysisMetadata$AnalysisVersion,

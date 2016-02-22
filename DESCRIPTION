@@ -24,7 +24,8 @@ Imports:
     assertthat,
     dplyr,
     tidyr (>= 0.4.0),
-    n2khelper (<= 0.1)
+    digest (>= 0.6.9),
+    n2khelper (>= 0.2)
 Collate:
     'n2kParameter_class.R'
     'n2kAnomaly_class.R'
@@ -58,7 +59,6 @@ Collate:
     'get_result.R'
     'get_scheme_id.R'
     'get_seed.R'
-    'get_sha1.R'
     'get_species_group_id.R'
     'get_status_fingerprint.R'
     'import_result.R'
@@ -74,6 +74,7 @@ Collate:
     'select_factor_threshold.R'
     'select_observed_range.R'
     'session_package.R'
+    'sha1.R'
     'simplify_result.R'
     'status.R'
     'union.R'

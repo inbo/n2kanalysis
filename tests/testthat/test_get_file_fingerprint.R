@@ -34,7 +34,7 @@ describe("file fingerprint for n2k_glmer_poisson", {
       parent = this.parent,
       this.duration
     )
-    file.fingerprint <- get_sha1(
+    file.fingerprint <- sha1(
       list(
         cbpp, this.scheme.id, this.species.group.id, this.location.group.id,
         this.model.type, this.formula, this.first.imported.year,

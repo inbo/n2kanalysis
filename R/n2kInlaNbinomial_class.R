@@ -32,6 +32,7 @@ setClass(
 
 #' @importFrom methods setValidity
 #' @importFrom n2khelper check_dataframe_variable
+#' @importFrom digest sha1
 setValidity(
   "n2kInlaNbinomial",
   function(object){
@@ -52,7 +53,7 @@ setValidity(
       }
     }
 
-    file.fingerprint <- get_sha1(
+    file.fingerprint <- sha1(
       list(
         object@Data, object@AnalysisMetadata$SchemeID,
         object@AnalysisMetadata$SpeciesGroupID,
@@ -71,7 +72,7 @@ setValidity(
       stop("Corrupt FileFingerprint")
     }
 
-    status.fingerprint <- get_sha1(
+    status.fingerprint <- sha1(
       list(
         object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
         object@Model, object@AnalysisMetadata$AnalysisVersion,

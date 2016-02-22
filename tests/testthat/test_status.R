@@ -100,7 +100,7 @@ describe("n2kGlmerPoisson", {
   })
 
   it("sets the correct status fingerprint", {
-    status.fingerprint <- get_sha1(
+    status.fingerprint <- sha1(
       list(
         object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
         coef(object@Model), object@AnalysisMetadata$AnalysisVersion,
@@ -114,7 +114,7 @@ describe("n2kGlmerPoisson", {
     )
 
     status(object) <- "waiting"
-    status.fingerprint <- get_sha1(
+    status.fingerprint <- sha1(
       list(
         object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
         coef(object@Model), object@AnalysisMetadata$AnalysisVersion,
