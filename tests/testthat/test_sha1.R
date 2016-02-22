@@ -10,9 +10,10 @@ describe("sha1() on models", {
       data = cbpp,
       family = poisson
     )
-    signif.coef <- lapply(
+    signif.coef <- vapply(
       lme4::ranef(model),
-      sha1
+      sha1,
+      FUN.VALUE = NA_character_
     )
     signif.coef <- c(
       fixed = sha1(lme4::fixef(model)),
@@ -28,9 +29,10 @@ describe("sha1() on models", {
       data = cbpp,
       family = poisson
     )
-    signif.coef <- lapply(
+    signif.coef <- vapply(
       lme4::ranef(model),
-      sha1
+      sha1,
+      FUN.VALUE = NA_character_
     )
     signif.coef <- c(
       fixed = sha1(lme4::fixef(model)),
