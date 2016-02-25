@@ -101,7 +101,8 @@ setReplaceMethod(
         x@Model, x@AnalysisMetadata$AnalysisVersion,
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
-      )
+      ),
+      digits = 7L
     )
     validObject(x)
     return(x)
@@ -122,7 +123,8 @@ setReplaceMethod(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Model,
         x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
         x@AnalysisVersionRPackage, x@AnalysisRelation
-      )
+      ),
+      digits = 7L
     )
     validObject(x)
     return(x)
@@ -155,7 +157,8 @@ setReplaceMethod(
         x@AnalysisMetadata$AnalysisVersion,
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
-      )
+      ),
+      digits = 7L
     )
     validObject(x)
     return(x)
@@ -177,7 +180,8 @@ setReplaceMethod(
         x@Parameter, x@Index, x@AnalysisMetadata$AnalysisVersion,
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
-      )
+      ),
+      digits = 7L
     )
     validObject(x)
     return(x)
@@ -199,7 +203,8 @@ setReplaceMethod(
         x@Models, x@WAIC, x@AnalysisMetadata$AnalysisVersion,
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
-      )
+      ),
+      digits = 7L
     )
     validObject(x)
     return(x)

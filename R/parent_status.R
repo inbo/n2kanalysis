@@ -75,7 +75,8 @@ setReplaceMethod(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
         x@Parameter, x@Index, x@AnalysisMetadata$AnalysisVersion,
         x@AnalysisRelation
-      )
+      ),
+      digits = 7L
     )
     validObject(x)
     return(x)

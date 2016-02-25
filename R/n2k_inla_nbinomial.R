@@ -129,7 +129,8 @@ setMethod(
         file.fingerprint, dots$status, NULL,
         version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
         version@RPackage,  version@AnalysisVersionRPackage, analysis.relation
-      )
+      ),
+      digits = 7L
     )
 
     new(
@@ -191,7 +192,8 @@ setMethod(
         data@Model, data@AnalysisMetadata$AnalysisVersion,
         data@AnalysisVersion, data@RPackage, data@AnalysisVersionRPackage,
         data@AnalysisRelation
-      )
+      ),
+      digits = 7L
     )
 
     validObject(data)

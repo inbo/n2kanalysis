@@ -117,7 +117,8 @@ setMethod(
         file.fingerprint, dots$status, list(), NULL,
         version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
         version@RPackage, version@AnalysisVersionRPackage, dots$parent.status
-      )
+      ),
+      digits = 7L
     )
 
 

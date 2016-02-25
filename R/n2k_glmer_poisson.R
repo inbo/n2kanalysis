@@ -131,7 +131,8 @@ setMethod(
         version@AnalysisVersion$Fingerprint,
         version@AnalysisVersion, version@RPackage,
         version@AnalysisVersionRPackage, analysis.relation
-      )
+      ),
+      digits = 7L
     )
 
     new(

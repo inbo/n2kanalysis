@@ -106,7 +106,8 @@ describe("n2kGlmerPoisson", {
         coef(object@Model), object@AnalysisMetadata$AnalysisVersion,
         object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation
-      )
+      ),
+      digits = 7L
     )
     expect_identical(
       get_status_fingerprint(object),
@@ -120,7 +121,8 @@ describe("n2kGlmerPoisson", {
         coef(object@Model), object@AnalysisMetadata$AnalysisVersion,
         object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation
-      )
+      ),
+      digits = 7L
     )
     expect_identical(
       get_status_fingerprint(object),
