@@ -28,10 +28,10 @@ metadata <- data.frame(
 )
 metadata$FileFingerprint <- metadata %>%
   select_(~-Status) %>%
-  apply(1, get_sha1)
+  apply(1, sha1)
 metadata$StatusFingerprint <- metadata %>%
   select_(~FileFingerprint, ~Status) %>%
-  apply(1, get_sha1)
+  apply(1, sha1)
 
 datasourceid <- 10L
 
@@ -42,7 +42,7 @@ parameter <- data.frame(
 ) %>%
   rowwise() %>%
   mutate_(
-    Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+    Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
   )
 parameter <- expand.grid(
     Description = seq_len(10),
@@ -61,7 +61,7 @@ parameter <- expand.grid(
   select_(~Description, Parent = ~Fingerprint) %>%
   rowwise() %>%
   mutate_(
-    Fingerprint = ~get_sha1(c(Description = Description, Parent = Parent))
+    Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
   ) %>%
   bind_rows(parameter) %>%
   as.data.frame()
@@ -84,7 +84,7 @@ anomalytype <- data.frame(
 ) %>%
   rowwise() %>%
   mutate_(
-    Fingerprint = ~get_sha1(c(Description = Description))
+    Fingerprint = ~sha1(c(Description = Description))
   ) %>%
   as.data.frame()
 anomaly <- expand.grid(
@@ -104,7 +104,7 @@ contrast <- expand.grid(
 ) %>%
   rowwise() %>%
   mutate_(
-    Fingerprint = ~get_sha1(c(Description = Description, Analysis = Analysis))
+    Fingerprint = ~sha1(c(Description = Description, Analysis = Analysis))
   ) %>%
   as.data.frame()
 contrast.coefficient <- expand.grid(

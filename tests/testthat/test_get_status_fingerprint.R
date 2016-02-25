@@ -35,13 +35,14 @@ describe("status fingerprint for n2k_glmer_poisson", {
       this.duration
     )
     version <- get_analysis_version(sessionInfo())
-    status.fingerprint <- get_sha1(
+    status.fingerprint <- sha1(
       list(
         get_file_fingerprint(object), status(object), NULL,
         version@AnalysisVersion$Fingerprint,
         version@AnalysisVersion, version@RPackage,
         version@AnalysisVersionRPackage, object@AnalysisRelation
-      )
+      ),
+      digits = 6L
     )
     expect_identical(status.fingerprint, get_status_fingerprint(object))
   })

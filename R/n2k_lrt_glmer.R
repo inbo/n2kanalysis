@@ -35,6 +35,7 @@ setGeneric(
 #' @importFrom methods setMethod
 #' @importFrom n2khelper check_dataframe_variable
 #' @importFrom assertthat assert_that is.count is.string
+#' @importFrom digest sha1
 #' @include n2kLrtGlmer_class.R
 setMethod(
   f = "n2k_lrt_glmer",
@@ -92,7 +93,7 @@ setMethod(
     dots$parent.status <- dots$parent.status[
       order(dots$parent.status$ParentAnalysis),
     ]
-    file.fingerprint <- get_sha1(
+    file.fingerprint <- sha1(
       list(
         dots$scheme.id, dots$species.group.id, dots$location.group.id,
         dots$model.type, dots$formula, dots$first.imported.year,
@@ -107,12 +108,13 @@ setMethod(
       c("Analysis", "ParentAnalysis", "ParentStatusFingerprint", "ParentStatus")
     ]
     version <- get_analysis_version(sessionInfo())
-    status.fingerprint <- get_sha1(
+    status.fingerprint <- sha1(
       list(
         file.fingerprint, dots$status, NULL, NULL, NULL,
         version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
         version@RPackage, version@AnalysisVersionRPackage, dots$parent.status
-      )
+      ),
+      digits = 6L
     )
 
     new(

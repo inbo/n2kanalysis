@@ -16,6 +16,7 @@ setGeneric(
 #' @rdname session_package
 #' @aliases session_package,sessionInfo-methods
 #' @importFrom methods setMethod
+#' @importFrom digest sha1
 setMethod(
   f = "session_package",
   signature = signature(session = "sessionInfo"),
@@ -57,8 +58,8 @@ setMethod(
     }
     rownames(package) <- NULL
     package <- package[order(package$Description), ]
-    package$Fingerprint <- apply(package, 1, get_sha1)
-    attr(package, "AnalysisVersion") <- get_sha1(package)
+    package$Fingerprint <- apply(package, 1, sha1)
+    attr(package, "AnalysisVersion") <- sha1(package)
     return(package)
   }
 )

@@ -15,6 +15,7 @@ setClassUnion("maybeGlmerMod", c("glmerMod", "NULL"))
 #' @exportClass n2kGlmerPoisson
 #' @aliases n2kGlmerPoisson-class
 #' @importFrom methods setClass
+#' @importFrom digest sha1
 #' @docType class
 #' @include n2kModel_class.R
 setClass(
@@ -58,7 +59,7 @@ setValidity(
       }
     }
 
-    file.fingerprint <- get_sha1(
+    file.fingerprint <- sha1(
       list(
         object@Data, object@AnalysisMetadata$SchemeID,
         object@AnalysisMetadata$SpeciesGroupID,
@@ -76,13 +77,14 @@ setValidity(
       stop("Corrupt FileFingerprint")
     }
 
-    status.fingerprint <- get_sha1(
+    status.fingerprint <- sha1(
       list(
         object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
         object@Model, object@AnalysisMetadata$AnalysisVersion,
         object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation
-      )
+      ),
+      digits = 6L
     )
     if (object@AnalysisMetadata$StatusFingerprint != status.fingerprint) {
       stop("Corrupt StatusFingerprint")

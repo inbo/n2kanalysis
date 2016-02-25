@@ -18,6 +18,7 @@ setGeneric(
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.count is.number is.flag noNA
 #' @importFrom lme4 ranef
+#' @importFrom digest sha1
 #' @include n2kGlmerPoisson_class.R
 #' @include n2kAnomaly_class.R
 #' @param datasource.id ID of the datasource for the random effects
@@ -126,7 +127,7 @@ setMethod(
         ),
         stringsAsFactors = FALSE
       )
-      extra$Fingerprint <- apply(extra, 1, get_sha1)
+      extra$Fingerprint <- apply(extra, 1, sha1)
       anomaly.type <- rbind(anomaly.type, extra)
 
       extra.observation <- data.frame(
@@ -155,7 +156,7 @@ setMethod(
         Description = "Zero observed and high expected",
         stringsAsFactors = FALSE
       )
-      extra$Fingerprint <- apply(extra, 1, get_sha1)
+      extra$Fingerprint <- apply(extra, 1, sha1)
       anomaly.type <- rbind(anomaly.type, extra)
       extra.observation <- data.frame(
         AnomalyType = extra$Fingerprint,
@@ -206,7 +207,7 @@ setMethod(
           Description = paste(names(combination)[j], "random intercept"),
           stringsAsFactors = FALSE
         )
-        extra$Fingerprint <- apply(extra, 1, get_sha1)
+        extra$Fingerprint <- apply(extra, 1, sha1)
         anomaly.type <- unique(rbind(anomaly.type, extra))
 
         selection[names(re)[i]] <- row.names(selection)
@@ -272,6 +273,7 @@ setMethod(
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.count is.number is.flag noNA
 #' @importFrom dplyr data_frame add_rownames select_ filter_ mutate_ bind_cols arrange_ ungroup slice_ transmute_
+#' @importFrom digest sha1
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "get_anomaly",
@@ -320,7 +322,7 @@ setMethod(
     ) %>%
       rowwise() %>%
       mutate_(
-        Fingerprint = ~get_sha1(c(Description = Description))
+        Fingerprint = ~sha1(c(Description = Description))
       )
     anomaly <- data_frame(
       AnomalyType = character(0),
@@ -445,7 +447,7 @@ setMethod(
         select_(Description = ~ AnomalyType) %>%
         rowwise() %>%
         mutate_(
-          Fingerprint = ~get_sha1(c(Description = Description))
+          Fingerprint = ~sha1(c(Description = Description))
         ) %>%
         bind_rows(anomaly.type)
       anomaly <- re.anomaly %>%

@@ -50,7 +50,7 @@ setMethod(
 #' @rdname get_result
 #' @importFrom methods setMethod
 #' @importFrom dplyr %>% rowwise mutate_ add_rownames inner_join select_ transmute_ arrange_ filter_
-#' @importFrom n2khelper get_sha1
+#' @importFrom digest sha1
 #' @importFrom tidyr gather_
 #' @importFrom assertthat assert_that is.flag noNA
 #' @include n2kResult_class.R
@@ -87,7 +87,7 @@ setMethod(
     ) %>%
       rowwise() %>%
       mutate_(
-        Fingerprint = ~get_sha1(
+        Fingerprint = ~sha1(
           c(Description = Description, Analysis = Analysis)
         )
       ) %>%
