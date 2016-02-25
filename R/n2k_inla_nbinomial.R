@@ -130,7 +130,7 @@ setMethod(
         version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
         version@RPackage,  version@AnalysisVersionRPackage, analysis.relation
       ),
-      digits = 7L
+      digits = 6L
     )
 
     new(
@@ -193,7 +193,7 @@ setMethod(
         data@AnalysisVersion, data@RPackage, data@AnalysisVersionRPackage,
         data@AnalysisRelation
       ),
-      digits = 7L
+      digits = 6L
     )
 
     validObject(data)

@@ -107,7 +107,7 @@ describe("n2kGlmerPoisson", {
         object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation
       ),
-      digits = 7L
+      digits = 6L
     )
     expect_identical(
       get_status_fingerprint(object),
@@ -122,7 +122,7 @@ describe("n2kGlmerPoisson", {
         object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation
       ),
-      digits = 7L
+      digits = 6L
     )
     expect_identical(
       get_status_fingerprint(object),

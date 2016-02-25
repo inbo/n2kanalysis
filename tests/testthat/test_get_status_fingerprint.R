@@ -42,7 +42,7 @@ describe("status fingerprint for n2k_glmer_poisson", {
         version@AnalysisVersion, version@RPackage,
         version@AnalysisVersionRPackage, object@AnalysisRelation
       ),
-      digits = 7L
+      digits = 6L
     )
     expect_identical(status.fingerprint, get_status_fingerprint(object))
   })

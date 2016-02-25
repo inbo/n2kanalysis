@@ -76,7 +76,7 @@ setReplaceMethod(
         x@Parameter, x@Index, x@AnalysisMetadata$AnalysisVersion,
         x@AnalysisRelation
       ),
-      digits = 7L
+      digits = 6L
     )
     validObject(x)
     return(x)

@@ -118,7 +118,7 @@ setMethod(
         version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
         version@RPackage, version@AnalysisVersionRPackage, dots$parent.status
       ),
-      digits = 7L
+      digits = 6L
     )
 
 

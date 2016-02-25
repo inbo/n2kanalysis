@@ -102,7 +102,7 @@ setReplaceMethod(
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
       ),
-      digits = 7L
+      digits = 6L
     )
     validObject(x)
     return(x)
@@ -124,7 +124,7 @@ setReplaceMethod(
         x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
         x@AnalysisVersionRPackage, x@AnalysisRelation
       ),
-      digits = 7L
+      digits = 6L
     )
     validObject(x)
     return(x)
@@ -158,7 +158,7 @@ setReplaceMethod(
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
       ),
-      digits = 7L
+      digits = 6L
     )
     validObject(x)
     return(x)
@@ -181,7 +181,7 @@ setReplaceMethod(
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
       ),
-      digits = 7L
+      digits = 6L
     )
     validObject(x)
     return(x)
@@ -204,7 +204,7 @@ setReplaceMethod(
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
       ),
-      digits = 7L
+      digits = 6L
     )
     validObject(x)
     return(x)

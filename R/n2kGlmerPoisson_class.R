@@ -84,7 +84,7 @@ setValidity(
         object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation
       ),
-      digits = 7L
+      digits = 6L
     )
     if (object@AnalysisMetadata$StatusFingerprint != status.fingerprint) {
       stop("Corrupt StatusFingerprint")

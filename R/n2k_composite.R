@@ -127,7 +127,7 @@ setMethod(
         version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
         version@RPackage, version@AnalysisVersionRPackage, parent.status
       ),
-      digits = 7L
+      digits = 6L
     )
 
     new(

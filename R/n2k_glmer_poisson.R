@@ -132,7 +132,7 @@ setMethod(
         version@AnalysisVersion, version@RPackage,
         version@AnalysisVersionRPackage, analysis.relation
       ),
-      digits = 7L
+      digits = 6L
     )
 
     new(
