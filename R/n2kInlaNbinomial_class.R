@@ -1,7 +1,7 @@
 #' @importFrom methods setClassUnion
 #' @include import_S3_classes.R
 setClassUnion("maybeInla", c("inla", "NULL"))
-setClassUnion("maybeMatrix", c("matrix", "NULL"))
+setClassUnion("maybeMatrix", c("matrix", "list", "NULL"))
 
 #' The n2kInlaNBinomial class
 #'

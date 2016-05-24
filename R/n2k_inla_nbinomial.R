@@ -82,7 +82,10 @@ setMethod(
       dots$parent <- character(0)
     }
     if (!is.null(dots$lin.comb)) {
-      assert_that(inherits(dots$lin.comb, "matrix"))
+      assert_that(
+        inherits(dots$lin.comb, "matrix") |
+          inherits(dots$lin.comb, "list")
+      )
     }
     file.fingerprint <- sha1(
       list(

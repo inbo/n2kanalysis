@@ -81,10 +81,19 @@ setMethod(
         )
       )
     }
+    if (is.matrix(x@LinearCombination)) {
+      description <- rownames(x@LinearCombination)
+    } else {
+      if (is.matrix(x@LinearCombination[[1]])) {
+        description <- rownames(x@LinearCombination[[1]])
+      } else {
+        description <- names(x@LinearCombination[[1]])
+      }
+    }
     contrast <- data_frame(
-      Description = rownames(x@LinearCombination),
-      Analysis = get_file_fingerprint(x)
-    ) %>%
+        Description = description,
+        Analysis = get_file_fingerprint(x)
+      ) %>%
       rowwise() %>%
       mutate_(
         Fingerprint = ~sha1(
@@ -112,14 +121,38 @@ setMethod(
         )
       )
     }
-    contrast.coefficient <- x@LinearCombination %>%
-      as.data.frame() %>%
-      add_rownames("Description")
+    if (is.matrix(x@LinearCombination)) {
+      contrast.coefficient <- x@LinearCombination %>%
+        as.data.frame()
+    } else {
+      contrast.coefficient <- lapply(
+        names(x@LinearCombination),
+        function(y){
+          if (is.vector(x@LinearCombination[[y]])) {
+            z <- data.frame(
+              x@LinearCombination[[y]]
+            )
+            colnames(z) <- y
+            z
+          } else {
+            as.data.frame(x@LinearCombination[[y]])
+          }
+        }
+      ) %>%
+        bind_cols()
+      if (is.matrix(x@LinearCombination[[1]])) {
+        contrast.coefficient$Description <- rownames(x@LinearCombination[[1]])
+      } else {
+        contrast.coefficient$Description <- names(x@LinearCombination[[1]])
+      }
+    }
     contrast.coefficient <- contrast.coefficient %>%
       gather_(
         "ParameterID",
         "Coefficient",
-        tail(colnames(contrast.coefficient), -1)
+        colnames(contrast.coefficient)[
+          !grepl("Description", colnames(contrast.coefficient))
+        ]
       ) %>%
       inner_join(
         contrast %>%

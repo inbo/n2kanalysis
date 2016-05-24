@@ -190,16 +190,21 @@ setMethod(
     if (is.null(x@LinearCombination)) {
       lc <- NULL
     } else {
-      lc <- x@LinearCombination
-      tmp <- lapply(
-        unique(colnames(lc)),
-        function(i){
-          lc[, colnames(lc) == i]
+      lincomb <- x@LinearCombination
+      if (class(lincomb) == "matrix") {
+        lc <- lincomb %>%
+          as.data.frame() %>%
+          as.list() %>%
+          INLA::inla.make.lincombs()
+        names(lc) <- rownames(lincomb)
+      } else {
+        lc <- INLA::inla.make.lincombs(lincomb)
+        if (is.matrix(lincomb[[1]])) {
+          names(lc) <- rownames(lincomb[[1]])
+        } else {
+          names(lc) <- names(lincomb[[1]])
         }
-      )
-      names(tmp) <- unique(colnames(lc))
-      lc <- INLA::inla.make.lincombs(tmp)
-      names(lc) <- rownames(x@LinearCombination)
+      }
     }
     model <- try(
       INLA::inla(
@@ -433,7 +438,7 @@ setMethod(
 
 #' @rdname fit_model
 #' @importFrom methods setMethod
-#' @importFrom dplyr rename_ select_ inner_join arrange_ filter_ mutate_
+#' @importFrom dplyr rename_ select_ inner_join arrange_ filter_ mutate_ bind_rows
 #' @include n2kInlaComparison_class.R
 setMethod(
   f = "fit_model",
@@ -450,9 +455,7 @@ setMethod(
 
     # status: "new"
     if (status(x) == "new") {
-      x@WAIC <- do.call(
-        rbind,
-        lapply(
+      x@WAIC <- lapply(
           names(x@Models),
           function(parent){
             data.frame(
@@ -462,8 +465,9 @@ setMethod(
               stringsAsFactors = FALSE
             )
           }
-        )
-      )
+        ) %>%
+        bind_rows() %>%
+        as.data.frame()
       status(x) <- "converged"
       return(x)
     }
