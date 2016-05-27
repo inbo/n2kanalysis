@@ -25,16 +25,18 @@ setGeneric(
   def = function(
     data, ..., model.fit
   ){
-    standard.generic("n2k_inla_nbinomial") # nocov
+    standardGeneric("n2k_inla_nbinomial") # nocov
   }
 )
 
 #' @description A new n2kInlaNbinomial model is created when \code{data} is a data.frame.
 #' @rdname n2k_inla_nbinomial
 #' @aliases n2k_inla_nbinomial,n2kInlaNbinomial-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.count is.string is.time
 #' @importFrom digest sha1
+#' @importFrom stats as.formula
+#' @importFrom utils sessionInfo
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "n2k_inla_nbinomial",
@@ -171,8 +173,9 @@ setMethod(
 #' @description In case \code{data} a n2kInlaNbinomial object is, then only the model and status are updated. All other slots are unaffected.
 #' @rdname n2k_inla_nbinomial
 #' @aliases n2k_inla_nbinomial,n2kInlaNbinomial-methods
-#' @importFrom methods setMethod validObject
+#' @importFrom methods setMethod validObject new
 #' @importFrom digest sha1
+#' @importFrom utils sessionInfo
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "n2k_inla_nbinomial",

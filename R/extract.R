@@ -12,14 +12,14 @@ setGeneric(
   name = "extract",
   def = function(extractor, object, path){
     # nocov start
-    standard.generic("extract")
+    standardGeneric("extract")
     # nocov end
   }
 )
 
 #' @rdname extract
 #' @aliases extract,character-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom n2khelper check_path read_object_environment
 setMethod(
   f = "extract",
@@ -55,7 +55,7 @@ setMethod(
 
 #' @rdname extract
 #' @aliases extract,n2kInlaNbinomial-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "extract",

@@ -7,6 +7,7 @@
 #' @export
 #' @importFrom n2khelper check_character check_dataframe_variable check_single_probability
 #' @importFrom assertthat assert_that is.count is.flag
+#' @importFrom stats na.fail
 #' @examples
 #' observation <- data.frame(
 #'   Count = c(4, 4, 4, 4, 3, 3, 3, 0, 2, 2, 0, 0),

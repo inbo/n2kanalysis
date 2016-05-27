@@ -8,13 +8,13 @@
 setGeneric(
   name = "get_analysis_version",
   def = function(version){
-    standard.generic("get_analysis_version")
+    standardGeneric("get_analysis_version")
   }
 )
 
 #' @rdname get_analysis_version
 #' @aliases get_analysis_version,sessionInfo-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom n2khelper check_dataframe_variable
 #' @include n2kAnalysisVersion_class.R
 setMethod(
@@ -49,7 +49,7 @@ setMethod(
 
 #' @rdname get_analysis_version
 #' @aliases get_analysis_version,n2kAnalysisMetadata-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kAnalysisMetadata_class.R
 setMethod(
   f = "get_analysis_version",
@@ -66,7 +66,8 @@ setMethod(
 
 #' @rdname get_analysis_version
 #' @aliases get_analysis_version,sessionInfo-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
+#' @importFrom utils sessionInfo
 #' @include import_S3_classes.R
 setMethod(
   f = "get_analysis_version",

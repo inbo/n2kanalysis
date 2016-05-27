@@ -25,17 +25,19 @@ setGeneric(
   def = function(
     parent, ...
   ){
-    standard.generic("n2k_lrt_glmer") # nocov
+    standardGeneric("n2k_lrt_glmer") # nocov
   }
 )
 
 #' @description A new n2kLrtGlmer model is created when \code{parent} is a character
 #' @rdname n2k_lrt_glmer
 #' @aliases n2k_lrt_glmer,n2kLrtGlmer-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom n2khelper check_dataframe_variable
 #' @importFrom assertthat assert_that is.count is.string
 #' @importFrom digest sha1
+#' @importFrom stats as.formula
+#' @importFrom utils sessionInfo
 #' @include n2kLrtGlmer_class.R
 setMethod(
   f = "n2k_lrt_glmer",

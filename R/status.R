@@ -10,14 +10,14 @@ setGeneric(
   name = "status",
   def = function(x){
     # nocov start
-    standard.generic("status") # nocov
+    standardGeneric("status") # nocov
     # nocov end
   }
 )
 
 #' @rdname status
 #' @aliases status,n2kAnalysisMetadata-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kAnalysisMetadata_class.R
 setMethod(
   f = "status",
@@ -29,8 +29,9 @@ setMethod(
 
 #' @rdname status
 #' @aliases status,character-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom n2khelper check_path read_object_environment
+#' @importFrom utils file_test
 setMethod(
   f = "status",
   signature = signature(x = "character"),
@@ -82,7 +83,7 @@ setMethod(
 setGeneric(
   name = "status<-",
   def = function(x, value){
-    standard.generic("status<-") # nocov
+    standardGeneric("status<-") # nocov
   }
 )
 

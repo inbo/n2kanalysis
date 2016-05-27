@@ -1,8 +1,9 @@
 #' Get the validity of objects in files
 #' @rdname validObject
 #' @aliases validObject,character-methods
-#' @importFrom methods setMethod validObject
+#' @importFrom methods setMethod validObject new
 #' @importFrom n2khelper check_path read_object_environment
+#' @importFrom utils file_test
 #' @param object a single filename, a single path or a vector with filenames.
 #' @param test See \code{\link[methods]{validObject}}
 #' @param complete See \code{\link[methods]{validObject}}

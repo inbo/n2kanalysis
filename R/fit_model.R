@@ -9,12 +9,12 @@
 setGeneric(
   name = "fit_model",
   def = function(x, ...){
-    standard.generic("fit_model") # nocov
+    standardGeneric("fit_model") # nocov
   }
 )
 
 #' @rdname fit_model
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom n2khelper check_path read_object_environment
 #' @importFrom assertthat assert_that is.flag
 #' @details
@@ -64,8 +64,10 @@ setMethod(
 )
 
 #' @rdname fit_model
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom lme4 glmer glmerControl
+#' @importFrom stats poisson qnorm
+#' @importFrom utils sessionInfo
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "fit_model",
@@ -158,7 +160,7 @@ setMethod(
 )
 
 #' @rdname fit_model
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that
 #' @include n2kInlaNbinomial_class.R
 setMethod(
@@ -228,7 +230,9 @@ setMethod(
 )
 
 #' @rdname fit_model
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
+#' @importFrom utils file_test
+#' @importFrom stats anova
 #' @include n2kLrtGlmer_class.R
 setMethod(
   f = "fit_model",
@@ -332,8 +336,10 @@ setMethod(
 )
 
 #' @rdname fit_model
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom dplyr %>% select_ group_by_ summarise_ distinct_ filter_ anti_join arrange_ inner_join
+#' @importFrom utils file_test
+#' @importFrom stats qnorm
 #' @include n2kComposite_class.R
 setMethod(
   f = "fit_model",
@@ -437,8 +443,9 @@ setMethod(
 
 
 #' @rdname fit_model
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom dplyr rename_ select_ inner_join arrange_ filter_ mutate_ bind_rows
+#' @importFrom utils file_test
 #' @include n2kInlaComparison_class.R
 setMethod(
   f = "fit_model",

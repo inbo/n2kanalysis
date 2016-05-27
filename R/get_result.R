@@ -9,13 +9,13 @@
 setGeneric(
   name = "get_result",
   def = function(x, ...){
-    standard.generic("get_result") # nocov
+    standardGeneric("get_result") # nocov
   }
 )
 
 
 #' @rdname get_result
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.flag noNA
 #' @include n2kModel_class.R
 #' @include n2kResult_class.R
@@ -48,11 +48,12 @@ setMethod(
 )
 
 #' @rdname get_result
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom dplyr %>% rowwise mutate_ add_rownames inner_join select_ transmute_ arrange_ filter_
 #' @importFrom digest sha1
 #' @importFrom tidyr gather_
 #' @importFrom assertthat assert_that is.flag noNA
+#' @importFrom stats as.formula
 #' @include n2kResult_class.R
 #' @include n2kInlaNbinomial_class.R
 setMethod(
@@ -243,8 +244,9 @@ setMethod(
 )
 
 #' @rdname get_result
-#' @importFrom methods setMethod validObject
+#' @importFrom methods setMethod validObject new
 #' @importFrom assertthat assert_that is.string is.flag is.count noNA
+#' @importFrom utils file_test
 #' @param keep.fingerprint Keep the character fingerprints? Otherwise change them into integers
 #' @param n.cluster the number of clusters to run this function in parallel. Defaults to 1 (= no parallel computing).
 setMethod(

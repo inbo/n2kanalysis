@@ -9,13 +9,13 @@
 setGeneric(
   name = "parent_status",
   def = function(x){
-    standard.generic("parent_status") # nocov
+    standardGeneric("parent_status") # nocov
   }
 )
 
 #' @rdname parent_status
 #' @aliases parent_status,n2kAnalysisMetadata-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kAnalysisMetadata_class.R
 setMethod(
   f = "parent_status",
@@ -36,7 +36,7 @@ setMethod(
 setGeneric(
   name = "parent_status<-",
   def = function(x, value){
-    standard.generic("parent_status<-") # nocov
+    standardGeneric("parent_status<-") # nocov
   }
 )
 

@@ -9,15 +9,16 @@
 setGeneric(
   name = "get_model_parameter",
   def = function(analysis, ...){
-    standard.generic("get_model_parameter") # nocov
+    standardGeneric("get_model_parameter") # nocov
   }
 )
 
 #' @rdname get_model_parameter
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom lme4 ranef VarCorr
 #' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom digest sha1
+#' @importFrom stats qnorm fitted
 #' @include n2kGlmerPoisson_class.R
 #' @include n2kParameter_class.R
 #' @param verbose Print extra information on the screen
@@ -201,7 +202,7 @@ setMethod(
 )
 
 #' @rdname get_model_parameter
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kLrtGlmer_class.R
 setMethod(
   f = "get_model_parameter",
@@ -237,7 +238,7 @@ setMethod(
 )
 
 #' @rdname get_model_parameter
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kComposite_class.R
 setMethod(
   f = "get_model_parameter",
@@ -281,10 +282,11 @@ setMethod(
 )
 
 #' @rdname get_model_parameter
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom dplyr data_frame rowwise mutate_ filter_ select_ left_join mutate_ bind_rows add_rownames transmute_
 #' @importFrom digest sha1
 #' @importFrom assertthat assert_that is.flag noNA
+#' @importFrom stats terms
 #' @include n2kInlaNbinomial_class.R
 #' @include n2kParameter_class.R
 setMethod(
@@ -665,7 +667,7 @@ setMethod(
 
 
 #' @rdname get_model_parameter
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kInlaComparison_class.R
 #' @include n2kParameter_class.R
 setMethod(
