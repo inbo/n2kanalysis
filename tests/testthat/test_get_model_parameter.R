@@ -79,7 +79,8 @@ test_that(
   )
   expect_true(
     all(
-      lme4::ranef(get_model(object))$herd[, 1] %in% param@ParameterEstimate$Estimate
+      lme4::ranef(get_model(object))$herd[, 1] %in%
+        param@ParameterEstimate$Estimate
     )
   )
 
