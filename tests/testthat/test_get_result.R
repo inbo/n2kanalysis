@@ -66,7 +66,7 @@ describe("get_result on n2kInlaNbinomial", {
     expect_is(result, "n2kResult")
   })
   it("returns senbile output on fitted objects", {
-    expect_less_than(
+    expect_lt(
       0,
       nrow(result@Parameter)
     )
@@ -74,7 +74,7 @@ describe("get_result on n2kInlaNbinomial", {
       nrow(result@Contrast),
       0L
     )
-    expect_less_than(
+    expect_lt(
       0,
       nrow(result@Anomaly)
     )
@@ -147,7 +147,7 @@ describe("get_result on n2kInlaNbinomial", {
     expect_is(result, "n2kResult")
   })
   it("returns senbile output on fitted objects", {
-    expect_less_than(
+    expect_lt(
       0,
       nrow(result@Parameter)
     )
@@ -155,15 +155,15 @@ describe("get_result on n2kInlaNbinomial", {
       nrow(result@Contrast),
       nrow(lin.comb)
     )
-    expect_less_than(
+    expect_lt(
       0,
       nrow(result@ContrastCoefficient)
     )
-    expect_less_than(
+    expect_lt(
       0,
       nrow(result@ContrastEstimate)
     )
-    expect_less_than(
+    expect_lt(
       0,
       nrow(result@Anomaly)
     )
@@ -478,7 +478,7 @@ describe("get_result on n2kInlaNbinomial with replicated random effects", {
     expect_is(result, "n2kResult")
   })
   it("returns senbile output on fitted objects", {
-    expect_less_than(
+    expect_lt(
       0,
       nrow(result@Parameter)
     )
@@ -486,7 +486,7 @@ describe("get_result on n2kInlaNbinomial with replicated random effects", {
       nrow(result@Contrast),
       0L
     )
-    expect_less_than(
+    expect_lt(
       0,
       nrow(result@Anomaly)
     )
