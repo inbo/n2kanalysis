@@ -124,7 +124,8 @@ setMethod(
     }
     if (is.matrix(x@LinearCombination)) {
       contrast.coefficient <- x@LinearCombination %>%
-        as.data.frame()
+        as.data.frame() %>%
+        add_rownames("Description")
     } else {
       contrast.coefficient <- lapply(
         names(x@LinearCombination),
