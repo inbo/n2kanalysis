@@ -968,7 +968,7 @@ describe("n2kInlaNbinomial handles linear combinations", {
       data = cbpp,
       lin.comb = "lin.comb"
     ),
-    "dots\\$lin.comb does not inherit from class matrix"
+    "inherits\\(dots\\$lin.comb, \"matrix\"\\) \\| inherits\\(dots\\$lin.comb, \"list\"\\) is not TRUE"
   )
   expect_is(
     object <- n2k_inla_nbinomial(
