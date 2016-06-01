@@ -1,3 +1,5 @@
+[![License](http://img.shields.io/badge/license-GPL--3-blue.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
+
 **Branch** | **Build status** | **Test coverage**
 ---------- | ---------------- | -----------------
 master | [![wercker status](https://app.wercker.com/status/0dc9e0e76caa7b834a0ac6fa9c3ce908/m/master "wercker status")](https://app.wercker.com/project/bykey/0dc9e0e76caa7b834a0ac6fa9c3ce908) | [![codecov](https://codecov.io/gh/inbo/n2kanalysis/branch/master/graph/badge.svg)](https://codecov.io/gh/inbo/n2kanalysis)
