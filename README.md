@@ -1,8 +1,8 @@
 **Branch** | **Build status** | **Test coverage**
 ---------- | ---------------- | -----------------
-master | [![wercker status](https://app.wercker.com/status/f3a5129fdc8657713d873b39a2e0ee44/m/master "wercker status")](https://app.wercker.com/project/bykey/f3a5129fdc8657713d873b39a2e0ee44) | [![codecov](https://codecov.io/gh/inbo/n2kanalysis/branch/master/graph/badge.svg)](https://codecov.io/gh/inbo/n2kanalysis)
+master | [![wercker status](https://app.wercker.com/status/0dc9e0e76caa7b834a0ac6fa9c3ce908/m/master "wercker status")](https://app.wercker.com/project/bykey/0dc9e0e76caa7b834a0ac6fa9c3ce908) | [![codecov](https://codecov.io/gh/inbo/n2kanalysis/branch/master/graph/badge.svg)](https://codecov.io/gh/inbo/n2kanalysis)
 
-develop | [![wercker status](https://app.wercker.com/status/f3a5129fdc8657713d873b39a2e0ee44/m/develop "wercker status")](https://app.wercker.com/project/bykey/f3a5129fdc8657713d873b39a2e0ee44) | [![codecov](https://codecov.io/gh/inbo/n2kanalysis/branch/develop/graph/badge.svg)](https://codecov.io/gh/inbo/n2kanalysis)
+develop | [[![wercker status](https://app.wercker.com/status/0dc9e0e76caa7b834a0ac6fa9c3ce908/m/develop "wercker status")](https://app.wercker.com/project/bykey/0dc9e0e76caa7b834a0ac6fa9c3ce908) | [![codecov](https://codecov.io/gh/inbo/n2kanalysis/branch/develop/graph/badge.svg)](https://codecov.io/gh/inbo/n2kanalysis)
 
 # The n2kanalysis package
 
