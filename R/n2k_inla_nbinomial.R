@@ -114,7 +114,7 @@ setMethod(
         }
         dots$parent.statusfingerprint <- sha1(dots$parent.status)
       } else {
-        if (is.null(dots$parent.status)) {
+        if (is.null(dots[["parent.status"]])) {
           stop(
 "'parent.status' is required when 'parent.status.fingerprint' is provided"
           )

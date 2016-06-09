@@ -991,4 +991,21 @@ describe("n2kInlaNbinomial handles linear combinations", {
       lin.comb
     )
   })
+
+  expect_error(
+    n2k_inla_nbinomial(
+      scheme.id = this.scheme.id,
+      species.group.id = this.species.group.id,
+      location.group.id = this.location.group.id,
+      model.type = this.model.type,
+      formula = this.formula,
+      first.imported.year = this.first.imported.year,
+      last.imported.year = this.last.imported.year,
+      analysis.date = this.analysis.date,
+      data = cbpp,
+      parent = "abcd",
+      parent.status.fingerprint = "abcd"
+    ),
+    "'parent.status' is required when 'parent.status.fingerprint' is provided"
+  )
 })
