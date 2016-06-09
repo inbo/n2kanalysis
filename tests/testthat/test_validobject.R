@@ -37,6 +37,10 @@ describe("n2kanalysis::validObject", {
 
   temp.dir <- normalizePath(tempdir(), winslash = "/", mustWork = FALSE)
   dir.create(paste(temp.dir, "sub", sep = "/"))
+  expect_error(
+    validObject(temp.dir),
+    "no matching files found"
+  )
   good.file <- paste(temp.dir, "good.rda", sep = "/")
   bad.file <- paste(temp.dir, "sub", "bad.rda", sep = "/")
   save(t1, cbpp, file = good.file)
