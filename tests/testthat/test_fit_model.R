@@ -113,6 +113,8 @@ describe("fit_model() on INLA nbinomial based objects", {
   this.duration <- 1L
   lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
   bad.lin.comb <- lin.comb[, -1]
+  lin.comb.list <- as.list(as.data.frame(lin.comb))
+  lin.comb.list2 <- list(herd = diag(length(levels(cbpp$herd))))
   object <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -136,6 +138,30 @@ describe("fit_model() on INLA nbinomial based objects", {
     data = cbpp,
     lin.comb = lin.comb
   )
+  object.lc.list <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = this.formula,
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = cbpp,
+    lin.comb = lin.comb.list
+  )
+  object.lc.list2 <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = this.formula,
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = cbpp,
+    lin.comb = lin.comb.list2
+  )
   object.badlc <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -150,21 +176,30 @@ describe("fit_model() on INLA nbinomial based objects", {
   )
   object.fit <- fit_model(object)
   object.lc.fit <- fit_model(object.lc)
+  object.lc.list.fit <- fit_model(object.lc.list)
+  object.lc.list2.fit <- fit_model(object.lc.list2)
   object.badlc.fit <- fit_model(object.badlc)
   cat(
     "\nobject.file <- \"", get_file_fingerprint(object), "\"\n",
     "object.lc.file <- \"", get_file_fingerprint(object.lc), "\"\n",
+    "object.lc.list.file <- \"", get_file_fingerprint(object.lc.list), "\"\n",
+    "object.lc.list2.file <- \"", get_file_fingerprint(object.lc.list2), "\"\n",
     "object.badlc.file <- \"", get_file_fingerprint(object.badlc), "\"\n",
     sep = ""
   )
   # 32-bit windows
   object.file <- "7221fb5772b56ceeea113021fad57739dba226fb"
   object.lc.file <- "8b5c59cc71f9ccf4fef96d154f3194cbffc69bfb"
-  object.badlc.file <- "de1c0004571177ddffd7c2644c60f3988c5e37e1"
+  object.lc.list.file <- "3033546866016831f79094ab559bacac6cc9eb4d"
+  object.lc.list2.file <- "f5b63f68733c6cb5b0bf52bdab9c30292145ff3e"
+  object.badlc.file <- "e3fed46e3f73f5911b3527da3ca7ff5243e0d010"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
     expect_identical(object.lc.file, get_file_fingerprint(object.lc))
+    expect_identical(object.lc.list.file, get_file_fingerprint(object.lc.list))
+    expect_identical(object.lc.list2.file, get_file_fingerprint(object.lc.list2))
+    expect_identical(object.badlc.file, get_file_fingerprint(object.badlc))
   })
   it("doesn't alter the file fingerprint when fitting a model", {
     expect_identical(
