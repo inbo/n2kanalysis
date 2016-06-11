@@ -198,7 +198,10 @@ describe("fit_model() on INLA nbinomial based objects", {
     expect_identical(object.file, get_file_fingerprint(object))
     expect_identical(object.lc.file, get_file_fingerprint(object.lc))
     expect_identical(object.lc.list.file, get_file_fingerprint(object.lc.list))
-    expect_identical(object.lc.list2.file, get_file_fingerprint(object.lc.list2))
+    expect_identical(
+      object.lc.list2.file,
+      get_file_fingerprint(object.lc.list2)
+    )
     expect_identical(object.badlc.file, get_file_fingerprint(object.badlc))
   })
   it("doesn't alter the file fingerprint when fitting a model", {
