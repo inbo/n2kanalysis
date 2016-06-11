@@ -178,7 +178,7 @@ setMethod(
     }
 
     if (!require("INLA")) {
-      stop("The INLA package is required but not installed.")
+      stop("The INLA package is required but not installed.") #nocov
     }
 
     set.seed(get_seed(x))
