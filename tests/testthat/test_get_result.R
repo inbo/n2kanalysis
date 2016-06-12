@@ -86,6 +86,7 @@ describe("get_result on n2kInlaNbinomial", {
 
   # with linear combination
   lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
+  rownames(lin.comb) <- seq_len(nrow(lin.comb))
   this.parent <- "abcd"
   analysis <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,

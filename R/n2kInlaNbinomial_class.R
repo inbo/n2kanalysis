@@ -53,6 +53,22 @@ setValidity(
       }
     }
 
+    if (is.matrix(object@LinearCombination)) {
+      if (is.null(rownames(object@LinearCombination))) {
+        stop("A matrix of linear combination must have rownames")
+      }
+    }
+    if (is.list(object@LinearCombination)) {
+      if (is.matrix(object@LinearCombination[[1]])) {
+        if (is.null(rownames(object@LinearCombination[[1]]))) {
+          stop("The first element of linear combination must have rownames")
+        }
+      } else {
+        if (is.null(names(object@LinearCombination[[1]]))) {
+          stop("The first element of linear combination must have names")
+        }
+      }
+    }
     file.fingerprint <- sha1(
       list(
         object@Data, object@AnalysisMetadata$SchemeID,

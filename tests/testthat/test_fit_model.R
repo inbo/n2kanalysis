@@ -112,9 +112,12 @@ describe("fit_model() on INLA nbinomial based objects", {
   this.last.analysed.year <- 2014L
   this.duration <- 1L
   lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
+  rownames(lin.comb) <- seq_len(nrow(lin.comb))
   bad.lin.comb <- lin.comb[, -1]
   lin.comb.list <- as.list(as.data.frame(lin.comb))
+  names(lin.comb.list[[1]]) <- seq_along(lin.comb.list[[1]])
   lin.comb.list2 <- list(herd = diag(length(levels(cbpp$herd))))
+  rownames(lin.comb.list2[[1]]) <- seq_len(length(levels(cbpp$herd)))
   object <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
