@@ -25,6 +25,7 @@ setClass(
   representation = representation(
     Data = "data.frame",
     LinearCombination = "maybeMatrix",
+    ReplicateName = "list",
     Model = "maybeInla"
   ),
   contains = "n2kModel"
@@ -81,7 +82,7 @@ setValidity(
         object@AnalysisMetadata$LastAnalysedYear,
         object@AnalysisMetadata$AnalysisDate, object@AnalysisMetadata$Seed,
         object@AnalysisRelation$ParentAnalysis,
-        object@LinearCombination
+        object@ReplicateName, object@LinearCombination
       )
     )
     if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {

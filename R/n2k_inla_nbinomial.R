@@ -14,6 +14,7 @@
 #'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
 #'    \item{\code{lin.comb}}{A model matrix to calculate linear combinations}
+#'    \item{\code{replicate.name}}{A list with the names of replicates. Defaults to an empty list. Used in case of \code{f(X, ..., replicate = Z)}}. Should be a named list like e.g. \code{list(X = c("a", "b", "c"))}.
 #'   }
 #' @name n2k_inla_nbinomial
 #' @rdname n2k_inla_nbinomial
@@ -89,12 +90,22 @@ setMethod(
           inherits(dots$lin.comb, "list")
       )
     }
+    if (is.null(dots$replicate.name)) {
+      dots$replicate.name <- list()
+    }
+    assert_that(is.list(dots$replicate.name))
+    if (length(dots$replicate.name) > 0) {
+      if (is.null(names(dots$replicate.name))) {
+        stop("replicate.name must have names")
+      }
+    }
     file.fingerprint <- sha1(
       list(
         data, dots$scheme.id, dots$species.group.id, dots$location.group.id,
         dots$model.type, dots$covariate, dots$first.imported.year,
         dots$last.imported.year, dots$duration, dots$last.analysed.year,
-        dots$analysis.date, dots$seed, dots$parent, dots$lin.comb
+        dots$analysis.date, dots$seed, dots$parent, dots$replicate.name,
+        dots$lin.comb
       )
     )
 
@@ -164,6 +175,7 @@ setMethod(
       AnalysisFormula = list(as.formula(dots$formula)),
       AnalysisRelation = analysis.relation,
       Data = data,
+      ReplicateName = dots$replicate.name,
       LinearCombination = dots$lin.comb,
       Model = NULL
     )

@@ -191,11 +191,11 @@ describe("fit_model() on INLA nbinomial based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "7221fb5772b56ceeea113021fad57739dba226fb"
-  object.lc.file <- "8b5c59cc71f9ccf4fef96d154f3194cbffc69bfb"
-  object.lc.list.file <- "3033546866016831f79094ab559bacac6cc9eb4d"
-  object.lc.list2.file <- "f5b63f68733c6cb5b0bf52bdab9c30292145ff3e"
-  object.badlc.file <- "e3fed46e3f73f5911b3527da3ca7ff5243e0d010"
+  object.file <- "edf0ea6279df0d94400892dfbdcf2f459eeb876e"
+  object.lc.file <- "395e9359dfe209b48705c19afdd36a64902f695a"
+  object.lc.list.file <- "3ba8f88d5ed2c2e68498b812dd5473f80de2029d"
+  object.lc.list2.file <- "c001cc89a90d5621b2405110bb288e38e76a2c45"
+  object.badlc.file <- "11db5bc1e5c40504e0fbf27c698137510be8a4f1"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))

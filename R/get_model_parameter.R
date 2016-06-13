@@ -529,22 +529,21 @@ setMethod(
       message(", random effect BLUP's", appendLF = FALSE)
     }
     utils::flush.console()
-    blup <- do.call(
-      rbind,
-      lapply(
-        names(get_model(analysis)$summary.random),
-        function(i){
-          random.effect <- get_model(analysis)$summary.random[[i]]
-          if (anyDuplicated(random.effect$ID) == 0) {
-            data_frame(
-              Analysis = analysis@AnalysisMetadata$FileFingerprint,
-              Parent = gsub("^(f|c)", "", i),
-              Parameter = random.effect$ID,
-              Estimate = random.effect[, "mean"],
-              LowerConfidenceLimit = random.effect[, "0.025quant"],
-              UpperConfidenceLimit = random.effect[, "0.975quant"]
-            )
-          } else {
+    blup <- lapply(
+      names(get_model(analysis)$summary.random),
+      function(i){
+        random.effect <- get_model(analysis)$summary.random[[i]]
+        if (anyDuplicated(random.effect$ID) == 0) {
+          data_frame(
+            Analysis = analysis@AnalysisMetadata$FileFingerprint,
+            Parent = gsub("^(f|c)", "", i),
+            Parameter = as.character(random.effect$ID),
+            Estimate = random.effect[, "mean"],
+            LowerConfidenceLimit = random.effect[, "0.025quant"],
+            UpperConfidenceLimit = random.effect[, "0.975quant"]
+          )
+        } else {
+          if (is.null(analysis@ReplicateName[[i]])) {
             random.effect <- random.effect %>%
               mutate_(
                 Replicate = ~rep(
@@ -552,18 +551,28 @@ setMethod(
                   each = n_distinct(ID)
                 )
               )
-            data_frame(
-              Analysis = analysis@AnalysisMetadata$FileFingerprint,
-              Parent = paste(gsub("^(f|c)", "", i), random.effect$Replicate),
-              Parameter = random.effect$ID,
-              Estimate = random.effect[, "mean"],
-              LowerConfidenceLimit = random.effect[, "0.025quant"],
-              UpperConfidenceLimit = random.effect[, "0.975quant"]
-            )
+          } else {
+            random.effect <- random.effect %>%
+              mutate_(
+                Replicate = ~rep(
+                  analysis@ReplicateName[[i]],
+                  each = n_distinct(ID)
+                )
+              )
           }
+          data_frame(
+            Analysis = analysis@AnalysisMetadata$FileFingerprint,
+            Parent = paste(gsub("^(f|c)", "", i)),
+            Replicate = random.effect[, "Replicate"],
+            Parameter = as.character(random.effect$ID),
+            Estimate = random.effect[, "mean"],
+            LowerConfidenceLimit = random.effect[, "0.025quant"],
+            UpperConfidenceLimit = random.effect[, "0.975quant"]
+          )
         }
-      )
-    )
+      }
+    ) %>%
+      bind_rows()
     blup.fingerprint <- parameter %>%
       filter_(~is.na(Parent), ~Description == "Random effect BLUP") %>%
       select_(~Fingerprint) %>%
@@ -575,43 +584,50 @@ setMethod(
         Parent = ~gsub(" .*$", "", Original),
         Description = ~gsub("^.* ", "", Original),
         Parent = ~ifelse(Parent == Description, blup.fingerprint, Parent)
-      )
-    blup.parent <- blup.parent %>%
-      select_(Description = ~Parent) %>%
-      distinct_() %>%
-      filter_(~Description != blup.fingerprint) %>%
-      mutate_(Parent = ~blup.fingerprint) %>%
-      bind_rows(blup.parent) %>%
+      ) %>%
       rowwise() %>%
       mutate_(
         Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
       )
-    blup.parent <- blup.parent %>%
-      left_join(
-        blup.parent %>%
-          select_(~Description, ParentFingerprint = ~Fingerprint),
-        by = c("Parent" = "Description")
+    parameter <- blup.parent %>%
+      select_(~- Original) %>%
+      bind_rows(parameter)
+    blup <- blup.parent %>%
+      select_(~Original, Parent = ~Fingerprint) %>%
+      inner_join(
+        blup,
+        by = c("Original" = "Parent")
       ) %>%
-      mutate_(
-        Parent = ~ifelse(is.na(ParentFingerprint), Parent, ParentFingerprint)
-      ) %>%
-      select_(~-ParentFingerprint) %>%
-      rowwise() %>%
-      mutate_(
-        Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
-      )
-    blup <-
-      blup.parent %>%
-      select_(Parent = ~Original, ~Fingerprint) %>%
-      inner_join(blup, by = "Parent") %>%
-      select_(~-Parent, Parent = ~Fingerprint)
+      select_(~-Original)
+
+    if ("Replicate" %in% colnames(blup)) {
+      blup.parent <- blup %>%
+        filter_(~!is.na(Replicate)) %>%
+        select_(~Parent, Description = ~Replicate) %>%
+        distinct_() %>%
+        rowwise() %>%
+        mutate_(
+          Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
+        )
+      parameter <- bind_rows(parameter, blup.parent)
+      blup <- blup %>%
+        left_join(
+          blup.parent,
+          by = c("Replicate" = "Description", "Parent")
+        ) %>%
+        mutate_(
+          Parent = ~ifelse(is.na(Fingerprint), Parent, Fingerprint)
+        ) %>%
+        select_(~-Replicate, ~-Fingerprint)
+    }
     parameter <- blup %>%
-      select_(~Parent, Description = ~ Parameter) %>%
+      select_(~Parent, Description = ~Parameter) %>%
+      distinct_() %>%
       rowwise() %>%
       mutate_(
         Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
       ) %>%
-      bind_rows(parameter, blup.parent %>% select_(~-Original))
+      bind_rows(parameter)
     parameter.estimate <- blup %>%
       inner_join(parameter, by = c("Parent", "Parameter" = "Description")) %>%
       select_(~-Parent, ~-Parameter, Parameter = ~Fingerprint) %>%
