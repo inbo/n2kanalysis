@@ -218,4 +218,108 @@ test_that("get_model_parameter works with n2kInlaNbinomial", {
     fixed$Main == "A",
     !is.na(fixed$Fingerprint.y)
   )
+
+  analysis <- n2k_inla_nbinomial(
+    formula = "Count ~ 0 + A * C + A * B + f(E, model = \"iid\")",
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    last.analysed.year = this.last.analysed.year,
+    analysis.date = this.analysis.date,
+    seed = this.seed,
+    data = dataset,
+    parent = this.parent,
+    this.duration
+  )
+  analysis <- fit_model(analysis)
+  expect_message(
+    param <- get_model_parameter(analysis, verbose = TRUE),
+    "reading model parameters: fixed effects"
+  )
+  expect_is(param, "n2kParameter")
+  expect_identical(
+    param@Parameter %>%
+      semi_join(
+        data_frame(Description = "Random effect variance"),
+        by = "Description"
+      ) %>%
+      inner_join(
+        param@Parameter,
+        by = c("Fingerprint" = "Parent")
+      ) %>%
+     nrow(),
+    1L
+  )
+  fixed <- param@Parameter %>%
+    semi_join(
+    param@Parameter %>%
+      semi_join(
+        data_frame(Description = "Fixed effect"),
+        by = "Description"
+      ),
+    by = c("Parent" = "Fingerprint")
+  ) %>%
+    select_(~Fingerprint, Main = ~Description) %>%
+    left_join(
+      param@Parameter,
+      by = c("Fingerprint" = "Parent")
+    )
+  expect_identical(nrow(fixed), 9L)
+  expect_identical(
+    grepl(":", fixed$Main),
+    grepl(":", fixed$Description)
+  )
+  expect_identical(
+    fixed$Main == "C",
+    is.na(fixed$Fingerprint.y)
+  )
+  expect_identical(
+    fixed$Main == "A:C",
+    grepl(".+:$", fixed$Description)
+  )
+  expect_identical(
+    fixed$Main == "A:B",
+    grepl(".+:.+$", fixed$Description)
+  )
+  random <- param@Parameter %>%
+    semi_join(
+    param@Parameter %>%
+      semi_join(
+        data_frame(Description = "Random effect BLUP"),
+        by = "Description"
+      ),
+    by = c("Parent" = "Fingerprint")
+  ) %>%
+    select_(~Fingerprint, Main = ~Description) %>%
+    left_join(
+      param@Parameter %>%
+        rename_(Finger = ~ Fingerprint, Level = ~Description),
+      by = c("Fingerprint" = "Parent")
+    ) %>%
+    left_join(
+      param@Parameter %>%
+        select_(~ Parent, Level2 = ~Description),
+      by = c("Finger" = "Parent")
+    )
+  expect_false(any(is.na(random$Level)))
+  expect_true(all(is.na(random$Level2)))
+  expect_identical(
+    dataset$E %>%
+      unique() %>%
+      sort() %>%
+      as.character(),
+    random$Level
+  )
+  expect_identical(
+    param@ParameterEstimate %>%
+      inner_join(
+        random,
+        by = c("Parameter" = "Finger")
+      ) %>%
+      nrow(),
+    nrow(random)
+  )
 })
