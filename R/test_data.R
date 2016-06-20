@@ -28,7 +28,7 @@ test_data <- function(){
   random <- dataset$A %>%
     levels() %>%
     length() %>%
-    "*"(n.e) %>%
+    "*"(n.e) %>% #nolint
     rnorm(sd = sd.random) %>%
     matrix(nrow = n.e) %>%
     apply(2, cumsum) %>%

@@ -128,7 +128,9 @@ test_that(
   expect_true("size:period" %in% param@Parameter$Description)
 })
 
-test_that("n2kInlaNbinomial with categorical and numeric fixed effect without random effect", {
+test_that(
+  "n2kInlaNbinomial with categorical and numeric fixed effect without random
+    effect", {
   dataset <- n2kanalysis:::test_data()
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
   this.scheme.id <- 1L
@@ -220,7 +222,9 @@ test_that("n2kInlaNbinomial with categorical and numeric fixed effect without ra
   )
 })
 
-test_that("n2kInlaNbinomial with single random effect, categorical-categorical interaction and categorical numeric interaction", {
+test_that(
+  "n2kInlaNbinomial with single random effect, categorical-categorical
+      interaction and categorical numeric interaction", {
   dataset <- n2kanalysis:::test_data()
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
   this.scheme.id <- 1L
@@ -338,7 +342,9 @@ test_that("n2kInlaNbinomial with single random effect, categorical-categorical i
   )
 })
 
-test_that("n2kInlaNbinomial with numeric-numeric interaction and two random effects of which on replicated", {
+test_that(
+  "n2kInlaNbinomial with numeric-numeric interaction and two random effects of
+    which on replicated", {
   dataset <- n2kanalysis:::test_data()
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
   this.scheme.id <- 1L
