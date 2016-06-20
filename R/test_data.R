@@ -35,7 +35,7 @@ test_data <- function(){
     as.vector()
   eta <- mm.fixed %*% fixed + mm.random %*% random
   dataset$Count <- rnbinom(nrow(dataset), mu = exp(eta), size = theta)
-  dataset$DatasourceID <- 1
+  dataset$DatasourceID <- 1L
   dataset$ObservationID <- seq_along(dataset$Count)
   return(dataset)
 }
