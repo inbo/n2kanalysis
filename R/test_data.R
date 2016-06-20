@@ -1,6 +1,6 @@
 # A function to generate a simple dataset for unit testing
 #' @importFrom dplyr %>%
-#' @importFrom stats model.matrix
+#' @importFrom stats model.matrix rnbinom rnorm runif
 test_data <- function(){
   set.seed(999)
   n.e <- 10
