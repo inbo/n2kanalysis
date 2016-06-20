@@ -13,6 +13,7 @@ It hold analysis data based on a INLA negative binomial model
    \item{\code{Data}}{a data.frame with the data}
    \item{\code{LinearCombination}}{an optional matrix with the linear
        combinations}
+   \item{\code{ReplicateName}}{an optional list with names of replicates}
    \item{\code{Model}}{Either NULL or the resulting INLA model.}
   }
 }
