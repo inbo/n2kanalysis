@@ -49,7 +49,7 @@ setMethod(
 
 #' @rdname get_result
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% rowwise mutate_ add_rownames inner_join select_ transmute_ arrange_ filter_
+#' @importFrom dplyr %>% rowwise mutate_ add_rownames inner_join select_ transmute_ arrange_ filter_ semi_join
 #' @importFrom digest sha1
 #' @importFrom tidyr gather_
 #' @importFrom assertthat assert_that is.flag noNA
@@ -102,7 +102,6 @@ setMethod(
         )
       ) %>%
       select_(~Fingerprint, ~Description, ~Analysis) %>%
-      arrange_(~Analysis, ~Description) %>%
       as.data.frame()
     if (is.null(x@Model)) {
       return(
@@ -122,48 +121,9 @@ setMethod(
         )
       )
     }
-    if (is.matrix(x@LinearCombination)) {
-      contrast.coefficient <- x@LinearCombination %>%
-        as.data.frame() %>%
-        add_rownames("Description")
-    } else {
-      contrast.coefficient <- lapply(
-        names(x@LinearCombination),
-        function(y){
-          if (is.vector(x@LinearCombination[[y]])) {
-            z <- data.frame(
-              x@LinearCombination[[y]]
-            )
-            colnames(z) <- y
-            z
-          } else {
-            as.data.frame(x@LinearCombination[[y]])
-          }
-        }
-      ) %>%
-        bind_cols()
-      if (is.matrix(x@LinearCombination[[1]])) {
-        contrast.coefficient$Description <- rownames(x@LinearCombination[[1]])
-      } else {
-        contrast.coefficient$Description <- names(x@LinearCombination[[1]])
-      }
-    }
-    contrast.coefficient <- contrast.coefficient %>%
-      gather_(
-        "ParameterID",
-        "Coefficient",
-        colnames(contrast.coefficient)[
-          !grepl("Description", colnames(contrast.coefficient))
-        ]
-      ) %>%
-      inner_join(
-        contrast %>%
-          select_(~-Analysis),
-        by = "Description"
-      ) %>%
-      select_(~-Description, Contrast = ~Fingerprint) %>%
-      filter_(~ abs(Coefficient) > 1e-8)
+
     concat <- function(parent, child){
+      child[is.na(child)] <- ""
       parent.split <- strsplit(parent, ":")
       child.split <- strsplit(child, ":")
       too.short <- sapply(child.split, length) < sapply(parent.split, length)
@@ -187,20 +147,133 @@ setMethod(
         }
       )
     }
-    fixed.fingerprint <- anomaly@Parameter %>%
-      filter_(~Description == "Fixed effect") %>%
-      select_(~Fingerprint)
-    contrast.coefficient <- anomaly@Parameter %>%
-      filter_(~Parent == fixed.fingerprint$Fingerprint) %>%
+
+    fixed.parameterid <- anomaly@Parameter %>%
+      semi_join(
+        anomaly@Parameter %>%
+          filter_(~Description == "Fixed effect"),
+        by = c("Parent" = "Fingerprint")
+      ) %>%
       select_(ParentDescription = ~Description, Parent = ~Fingerprint) %>%
       left_join(anomaly@Parameter, by = "Parent") %>%
       transmute_(
         Parameter = ~ifelse(is.na(Fingerprint), Parent, Fingerprint),
         ParameterID = ~concat(child = Description, parent = ParentDescription)
+      )
+
+    if (is.matrix(x@LinearCombination)) {
+      contrast.coefficient <- x@LinearCombination
+      contrast.coefficient[abs(contrast.coefficient) < 1e-8] <- NA
+      contrast.coefficient <- contrast.coefficient %>%
+        as.data.frame() %>%
+        add_rownames("Description") %>%
+        gather_(
+          "ParameterID",
+          "Coefficient",
+          colnames(contrast.coefficient)[
+            !grepl("Description", colnames(contrast.coefficient))
+          ],
+          na.rm = TRUE
+        ) %>%
+        inner_join(
+          contrast %>%
+            select_(~-Analysis),
+          by = "Description"
+        ) %>%
+        select_(~-Description, Contrast = ~Fingerprint) %>%
+        mutate_(ParameterID = ~gsub("[\\(|\\)]", "", ParameterID)) %>%
+        inner_join(fixed.parameterid, by = "ParameterID") %>%
+        select_(~Contrast, ~Parameter, ~Coefficient) %>%
+        arrange_(~Contrast, ~Parameter) %>%
+        as.data.frame()
+    } else {
+      contrast.coefficient <- lapply(
+        names(x@LinearCombination),
+        function(y){
+          if (is.vector(x@LinearCombination[[y]])) {
+            data.frame(
+              Contrast = contrast$Fingerprint,
+              ParameterID = gsub("[\\(|\\)]", "", y),
+              Coefficient = x@LinearCombination[[y]],
+              stringsAsFactors = FALSE
+            ) %>%
+              filter_(~abs(Coefficient) >= 1e-8) %>%
+              inner_join(fixed.parameterid, by = "ParameterID") %>%
+              select_(~Contrast, ~Parameter, ~Coefficient)
+          } else {
+            random.id <- anomaly@Parameter %>%
+              semi_join(
+                anomaly@Parameter %>%
+                semi_join(
+                  anomaly@Parameter %>%
+                    semi_join(
+                      data.frame(
+                        Description = "Random effect BLUP",
+                        stringsAsFactors = FALSE
+                      ),
+                      by = "Description"
+                    ) %>%
+                    mutate_(Description = ~y),
+                  by = c("Parent" = "Fingerprint", "Description")
+                ),
+                by = c("Parent" = "Fingerprint")
+              ) %>%
+              select_(~-Parent, Parameter = ~Fingerprint)
+            lc <- x@LinearCombination[[y]] %>%
+              as.data.frame()
+            lc[abs(lc) < 1e-8] <- NA
+            if (anyDuplicated(x@Model$summary.random[[y]]$ID) == 0) {
+              lc %>%
+                mutate_(Contrast = ~contrast$Fingerprint) %>%
+                gather_(
+                  "Description",
+                  "Coefficient",
+                  colnames(lc)[
+                    !grepl("Contrast", colnames(lc))
+                  ],
+                  na.rm = TRUE,
+                  factor_key = TRUE
+                ) %>%
+                mutate_(
+                  Description = ~ as.character(
+                    x@Model$summary.random[[y]]$ID[Description]
+                  )
+                ) %>%
+                inner_join(random.id, by = "Description") %>%
+                select_(~-Description)
+            } else {
+              lc %>%
+                mutate_(Contrast = ~contrast$Fingerprint) %>%
+                gather_(
+                  "Description",
+                  "Coefficient",
+                  colnames(lc)[
+                    !grepl("Contrast", colnames(lc))
+                  ],
+                  na.rm = TRUE
+                ) %>%
+                inner_join(
+                  anomaly@Parameter %>%
+                    inner_join(
+                      random.id %>%
+                        rename_(Main = ~Description),
+                      by = c("Parent" = "Parameter")
+                    ) %>%
+                    mutate_(
+                      Description = ~ paste(Main, Description, sep = ":")
+                    ) %>%
+                    select_(Parameter = ~Fingerprint, ~Description),
+                  by = "Description"
+                ) %>%
+                select_(~-Description)
+            }
+          }
+        }
       ) %>%
-      inner_join(contrast.coefficient, by = "ParameterID") %>%
-      select_(~Contrast, ~Parameter, ~Coefficient) %>%
-      arrange_(~Contrast, ~Parameter)
+        bind_rows() %>%
+        arrange_(~Contrast, ~Parameter) %>%
+        as.data.frame()
+    }
     if (nrow(x@Model$summary.lincomb) == 0) {
       lc <- x@Model$summary.lincomb.derived
     } else {
