@@ -458,10 +458,22 @@ setMethod(
     re.names <- names(get_model(analysis)$marginals.hyperpar)
     re.names <- re.names[grepl("^Precision for ", re.names)]
     if (length(re.names) > 0) {
-      re.variance <- t(sapply(
+      re.variance <- sapply(
         get_model(analysis)$marginals.hyperpar[re.names],
-        inla_inverse
-      )) %>%
+        function(x){
+          tryCatch(
+            inla_inverse(x),
+            error = function(e){
+              c(
+                Estimate = NA,
+                LowerConfidenceLimit = NA,
+                UpperConfidenceLimit = NA
+              )
+            }
+          )
+        }
+      ) %>%
+        t() %>%
         as.data.frame() %>%
         add_rownames("Parameter") %>%
         mutate_(
