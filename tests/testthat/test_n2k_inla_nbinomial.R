@@ -4,17 +4,21 @@ this.scheme.id <- 1L
 this.species.group.id <- 2L
 this.location.group.id <- 3L
 this.analysis.date <- Sys.time()
-this.model.type <- "inla nbinomial: period + herd"
+this.model.type <- "inla nbinomial: A * (B + C) + C:D"
 this.formula <-
-  "incidence ~ offset(log(size)) + period + f(herd, model = 'iid')"
+  "Count ~ A * (B + C) + C:D +
+    f(E, model = 'rw1', replicate = as.integer(A)) +
+    f(F, model = 'iid')"
 this.first.imported.year <- 1990L
 this.last.imported.year <- 2015L
 this.last.analysed.year <- 2014L
 this.duration <- 1L
-data("cbpp", package = "lme4")
-cbpp$DatasourceID <- 1
-cbpp$ObservationID <- seq_len(nrow(cbpp))
-lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
+dataset <- n2kanalysis:::test_data()
+lin.comb <- dataset %>%
+  select_(~A, ~B, ~C, ~D) %>%
+  filter_(~C == max(C), ~D == max(D)) %>%
+  distinct_() %>%
+  model.matrix(object = ~A * (B + C) + C:D)
 object <- n2k_inla_nbinomial(
   scheme.id = this.scheme.id,
   species.group.id = this.species.group.id,
@@ -24,16 +28,20 @@ object <- n2k_inla_nbinomial(
   first.imported.year = this.first.imported.year,
   last.imported.year = this.last.imported.year,
   analysis.date = this.analysis.date,
-  data = cbpp
+  data = dataset
 )
 model.object <- INLA::inla(
-  incidence ~ offset(log(size)) + period + f(herd, model = "iid"),
+  Count ~ A * (B + C) + C:D +
+    f(E, model = 'rw1', replicate = as.integer(A)) +
+    f(F, model = 'iid'),
   data = object@Data,
   family = "nbinomial"
 )
 model.truth <- INLA::inla(
-  incidence ~ offset(log(size)) + period + f(herd, model = "iid"),
-  data = cbpp,
+  Count ~ A * (B + C) + C:D +
+    f(E, model = 'rw1', replicate = as.integer(A)) +
+    f(F, model = 'iid'),
+  data = dataset,
   family = "nbinomial"
 )
 describe("n2k_inla_nbinomial", {
@@ -41,7 +49,7 @@ describe("n2k_inla_nbinomial", {
   it("adds the data as a data.frame", {
     expect_that(
       object@Data,
-      is_identical_to(cbpp)
+      is_identical_to(dataset)
     )
     expect_that(
       model.object$summary.fixed,
@@ -61,7 +69,7 @@ describe("n2k_inla_nbinomial", {
   it("requires a correct status", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -76,7 +84,7 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -93,7 +101,7 @@ describe("n2k_inla_nbinomial", {
   it("checks the model type", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -110,7 +118,7 @@ describe("n2k_inla_nbinomial", {
     this.seed <- 12345L
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -128,7 +136,7 @@ describe("n2k_inla_nbinomial", {
     this.seed <- 12345
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -143,7 +151,7 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -166,7 +174,7 @@ describe("n2k_inla_nbinomial", {
   it("sets the correct SchemeID", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -182,7 +190,7 @@ describe("n2k_inla_nbinomial", {
   it("converts numeric scheme.id, when possible", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -196,7 +204,7 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -213,7 +221,7 @@ describe("n2k_inla_nbinomial", {
   it("sets the correct SpeciesGroupID", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -229,7 +237,7 @@ describe("n2k_inla_nbinomial", {
   it("converts numeric species.group.id, when possible", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = as.numeric(this.species.group.id),
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -243,7 +251,7 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id + 0.1,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -262,7 +270,7 @@ describe("n2k_inla_nbinomial", {
   it("sets the correct LocationGroupID", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -278,7 +286,7 @@ describe("n2k_inla_nbinomial", {
   it("converts numeric location.group.id, when possible", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = as.numeric(this.location.group.id),
         model.type = this.model.type,
@@ -292,7 +300,7 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id + 0.1,
         model.type = this.model.type,
@@ -311,7 +319,7 @@ describe("n2k_inla_nbinomial", {
   it("sets the correct FirstImportedYear", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -327,7 +335,7 @@ describe("n2k_inla_nbinomial", {
   it("converts numeric location.group.id, when possible", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -341,7 +349,7 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -359,7 +367,7 @@ describe("n2k_inla_nbinomial", {
   it("checks that FirstImportedYear is from the past", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -373,7 +381,7 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -390,7 +398,7 @@ describe("n2k_inla_nbinomial", {
   it("sets the correct LastImportedYear", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -406,7 +414,7 @@ describe("n2k_inla_nbinomial", {
   it("converts numeric last.imported.year, when possible", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -420,7 +428,7 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -438,7 +446,7 @@ describe("n2k_inla_nbinomial", {
   it("checks that LastImportedYear is from the past", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -454,7 +462,7 @@ describe("n2k_inla_nbinomial", {
   it("checks that LastImportedYear is not earlier that FirstImportedYear", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -471,7 +479,7 @@ describe("n2k_inla_nbinomial", {
   it("sets the correct Duration", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -486,7 +494,7 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -502,7 +510,7 @@ describe("n2k_inla_nbinomial", {
   it("converts numeric duration, when possible", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -518,7 +526,7 @@ describe("n2k_inla_nbinomial", {
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -538,7 +546,7 @@ ranges"
   , {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -555,7 +563,7 @@ ranges"
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -575,7 +583,7 @@ ranges"
   it("sets the correct LastAnalysedYear", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -591,7 +599,7 @@ ranges"
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -607,7 +615,7 @@ ranges"
   it("converts numeric last.analysed.year, when possible", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -623,7 +631,7 @@ ranges"
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -643,7 +651,7 @@ ranges"
   it("checks that LastAnalysedYear is within the range", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -659,7 +667,7 @@ ranges"
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -682,7 +690,7 @@ outside imported range\\."
   it("checks if analysis date is from the past", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp,
+        data = dataset,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -698,7 +706,7 @@ outside imported range\\."
   it("checks if all variable in formula are available in the data", {
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp[, c("herd", "period", "size")],
+        data = dataset[, c("A", "B", "C", "D", "E", "F")],
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -708,11 +716,11 @@ outside imported range\\."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Variables missing in df: incidence")
+      throws_error("Variables missing in df: Count")
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp[, c("herd", "period", "incidence")],
+        data = dataset[, c("Count", "B", "C", "D", "E", "F")],
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -722,11 +730,11 @@ outside imported range\\."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Variables missing in df: size")
+      throws_error("Variables missing in df: A")
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp[, c("herd", "size", "incidence")],
+        data = dataset[, c("Count", "A", "B", "C", "D", "E")],
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -736,11 +744,11 @@ outside imported range\\."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Variables missing in df: period")
+      throws_error("Variables missing in df: F")
     )
     expect_that(
       n2k_inla_nbinomial(
-        data = cbpp[, c("size", "period", "incidence")],
+        data = dataset[, c("A", "B", "C", "Count", "E", "F")],
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -750,7 +758,7 @@ outside imported range\\."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Variables missing in df: herd")
+      throws_error("Variables missing in df: D")
     )
   })
 })
@@ -773,7 +781,7 @@ describe("add a model to a n2kInlaNbinomial object", {
   it("keeps the objects", {
     expect_that(
       object.model@Data,
-      is_identical_to(cbpp)
+      is_identical_to(dataset)
     )
     expect_that(
       object.model@Model$summary.fixed,
@@ -941,7 +949,9 @@ describe("add a model to a n2kInlaNbinomial object", {
     )
   })
   model.poisson <- INLA::inla(
-    incidence ~ offset(log(size)) + period + f(herd, model = "iid"),
+    Count ~ A * (B + C) + C:D +
+      f(E, model = 'rw1', replicate = as.integer(A)) +
+      f(F, model = 'iid'),
     data = object@Data,
     family = "poisson"
   )
@@ -965,7 +975,7 @@ describe("n2kInlaNbinomial handles linear combinations", {
       first.imported.year = this.first.imported.year,
       last.imported.year = this.last.imported.year,
       analysis.date = this.analysis.date,
-      data = cbpp,
+      data = dataset,
       lin.comb = "lin.comb"
     ),
     "inherits\\(dots\\$lin.comb, \"matrix\"\\) \\| inherits\\(dots\\$lin.comb, \"list\"\\) is not TRUE" #nolint
@@ -980,7 +990,7 @@ describe("n2kInlaNbinomial handles linear combinations", {
       first.imported.year = this.first.imported.year,
       last.imported.year = this.last.imported.year,
       analysis.date = this.analysis.date,
-      data = cbpp,
+      data = dataset,
       lin.comb = lin.comb
     ),
     "n2kInlaNbinomial"
@@ -1002,10 +1012,43 @@ describe("n2kInlaNbinomial handles linear combinations", {
       first.imported.year = this.first.imported.year,
       last.imported.year = this.last.imported.year,
       analysis.date = this.analysis.date,
-      data = cbpp,
+      data = dataset,
       parent = "abcd",
       parent.status.fingerprint = "abcd"
     ),
     "'parent.status' is required when 'parent.status.fingerprint' is provided"
+  )
+
+  expect_error(
+    n2k_inla_nbinomial(
+      scheme.id = this.scheme.id,
+      species.group.id = this.species.group.id,
+      location.group.id = this.location.group.id,
+      model.type = this.model.type,
+      formula = this.formula,
+      first.imported.year = this.first.imported.year,
+      last.imported.year = this.last.imported.year,
+      analysis.date = this.analysis.date,
+      data = dataset,
+      lin.comb = lin.comb,
+      replicate.name = "junk"
+    ),
+    "dots\\$replicate\\.name is not a list"
+  )
+  expect_error(
+    n2k_inla_nbinomial(
+      scheme.id = this.scheme.id,
+      species.group.id = this.species.group.id,
+      location.group.id = this.location.group.id,
+      model.type = this.model.type,
+      formula = this.formula,
+      first.imported.year = this.first.imported.year,
+      last.imported.year = this.last.imported.year,
+      analysis.date = this.analysis.date,
+      data = dataset,
+      lin.comb = lin.comb,
+      replicate.name = list("junk")
+    ),
+    "replicate\\.name must have names"
   )
 })
