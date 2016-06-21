@@ -268,3 +268,85 @@ describe("fit_model() on INLA nbinomial based objects", {
     )
   )
 })
+
+test_that("fit_model() works on n2kInlaComparison", {
+  this.scheme.id <- 1L
+  this.species.group.id <- 2L
+  this.location.group.id <- 3L
+  this.analysis.date <- Sys.time()
+  this.model.type <- "inla nbinomial: A * (B + C) + C:D"
+  this.first.imported.year <- 1990L
+  this.last.imported.year <- 2015L
+  this.last.analysed.year <- 2014L
+  this.duration <- 1L
+  dataset <- n2kanalysis:::test_data()
+  temp.dir <- tempdir()
+
+  analysis <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = "Count ~ A",
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = dataset
+  )
+  p1 <- get_file_fingerprint(analysis)
+  filename1 <- paste0(temp.dir, "/", p1, ".rda")
+  save(analysis, file = filename1)
+  analysis <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = "Count ~ A * B",
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = dataset
+  )
+  p2 <- get_file_fingerprint(analysis)
+  filename2 <- paste0(temp.dir, "/", p2, ".rda")
+  save(analysis, file = filename2)
+
+  analysis <- n2k_inla_comparison(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    formula = "~B",
+    model.type = "inla comparison: A*B",
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    parent = c(p1, p2),
+    parent.status = status(temp.dir) %>%
+      select_(
+        ParentAnalysis = ~FileFingerprint,
+        ParentStatus = ~Status,
+        ParentStatusFingerprint = ~StatusFingerprint
+      )
+  )
+  p3 <- get_file_fingerprint(analysis)
+  filename3 <- paste0(temp.dir, "/", p3, ".rda")
+  save(analysis, file = filename3)
+  fit_model(filename3, verbose = FALSE)
+
+  fit_model(filename1, verbose = FALSE)
+  fit_model(filename3, verbose = FALSE)
+
+  fit_model(filename2, verbose = FALSE)
+  fit_model(filename3, verbose = FALSE)
+
+  fit_model(filename3, verbose = FALSE)
+
+  # clean temp files
+  file.remove(
+    list.files(
+      temp.dir,
+      pattern = "^[0-9a-f]{40}\\.rda$",
+      full.names = TRUE
+    )
+  )
+})
