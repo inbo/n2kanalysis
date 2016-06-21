@@ -7,8 +7,8 @@ this.analysis.date <- Sys.time()
 this.model.type <- "inla nbinomial: A * (B + C) + C:D"
 this.formula <-
   "Count ~ A * (B + C) + C:D +
-    f(E, model = 'rw1', replicate = as.integer(A)) +
-    f(F, model = 'iid')"
+    f(E, model = \"rw1\", replicate = as.integer(A)) +
+    f(F, model = \"iid\")"
 this.first.imported.year <- 1990L
 this.last.imported.year <- 2015L
 this.last.analysed.year <- 2014L
@@ -32,15 +32,15 @@ object <- n2k_inla_nbinomial(
 )
 model.object <- INLA::inla(
   Count ~ A * (B + C) + C:D +
-    f(E, model = 'rw1', replicate = as.integer(A)) +
-    f(F, model = 'iid'),
+    f(E, model = "rw1", replicate = as.integer(A)) +
+    f(F, model = "iid"),
   data = object@Data,
   family = "nbinomial"
 )
 model.truth <- INLA::inla(
   Count ~ A * (B + C) + C:D +
-    f(E, model = 'rw1', replicate = as.integer(A)) +
-    f(F, model = 'iid'),
+    f(E, model = "rw1", replicate = as.integer(A)) +
+    f(F, model = "iid"),
   data = dataset,
   family = "nbinomial"
 )
@@ -950,8 +950,8 @@ describe("add a model to a n2kInlaNbinomial object", {
   })
   model.poisson <- INLA::inla(
     Count ~ A * (B + C) + C:D +
-      f(E, model = 'rw1', replicate = as.integer(A)) +
-      f(F, model = 'iid'),
+      f(E, model = "rw1", replicate = as.integer(A)) +
+      f(F, model = "iid"),
     data = object@Data,
     family = "poisson"
   )

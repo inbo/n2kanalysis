@@ -106,7 +106,7 @@ describe("fit_model() on INLA nbinomial based objects", {
   this.location.group.id <- 3L
   this.model.type <- "inla nbinomial: period + herd"
   this.formula <-
-    "incidence ~ offset(log(size)) + period + f(herd, model = 'iid')"
+    "incidence ~ offset(log(size)) + period + f(herd, model = \"iid\")"
   this.first.imported.year <- 1990L
   this.last.imported.year <- 2015L
   this.last.analysed.year <- 2014L
@@ -315,7 +315,7 @@ test_that("fit_model() works on n2kInlaComparison", {
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
-    formula = "~B",
+    formula = "~B", #nolint
     model.type = "inla comparison: A*B",
     first.imported.year = this.first.imported.year,
     last.imported.year = this.last.imported.year,
