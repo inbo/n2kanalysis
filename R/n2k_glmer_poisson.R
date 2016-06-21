@@ -28,16 +28,18 @@ setGeneric(
   def = function(
     data, ..., model.fit
   ){
-    standard.generic("n2k_glmer_poisson") # nocov
+    standardGeneric("n2k_glmer_poisson") # nocov
   }
 )
 
 #' @description A new n2kGlmerPoisson model is created when \code{data} is a data.frame.
 #' @rdname n2k_glmer_poisson
 #' @aliases n2k_glmer_poisson,n2kGlmerPoisson-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.count is.string is.time noNA
 #' @importFrom digest sha1
+#' @importFrom stats as.formula
+#' @importFrom utils sessionInfo
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "n2k_glmer_poisson",
@@ -169,7 +171,8 @@ setMethod(
 #' @description In case \code{data} a n2kGlmerPoisson object is, then only the model and status are updated. All other slots are unaffected.
 #' @rdname n2k_glmer_poisson
 #' @aliases n2k_glmer_poisson,my_lmer-methods
-#' @importFrom methods setMethod validObject
+#' @importFrom methods setMethod validObject new
+#' @importFrom utils sessionInfo
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "n2k_glmer_poisson",

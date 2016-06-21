@@ -27,6 +27,7 @@ setClass(
 
 #' @importFrom methods setValidity
 #' @importFrom n2khelper check_dataframe_variable
+#' @importFrom stats as.formula
 setValidity(
   "n2kAnalysisMetadata",
   function(object){

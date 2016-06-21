@@ -9,13 +9,13 @@
 setGeneric(
   name = "get_model",
   def = function(x){
-    standard.generic("get_model") # nocov
+    standardGeneric("get_model") # nocov
   }
 )
 
 #' @rdname get_model
 #' @aliases get_model,n2kGlmerPoisson-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "get_model",
@@ -27,7 +27,7 @@ setMethod(
 
 #' @rdname get_model
 #' @aliases get_model,n2kInlaNbinomial-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "get_model",
@@ -39,7 +39,7 @@ setMethod(
 
 #' @rdname get_model
 #' @aliases get_model,character-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom n2khelper check_path read_object_environment
 setMethod(
   f = "get_model",

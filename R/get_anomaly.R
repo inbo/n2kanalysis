@@ -9,16 +9,18 @@
 setGeneric(
   name = "get_anomaly",
   def = function(analysis, ...){
-    standard.generic("get_anomaly") # nocov
+    standardGeneric("get_anomaly") # nocov
   }
 )
 
 #' @rdname get_anomaly
 #' @aliases get_anomaly,n2kGlmerPoisson-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.count is.number is.flag noNA
 #' @importFrom lme4 ranef
 #' @importFrom digest sha1
+#' @importFrom stats fitted
+#' @importFrom utils tail head
 #' @include n2kGlmerPoisson_class.R
 #' @include n2kAnomaly_class.R
 #' @param datasource.id ID of the datasource for the random effects
@@ -247,7 +249,7 @@ setMethod(
 )
 
 #' @rdname get_anomaly
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kModel_class.R
 #' @importFrom assertthat assert_that is.flag noNA
 setMethod(
@@ -270,7 +272,7 @@ setMethod(
 
 #' @rdname get_anomaly
 #' @aliases get_anomaly,n2kInlaNbinomial-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.count is.number is.flag noNA
 #' @importFrom dplyr data_frame add_rownames select_ filter_ mutate_ bind_cols arrange_ ungroup slice_ transmute_
 #' @importFrom digest sha1

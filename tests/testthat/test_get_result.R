@@ -9,13 +9,14 @@ this.last.imported.year <- 2015L
 this.last.analysed.year <- 2014L
 this.duration <- 1L
 this.datasource <- 1L
-data("cbpp", package = "lme4")
-cbpp$ObservationID <- seq_len(nrow(cbpp))
-cbpp$DatasourceID <- 2L
+dataset <- n2kanalysis:::test_data()
 describe("get_result on n2kInlaNbinomial", {
   this.model.type <- "inla nbinomial: period + herd"
   this.formula <-
-    "incidence ~ offset(log(size)) + period + f(herd, model = 'iid')"
+    "Count ~
+      A * (B + C) + C:D +
+      f(E, model = 'rw1', replicate = as.integer(A)) +
+      f(F, model = 'iid')"
   analysis <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -25,7 +26,7 @@ describe("get_result on n2kInlaNbinomial", {
     first.imported.year = this.first.imported.year,
     last.imported.year = this.last.imported.year,
     analysis.date = this.analysis.date,
-    data = cbpp
+    data = dataset
   )
   result <- get_result(
     analysis,
@@ -66,7 +67,7 @@ describe("get_result on n2kInlaNbinomial", {
     expect_is(result, "n2kResult")
   })
   it("returns senbile output on fitted objects", {
-    expect_less_than(
+    expect_lt(
       0,
       nrow(result@Parameter)
     )
@@ -74,7 +75,7 @@ describe("get_result on n2kInlaNbinomial", {
       nrow(result@Contrast),
       0L
     )
-    expect_less_than(
+    expect_lt(
       0,
       nrow(result@Anomaly)
     )
@@ -85,7 +86,15 @@ describe("get_result on n2kInlaNbinomial", {
   )
 
   # with linear combination
-  lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
+  lin.comb <- dataset %>%
+    filter_(
+      ~C == max(C),
+      ~D == max(D)
+    ) %>%
+    select_(~A, ~B, ~C, ~D) %>%
+    distinct_() %>%
+    model.matrix(object = ~A * (B + C) + C:D)
+  rownames(lin.comb) <- seq_len(nrow(lin.comb))
   this.parent <- "abcd"
   analysis <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,
@@ -96,7 +105,7 @@ describe("get_result on n2kInlaNbinomial", {
     first.imported.year = this.first.imported.year,
     last.imported.year = this.last.imported.year,
     analysis.date = this.analysis.date,
-    data = cbpp,
+    data = dataset,
     lin.comb = lin.comb,
     parent = this.parent
   )
@@ -147,7 +156,7 @@ describe("get_result on n2kInlaNbinomial", {
     expect_is(result, "n2kResult")
   })
   it("returns senbile output on fitted objects", {
-    expect_less_than(
+    expect_lt(
       0,
       nrow(result@Parameter)
     )
@@ -155,15 +164,213 @@ describe("get_result on n2kInlaNbinomial", {
       nrow(result@Contrast),
       nrow(lin.comb)
     )
-    expect_less_than(
+    expect_lt(
       0,
       nrow(result@ContrastCoefficient)
     )
-    expect_less_than(
+    expect_lt(
       0,
       nrow(result@ContrastEstimate)
     )
-    expect_less_than(
+    expect_lt(
+      0,
+      nrow(result@Anomaly)
+    )
+  })
+  expect_equal(
+    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
+    result
+  )
+
+  # with linear combination as list of vectors
+  lin.comb <- as.list(as.data.frame(lin.comb))
+  names(lin.comb[[1]]) <- seq_along(lin.comb[[1]])
+  analysis <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = this.formula,
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = dataset,
+    lin.comb = lin.comb,
+    parent = this.parent
+  )
+  result <- get_result(
+    analysis,
+    datasource.id = this.datasource,
+    verbose = FALSE
+  )
+  it("return a n2kResult", {
+    expect_is(result, "n2kResult")
+  })
+  it("returns senbile output on unfitted objects", {
+    expect_identical(
+      nrow(result@Parameter),
+      0L
+    )
+    expect_identical(
+      nrow(result@Contrast),
+      length(lin.comb[[1]])
+    )
+    expect_identical(
+      nrow(result@ContrastCoefficient),
+      0L
+    )
+    expect_identical(
+      nrow(result@ContrastEstimate),
+      0L
+    )
+    expect_identical(
+      nrow(result@Anomaly),
+      0L
+    )
+  })
+  filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
+  save(analysis, file = filename)
+  expect_equal(
+    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
+    result
+  )
+  fit_model(filename, verbose = FALSE)
+  load(filename)
+  result <- get_result(
+    analysis,
+    datasource.id = this.datasource,
+    verbose = FALSE
+  )
+  it("return a n2kResult", {
+    expect_is(result, "n2kResult")
+  })
+  it("returns senbile output on fitted objects", {
+    expect_lt(
+      0,
+      nrow(result@Parameter)
+    )
+    expect_identical(
+      nrow(result@Contrast),
+      length(lin.comb[[1]])
+    )
+    expect_lt(
+      0,
+      nrow(result@ContrastCoefficient)
+    )
+    expect_lt(
+      0,
+      nrow(result@ContrastEstimate)
+    )
+    expect_lt(
+      0,
+      nrow(result@Anomaly)
+    )
+  })
+  expect_equal(
+    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
+    result
+  )
+
+
+  # with linear combination as list of matrices
+  lc.E <- max(dataset$E) %>%
+    diag() %>%
+    list() %>%
+    rep(length(levels(dataset$A))) %>%
+    do.call(what = cbind) %>%
+    "/"(length(levels(dataset$A))) #nolint
+  colnames(lc.E) <- dataset %>%
+    select_(~A, ~E) %>%
+    distinct_() %>%
+    arrange_(~A, ~E) %>%
+    transmute_(~paste(A, E, sep = ":")) %>%
+    unlist() %>%
+    unname()
+  rownames(lc.E) <- seq_len(nrow(lc.E))
+  lin.comb <- list(
+    E = lc.E,
+    F = matrix(c(1, 0, 0), byrow = TRUE, ncol = 3, nrow = nrow(lc.E))
+  )
+  analysis <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = this.formula,
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = dataset,
+    lin.comb = lin.comb,
+    replicate.name = list(
+      E = levels(dataset$A)
+    ),
+    parent = this.parent
+  )
+  result <- get_result(
+    analysis,
+    datasource.id = this.datasource,
+    verbose = FALSE
+  )
+  it("return a n2kResult", {
+    expect_is(result, "n2kResult")
+  })
+  it("returns senbile output on unfitted objects", {
+    expect_identical(
+      nrow(result@Parameter),
+      0L
+    )
+    expect_identical(
+      nrow(result@Contrast),
+      nrow(lin.comb[[1]])
+    )
+    expect_identical(
+      nrow(result@ContrastCoefficient),
+      0L
+    )
+    expect_identical(
+      nrow(result@ContrastEstimate),
+      0L
+    )
+    expect_identical(
+      nrow(result@Anomaly),
+      0L
+    )
+  })
+  filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
+  save(analysis, file = filename)
+  expect_equal(
+    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
+    result
+  )
+  fit_model(filename, verbose = FALSE)
+  load(filename)
+  result <- get_result(
+    analysis,
+    datasource.id = this.datasource,
+    verbose = FALSE
+  )
+  it("return a n2kResult", {
+    expect_is(result, "n2kResult")
+  })
+  it("returns senbile output on fitted objects", {
+    expect_lt(
+      0,
+      nrow(result@Parameter)
+    )
+    expect_identical(
+      nrow(result@Contrast),
+      nrow(lin.comb[[1]])
+    )
+    expect_lt(
+      0,
+      nrow(result@ContrastCoefficient)
+    )
+    expect_lt(
+      0,
+      nrow(result@ContrastEstimate)
+    )
+    expect_lt(
       0,
       nrow(result@Anomaly)
     )
@@ -478,7 +685,7 @@ describe("get_result on n2kInlaNbinomial with replicated random effects", {
     expect_is(result, "n2kResult")
   })
   it("returns senbile output on fitted objects", {
-    expect_less_than(
+    expect_lt(
       0,
       nrow(result@Parameter)
     )
@@ -486,7 +693,7 @@ describe("get_result on n2kInlaNbinomial with replicated random effects", {
       nrow(result@Contrast),
       0L
     )
-    expect_less_than(
+    expect_lt(
       0,
       nrow(result@Anomaly)
     )

@@ -9,13 +9,13 @@
 setGeneric(
   name = "get_file_fingerprint",
   def = function(x){
-    standard.generic("get_file_fingerprint") # nocov
+    standardGeneric("get_file_fingerprint") # nocov
   }
 )
 
 #' @rdname get_file_fingerprint
 #' @aliases get_file_fingerprint,n2kAnalysisMetadata-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kAnalysisMetadata_class.R
 setMethod(
   f = "get_file_fingerprint",

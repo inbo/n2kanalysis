@@ -106,13 +106,18 @@ describe("fit_model() on INLA nbinomial based objects", {
   this.location.group.id <- 3L
   this.model.type <- "inla nbinomial: period + herd"
   this.formula <-
-    "incidence ~ offset(log(size)) + period + f(herd, model = 'iid')"
+    "incidence ~ offset(log(size)) + period + f(herd, model = \"iid\")"
   this.first.imported.year <- 1990L
   this.last.imported.year <- 2015L
   this.last.analysed.year <- 2014L
   this.duration <- 1L
   lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
+  rownames(lin.comb) <- seq_len(nrow(lin.comb))
   bad.lin.comb <- lin.comb[, -1]
+  lin.comb.list <- as.list(as.data.frame(lin.comb))
+  names(lin.comb.list[[1]]) <- seq_along(lin.comb.list[[1]])
+  lin.comb.list2 <- list(herd = diag(length(levels(cbpp$herd))))
+  rownames(lin.comb.list2[[1]]) <- seq_len(length(levels(cbpp$herd)))
   object <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -136,6 +141,30 @@ describe("fit_model() on INLA nbinomial based objects", {
     data = cbpp,
     lin.comb = lin.comb
   )
+  object.lc.list <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = this.formula,
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = cbpp,
+    lin.comb = lin.comb.list
+  )
+  object.lc.list2 <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = this.formula,
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = cbpp,
+    lin.comb = lin.comb.list2
+  )
   object.badlc <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -150,21 +179,33 @@ describe("fit_model() on INLA nbinomial based objects", {
   )
   object.fit <- fit_model(object)
   object.lc.fit <- fit_model(object.lc)
+  object.lc.list.fit <- fit_model(object.lc.list)
+  object.lc.list2.fit <- fit_model(object.lc.list2)
   object.badlc.fit <- fit_model(object.badlc)
   cat(
     "\nobject.file <- \"", get_file_fingerprint(object), "\"\n",
     "object.lc.file <- \"", get_file_fingerprint(object.lc), "\"\n",
+    "object.lc.list.file <- \"", get_file_fingerprint(object.lc.list), "\"\n",
+    "object.lc.list2.file <- \"", get_file_fingerprint(object.lc.list2), "\"\n",
     "object.badlc.file <- \"", get_file_fingerprint(object.badlc), "\"\n",
     sep = ""
   )
   # 32-bit windows
-  object.file <- "7221fb5772b56ceeea113021fad57739dba226fb"
-  object.lc.file <- "8b5c59cc71f9ccf4fef96d154f3194cbffc69bfb"
-  object.badlc.file <- "de1c0004571177ddffd7c2644c60f3988c5e37e1"
+  object.file <- "edf0ea6279df0d94400892dfbdcf2f459eeb876e"
+  object.lc.file <- "395e9359dfe209b48705c19afdd36a64902f695a"
+  object.lc.list.file <- "3ba8f88d5ed2c2e68498b812dd5473f80de2029d"
+  object.lc.list2.file <- "c001cc89a90d5621b2405110bb288e38e76a2c45"
+  object.badlc.file <- "11db5bc1e5c40504e0fbf27c698137510be8a4f1"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
     expect_identical(object.lc.file, get_file_fingerprint(object.lc))
+    expect_identical(object.lc.list.file, get_file_fingerprint(object.lc.list))
+    expect_identical(
+      object.lc.list2.file,
+      get_file_fingerprint(object.lc.list2)
+    )
+    expect_identical(object.badlc.file, get_file_fingerprint(object.badlc))
   })
   it("doesn't alter the file fingerprint when fitting a model", {
     expect_identical(
@@ -217,6 +258,88 @@ describe("fit_model() on INLA nbinomial based objects", {
       "error"
     )
   })
+
+  # clean temp files
+  file.remove(
+    list.files(
+      temp.dir,
+      pattern = "^[0-9a-f]{40}\\.rda$",
+      full.names = TRUE
+    )
+  )
+})
+
+test_that("fit_model() works on n2kInlaComparison", {
+  this.scheme.id <- 1L
+  this.species.group.id <- 2L
+  this.location.group.id <- 3L
+  this.analysis.date <- Sys.time()
+  this.model.type <- "inla nbinomial: A * (B + C) + C:D"
+  this.first.imported.year <- 1990L
+  this.last.imported.year <- 2015L
+  this.last.analysed.year <- 2014L
+  this.duration <- 1L
+  dataset <- n2kanalysis:::test_data()
+  temp.dir <- tempdir()
+
+  analysis <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = "Count ~ A",
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = dataset
+  )
+  p1 <- get_file_fingerprint(analysis)
+  filename1 <- paste0(temp.dir, "/", p1, ".rda")
+  save(analysis, file = filename1)
+  analysis <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = "Count ~ A * B",
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = dataset
+  )
+  p2 <- get_file_fingerprint(analysis)
+  filename2 <- paste0(temp.dir, "/", p2, ".rda")
+  save(analysis, file = filename2)
+
+  analysis <- n2k_inla_comparison(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    formula = "~B", #nolint
+    model.type = "inla comparison: A*B",
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    parent = c(p1, p2),
+    parent.status = status(temp.dir) %>%
+      select_(
+        ParentAnalysis = ~FileFingerprint,
+        ParentStatus = ~Status,
+        ParentStatusFingerprint = ~StatusFingerprint
+      )
+  )
+  p3 <- get_file_fingerprint(analysis)
+  filename3 <- paste0(temp.dir, "/", p3, ".rda")
+  save(analysis, file = filename3)
+  fit_model(filename3, verbose = FALSE)
+
+  fit_model(filename1, verbose = FALSE)
+  fit_model(filename3, verbose = FALSE)
+
+  fit_model(filename2, verbose = FALSE)
+  fit_model(filename3, verbose = FALSE)
+
+  fit_model(filename3, verbose = FALSE)
 
   # clean temp files
   file.remove(

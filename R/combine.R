@@ -14,7 +14,7 @@ setGeneric(
 
 #' @rdname combine
 #' @aliases combine,n2kAnalysisVersion-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kAnalysisVersion_class.R
 setMethod(
   f = "combine",
@@ -71,7 +71,7 @@ setMethod(
 
 #' @rdname combine
 #' @aliases combine,n2kParameter-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kParameter_class.R
 setMethod(
   f = "combine",
@@ -106,7 +106,7 @@ setMethod(
 
 #' @rdname combine
 #' @aliases combine,n2kAnamoly-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kAnomaly_class.R
 setMethod(
   f = "combine",

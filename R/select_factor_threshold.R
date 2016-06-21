@@ -8,6 +8,7 @@
 #' @importFrom MASS glm.nb
 #' @importFrom n2khelper check_single_probability check_dataframe_variable
 #' @importFrom assertthat assert_that is.string
+#' @importFrom stats coef
 #' @examples
 #' observation <- data.frame(
 #'   Count = c(100, 101, 50, 51, 1, 0, 0, 0),

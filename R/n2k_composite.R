@@ -26,17 +26,19 @@ setGeneric(
   def = function(
     parent.status, ...
   ){
-    standard.generic("n2k_composite") # nocov
+    standardGeneric("n2k_composite") # nocov
   }
 )
 
 #' @description A new n2kComposite model is created when \code{parent} is a data.frame
 #' @rdname n2k_composite
 #' @aliases n2k_composite,n2kComposite-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom n2khelper check_dataframe_variable
 #' @importFrom assertthat assert_that is.count is.string is.time
 #' @importFrom digest sha1
+#' @importFrom stats as.formula
+#' @importFrom utils sessionInfo
 #' @include n2kLrtGlmer_class.R
 setMethod(
   f = "n2k_composite",

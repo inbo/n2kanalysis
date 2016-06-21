@@ -1,7 +1,8 @@
 #' @rdname combine
 #' @aliases combine,n2kResult-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom dplyr %>% arrange_ distinct_
+#' @importFrom stats as.formula
 #' @include n2kResult_class.R
 setMethod(
   f = "combine",

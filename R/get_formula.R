@@ -9,13 +9,13 @@
 setGeneric(
   name = "get_formula",
   def = function(x){
-    standard.generic("get_formula") # nocov
+    standardGeneric("get_formula") # nocov
   }
 )
 
 #' @rdname get_formula
 #' @aliases get_formula,n2kAnalysisMetadata-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kAnalysisMetadata_class.R
 setMethod(
   f = "get_formula",

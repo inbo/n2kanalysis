@@ -1,7 +1,7 @@
 #' @importFrom methods setClassUnion
 #' @include import_S3_classes.R
 setClassUnion("maybeInla", c("inla", "NULL"))
-setClassUnion("maybeMatrix", c("matrix", "NULL"))
+setClassUnion("maybeMatrix", c("matrix", "list", "NULL"))
 
 #' The n2kInlaNBinomial class
 #'
@@ -11,6 +11,7 @@ setClassUnion("maybeMatrix", c("matrix", "NULL"))
 #'    \item{\code{Data}}{a data.frame with the data}
 #'    \item{\code{LinearCombination}}{an optional matrix with the linear
 #'        combinations}
+#'    \item{\code{ReplicateName}}{an optional list with names of replicates}
 #'    \item{\code{Model}}{Either NULL or the resulting INLA model.}
 #'   }
 #' @name n2kInlaNbinomial-class
@@ -25,6 +26,7 @@ setClass(
   representation = representation(
     Data = "data.frame",
     LinearCombination = "maybeMatrix",
+    ReplicateName = "list",
     Model = "maybeInla"
   ),
   contains = "n2kModel"
@@ -53,6 +55,22 @@ setValidity(
       }
     }
 
+    if (is.matrix(object@LinearCombination)) {
+      if (is.null(rownames(object@LinearCombination))) {
+        stop("A matrix of linear combination must have rownames")
+      }
+    }
+    if (is.list(object@LinearCombination)) {
+      if (is.matrix(object@LinearCombination[[1]])) {
+        if (is.null(rownames(object@LinearCombination[[1]]))) {
+          stop("The first element of linear combination must have rownames")
+        }
+      } else {
+        if (is.null(names(object@LinearCombination[[1]]))) {
+          stop("The first element of linear combination must have names")
+        }
+      }
+    }
     file.fingerprint <- sha1(
       list(
         object@Data, object@AnalysisMetadata$SchemeID,
@@ -65,7 +83,7 @@ setValidity(
         object@AnalysisMetadata$LastAnalysedYear,
         object@AnalysisMetadata$AnalysisDate, object@AnalysisMetadata$Seed,
         object@AnalysisRelation$ParentAnalysis,
-        object@LinearCombination
+        object@ReplicateName, object@LinearCombination
       )
     )
     if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {

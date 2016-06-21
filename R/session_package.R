@@ -9,14 +9,15 @@
 setGeneric(
   name = "session_package",
   def = function(session){
-    standard.generic("session_package") # nocov
+    standardGeneric("session_package") # nocov
   }
 )
 
 #' @rdname session_package
 #' @aliases session_package,sessionInfo-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom digest sha1
+#' @importFrom utils sessionInfo
 setMethod(
   f = "session_package",
   signature = signature(session = "sessionInfo"),

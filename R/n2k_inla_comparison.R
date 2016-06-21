@@ -25,18 +25,20 @@ setGeneric(
   def = function(
     parent, ...
   ){
-    standard.generic("n2k_inla_comparison") # nocov
+    standardGeneric("n2k_inla_comparison") # nocov
   }
 )
 
 #' @description A new n2kInlaComparison model is created when \code{parent} is a character
 #' @rdname n2k_inla_comparison
 #' @aliases n2k_inla_comparison,n2kInlaComparison-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom n2khelper check_dataframe_variable
 #' @importFrom assertthat assert_that noNA is.count is.string
 #' @importFrom dplyr %>% select_ arrange_
 #' @importFrom digest sha1
+#' @importFrom stats as.formula
+#' @importFrom utils sessionInfo
 #' @include n2kInlaComparison_class.R
 setMethod(
   f = "n2k_inla_comparison",

@@ -9,13 +9,13 @@
 setGeneric(
   name = "get_data",
   def = function(x){
-    standard.generic("get_data") # nocov
+    standardGeneric("get_data") # nocov
   }
 )
 
 #' @rdname get_data
 #' @aliases get_data,n2kGlmerPoisson-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "get_data",
@@ -27,7 +27,7 @@ setMethod(
 
 #' @rdname get_data
 #' @aliases get_data,n2kInlaNbinomial-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "get_data",
