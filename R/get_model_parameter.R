@@ -285,6 +285,7 @@ setMethod(
 #' @importFrom methods setMethod new
 #' @importFrom dplyr data_frame rowwise mutate_ filter_ select_ left_join mutate_ bind_rows add_rownames transmute_ semi_join
 #' @importFrom digest sha1
+#' @importFrom INLA inla.tmarginal inla.qmarginal
 #' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom stats terms
 #' @include n2kInlaNbinomial_class.R
@@ -462,7 +463,13 @@ setMethod(
         get_model(analysis)$marginals.hyperpar[re.names],
         function(x){
           tryCatch(
-            inla_inverse(x),
+            x %>%
+              inla.tmarginal(fun = function(x){1/x}) %>%
+              inla.qmarginal(p = c(
+                Estimate = .5,
+                LowerConfidenceLimit = .025,
+                UpperConfidenceLimit = .975
+              )),
             error = function(e){
               c(
                 Estimate = NA,
