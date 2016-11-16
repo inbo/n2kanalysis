@@ -6,7 +6,7 @@
 #' @param relative When FALSE the treshold is the number of non-zero observations. When TRUE the treshold is the proportion of non-zero observations. Defaults to FALSE.
 #' @export
 #' @importFrom n2khelper check_character check_dataframe_variable check_single_probability
-#' @importFrom assertthat assert_that is.count is.flag
+#' @importFrom assertthat assert_that is.count is.flag has_name noNA
 #' @importFrom stats na.fail
 #' @examples
 #' observation <- data.frame(
@@ -38,6 +38,7 @@ select_factor_count_strictly_positive <- function(
   )
   assert_that(is.count(dimension))
   assert_that(is.flag(relative))
+  assert_that(noNA(relative))
   if (relative && dimension > 1) {
     stop("relative treshold is only defined for 1 dimension")
   }
@@ -46,12 +47,9 @@ select_factor_count_strictly_positive <- function(
   } else {
     assert_that(is.count(treshold))
   }
-  check_dataframe_variable(
-    df = observation,
-    variable = c("Count", variable),
-    name = "observation",
-    error = TRUE
-  )
+  assert_that(inherits(observation, "data.frame"))
+  assert_that(has_name(observation, "Count"))
+  assert_that(all(has_name(observation, variable)))
   if (dimension > length(variable)) {
     stop("the dimension can't exceed the number of variables")
   }
@@ -68,7 +66,7 @@ select_factor_count_strictly_positive <- function(
   }
   selected.level <- names(relevance)[relevance]
 
-  selection <- as.character(observation[, variable[dimension]]) %in%
+  selection <- as.character(observation[[variable[dimension]]]) %in%
     selected.level
   return(observation[selection, ])
 }
