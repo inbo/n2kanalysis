@@ -71,7 +71,7 @@ Collate:
     'n2k_lrt_glmer.R'
     'parent_status.R'
     'select_factor_count_strictly_positive.R'
-    'select_factor_threshold.R'
+    'select_factor_treshold.R'
     'select_observed_range.R'
     'session_package.R'
     'sha1.R'

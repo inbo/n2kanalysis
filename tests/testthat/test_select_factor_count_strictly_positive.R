@@ -15,7 +15,7 @@ describe("select_factor_count_strictly_positive", {
       select_factor_count_strictly_positive(
         observation = observation,
         variable = "LocationID",
-        threshold = 3,
+        treshold = 3,
         dimension = 1
       ),
       is_identical_to(subset(observation, LocationID %in% 1:2))
@@ -24,7 +24,7 @@ describe("select_factor_count_strictly_positive", {
       select_factor_count_strictly_positive(
         observation = observation,
         variable = c("LocationID", "Year"),
-        threshold = 2,
+        treshold = 2,
         dimension = 1
       ),
       is_identical_to(subset(observation, LocationID == 2))
@@ -33,7 +33,7 @@ describe("select_factor_count_strictly_positive", {
       select_factor_count_strictly_positive(
         observation = observation,
         variable = c("LocationID", "Year"),
-        threshold = 2,
+        treshold = 2,
         dimension = 2
       ),
       is_identical_to(subset(observation, Year == 1))
@@ -42,7 +42,7 @@ describe("select_factor_count_strictly_positive", {
       select_factor_count_strictly_positive(
         observation = observation.relative,
         variable = "Year",
-        threshold = 0.15,
+        treshold = 0.15,
         dimension = 1,
         relative = TRUE
       ),
@@ -54,7 +54,7 @@ describe("select_factor_count_strictly_positive", {
       select_factor_count_strictly_positive(
         observation = observation,
         variable = "LocationID",
-        threshold = 3,
+        treshold = 3,
         dimension = 2
       ),
       throws_error("the dimension can't exceed the number of variables")
@@ -63,33 +63,33 @@ describe("select_factor_count_strictly_positive", {
       select_factor_count_strictly_positive(
         observation = observation,
         variable = c("LocationID", "Year"),
-        threshold = 3,
+        treshold = 3,
         dimension = 2,
         relative = TRUE
       ),
-      throws_error("relative threshold is only defined for 1 dimension")
+      throws_error("relative treshold is only defined for 1 dimension")
     )
   })
-  it("checks the correct class of threshold", {
+  it("checks the correct class of treshold", {
     expect_that(
       select_factor_count_strictly_positive(
         observation = observation,
         variable = "LocationID",
-        threshold = 0.15,
+        treshold = 0.15,
         dimension = 1,
         relative = FALSE
       ),
-      throws_error("threshold is not a count \\(a single positive integer\\)")
+      throws_error("treshold is not a count \\(a single positive integer\\)")
     )
     expect_that(
       select_factor_count_strictly_positive(
         observation = observation,
         variable = "LocationID",
-        threshold = 3,
+        treshold = 3,
         dimension = 1,
         relative = TRUE
       ),
-      throws_error("threshold must be smaller than 1")
+      throws_error("treshold must be smaller than 1")
     )
   })
 })

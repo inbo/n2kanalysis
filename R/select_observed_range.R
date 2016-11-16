@@ -1,5 +1,5 @@
 #' Limit the observation to the range in which the species is present
-#' @inheritParams select_factor_threshold
+#' @inheritParams select_factor_treshold
 #' @export
 #' @examples
 #' observation <- data.frame(
