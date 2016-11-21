@@ -61,7 +61,6 @@ Collate:
     'get_seed.R'
     'get_species_group_id.R'
     'get_status_fingerprint.R'
-    'import_result.R'
     'inla_inverse.R'
     'mark_obsolete_dataset.R'
     'n2k_composite.R'
