@@ -23,6 +23,7 @@ Imports:
     RODBC,
     assertthat,
     dplyr,
+    tibble,
     tidyr (>= 0.4.0),
     digest (>= 0.6.9.3),
     n2khelper (>= 0.2)
@@ -74,7 +75,6 @@ Collate:
     'select_observed_range.R'
     'session_package.R'
     'sha1.R'
-    'simplify_result.R'
     'status.R'
     'test_data.R'
     'union.R'

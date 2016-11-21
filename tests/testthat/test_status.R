@@ -4,12 +4,12 @@ temp.dir <- tempdir()
 describe("n2kGlmerPoisson", {
   data(cbpp, package = "lme4")
   cbpp$Weight <- cbpp$size
-  cbpp$DatasourceID <- 1
+  cbpp$DatasourceID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01")
-  this.scheme.id <- 1L
-  this.species.group.id <- 2L
-  this.location.group.id <- 3L
+  this.scheme.id <- sha1(letters)
+  this.species.group.id <- sha1(letters)
+  this.location.group.id <- sha1(letters)
   this.seed <- 4L
   this.model.type <- "glmer poisson: period + herd"
   this.formula <- "incidence ~ offset(log(size)) + period + (1|herd)"

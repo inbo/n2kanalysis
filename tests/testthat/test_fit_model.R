@@ -3,14 +3,14 @@ describe("fit_model() on GlmerPoisson based objects", {
   temp.dir <- tempdir()
   data(cbpp, package = "lme4")
   cbpp$Weight <- cbpp$size
-  cbpp$DatasourceID <- 1
+  cbpp$DatasourceID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
   this.seed <- 1L
   object <- n2k_glmer_poisson(
-    scheme.id = 1L,
-    species.group.id = 2L,
-    location.group.id = 3L,
+    scheme.id = sha1(letters),
+    species.group.id = sha1(letters),
+    location.group.id = sha1(letters),
     model.type = "glmer poisson: period + herd",
     formula = "incidence ~ offset(log(size)) + period + (1|herd)",
     first.imported.year = 1990L,
@@ -20,9 +20,9 @@ describe("fit_model() on GlmerPoisson based objects", {
     data = cbpp
   )
   weighted.object <- n2k_glmer_poisson(
-    scheme.id = 1L,
-    species.group.id = 2L,
-    location.group.id = 3L,
+    scheme.id = sha1(letters),
+    species.group.id = sha1(letters),
+    location.group.id = sha1(letters),
     model.type = "weighted glmer poisson: period + herd",
     formula = "incidence ~ offset(log(size)) + period + (1|herd)",
     first.imported.year = 1990L,
@@ -40,8 +40,8 @@ describe("fit_model() on GlmerPoisson based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "3568d3baea71e65dcc84e036e8919e0bbcb40c73"
-  weighted.object.file <- "6d164624ba8b1c50cad0aac44b7ab29a9aa08ffb"
+  object.file <- "87a9ee64c60440d7b31d1734c1e46250ffbad80b"
+  weighted.object.file <- "a995b4add88cc08e755c10a842abc29e83bfe65f"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
@@ -99,11 +99,11 @@ describe("fit_model() on INLA nbinomial based objects", {
   temp.dir <- tempdir()
   data(cbpp, package = "lme4")
   cbpp$ObservationID <- seq_len(nrow(cbpp))
-  cbpp$DatasourceID <- 2L
+  cbpp$DatasourceID <- sha1(letters)
   this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
-  this.scheme.id <- 1L
-  this.species.group.id <- 2L
-  this.location.group.id <- 3L
+  this.scheme.id <- sha1(letters)
+  this.species.group.id <- sha1(letters)
+  this.location.group.id <- sha1(letters)
   this.model.type <- "inla nbinomial: period + herd"
   this.formula <-
     "incidence ~ offset(log(size)) + period + f(herd, model = \"iid\")"
@@ -191,11 +191,11 @@ describe("fit_model() on INLA nbinomial based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "edf0ea6279df0d94400892dfbdcf2f459eeb876e"
-  object.lc.file <- "395e9359dfe209b48705c19afdd36a64902f695a"
-  object.lc.list.file <- "3ba8f88d5ed2c2e68498b812dd5473f80de2029d"
-  object.lc.list2.file <- "c001cc89a90d5621b2405110bb288e38e76a2c45"
-  object.badlc.file <- "11db5bc1e5c40504e0fbf27c698137510be8a4f1"
+  object.file <- "f6bb99f9c308429970ec10ef00364815ffd0247f"
+  object.lc.file <- "defe6193cacc191b354bcda8f0f50d2c89dec8ac"
+  object.lc.list.file <- "2bd8db4a65e7c6737fb52c4889a1a741c77058f7"
+  object.lc.list2.file <- "1fb72cc125bed11e10c37370ff726dd2ec6d7901"
+  object.badlc.file <- "ab697119b52d856e829e7c02209d4e07a48acfa5"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
@@ -270,9 +270,9 @@ describe("fit_model() on INLA nbinomial based objects", {
 })
 
 test_that("fit_model() works on n2kInlaComparison", {
-  this.scheme.id <- 1L
-  this.species.group.id <- 2L
-  this.location.group.id <- 3L
+  this.scheme.id <- sha1(letters)
+  this.species.group.id <- sha1(letters)
+  this.location.group.id <- sha1(letters)
   this.analysis.date <- Sys.time()
   this.model.type <- "inla nbinomial: A * (B + C) + C:D"
   this.first.imported.year <- 1990L

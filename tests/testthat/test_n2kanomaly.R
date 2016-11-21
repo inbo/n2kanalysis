@@ -33,7 +33,7 @@ metadata$StatusFingerprint <- metadata %>%
   select_(~FileFingerprint, ~Status) %>%
   apply(1, sha1)
 
-datasourceid <- 10L
+datasourceid <- sha1(letters)
 
 parameter <- data.frame(
   Description = c("Unit test", "Unit test letters"),
@@ -133,8 +133,7 @@ expect_error(
     Anomaly = cbind(anomaly, anomaly)
   ),
   paste(
-    "found duplicated column name: AnomalyType, Analysis, Parameter,",
-    "DatasourceID, Datafield, Estimate"
+    "Each variable must have a unique name"
   )
 )
 expect_error(

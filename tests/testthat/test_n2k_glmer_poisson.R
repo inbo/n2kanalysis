@@ -1,7 +1,7 @@
 context("prepare a n2kGlmerPoisson object")
-this.scheme.id <- 1L
-this.species.group.id <- 2L
-this.location.group.id <- 3L
+this.scheme.id <- sha1(letters)
+this.species.group.id <- sha1(letters)
+this.location.group.id <- sha1(letters)
 this.seed <- 4L
 this.analysis.date <- Sys.time()
 this.model.type <- "glmer poisson: period + herd"
@@ -12,7 +12,7 @@ this.last.imported.year <- 2015L
 this.last.analysed.year <- 2014L
 this.duration <- 1L
 data("cbpp", package = "lme4")
-cbpp$DatasourceID <- 1
+cbpp$DatasourceID <- sha1(letters)
 cbpp$ObservationID <- seq_len(nrow(cbpp))
 object <- n2k_glmer_poisson(
   scheme.id = this.scheme.id,
@@ -80,7 +80,7 @@ describe("n2k_glmer_poisson", {
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
-        status = NA
+        status = NA_character_
       ),
       throws_error("Status must be one of the following")
     )
@@ -181,9 +181,9 @@ describe("n2k_glmer_poisson", {
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date,
         seed = this.seed,
-        parent = 1
+        parent = 1234
       ),
-      "dots\\$parent is not a character vector"
+      "dots\\$parent is neither character nor factor"
     )
   })
   it("sets the correct seed", {
@@ -260,36 +260,6 @@ describe("n2k_glmer_poisson", {
       is_identical_to(this.scheme.id)
     )
   })
-  it("converts numeric scheme.id, when possible", {
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = as.numeric(this.scheme.id)
-      )@AnalysisMetadata$SchemeID,
-      is_identical_to(this.scheme.id)
-    )
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id + 0.1
-      ),
-      throws_error("scheme.id is not a count \\(a single positive integer\\)")
-    )
-  })
 
   it("sets the correct SpeciesGroupID", {
     expect_that(
@@ -307,38 +277,6 @@ describe("n2k_glmer_poisson", {
       is_identical_to(this.species.group.id)
     )
   })
-  it("converts numeric species.group.id, when possible", {
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        species.group.id = as.numeric(this.species.group.id),
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$SpeciesGroupID,
-      is_identical_to(this.species.group.id)
-    )
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        species.group.id = this.species.group.id + 0.1,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error(
-        "species.group.id is not a count \\(a single positive integer\\)"
-      )
-    )
-  })
 
   it("sets the correct LocationGroupID", {
     expect_that(
@@ -354,38 +292,6 @@ describe("n2k_glmer_poisson", {
         scheme.id = this.scheme.id
       )@AnalysisMetadata$LocationGroupID,
       is_identical_to(this.location.group.id)
-    )
-  })
-  it("converts numeric location.group.id, when possible", {
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        species.group.id = this.species.group.id,
-        location.group.id = as.numeric(this.location.group.id),
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$LocationGroupID,
-      is_identical_to(this.location.group.id)
-    )
-    expect_that(
-      n2k_glmer_poisson(
-        data = cbpp,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id + 0.1,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error(
-        "location.group.id is not a count \\(a single positive integer\\)"
-      )
     )
   })
 
@@ -450,7 +356,7 @@ describe("n2k_glmer_poisson", {
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("FirstImportedYear from the future.")
+      throws_error("FirstImportedYear cannot exceed LastImportedYear")
     )
   })
 
@@ -889,7 +795,7 @@ describe("add a model to a n2kGlmerPoisson object", {
         data = object,
         model.fit = model.object,
         status = "converged",
-        scheme.id = 999
+        scheme.id = sha1(LETTERS)
       )@AnalysisMetadata$SchemeID,
       is_identical_to(object@AnalysisMetadata$SchemeID)
     )
@@ -902,7 +808,7 @@ describe("add a model to a n2kGlmerPoisson object", {
         data = object,
         model.fit = model.object,
         status = "converged",
-        species.group.id = 999
+        species.group.id = sha1(LETTERS)
       )@AnalysisMetadata$SpeciesGroupID,
       is_identical_to(object@AnalysisMetadata$SpeciesGroupID)
     )
@@ -915,7 +821,7 @@ describe("add a model to a n2kGlmerPoisson object", {
         data = object,
         model.fit = model.object,
         status = "converged",
-        location.group.id = 999
+        location.group.id = sha1(LETTERS)
       )@AnalysisMetadata$LocationGroupID,
       is_identical_to(object@AnalysisMetadata$LocationGroupID)
     )

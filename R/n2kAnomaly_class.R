@@ -23,7 +23,7 @@ setClass(
       AnomalyType = character(0),
       Analysis = character(0),
       Parameter = character(0),
-      DatasourceID = integer(0),
+      DatasourceID = character(0),
       Datafield = character(0),
       stringsAsFactors = FALSE
     )
@@ -31,33 +31,29 @@ setClass(
 )
 
 #' @importFrom methods setValidity
-#' @importFrom n2khelper check_dataframe_variable
+#' @importFrom n2khelper is.chartor
+#' @importFrom assertthat assert_that
 #' @importFrom dplyr %>% anti_join select_
 setValidity(
   "n2kAnomaly",
   function(object){
-    required.class <- list(
-      Description = c("character", "factor"),
-      Fingerprint = c("character", "factor", "integer")
-    )
-    check_dataframe_variable(
-      df = object@AnomalyType,
-      variable = required.class,
-      name = "AnomalyType"
-    )
+    assert_that(has_name(object@AnomalyType, "Description"))
+    assert_that(has_name(object@AnomalyType, "Fingerprint"))
 
-    required.class <- list(
-      AnomalyType = c("character", "factor", "integer"),
-      Analysis = c("character", "factor"),
-      Parameter = c("character", "factor", "integer"),
-      DatasourceID = "integer",
-      Datafield = c("character", "factor")
-    )
-    check_dataframe_variable(
-      df = object@Anomaly,
-      variable = required.class,
-      name = "Anomaly"
-    )
+    assert_that(is.chartor(object@AnomalyType$Description))
+    assert_that(is.chartor(object@AnomalyType$Fingerprint))
+
+    assert_that(has_name(object@Anomaly, "AnomalyType"))
+    assert_that(has_name(object@Anomaly, "Analysis"))
+    assert_that(has_name(object@Anomaly, "Parameter"))
+    assert_that(has_name(object@Anomaly, "DatasourceID"))
+    assert_that(has_name(object@Anomaly, "Datafield"))
+
+    assert_that(is.chartor(object@Anomaly$AnomalyType))
+    assert_that(is.chartor(object@Anomaly$Analysis))
+    assert_that(is.chartor(object@Anomaly$Parameter))
+    assert_that(is.chartor(object@Anomaly$DatasourceID))
+    assert_that(is.chartor(object@Anomaly$Datafield))
 
     antijoin.anomalytype <- object@Anomaly %>%
       anti_join(object@AnomalyType, by = c("AnomalyType" = "Fingerprint")) %>%

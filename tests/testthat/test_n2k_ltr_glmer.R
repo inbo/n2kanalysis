@@ -1,8 +1,8 @@
 context("prepare a n2kLrtGlmer object")
 this.seed <- 50L
-this.scheme.id <- 1L
-this.species.group.id <- 2L
-this.location.group.id <- 3L
+this.scheme.id <- sha1(letters)
+this.species.group.id <- sha1(letters)
+this.location.group.id <- sha1(letters)
 this.analysis.date <- Sys.time()
 this.model.type.parent <- "glmer poisson: period + herd"
 this.model.type <- "glmer lrt: cYear / fYear"
@@ -14,7 +14,7 @@ this.last.imported.year <- 2015L
 this.last.analysed.year <- 2014L
 this.duration <- 1L
 data("cbpp", package = "lme4")
-cbpp$DatasourceID <- 1
+cbpp$DatasourceID <- sha1(letters)
 cbpp$ObservationID <- seq_len(nrow(cbpp))
 object.1 <- n2k_glmer_poisson(
   scheme.id = this.scheme.id,

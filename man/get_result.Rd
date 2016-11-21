@@ -14,8 +14,7 @@ get_result(x, ...)
 
 \S4method{get_result}{n2kInlaNbinomial}(x, verbose = TRUE, ...)
 
-\S4method{get_result}{character}(x, keep.fingerprint = TRUE, n.cluster = 1,
-  verbose = TRUE, ...)
+\S4method{get_result}{character}(x, n.cluster = 1, verbose = TRUE, ...)
 }
 \arguments{
 \item{x}{object with the current results}
@@ -23,8 +22,6 @@ get_result(x, ...)
 \item{...}{further arguments (see Details)}
 
 \item{verbose}{Print extra information on the screen}
-
-\item{keep.fingerprint}{Keep the character fingerprints? Otherwise change them into integers}
 
 \item{n.cluster}{the number of clusters to run this function in parallel. Defaults to 1 (= no parallel computing).}
 }

@@ -1,10 +1,10 @@
 data("cbpp", package = "lme4")
-cbpp$DatasourceID <- 1
+cbpp$DatasourceID <- sha1(letters)
 cbpp$ObservationID <- seq_len(nrow(cbpp))
 object <- n2k_glmer_poisson(
-  scheme.id = 1,
-  species.group.id = 2,
-  location.group.id = 3,
+  scheme.id = sha1(letters),
+  species.group.id = sha1(letters),
+  location.group.id = sha1(letters),
   model.type = "glmer poisson: period + herd",
   formula = "incidence ~ offset(log(size)) + period + (1|herd)",
   first.imported.year = 1990,

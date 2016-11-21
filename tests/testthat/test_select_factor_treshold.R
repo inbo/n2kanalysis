@@ -34,14 +34,4 @@ variable
       )
     )
   })
-  it("warns when the variable is not a factor", {
-    expect_that(
-      select_factor_treshold(
-        observation = observation,
-        variable = variable.numeric,
-        treshold = treshold
-      ),
-      gives_warning(paste(variable.numeric, "was converted to a factor"))
-    )
-  })
 })

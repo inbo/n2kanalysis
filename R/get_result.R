@@ -49,7 +49,7 @@ setMethod(
 
 #' @rdname get_result
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% rowwise mutate_ add_rownames inner_join select_ transmute_ arrange_ filter_ semi_join
+#' @importFrom dplyr %>% rowwise mutate_ inner_join select_ transmute_ arrange_ filter_ semi_join
 #' @importFrom digest sha1
 #' @importFrom tidyr gather_
 #' @importFrom assertthat assert_that is.flag noNA
@@ -166,7 +166,7 @@ setMethod(
       contrast.coefficient[abs(contrast.coefficient) < 1e-8] <- NA
       contrast.coefficient <- contrast.coefficient %>%
         as.data.frame() %>%
-        add_rownames("Description") %>%
+        rownames_to_column("Description") %>%
         gather_(
           "ParameterID",
           "Coefficient",
@@ -321,21 +321,18 @@ setMethod(
 #' @importFrom methods setMethod validObject new
 #' @importFrom assertthat assert_that is.string is.flag is.count noNA
 #' @importFrom utils file_test
-#' @param keep.fingerprint Keep the character fingerprints? Otherwise change them into integers
 #' @param n.cluster the number of clusters to run this function in parallel. Defaults to 1 (= no parallel computing).
 setMethod(
   f = "get_result",
   signature = signature(x = "character"),
   definition = function(
     x,
-    keep.fingerprint = TRUE,
     n.cluster = 1,
     verbose = TRUE,
     ...
   ){
     # check arguments
     assert_that(is.string(x))
-    assert_that(is.flag(keep.fingerprint))
     assert_that(is.count(n.cluster))
     assert_that(is.flag(verbose))
     assert_that(noNA(verbose))
@@ -403,14 +400,6 @@ setMethod(
     utils::flush.console()
     result <- do.call(combine, result)
 
-    if (keep.fingerprint) {
-      return(result)
-    }
-
-    if (verbose) {
-      message("Converting sha1 to integer")
-    }
-    utils::flush.console()
-    return(simplify_result(result = result))
+    return(result)
   }
 )

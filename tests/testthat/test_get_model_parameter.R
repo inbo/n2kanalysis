@@ -3,12 +3,12 @@ test_that(
   "get_model_parameter works with n2kGlmerPoisson", {
   data(cbpp, package = "lme4")
   cbpp$Weight <- cbpp$size
-  cbpp$DatasourceID <- 1
+  cbpp$DatasourceID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
-  this.scheme.id <- 1L
-  this.species.group.id <- 2L
-  this.location.group.id <- 3L
+  this.scheme.id <- sha1(letters)
+  this.species.group.id <- sha1(letters)
+  this.location.group.id <- sha1(letters)
   this.seed <- 4L
   this.model.type <- "glmer poisson: period + herd"
   this.formula <- "incidence ~ offset(log(size)) + period + (1|herd)"
@@ -133,9 +133,9 @@ test_that(
     effect", {
   dataset <- n2kanalysis:::test_data()
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
-  this.scheme.id <- 1L
-  this.species.group.id <- 2L
-  this.location.group.id <- 3L
+  this.scheme.id <- sha1(letters)
+  this.species.group.id <- sha1(letters)
+  this.location.group.id <- sha1(letters)
   this.seed <- 4L
   this.model.type <- "inla nbinomial: A * B + E"
   this.first.imported.year <- 1990L
@@ -227,9 +227,9 @@ test_that(
       interaction and categorical numeric interaction", {
   dataset <- n2kanalysis:::test_data()
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
-  this.scheme.id <- 1L
-  this.species.group.id <- 2L
-  this.location.group.id <- 3L
+  this.scheme.id <- sha1(letters)
+  this.species.group.id <- sha1(letters)
+  this.location.group.id <- sha1(letters)
   this.seed <- 4L
   this.model.type <- "inla nbinomial: A * B + E"
   this.first.imported.year <- 1990L
@@ -347,9 +347,9 @@ test_that(
     which on replicated", {
   dataset <- n2kanalysis:::test_data()
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
-  this.scheme.id <- 1L
-  this.species.group.id <- 2L
-  this.location.group.id <- 3L
+  this.scheme.id <- sha1(letters)
+  this.species.group.id <- sha1(letters)
+  this.location.group.id <- sha1(letters)
   this.seed <- 4L
   this.model.type <- "inla nbinomial: A * B + E"
   this.first.imported.year <- 1990L
@@ -461,7 +461,7 @@ test_that(
       N1 = 3L,
       N2 = c(10, 1),
       Missing = c(0, 1)
-    )
+  )
   )
   expect_identical(
     param@ParameterEstimate %>%

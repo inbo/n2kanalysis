@@ -16,7 +16,7 @@ setGeneric(
 #' @rdname get_anomaly
 #' @aliases get_anomaly,n2kGlmerPoisson-methods
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that is.count is.number is.flag noNA
+#' @importFrom assertthat assert_that is.count is.number is.flag noNA is.string
 #' @importFrom lme4 ranef
 #' @importFrom digest sha1
 #' @importFrom stats fitted
@@ -42,7 +42,7 @@ setMethod(
     verbose = TRUE,
     ...
   ){
-    assert_that(is.count(datasource.id))
+    assert_that(is.string(datasource.id))
     assert_that(is.count(n))
     assert_that(is.number(log.expected.ratio))
     assert_that(is.number(log.expected.absent))
@@ -75,7 +75,7 @@ setMethod(
       AnomalyType = character(0),
       Analysis = character(0),
       Parameter = character(0),
-      DatasourceID = integer(0),
+      DatasourceID = character(0),
       Datafield = character(0),
       stringsAsFactors = FALSE
     )
@@ -273,8 +273,8 @@ setMethod(
 #' @rdname get_anomaly
 #' @aliases get_anomaly,n2kInlaNbinomial-methods
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that is.count is.number is.flag noNA
-#' @importFrom dplyr data_frame add_rownames select_ filter_ mutate_ bind_cols arrange_ ungroup slice_ transmute_
+#' @importFrom assertthat assert_that is.count is.number is.flag noNA is.string
+#' @importFrom dplyr data_frame select_ filter_ mutate_ bind_cols arrange_ ungroup slice_ transmute_
 #' @importFrom digest sha1
 #' @include n2kInlaNbinomial_class.R
 setMethod(
@@ -290,8 +290,7 @@ setMethod(
     verbose = TRUE,
     ...
   ){
-    assert_that(is.count(datasource.id))
-    datasource.id <- as.integer(datasource.id)
+    assert_that(is.string(datasource.id))
     assert_that(is.count(n))
     assert_that(is.number(log.expected.ratio))
     assert_that(is.number(log.expected.absent))
@@ -330,7 +329,7 @@ setMethod(
       AnomalyType = character(0),
       Analysis = character(0),
       Parameter = character(0),
-      DatasourceID = integer(0),
+      DatasourceID = character(0),
       Datafield = character(0)
     )
 
@@ -455,7 +454,7 @@ setMethod(
       anomaly <- re.anomaly %>%
         inner_join(anomaly.type, by = c("AnomalyType" = "Description")) %>%
         select_(~-AnomalyType, AnomalyType = ~ Fingerprint) %>%
-        mutate_(DatasourceID = datasource.id) %>%
+        mutate_(DatasourceID = ~datasource.id) %>%
         bind_rows(anomaly)
     }
 

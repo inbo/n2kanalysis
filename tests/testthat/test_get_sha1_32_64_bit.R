@@ -3,12 +3,12 @@ describe("file fingerprint for n2k_glmer_poisson", {
 
   data(cbpp, package = "lme4")
   cbpp$Weight <- cbpp$size
-  cbpp$DatasourceID <- 1
+  cbpp$DatasourceID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
-  this.scheme.id <- 1L
-  this.species.group.id <- 2L
-  this.location.group.id <- 3L
+  this.scheme.id <- sha1(letters)
+  this.species.group.id <- sha1(letters)
+  this.location.group.id <- sha1(letters)
   this.seed <- 4L
   this.model.type <- "glmer poisson: period + herd"
   this.formula <- "incidence ~ offset(log(size)) + period + (1|herd)"
@@ -55,10 +55,10 @@ describe("file fingerprint for n2k_glmer_poisson", {
   cat(")\n")
   # 32-bit windows 7
   correct <- c(
-    "42e22234bf3bfed6939e1ad33bf99641ad623529",
-    "b48c17a2ac82601ff38df374f87d76005fb61cbd",
-    "ad120a31f018cd9c8bc346f74217c3607fe8d79e",
-    "24b4f80eedfbae5f0b618988f91468b4a13e45c9",
+    "15a3dfe9aab0afff4b2a44dc3008fbf472f3ab43",
+    "2bd213d075fa7bdf9d71186fd0fd2a84eb3fe3f6",
+    "2bd213d075fa7bdf9d71186fd0fd2a84eb3fe3f6",
+    "2bd213d075fa7bdf9d71186fd0fd2a84eb3fe3f6",
     "e096044ac3b55cc74e03c6085619e4e3850d91af",
     "5ff0998ae6ef94d64f63dc7c1c89954f2e6f3f81",
     "24f565badff755cba798cb8f5a54754b62b5f2c4",

@@ -283,7 +283,8 @@ setMethod(
 
 #' @rdname get_model_parameter
 #' @importFrom methods setMethod new
-#' @importFrom dplyr data_frame rowwise mutate_ filter_ select_ left_join mutate_ bind_rows add_rownames transmute_ semi_join
+#' @importFrom tibble rownames_to_column
+#' @importFrom dplyr data_frame rowwise mutate_ filter_ select_ left_join mutate_ bind_rows transmute_ semi_join
 #' @importFrom digest sha1
 #' @importFrom INLA inla.tmarginal inla.qmarginal
 #' @importFrom assertthat assert_that is.flag noNA
@@ -482,7 +483,7 @@ setMethod(
       ) %>%
         t() %>%
         as.data.frame() %>%
-        add_rownames("Parameter") %>%
+        rownames_to_column("Parameter") %>%
         mutate_(
           Parameter = ~gsub("^Precision for ", "", Parameter),
           Analysis = ~analysis@AnalysisMetadata$FileFingerprint

@@ -1,7 +1,7 @@
 # A function to generate a simple dataset for unit testing
-#' @importFrom dplyr %>%
+#' @importFrom dplyr %>% mutate_ n row_number
 #' @importFrom stats model.matrix rnbinom rnorm runif
-test_data <- function(){
+test_data <- function(datasource.id = sha1(letters)){
   set.seed(999)
   n.e <- 10
   sd.random <- 0.1
@@ -34,8 +34,11 @@ test_data <- function(){
     apply(2, cumsum) %>%
     as.vector()
   eta <- mm.fixed %*% fixed + mm.random %*% random
-  dataset$Count <- rnbinom(nrow(dataset), mu = exp(eta), size = theta)
-  dataset$DatasourceID <- 1L
-  dataset$ObservationID <- seq_along(dataset$Count)
+  dataset <- dataset %>%
+    mutate_(
+      Count = ~rnbinom(n(), mu = exp(eta), size = theta),
+      DatasourceID = ~datasource.id,
+      ObservationID = ~row_number(Count)
+    )
   return(dataset)
 }

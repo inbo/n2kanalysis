@@ -26,33 +26,49 @@ setClass(
 )
 
 #' @importFrom methods setValidity
-#' @importFrom n2khelper check_dataframe_variable
+#' @importFrom assertthat assert_that has_name
+#' @importFrom n2khelper is.chartor
 #' @importFrom stats as.formula
 setValidity(
   "n2kAnalysisMetadata",
   function(object){
-    required.class <- list(
-      SchemeID = "integer",
-      SpeciesGroupID = "integer",
-      LocationGroupID = "integer",
-      ModelType = c("character", "factor"),
-      Formula = c("character", "factor"),
-      FirstImportedYear = "integer",
-      LastImportedYear = "integer",
-      Duration = "integer",
-      LastAnalysedYear = "integer",
-      AnalysisDate = "POSIXct",
-      Seed = "integer",
-      FileFingerprint = c("character", "factor"),
-      Status = c("character", "factor"),
-      AnalysisVersion = c("character", "factor"),
-      StatusFingerprint = c("character", "factor")
-    )
-    check_dataframe_variable(
-      df = object@AnalysisMetadata,
-      variable = required.class,
-      name = "AnalysisMetadata"
-    )
+    assert_that(has_name(object@AnalysisMetadata, "SchemeID"))
+    assert_that(has_name(object@AnalysisMetadata, "SpeciesGroupID"))
+    assert_that(has_name(object@AnalysisMetadata, "LocationGroupID"))
+    assert_that(has_name(object@AnalysisMetadata, "ModelType"))
+    assert_that(has_name(object@AnalysisMetadata, "Formula"))
+    assert_that(has_name(object@AnalysisMetadata, "SchemeID"))
+    assert_that(has_name(object@AnalysisMetadata, "FirstImportedYear"))
+    assert_that(has_name(object@AnalysisMetadata, "LastImportedYear"))
+    assert_that(has_name(object@AnalysisMetadata, "Duration"))
+    assert_that(has_name(object@AnalysisMetadata, "LastAnalysedYear"))
+    assert_that(has_name(object@AnalysisMetadata, "AnalysisDate"))
+    assert_that(has_name(object@AnalysisMetadata, "Seed"))
+    assert_that(has_name(object@AnalysisMetadata, "FileFingerprint"))
+    assert_that(has_name(object@AnalysisMetadata, "Status"))
+    assert_that(has_name(object@AnalysisMetadata, "AnalysisVersion"))
+    assert_that(has_name(object@AnalysisMetadata, "StatusFingerprint"))
+
+    assert_that(is.chartor(object@AnalysisMetadata$SchemeID))
+    assert_that(is.chartor(object@AnalysisMetadata$SpeciesGroupID))
+    assert_that(is.chartor(object@AnalysisMetadata$LocationGroupID))
+    assert_that(is.chartor(object@AnalysisMetadata$ModelType))
+    assert_that(is.chartor(object@AnalysisMetadata$Formula))
+    assert_that(is.chartor(object@AnalysisMetadata$FileFingerprint))
+    assert_that(is.chartor(object@AnalysisMetadata$Status))
+    assert_that(is.chartor(object@AnalysisMetadata$AnalysisVersion))
+    assert_that(is.chartor(object@AnalysisMetadata$StatusFingerprint))
+    assert_that(is.integer(object@AnalysisMetadata$FirstImportedYear))
+    assert_that(is.integer(object@AnalysisMetadata$LastImportedYear))
+    assert_that(is.integer(object@AnalysisMetadata$Duration))
+    assert_that(is.integer(object@AnalysisMetadata$LastAnalysedYear))
+    assert_that(is.integer(object@AnalysisMetadata$Seed))
+    assert_that(inherits(object@AnalysisMetadata$AnalysisDate, "POSIXct"))
+
+    assert_that(all(object@AnalysisMetadata$FirstImportedYear > 0))
+    assert_that(all(object@AnalysisMetadata$LastImportedYear > 0))
+    assert_that(all(object@AnalysisMetadata$LastAnalysedYear > 0))
+    assert_that(all(object@AnalysisMetadata$Seed > 0))
 
     if (length(object@AnalysisFormula) != nrow(object@AnalysisMetadata)) {
       stop(
@@ -79,34 +95,18 @@ setValidity(
       }
     }
 
-    required.class <- list(
-      Analysis = c("character", "factor"),
-      ParentAnalysis = c("character", "factor"),
-      ParentStatusFingerprint = c("character", "factor"),
-      ParentStatus = c("character", "factor")
-    )
-    check_dataframe_variable(
-      df = object@AnalysisRelation,
-      variable = required.class,
-      name = "AnalysisRelation"
-    )
 
-    if (any(object@AnalysisMetadata$LocationGroupID <= 0)) {
-      stop("LocationGroupID must be strictly positive")
-    }
-    if (any(object@AnalysisMetadata$SpeciesGroupID <= 0)) {
-      stop("SpeciesGroupID must be strictly positive")
-    }
-    if (any(object@AnalysisMetadata$FirstImportedYear <= 0)) {
-      stop("FirstImportedYear must be strictly positive")
-    }
+    assert_that(has_name(object@AnalysisRelation, "Analysis"))
+    assert_that(has_name(object@AnalysisRelation, "ParentAnalysis"))
+    assert_that(has_name(object@AnalysisRelation, "ParentStatusFingerprint"))
+    assert_that(has_name(object@AnalysisRelation, "ParentStatus"))
+
+    assert_that(is.chartor(object@AnalysisRelation$Analysis))
+    assert_that(is.chartor(object@AnalysisRelation$ParentAnalysis))
+    assert_that(is.chartor(object@AnalysisRelation$ParentStatusFingerprint))
+    assert_that(is.chartor(object@AnalysisRelation$ParentStatus))
+
     this.year <- as.integer(format(Sys.time(), "%Y"))
-    if (any(object@AnalysisMetadata$FirstImportedYear > this.year)) {
-      stop("FirstImportedYear from the future.")
-    }
-    if (any(object@AnalysisMetadata$LastImportedYear <= 0)) {
-      stop("LastImportedYear must be strictly positive")
-    }
     if (any(object@AnalysisMetadata$LastImportedYear > this.year)) {
       stop("LastImportedYear from the future.")
     }
@@ -116,17 +116,11 @@ setValidity(
     )) {
       stop("FirstImportedYear cannot exceed LastImportedYear")
     }
-    if (any(object@AnalysisMetadata$LastAnalysedYear <= 0)) {
-      stop("LastAnalysedYear must be strictly positive")
-    }
     if (any(
       object@AnalysisMetadata$LastAnalysedYear >
         object@AnalysisMetadata$LastImportedYear
     )) {
       stop("LastAnalysedYear cannot exceed LastImportedYear")
-    }
-    if (any(object@AnalysisMetadata$Duration <= 0)) {
-      stop("Duration must be strictly positive")
     }
     if (any(
       object@AnalysisMetadata$Duration >
@@ -147,10 +141,6 @@ setValidity(
 "LastAnalysedYear smaller than FirstImportedYear + Duration - 1. Window
 outside imported range."
       )
-    }
-
-    if (any(object@AnalysisMetadata$Seed <= 0)) {
-      stop("Seed must be strictly positive")
     }
 
     ok.status <- c(

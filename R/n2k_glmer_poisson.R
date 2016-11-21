@@ -40,6 +40,7 @@ setGeneric(
 #' @importFrom digest sha1
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
+#' @importFrom n2khelper is.chartor
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "n2k_glmer_poisson",
@@ -51,6 +52,8 @@ setMethod(
     #set the defaults for missing arguments in dots
     if (is.null(dots$status)) {
       dots$status <- "new"
+    } else {
+      assert_that(is.string(dots$status))
     }
     if (is.null(dots$seed)) {
       dots$seed <- sample(.Machine$integer.max, 1)
@@ -58,12 +61,9 @@ setMethod(
       assert_that(is.count(dots$seed))
       dots$seed <- as.integer(dots$seed)
     }
-    assert_that(is.count(dots$scheme.id))
-    dots$scheme.id <- as.integer(dots$scheme.id)
-    assert_that(is.count(dots$species.group.id))
-    dots$species.group.id <- as.integer(dots$species.group.id)
-    assert_that(is.count(dots$location.group.id))
-    dots$location.group.id <- as.integer(dots$location.group.id)
+    assert_that(is.string(dots$scheme.id))
+    assert_that(is.string(dots$species.group.id))
+    assert_that(is.string(dots$location.group.id))
     assert_that(is.string(dots$model.type))
     assert_that(is.string(dots$formula))
     assert_that(is.count(dots$first.imported.year))
@@ -86,7 +86,7 @@ setMethod(
     if (is.null(dots$parent)) {
       dots$parent <- character(0)
     } else {
-      assert_that(is.character(dots$parent))
+      assert_that(is.chartor(dots$parent))
       assert_that(noNA(dots$parent))
     }
     file.fingerprint <- sha1(

@@ -1,12 +1,12 @@
 context("n2kGlmerPoisson validation")
 data("cbpp", package = "lme4")
 cbpp$Weight <- cbpp$size
-cbpp$DatasourceID <- 1
+cbpp$DatasourceID <- sha1(letters)
 cbpp$ObservationID <- seq_len(nrow(cbpp))
 object <- n2k_glmer_poisson(
-  scheme.id = 1,
-  species.group.id = 2,
-  location.group.id = 3,
+  scheme.id = sha1(letters),
+  species.group.id = sha1(letters),
+  location.group.id = sha1(letters),
   model.type = "glmer poisson: period + herd",
   formula = "incidence ~ offset(log(size)) + period + (1|herd)",
   first.imported.year = 1990,
@@ -17,9 +17,9 @@ object <- n2k_glmer_poisson(
   data = cbpp
 )
 weighted.object <- n2k_glmer_poisson(
-  scheme.id = 1,
-  species.group.id = 2,
-  location.group.id = 3,
+  scheme.id = sha1(letters),
+  species.group.id = sha1(letters),
+  location.group.id = sha1(letters),
   model.type = "weighted glmer poisson: period + herd",
   formula = "incidence ~ offset(log(size)) + period + (1|herd)",
   first.imported.year = 1990,
@@ -41,7 +41,7 @@ describe("illegal changes in the file fingerprint", {
 
   it("detects changes in SchemeID", {
     change.object <- object
-    change.object@AnalysisMetadata$SchemeID <- 999L
+    change.object@AnalysisMetadata$SchemeID <- sha1(Sys.time())
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -50,7 +50,7 @@ describe("illegal changes in the file fingerprint", {
 
   it("detects changes in SpeciesGroupID", {
     change.object <- object
-    change.object@AnalysisMetadata$SpeciesGroupID <- 999L
+    change.object@AnalysisMetadata$SpeciesGroupID <- sha1(Sys.time())
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -59,7 +59,7 @@ describe("illegal changes in the file fingerprint", {
 
   it("detects changes in LocationGroupID", {
     change.object <- object
-    change.object@AnalysisMetadata$LocationGroupID <- 999L
+    change.object@AnalysisMetadata$LocationGroupID <- sha1(Sys.time())
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
