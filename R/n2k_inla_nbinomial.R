@@ -6,7 +6,7 @@
 #'    \item{\code{species.group.id}}{a single integer identifing the species group}
 #'    \item{\code{location.group.id}}{a single integer identifing the location group}
 #'    \item{\code{model.type}}{a single character identifying the type of model to fit to the data}
-#'    \item{\code{covariate}}{a single character holding the right hand side of the model formula}
+#'    \item{\code{formula}}{a single character holding the model formula}
 #'    \item{\code{first.imported.year}}{Oldest year considered in the data}
 #'    \item{\code{last.imported.year}}{Most recent year considered in the data}
 #'    \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
@@ -99,7 +99,7 @@ setMethod(
     file.fingerprint <- sha1(
       list(
         data, dots$scheme.id, dots$species.group.id, dots$location.group.id,
-        dots$model.type, dots$covariate, dots$first.imported.year,
+        dots$model.type, dots$formula, dots$first.imported.year,
         dots$last.imported.year, dots$duration, dots$last.analysed.year,
         dots$analysis.date, dots$seed, dots$parent, dots$replicate.name,
         dots$lin.comb

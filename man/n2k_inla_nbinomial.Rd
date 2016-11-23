@@ -34,7 +34,7 @@ In case \code{data} a n2kInlaNbinomial object is, then only the model and status
    \item{\code{species.group.id}}{a single integer identifing the species group}
    \item{\code{location.group.id}}{a single integer identifing the location group}
    \item{\code{model.type}}{a single character identifying the type of model to fit to the data}
-   \item{\code{covariate}}{a single character holding the right hand side of the model formula}
+   \item{\code{formula}}{a single character holding the model formula}
    \item{\code{first.imported.year}}{Oldest year considered in the data}
    \item{\code{last.imported.year}}{Most recent year considered in the data}
    \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}

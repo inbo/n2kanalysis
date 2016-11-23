@@ -76,7 +76,7 @@ setValidity(
         object@Data, object@AnalysisMetadata$SchemeID,
         object@AnalysisMetadata$SpeciesGroupID,
         object@AnalysisMetadata$LocationGroupID,
-        object@AnalysisMetadata$ModelType, object@AnalysisMetadata$Covariate,
+        object@AnalysisMetadata$ModelType, object@AnalysisMetadata$Formula,
         object@AnalysisMetadata$FirstImportedYear,
         object@AnalysisMetadata$LastImportedYear,
         object@AnalysisMetadata$Duration,
