@@ -2,3 +2,4 @@
 setOldClass("sessionInfo")
 setOldClass("inla")
 setOldClass("anova")
+setOldClass("s3_bucket")

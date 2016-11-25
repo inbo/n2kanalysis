@@ -16,6 +16,7 @@ Suggests:
     INLA,
     testthat
 Imports:
+    aws.s3,
     methods,
     MASS,
     INLA,
@@ -76,6 +77,7 @@ Collate:
     'session_package.R'
     'sha1.R'
     'status.R'
+    'store_model.R'
     'test_data.R'
     'union.R'
     'validOject.R'
