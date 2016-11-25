@@ -75,14 +75,6 @@ describe("n2kanalysis::validObject", {
     )
   })
 
-  it("handles empty files", {
-    save(file = paste(temp.dir, "empty.rda", sep = "/"))
-    empty <- validObject(paste(temp.dir, "empty.rda", sep = "/"))
-    expect_is(empty, "data.frame")
-    expect_true(nrow(empty) == 0)
-    expect_identical(colnames(empty), colnames(good))
-  })
-
   it("handles single rda files regardless the extension", {
     bad.extension <- paste(temp.dir, "bad.txt", sep = "/")
     save(t2, cbpp, file = bad.extension)

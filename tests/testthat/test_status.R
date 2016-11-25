@@ -50,11 +50,9 @@ describe("n2kGlmerPoisson", {
     this.duration
   )
   analysis <- object
-  filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
-  save(analysis, file = filename)
+  filename <- store_model(analysis, base = temp.dir, root = "", path = "")
   analysis <- object.2
-  filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
-  save(analysis, file = filename)
+  filename <- store_model(analysis, base = temp.dir, root = "", path = "")
   file.list <- normalizePath(
     list.files(
       temp.dir,

@@ -15,8 +15,8 @@ setGeneric(
 
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom n2khelper check_path read_object_environment
-#' @importFrom assertthat assert_that is.flag
+#' @importFrom n2khelper check_path
+#' @importFrom assertthat assert_that is.flag noNA
 #' @details
 #' \describe{
 #'  \item{\code{status}}{A vector with status levels naming the levels which should be recalculated. Defaults to \code{"new"}}
@@ -32,17 +32,12 @@ setMethod(
       dots$verbose <- TRUE
     } else {
       assert_that(is.flag(dots$verbose))
+      assert_that(noNA(dots$verbose))
     }
     if (dots$verbose) {
       message(x)
     }
-    local.environment <- new.env()
-
-    load(x, envir = local.environment)
-    analysis <- read_object_environment(
-      object = "analysis",
-      env = local.environment
-    )
+    analysis <- readRDS(x)
     if (dots$verbose) {
       message(status(analysis), " -> ", appendLF = FALSE)
       utils::flush.console()
@@ -57,8 +52,7 @@ setMethod(
       message(status(analysis.fitted))
       utils::flush.console()
     }
-    assign("analysis", value = analysis.fitted, envir = local.environment)
-    save(list = ls(local.environment), envir = local.environment, file = x)
+    saveRDS(analysis.fitted, file = x)
     return(invisible(NULL))
   }
 )

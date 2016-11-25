@@ -72,14 +72,13 @@ describe("fit_model() on GlmerPoisson based objects", {
   })
   it("works with objects saved in rda files", {
     analysis <- object
-    filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
-    save(analysis, file = filename)
+    filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rds")
+    saveRDS(analysis, file = filename)
     expect_identical(status(filename)$Status, "new")
     fit_model(filename)
     expect_identical(status(filename)$Status, "converged")
     analysis <- weighted.object
-    filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
-    save(analysis, file = filename)
+    store_model(analysis, base = temp.dir, root = "", path = "")
     expect_identical(status(filename)$Status, "new")
     fit_model(filename)
     expect_identical(status(filename)$Status, "converged")
@@ -293,9 +292,7 @@ test_that("fit_model() works on n2kInlaComparison", {
     analysis.date = this.analysis.date,
     data = dataset
   )
-  p1 <- get_file_fingerprint(analysis)
-  filename1 <- paste0(temp.dir, "/", p1, ".rda")
-  save(analysis, file = filename1)
+  filename1 <- store_model(analysis, base = temp.dir, root = "", path = "")
   analysis <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -307,9 +304,7 @@ test_that("fit_model() works on n2kInlaComparison", {
     analysis.date = this.analysis.date,
     data = dataset
   )
-  p2 <- get_file_fingerprint(analysis)
-  filename2 <- paste0(temp.dir, "/", p2, ".rda")
-  save(analysis, file = filename2)
+  filename2 <- store_model(analysis, base = temp.dir, root = "", path = "")
 
   analysis <- n2k_inla_comparison(
     scheme.id = this.scheme.id,
@@ -328,9 +323,7 @@ test_that("fit_model() works on n2kInlaComparison", {
         ParentStatusFingerprint = ~StatusFingerprint
       )
   )
-  p3 <- get_file_fingerprint(analysis)
-  filename3 <- paste0(temp.dir, "/", p3, ".rda")
-  save(analysis, file = filename3)
+  filename3 <- store_model(analysis, base = temp.dir, root = "", path = "")
   fit_model(filename3, verbose = FALSE)
 
   fit_model(filename1, verbose = FALSE)

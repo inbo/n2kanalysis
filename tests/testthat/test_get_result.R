@@ -50,8 +50,7 @@ describe("get_result on n2kInlaNbinomial", {
       0L
     )
   })
-  filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
-  save(analysis, file = filename)
+  filename <- store_model(analysis, base = temp.dir, root = "", path = "")
   expect_equal(
     get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
@@ -139,8 +138,7 @@ describe("get_result on n2kInlaNbinomial", {
       0L
     )
   })
-  filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
-  save(analysis, file = filename)
+  filename <- store_model(analysis, base = temp.dir, root = "", path = "")
   expect_equal(
     get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
@@ -228,8 +226,7 @@ describe("get_result on n2kInlaNbinomial", {
       0L
     )
   })
-  filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
-  save(analysis, file = filename)
+  filename <- store_model(analysis, base = temp.dir, root = "", path = "")
   expect_equal(
     get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
@@ -337,8 +334,7 @@ describe("get_result on n2kInlaNbinomial", {
       0L
     )
   })
-  filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
-  save(analysis, file = filename)
+  filename <- store_model(analysis, base = temp.dir, root = "", path = "")
   expect_equal(
     get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
@@ -461,8 +457,7 @@ describe("get_result on n2kInlaNbinomial with replicated random effects", {
       0L
     )
   })
-  filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
-  save(analysis, file = filename)
+  filename <- store_model(analysis, base = temp.dir, root = "", path = "")
   expect_equal(
     get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
