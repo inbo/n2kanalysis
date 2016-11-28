@@ -21,7 +21,7 @@ setGeneric(
 setMethod(
   f = "store_model",
   signature = signature(base = "character"),
-  definition = function(x, base, root,path){
+  definition = function(x, base, root, path){
     assert_that(inherits(x, "n2kModel"))
     assert_that(is.string(base))
     assert_that(file_test("-d", base))
@@ -29,7 +29,7 @@ setMethod(
     assert_that(is.string(path))
     validObject(x, complete = TRUE)
     fingerprint <- get_file_fingerprint(x)
-    filename <- sprintf("%s/%s", base, root) %>%
+    filename <- sprintf("%s/%s/%s", base, root, path) %>%
       normalizePath(winslash = "/", mustWork = FALSE) %>%
       list.files(pattern = sprintf("%s.rds$", fingerprint))
     if (length(filename) > 0) {
@@ -44,6 +44,7 @@ setMethod(
       fingerprint
     ) %>%
       normalizePath(winslash = "/", mustWork = FALSE)
+    saveRDS(x, file = filename)
     return(filename)
   }
 )
@@ -86,7 +87,9 @@ setMethod(
 
     # create object if it doesn't exists
     filename <- sprintf("%s/%s/%s.rds", root, path, fingerprint) %>%
-      normalizePath(winslash = "/", mustWork = FALSE)
+      normalizePath(winslash = "/", mustWork = FALSE) %>%
+      gsub(pattern = "//", replacement = "/") %>%
+      gsub(pattern = "^/", replacement = "")
     s3saveRDS(x, bucket = base, object = filename)
     return(filename)
   }

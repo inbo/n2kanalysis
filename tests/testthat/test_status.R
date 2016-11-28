@@ -56,7 +56,7 @@ describe("n2kGlmerPoisson", {
   file.list <- normalizePath(
     list.files(
       temp.dir,
-      pattern = "^[0-9a-f]{40}\\.rda$",
+      pattern = "^[0-9a-f]{40}\\.rds$",
       full.names = TRUE
     ),
     winslash = "/"
@@ -136,10 +136,4 @@ describe("n2kGlmerPoisson", {
 })
 
 # clean temp files
-file.remove(
-  list.files(
-    temp.dir,
-    pattern = "^[0-9a-f]{40}\\.rda$",
-    full.names = TRUE
-  )
-)
+file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))

@@ -1,4 +1,5 @@
 context("validObject")
+data("cbpp", package = "lme4")
 describe("n2kanalysis::validObject", {
   it("only affects character objects that contains filenames or paths", {
     expect_identical(
@@ -37,10 +38,6 @@ describe("n2kanalysis::validObject", {
 
   temp.dir <- normalizePath(tempdir(), winslash = "/", mustWork = FALSE)
   dir.create(paste(temp.dir, "sub", sep = "/"))
-  expect_error(
-    validObject(temp.dir),
-    "no matching files found"
-  )
   good.file <- paste(temp.dir, "good.rda", sep = "/")
   bad.file <- paste(temp.dir, "sub", "bad.rda", sep = "/")
   save(t1, cbpp, file = good.file)
@@ -75,30 +72,63 @@ describe("n2kanalysis::validObject", {
     )
   })
 
+  good.file2 <- paste(temp.dir, "good.rds", sep = "/")
+  bad.file2 <- paste(temp.dir, "sub", "bad.rds", sep = "/")
+  saveRDS(t1, file = good.file2)
+  saveRDS(t2, file = bad.file2)
+  good2 <- validObject(good.file2)
+  bad2 <- validObject(bad.file2)
+  it("handles all objects in the rda files", {
+    expect_is(good2, "data.frame")
+    expect_is(bad2, "data.frame")
+    expect_identical(
+      colnames(good2),
+      c("Filename", "Object", "Valid")
+    )
+    expect_true(all(good2$Valid))
+    expect_false(all(bad2$Valid))
+    expect_identical(
+      unique(good2$Filename),
+      good.file2
+    )
+    expect_identical(
+      unique(bad2$Filename),
+      bad.file2
+    )
+    expect_identical(
+      good2$Object,
+      good2$Filename
+    )
+    expect_identical(
+      bad2$Object,
+      bad2$Filename
+    )
+  })
+
+  valid.dir <- validObject(temp.dir)
+  it("works on all rds files recursively", {
+    expect_is(valid.dir, "data.frame")
+    expect_identical(colnames(valid.dir), colnames(good))
+    expect_identical(valid.dir, rbind(good, good2, bad, bad2))
+  })
+
+  it("ignores non-rda extensions when a path is given", {
+    expect_identical(
+      unique(valid.dir$Filename),
+      c(good.file, good.file2, bad.file, bad.file2)
+    )
+  })
+
   it("handles single rda files regardless the extension", {
     bad.extension <- paste(temp.dir, "bad.txt", sep = "/")
     save(t2, cbpp, file = bad.extension)
     expect_is(validObject(bad.extension), "data.frame")
   })
 
-  it("handles single non-rda files", {
+  it("handles single non-rda, non-rds files", {
     bad.csv <- paste(temp.dir, "bad.csv", sep = "/")
     write.csv(cbpp, file = bad.csv)
     expect_error(validObject(bad.csv))
-  })
-
-  valid.dir <- validObject(temp.dir)
-  it("works on all rda files recursively", {
-    expect_is(valid.dir, "data.frame")
-    expect_identical(colnames(valid.dir), colnames(good))
-    expect_identical(valid.dir, rbind(good, bad))
-  })
-
-  it("ignores non-rda extensions when a path is given", {
-    expect_identical(
-      unique(valid.dir$Filename),
-      c(good.file, bad.file)
-    )
   })
 
   #clean up temp files

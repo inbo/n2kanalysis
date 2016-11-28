@@ -342,13 +342,7 @@ setMethod(
       if (verbose) {
         message(x)
       }
-      local.environment <- new.env()
-      load(x, envir = local.environment)
-      analysis <- read_object_environment(
-        object = "analysis",
-        env = local.environment
-      )
-      return(get_result(x = analysis, verbose = verbose, ...))
+      return(get_result(x = readRDS(x), verbose = verbose, ...))
     }
 
     if (!file_test("-d", x)) {
@@ -357,7 +351,7 @@ setMethod(
 
     # x is an existing directory
     x <- normalizePath(x, winslash = "/", mustWork = TRUE)
-    files <- list.files(path = x, pattern = "\\.rda$", full.names = TRUE)
+    files <- list.files(path = x, pattern = "\\.rds$", full.names = TRUE)
     if (n.cluster == 1) {
       result <- lapply(files, get_result, verbose = verbose, ...)
     } else {

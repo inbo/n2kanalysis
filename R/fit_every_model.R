@@ -21,7 +21,7 @@ fit_every_model <- function(path = ".", status, verbose = TRUE, n.cluster = 1){
     }
   }
   path <- check_path(path, type = "directory")
-  files <- list.files(path = path, pattern = "\\.rda$", full.names = TRUE)
+  files <- list.files(path = path, pattern = "\\.rds$", full.names = TRUE)
   if (n.cluster == 1) {
     lapply(files, fit_model, status = status, verbose = verbose)
   } else {

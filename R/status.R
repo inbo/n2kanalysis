@@ -46,17 +46,12 @@ setMethod(
       if (file_test("-d", x)) {
         # handle a directory
         path <- check_path(x, type = "directory")
-        files <- list.files(path = path, pattern = "\\.rda$", full.names = TRUE)
+        files <- list.files(path = path, pattern = "\\.rds$", full.names = TRUE)
         return(status(files))
       } else {
         # handle a file
         x <- check_path(x, type = "file")
-        local.environment <- new.env()
-        load(x, envir = local.environment)
-        analysis <- read_object_environment(
-          object = "analysis",
-          env = local.environment
-        )
+        analysis <- readRDS(x)
         return(
           data.frame(
             Filename = x,

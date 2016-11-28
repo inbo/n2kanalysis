@@ -70,28 +70,19 @@ describe("fit_model() on GlmerPoisson based objects", {
       is_true()
     )
   })
-  it("works with objects saved in rda files", {
-    analysis <- object
-    filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rds")
-    saveRDS(analysis, file = filename)
+  it("works with objects saved in rds files", {
+    filename <- store_model(object, base = temp.dir, root = "", path = "")
     expect_identical(status(filename)$Status, "new")
     fit_model(filename)
     expect_identical(status(filename)$Status, "converged")
-    analysis <- weighted.object
-    store_model(analysis, base = temp.dir, root = "", path = "")
+    filename <- store_model(weighted.object, base = temp.dir, root = "", path = "")
     expect_identical(status(filename)$Status, "new")
     fit_model(filename)
     expect_identical(status(filename)$Status, "converged")
   })
 
   # clean temp files
-  file.remove(
-    list.files(
-      temp.dir,
-      pattern = "^[0-9a-f]{40}\\.rda$",
-      full.names = TRUE
-    )
-  )
+  file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))
 })
 
 describe("fit_model() on INLA nbinomial based objects", {
@@ -190,11 +181,11 @@ describe("fit_model() on INLA nbinomial based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "f6bb99f9c308429970ec10ef00364815ffd0247f"
-  object.lc.file <- "defe6193cacc191b354bcda8f0f50d2c89dec8ac"
-  object.lc.list.file <- "2bd8db4a65e7c6737fb52c4889a1a741c77058f7"
-  object.lc.list2.file <- "1fb72cc125bed11e10c37370ff726dd2ec6d7901"
-  object.badlc.file <- "ab697119b52d856e829e7c02209d4e07a48acfa5"
+  object.file <- "85bb3a5c629ba06ff63d7bc07781b19fc55bb98a"
+  object.lc.file <- "2094704b1668b780920c58f2041df55a0f71eeaf"
+  object.lc.list.file <- "5745e5cb50e8a213d5ba5ca098bd97fade5510f5"
+  object.lc.list2.file <- "68d2f0e9265a40ff5c9e5a0a54ba1e5f202fe8da"
+  object.badlc.file <- "6d85154eba14f5f68653c3810f82c875f363a1a3"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
@@ -226,16 +217,14 @@ describe("fit_model() on INLA nbinomial based objects", {
       is_true()
     )
   })
-  it("works with objects saved in rda files", {
+  it("works with objects saved in rds files", {
     analysis <- object
-    filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
-    save(analysis, file = filename)
+    filename <- store_model(analysis, base = temp.dir, root = "", path = "")
     expect_identical(status(filename)$Status, "new")
     fit_model(filename)
     expect_identical(status(filename)$Status, "converged")
     analysis <- object.lc
-    filename <- paste0(temp.dir, "/", get_file_fingerprint(analysis), ".rda")
-    save(analysis, file = filename)
+    filename <- store_model(analysis, base = temp.dir, root = "", path = "")
     expect_identical(status(filename)$Status, "new")
     fit_model(filename)
     expect_identical(status(filename)$Status, "converged")
@@ -259,13 +248,7 @@ describe("fit_model() on INLA nbinomial based objects", {
   })
 
   # clean temp files
-  file.remove(
-    list.files(
-      temp.dir,
-      pattern = "^[0-9a-f]{40}\\.rda$",
-      full.names = TRUE
-    )
-  )
+  file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))
 })
 
 test_that("fit_model() works on n2kInlaComparison", {
@@ -292,6 +275,7 @@ test_that("fit_model() works on n2kInlaComparison", {
     analysis.date = this.analysis.date,
     data = dataset
   )
+  p1 <- get_file_fingerprint(analysis)
   filename1 <- store_model(analysis, base = temp.dir, root = "", path = "")
   analysis <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,
@@ -304,6 +288,7 @@ test_that("fit_model() works on n2kInlaComparison", {
     analysis.date = this.analysis.date,
     data = dataset
   )
+  p2 <- get_file_fingerprint(analysis)
   filename2 <- store_model(analysis, base = temp.dir, root = "", path = "")
 
   analysis <- n2k_inla_comparison(
@@ -335,11 +320,5 @@ test_that("fit_model() works on n2kInlaComparison", {
   fit_model(filename3, verbose = FALSE)
 
   # clean temp files
-  file.remove(
-    list.files(
-      temp.dir,
-      pattern = "^[0-9a-f]{40}\\.rda$",
-      full.names = TRUE
-    )
-  )
+  file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))
 })

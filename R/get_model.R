@@ -46,12 +46,6 @@ setMethod(
   signature = signature(x = "character"),
   definition = function(x){
     x <- check_path(x, type = "file")
-    local.environment <- new.env()
-    load(x, envir = local.environment)
-    analysis <- read_object_environment(
-      object = "analysis",
-      env = local.environment
-    )
-    return(get_model(analysis))
+    return(get_model(readRDS(x)))
   }
 )

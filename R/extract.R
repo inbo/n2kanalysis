@@ -38,14 +38,9 @@ setMethod(
       return(output)
     }
     path <- check_path(path, type = "directory")
-    file <- paste0(path, "/", object, ".rda")
+    file <- paste0(path, "/", object, ".rds")
     file <- check_path(file, type = "file")
-    local.environment <- new.env()
-    load(file, envir = local.environment)
-    parent <- read_object_environment(
-      object = "analysis",
-      env = local.environment
-    )
+    parent <- readRDS(file)
     cbind(
       Parent = object,
       extract(extractor = extractor, object = parent, path = NULL)

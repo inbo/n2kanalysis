@@ -56,9 +56,8 @@ describe("get_result on n2kInlaNbinomial", {
     result
   )
   fit_model(filename, verbose = FALSE)
-  load(filename)
   result <- get_result(
-    analysis,
+    readRDS(filename),
     datasource.id = this.datasource,
     verbose = FALSE
   )
@@ -144,9 +143,8 @@ describe("get_result on n2kInlaNbinomial", {
     result
   )
   fit_model(filename, verbose = FALSE)
-  load(filename)
   result <- get_result(
-    analysis,
+    readRDS(filename),
     datasource.id = this.datasource,
     verbose = FALSE
   )
@@ -232,9 +230,8 @@ describe("get_result on n2kInlaNbinomial", {
     result
   )
   fit_model(filename, verbose = FALSE)
-  load(filename)
   result <- get_result(
-    analysis,
+    readRDS(filename),
     datasource.id = this.datasource,
     verbose = FALSE
   )
@@ -340,9 +337,8 @@ describe("get_result on n2kInlaNbinomial", {
     result
   )
   fit_model(filename, verbose = FALSE)
-  load(filename)
   result <- get_result(
-    analysis,
+    readRDS(filename),
     datasource.id = this.datasource,
     verbose = FALSE
   )
@@ -463,9 +459,8 @@ describe("get_result on n2kInlaNbinomial with replicated random effects", {
     result
   )
   fit_model(filename, verbose = FALSE)
-  load(filename)
   result <- get_result(
-    analysis,
+    readRDS(filename),
     datasource.id = this.datasource,
     verbose = FALSE
   )
@@ -493,10 +488,4 @@ describe("get_result on n2kInlaNbinomial with replicated random effects", {
 })
 
 # clean temp files
-file.remove(
-  list.files(
-    temp.dir,
-    pattern = "^[0-9a-f]{40}\\.rda$",
-    full.names = TRUE
-  )
-)
+file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))

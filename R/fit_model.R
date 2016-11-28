@@ -263,7 +263,7 @@ setMethod(
     old.parent.status <- parent_status(x)
     colnames(old.parent.status)[3:4] <- c("OldStatusFingerprint", "OldStatus")
     files.to.check <- normalizePath(
-      paste0(dots$path, "/", old.parent.status$ParentAnalysis, ".rda"),
+      paste0(dots$path, "/", old.parent.status$ParentAnalysis, ".rds"),
       winslash = "/",
       mustWork = FALSE
     )
@@ -304,13 +304,13 @@ setMethod(
     }
 
     if (length(changes) == 2) {
-      file <- paste0(dots$path, "/", x@Parent0, ".rda")
+      file <- paste0(dots$path, "/", x@Parent0, ".rds")
       x@Model0 <- get_model(file)
       parent.1 <- compare$ParentAnalysis[compare$ParentAnalysis != x@Parent0]
-      file <- paste0(dots$path, "/", parent.1, ".rda")
+      file <- paste0(dots$path, "/", parent.1, ".rds")
       x@Model <- get_model(file)
     } else {
-      file <- paste0(dots$path, "/", compare$ParentAnalysis[changes], ".rda")
+      file <- paste0(dots$path, "/", compare$ParentAnalysis[changes], ".rds")
       if (x@Parent0 == compare$ParentAnalysis[changes]) {
         x@Model0 <- get_model(file)
       } else {
@@ -378,7 +378,7 @@ setMethod(
     }
     old.parent.status <- parent_status(x)
     files.to.check <- normalizePath(
-      paste0(dots$path, "/", old.parent.status$ParentAnalysis, ".rda"),
+      paste0(dots$path, "/", old.parent.status$ParentAnalysis, ".rds"),
       winslash = "/",
       mustWork = FALSE
     )
@@ -479,7 +479,7 @@ setMethod(
     }
     old.parent.status <- parent_status(x)
     files.to.check <- normalizePath(
-      paste0(dots$path, "/", old.parent.status$ParentAnalysis, ".rda"),
+      paste0(dots$path, "/", old.parent.status$ParentAnalysis, ".rds"),
       winslash = "/",
       mustWork = FALSE
     )
@@ -527,7 +527,7 @@ setMethod(
     }
 
     to.update <- to.update %>%
-      mutate_(Filename = ~ paste0(dots$path, "/", ParentAnalysis, ".rda")) %>%
+      mutate_(Filename = ~ paste0(dots$path, "/", ParentAnalysis, ".rds")) %>%
       select_(~ParentAnalysis, ~Filename)
     models <- lapply(to.update$Filename, get_model)
     names(models) <- to.update$ParentAnalysis
