@@ -156,6 +156,7 @@ setMethod(
 #' @rdname fit_model
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that
+#' @importMethodsFrom multimput impute
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "fit_model",
@@ -217,8 +218,18 @@ setMethod(
       status(x) <- "error"
       return(x)
     }
+    if (x@ImputationSize == 0) {
+      return(
+        n2k_inla_nbinomial(data = x, model.fit = model, status = "converged")
+      )
+    }
     return(
-      n2k_inla_nbinomial(data = x, model.fit = model, status = "converged")
+      n2k_inla_nbinomial(
+        data = x,
+        model.fit = model,
+        raw.imputed = impute(model = model, n.imp = x@ImputationSize),
+        status = "converged"
+      )
     )
   }
 )

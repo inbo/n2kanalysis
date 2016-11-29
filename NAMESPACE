@@ -2,6 +2,7 @@
 
 S3method(sha1,glmerMod)
 S3method(sha1,inla)
+S3method(sha1,rawImputed)
 export(fit_every_model)
 export(inla_inverse)
 export(mark_obsolete_dataset)
@@ -133,3 +134,4 @@ importFrom(utils,file_test)
 importFrom(utils,head)
 importFrom(utils,sessionInfo)
 importFrom(utils,tail)
+importMethodsFrom(multimput,impute)

@@ -1,7 +1,15 @@
-# A function to generate a simple dataset for unit testing
+#' A function to generate a simple dataset for unit testing
+#' @param datasource.id the string id of the datasource
+#' @param missing the required proportion of missing data
+#' @importFrom assertthat assert_that is.string is.number
 #' @importFrom dplyr %>% mutate_ n row_number
 #' @importFrom stats model.matrix rnbinom rnorm runif
-test_data <- function(datasource.id = sha1(letters)){
+test_data <- function(datasource.id = sha1(letters), missing = 0){
+  assert_that(is.string(datasource.id))
+  assert_that(is.number(missing))
+  assert_that(missing >= 0)
+  assert_that(missing <= 1)
+
   set.seed(999)
   n.e <- 10
   sd.random <- 0.1
@@ -36,7 +44,11 @@ test_data <- function(datasource.id = sha1(letters)){
   eta <- mm.fixed %*% fixed + mm.random %*% random
   dataset <- dataset %>%
     mutate_(
-      Count = ~rnbinom(n(), mu = exp(eta), size = theta),
+      Count = ~ifelse(
+        rbinom(n(), size = 1, prob = missing) == 1,
+        NA,
+        rnbinom(n(), mu = exp(eta), size = theta)
+      ),
       DatasourceID = ~datasource.id,
       ObservationID = ~row_number(Count)
     )

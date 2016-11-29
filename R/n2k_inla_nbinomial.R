@@ -65,9 +65,11 @@ setMethod(
           abs(as.integer(dots$imputation.size) - dots$imputation.size) > 1e-8
         ) {
           "imputation.size must be integer"
+        } else {
+          dots$imputation.size <- as.integer(dots$imputation.size)
         }
       }
-      assert_that(dots$imputation.size > 0)
+      assert_that(dots$imputation.size >= 0)
     }
     assert_that(is.string(dots$scheme.id))
     assert_that(is.string(dots$species.group.id))
@@ -217,6 +219,7 @@ setMethod(
     data@RPackage <- new.version$Union@RPackage
     data@AnalysisVersionRPackage <- new.version$Union@AnalysisVersionRPackage
     data@AnalysisMetadata$AnalysisVersion <- new.version$UnionFingerprint
+    data@RawImputed <- dots$raw.imputed
     data@AnalysisMetadata$StatusFingerprint <- sha1(
       list(
         data@AnalysisMetadata$FileFingerprint, data@AnalysisMetadata$Status,

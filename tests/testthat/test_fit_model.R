@@ -87,27 +87,27 @@ describe("fit_model() on GlmerPoisson based objects", {
 
 describe("fit_model() on INLA nbinomial based objects", {
   temp.dir <- tempdir()
-  data(cbpp, package = "lme4")
-  cbpp$ObservationID <- seq_len(nrow(cbpp))
-  cbpp$DatasourceID <- sha1(letters)
+  dataset <- n2kanalysis:::test_data(missing = 0.2)
   this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
   this.scheme.id <- sha1(letters)
   this.species.group.id <- sha1(letters)
   this.location.group.id <- sha1(letters)
-  this.model.type <- "inla nbinomial: period + herd"
+  this.model.type <- "inla nbinomial: A + B + C + D"
   this.formula <-
-    "incidence ~ offset(log(size)) + period + f(herd, model = \"iid\")"
+    "Count ~ A * (B + C) + C * D + f(E, model = 'iid')"
   this.first.imported.year <- 1990L
   this.last.imported.year <- 2015L
   this.last.analysed.year <- 2014L
   this.duration <- 1L
-  lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
+  lin.comb <- dataset %>%
+    distinct_(~A) %>%
+    model.matrix(object = ~A)
   rownames(lin.comb) <- seq_len(nrow(lin.comb))
   bad.lin.comb <- lin.comb[, -1]
   lin.comb.list <- as.list(as.data.frame(lin.comb))
   names(lin.comb.list[[1]]) <- seq_along(lin.comb.list[[1]])
-  lin.comb.list2 <- list(herd = diag(length(levels(cbpp$herd))))
-  rownames(lin.comb.list2[[1]]) <- seq_len(length(levels(cbpp$herd)))
+  lin.comb.list2 <- list(E = diag(length(unique(dataset$E))))
+  rownames(lin.comb.list2[[1]]) <- seq_along(unique(dataset$E))
   object <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -117,7 +117,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     first.imported.year = this.first.imported.year,
     last.imported.year = this.last.imported.year,
     analysis.date = this.analysis.date,
-    data = cbpp
+    data = dataset
   )
   object.lc <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,
@@ -128,7 +128,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     first.imported.year = this.first.imported.year,
     last.imported.year = this.last.imported.year,
     analysis.date = this.analysis.date,
-    data = cbpp,
+    data = dataset,
     lin.comb = lin.comb
   )
   object.lc.list <- n2k_inla_nbinomial(
@@ -140,7 +140,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     first.imported.year = this.first.imported.year,
     last.imported.year = this.last.imported.year,
     analysis.date = this.analysis.date,
-    data = cbpp,
+    data = dataset,
     lin.comb = lin.comb.list
   )
   object.lc.list2 <- n2k_inla_nbinomial(
@@ -152,7 +152,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     first.imported.year = this.first.imported.year,
     last.imported.year = this.last.imported.year,
     analysis.date = this.analysis.date,
-    data = cbpp,
+    data = dataset,
     lin.comb = lin.comb.list2
   )
   object.badlc <- n2k_inla_nbinomial(
@@ -164,14 +164,27 @@ describe("fit_model() on INLA nbinomial based objects", {
     first.imported.year = this.first.imported.year,
     last.imported.year = this.last.imported.year,
     analysis.date = this.analysis.date,
-    data = cbpp,
+    data = dataset,
     lin.comb = bad.lin.comb
+  )
+  object.imp <- n2k_inla_nbinomial(
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = this.formula,
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    imputation.size = 10,
+    data = dataset
   )
   object.fit <- fit_model(object)
   object.lc.fit <- fit_model(object.lc)
   object.lc.list.fit <- fit_model(object.lc.list)
   object.lc.list2.fit <- fit_model(object.lc.list2)
   object.badlc.fit <- fit_model(object.badlc)
+  object.imp.fit <- fit_model(object.imp)
   cat(
     "\nobject.file <- \"", get_file_fingerprint(object), "\"\n",
     "object.lc.file <- \"", get_file_fingerprint(object.lc), "\"\n",
@@ -181,11 +194,11 @@ describe("fit_model() on INLA nbinomial based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "5a14634f778958c84523b77c4354c8f3e1a63275"
-  object.lc.file <- "4639ea4d43a2c713a62a1856a913b4958000b2a6"
-  object.lc.list.file <- "1c6367c34f96faad779f36bc15103c2bfc1f0404"
-  object.lc.list2.file <- "323ed8b1993a9339231ac63244edfb52f82ee07a"
-  object.badlc.file <- "69e157e4e3d5917cc6a5d16b2a7d76f0701c8a7c"
+  object.file <- "892efcddad58c8ae24564e997f3fda5585c7cff7"
+  object.lc.file <- "93c112f7fa4864f9cf2f3db91da15e39bf278569"
+  object.lc.list.file <- "72eee99fcd17a2f4edaded27b88ff4e5e5fad769"
+  object.lc.list2.file <- "b123db6858979de13f4c0c95cb3e263a0740fb6f"
+  object.badlc.file <- "33ba3961bdad53706408318f8c68a1c20ac0a831"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
