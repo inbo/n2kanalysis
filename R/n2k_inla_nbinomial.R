@@ -14,7 +14,8 @@
 #'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
 #'    \item{\code{lin.comb}}{A model matrix to calculate linear combinations}
-#'    \item{\code{replicate.name}}{A list with the names of replicates. Defaults to an empty list. Used in case of \code{f(X, ..., replicate = Z)}}. Should be a named list like e.g. \code{list(X = c("a", "b", "c"))}.
+#'    \item{\code{replicate.name}}{A list with the names of replicates. Defaults to an empty list. Used in case of \code{f(X, ..., replicate = Z)}}. Should be a named list like e.g. \code{list(X = c("a", "b", "c")).}
+#'    \item{\code{imputation.size}}{The required number of imputations defaults to 0.}
 #'   }
 #' @name n2k_inla_nbinomial
 #' @rdname n2k_inla_nbinomial
@@ -55,6 +56,18 @@ setMethod(
     } else {
       assert_that(is.count(dots$seed))
       dots$seed <- as.integer(dots$seed)
+    }
+    if (is.null(dots$imputation.size)) {
+      dots$imputation.size <- 0L
+    } else {
+      if (!is.integer(dots$imputation.size)) {
+        if (
+          abs(as.integer(dots$imputation.size) - dots$imputation.size) > 1e-8
+        ) {
+          "imputation.size must be integer"
+        }
+      }
+      assert_that(dots$imputation.size > 0)
     }
     assert_that(is.string(dots$scheme.id))
     assert_that(is.string(dots$species.group.id))
@@ -102,7 +115,7 @@ setMethod(
         dots$model.type, dots$formula, dots$first.imported.year,
         dots$last.imported.year, dots$duration, dots$last.analysed.year,
         dots$analysis.date, dots$seed, dots$parent, dots$replicate.name,
-        dots$lin.comb
+        dots$lin.comb, dots$imputation.size
       )
     )
 
@@ -141,7 +154,8 @@ setMethod(
       list(
         file.fingerprint, dots$status, NULL,
         version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
-        version@RPackage,  version@AnalysisVersionRPackage, analysis.relation
+        version@RPackage,  version@AnalysisVersionRPackage, analysis.relation,
+        NULL
       ),
       digits = 6L
     )
@@ -174,7 +188,9 @@ setMethod(
       Data = data,
       ReplicateName = dots$replicate.name,
       LinearCombination = dots$lin.comb,
-      Model = NULL
+      Model = NULL,
+      ImputationSize = dots$imputation.size,
+      RawImputed = NULL
     )
   }
 )
@@ -206,7 +222,7 @@ setMethod(
         data@AnalysisMetadata$FileFingerprint, data@AnalysisMetadata$Status,
         data@Model, data@AnalysisMetadata$AnalysisVersion,
         data@AnalysisVersion, data@RPackage, data@AnalysisVersionRPackage,
-        data@AnalysisRelation
+        data@AnalysisRelation, data@RawImputed
       ),
       digits = 6L
     )

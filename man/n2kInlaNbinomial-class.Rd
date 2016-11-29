@@ -15,6 +15,8 @@ It hold analysis data based on a INLA negative binomial model
        combinations}
    \item{\code{ReplicateName}}{an optional list with names of replicates}
    \item{\code{Model}}{Either NULL or the resulting INLA model.}
+   \item{\code{ImputationSize}}{The number of multiple imputations. Defaults to 0, indication no multiple imputation.}
+   \item{\code{RawImputed}}{A \code{rawImputed} object with multiple imputations.}
   }
 }
 

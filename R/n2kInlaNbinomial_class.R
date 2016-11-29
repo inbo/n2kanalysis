@@ -1,7 +1,9 @@
 #' @importFrom methods setClassUnion
 #' @include import_S3_classes.R
-setClassUnion("maybeInla", c("inla", "NULL"))
+#' @importClassesFrom multimput rawImputed
 setClassUnion("maybeMatrix", c("matrix", "list", "NULL"))
+setClassUnion("maybeInla", c("inla", "NULL"))
+setClassUnion("maybeRawImputed", c("rawImputed", "NULL"))
 
 #' The n2kInlaNBinomial class
 #'
@@ -13,6 +15,8 @@ setClassUnion("maybeMatrix", c("matrix", "list", "NULL"))
 #'        combinations}
 #'    \item{\code{ReplicateName}}{an optional list with names of replicates}
 #'    \item{\code{Model}}{Either NULL or the resulting INLA model.}
+#'    \item{\code{ImputationSize}}{The number of multiple imputations. Defaults to 0, indication no multiple imputation.}
+#'    \item{\code{RawImputed}}{A \code{rawImputed} object with multiple imputations.}
 #'   }
 #' @name n2kInlaNbinomial-class
 #' @rdname n2kInlaNbinomial-class
@@ -27,7 +31,9 @@ setClass(
     Data = "data.frame",
     LinearCombination = "maybeMatrix",
     ReplicateName = "list",
-    Model = "maybeInla"
+    Model = "maybeInla",
+    ImputationSize = "integer",
+    RawImputed = "maybeRawImputed"
   ),
   contains = "n2kModel"
 )
@@ -38,6 +44,9 @@ setClass(
 setValidity(
   "n2kInlaNbinomial",
   function(object){
+    if (object@ImputationSize < 0) {
+      stop("negative ImputationSize")
+    }
     check_dataframe_variable(
       df = object@Data[1, ],
       variable = c(
@@ -83,7 +92,7 @@ setValidity(
         object@AnalysisMetadata$LastAnalysedYear,
         object@AnalysisMetadata$AnalysisDate, object@AnalysisMetadata$Seed,
         object@AnalysisRelation$ParentAnalysis,
-        object@ReplicateName, object@LinearCombination
+        object@ReplicateName, object@LinearCombination, object@ImputationSize
       )
     )
     if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
@@ -95,7 +104,7 @@ setValidity(
         object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
         object@Model, object@AnalysisMetadata$AnalysisVersion,
         object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
-        object@AnalysisRelation
+        object@AnalysisRelation, object@RawImputed
       ),
       digits = 6L
     )

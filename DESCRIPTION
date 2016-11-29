@@ -10,24 +10,25 @@ Depends:
 License: GPL-3
 LazyData: true
 Suggests:
-    optimx,
-    Matrix,
-    parallel,
     INLA,
+    Matrix,
+    optimx,
+    parallel,
     testthat
 Imports:
+    assertthat,
     aws.s3,
-    methods,
-    MASS,
+    digest (>= 0.6.9.3),
+    dplyr,
     INLA,
     lme4,
+    MASS,
+    methods,
+    multimput,
+    n2khelper (>= 0.2),
     RODBC,
-    assertthat,
-    dplyr,
     tibble,
-    tidyr (>= 0.4.0),
-    digest (>= 0.6.9.3),
-    n2khelper (>= 0.2)
+    tidyr (>= 0.4.0)
 Collate:
     'n2kParameter_class.R'
     'n2kAnomaly_class.R'

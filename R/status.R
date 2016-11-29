@@ -118,7 +118,7 @@ setReplaceMethod(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Model,
         x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
-        x@AnalysisVersionRPackage, x@AnalysisRelation
+        x@AnalysisVersionRPackage, x@AnalysisRelation, x@RawImputed
       ),
       digits = 6L
     )
