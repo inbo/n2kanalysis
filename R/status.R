@@ -36,33 +36,37 @@ setMethod(
   f = "status",
   signature = signature(x = "character"),
   definition = function(x){
+    if (length(x) == 0) {
+      stop("no filename provided")
+    }
     if (length(x) > 1) {
       # assume x are files when length(x) > 1
       files <- x[file_test("-f", x)]
       # ignore elements of x which are not existing files
       return(do.call(rbind, lapply(files, status)))
-    } else {
-      # assume x is a file or directory when length(x) == 1
-      if (file_test("-d", x)) {
-        # handle a directory
-        path <- check_path(x, type = "directory")
-        files <- list.files(path = path, pattern = "\\.rds$", full.names = TRUE)
-        return(status(files))
-      } else {
-        # handle a file
-        x <- check_path(x, type = "file")
-        analysis <- readRDS(x)
-        return(
-          data.frame(
-            Filename = x,
-            FileFingerprint = analysis@AnalysisMetadata$FileFingerprint,
-            StatusFingerprint = analysis@AnalysisMetadata$StatusFingerprint,
-            Status = analysis@AnalysisMetadata$Status,
-            stringsAsFactors = FALSE
-          )
-        )
-      }
     }
+    # assume x is a file or directory when length(x) == 1
+    if (file_test("-d", x)) {
+      # handle a directory
+      files <- list.files(
+        path = x,
+        pattern = "\\.rds$",
+        full.names = TRUE,
+        recursive = TRUE
+      )
+      return(status(files))
+    }
+    # handle a file
+    analysis <- readRDS(x)
+    return(
+      data.frame(
+        Filename = x,
+        FileFingerprint = analysis@AnalysisMetadata$FileFingerprint,
+        StatusFingerprint = analysis@AnalysisMetadata$StatusFingerprint,
+        Status = analysis@AnalysisMetadata$Status,
+        stringsAsFactors = FALSE
+      )
+    )
   }
 )
 

@@ -351,7 +351,15 @@ setMethod(
 
     # x is an existing directory
     x <- normalizePath(x, winslash = "/", mustWork = TRUE)
-    files <- list.files(path = x, pattern = "\\.rds$", full.names = TRUE)
+    files <- list.files(
+      path = x,
+      pattern = "\\.rds$",
+      full.names = TRUE,
+      recursive = TRUE
+    )
+    if (length(files) == 0) {
+      return(new("n2kResult"))
+    }
     if (n.cluster == 1) {
       result <- lapply(files, get_result, verbose = verbose, ...)
     } else {
