@@ -38,6 +38,9 @@ setMethod(
       message(x)
     }
     analysis <- readRDS(x)
+    current_status <- status(analysis)
+    base_dir <- sprintf("(.*)/%s/[0-9a-f]{40}.rds", current_status) %>%
+      gsub(replacement = "\\1", x = x)
     if (dots$verbose) {
       message(status(analysis), " -> ", appendLF = FALSE)
       utils::flush.console()
@@ -47,12 +50,11 @@ setMethod(
       status = dots$status,
       path = dirname(x)
     )
-    validObject(analysis.fitted)
     if (dots$verbose) {
       message(status(analysis.fitted))
       utils::flush.console()
     }
-    saveRDS(analysis.fitted, file = x)
+    store_model(analysis.fitted, base = base_dir, project = "")
     return(invisible(NULL))
   }
 )
@@ -489,12 +491,19 @@ setMethod(
       dots$path <- "."
     }
     old.parent.status <- parent_status(x)
-    files.to.check <- normalizePath(
-      paste0(dots$path, "/", old.parent.status$ParentAnalysis, ".rds"),
-      winslash = "/",
-      mustWork = FALSE
-    )
-    if (!all(file_test("-f", files.to.check))) {
+    available <- paste0("/", status(x), "$") %>%
+      gsub("", dots$path) %>%
+      list.files(
+        pattern = "\\.rds$",
+        recursive = TRUE,
+        full.names = TRUE
+      )
+    if (
+      !all(
+        old.parent.status$ParentAnalysis %in%
+          gsub(".*([0-9a-f]{40})\\.rds", "\\1", available)
+      )
+    ) {
       status(x) <- "error"
       return(x)
     }
@@ -503,8 +512,7 @@ setMethod(
         OldStatusFingerprint = ~ParentStatusFingerprint,
         OldStatus = ~ParentStatus
       )
-    compare <-
-      status(files.to.check) %>%
+    compare <- status(available) %>%
       select_(
         ParentAnalysis = ~FileFingerprint,
         ParentStatusFingerprint = ~StatusFingerprint,
@@ -538,7 +546,10 @@ setMethod(
     }
 
     to.update <- to.update %>%
-      mutate_(Filename = ~ paste0(dots$path, "/", ParentAnalysis, ".rds")) %>%
+      mutate_(Filename = ~ paste0("/", status(x), "$") %>%
+          gsub("/", dots$path) %>%
+          paste0(ParentStatus, "/", ParentAnalysis, ".rds")
+      ) %>%
       select_(~ParentAnalysis, ~Filename)
     models <- lapply(to.update$Filename, get_model)
     names(models) <- to.update$ParentAnalysis

@@ -50,14 +50,15 @@ describe("n2kGlmerPoisson", {
     this.duration
   )
   analysis <- object
-  filename <- store_model(analysis, base = temp.dir, root = "", path = "")
+  filename <- store_model(analysis, base = temp.dir, path = "")
   analysis <- object.2
-  filename <- store_model(analysis, base = temp.dir, root = "", path = "")
+  filename <- store_model(analysis, base = temp.dir, path = "")
   file.list <- normalizePath(
     list.files(
       temp.dir,
       pattern = "^[0-9a-f]{40}\\.rds$",
-      full.names = TRUE
+      full.names = TRUE,
+      recursive = TRUE
     ),
     winslash = "/"
   )

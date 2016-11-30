@@ -50,7 +50,7 @@ describe("get_result on n2kInlaNbinomial", {
       0L
     )
   })
-  filename <- store_model(analysis, base = temp.dir, root = "", path = "")
+  filename <- store_model(analysis, base = temp.dir, path = "")
   expect_equal(
     get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
@@ -137,7 +137,7 @@ describe("get_result on n2kInlaNbinomial", {
       0L
     )
   })
-  filename <- store_model(analysis, base = temp.dir, root = "", path = "")
+  filename <- store_model(analysis, base = temp.dir, path = "")
   expect_equal(
     get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
@@ -224,7 +224,7 @@ describe("get_result on n2kInlaNbinomial", {
       0L
     )
   })
-  filename <- store_model(analysis, base = temp.dir, root = "", path = "")
+  filename <- store_model(analysis, base = temp.dir, path = "")
   expect_equal(
     get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
@@ -331,7 +331,7 @@ describe("get_result on n2kInlaNbinomial", {
       0L
     )
   })
-  filename <- store_model(analysis, base = temp.dir, root = "", path = "")
+  filename <- store_model(analysis, base = temp.dir, path = "")
   expect_equal(
     get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
@@ -453,7 +453,7 @@ describe("get_result on n2kInlaNbinomial with replicated random effects", {
       0L
     )
   })
-  filename <- store_model(analysis, base = temp.dir, root = "", path = "")
+  filename <- store_model(analysis, base = temp.dir, path = "")
   expect_equal(
     get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result

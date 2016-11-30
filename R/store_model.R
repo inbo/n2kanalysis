@@ -1,8 +1,7 @@
 #' Store a n2kModel object
 #' @param x the n2kModel
 #' @param base the base location to store the model
-#' @param root the path relative to the base location
-#' @param path the path relative to the root location
+#' @param project will be a relative path within the base location
 #' @name store_model
 #' @rdname store_model
 #' @exportMethod store_model
@@ -10,7 +9,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "store_model",
-  def = function(x, base, root, path){
+  def = function(x, base, project){
     standardGeneric("store_model") # nocov
   }
 )
@@ -21,30 +20,46 @@ setGeneric(
 setMethod(
   f = "store_model",
   signature = signature(base = "character"),
-  definition = function(x, base, root, path){
+  definition = function(x, base, project){
     assert_that(inherits(x, "n2kModel"))
     assert_that(is.string(base))
     assert_that(file_test("-d", base))
-    assert_that(is.string(root))
-    assert_that(is.string(path))
+    assert_that(is.string(project))
     validObject(x, complete = TRUE)
+    status <- status(x)
+
+    #create dir is it doesn't exist
+    dir <- sprintf("%s/%s/%s", base, project, status) %>%
+      normalizePath(winslash = "/", mustWork = FALSE)
+    if (!dir.exists(dir)) {
+      dir.create(dir, recursive = TRUE)
+    }
+
+    #test is file exists
     fingerprint <- get_file_fingerprint(x)
-    filename <- sprintf("%s/%s/%s", base, root, path) %>%
-      normalizePath(winslash = "/", mustWork = FALSE) %>%
-      list.files(pattern = sprintf("%s.rds$", fingerprint))
+    filename <- list.files(
+        dir,
+        pattern = sprintf("%s.rds$", fingerprint),
+        full.names = TRUE
+      )
     if (length(filename) > 0) {
       return(filename)
     }
 
-    filename <- sprintf(
-      "%s/%s/%s/%s.rds",
-      base,
-      root,
-      path,
-      fingerprint
-    ) %>%
+    # see if the file exists in other dirs
+    current <- sprintf("%s/%s", base, project) %>%
+      normalizePath(winslash = "/", mustWork = FALSE) %>%
+      list.files(
+        pattern = sprintf("%s.rds$", fingerprint),
+        full.names = TRUE,
+        recursive = TRUE
+      )
+    filename <- sprintf("%s/%s.rds", dir, fingerprint) %>%
       normalizePath(winslash = "/", mustWork = FALSE)
+    # store the file in the current dir and remove it from other dirs
     saveRDS(x, file = filename)
+    file.remove(current)
+
     return(filename)
   }
 )
@@ -56,11 +71,11 @@ setMethod(
 setMethod(
   f = "store_model",
   signature = signature(base = "s3_bucket"),
-  definition = function(x, base, root, path){
+  definition = function(x, base, project){
     assert_that(inherits(x, "n2kModel"))
-    assert_that(is.string(root))
-    assert_that(is.string(path))
+    assert_that(is.string(project))
     validObject(x, complete = TRUE)
+    status <- status(x)
 
     i <- 1
     repeat {
@@ -76,7 +91,7 @@ setMethod(
     }
 
     # check if object with same fingerprint exists
-    existing <- get_bucket(base, prefix = root)
+    existing <- get_bucket(base, prefix = project)
     existing <- existing[names(existing) == "Contents"] %>%
       sapply("[[", "Key")
     fingerprint <- get_file_fingerprint(x)
@@ -86,7 +101,7 @@ setMethod(
     }
 
     # create object if it doesn't exists
-    filename <- sprintf("%s/%s/%s.rds", root, path, fingerprint) %>%
+    filename <- sprintf("%s/%s/%s.rds", project, status, fingerprint) %>%
       normalizePath(winslash = "/", mustWork = FALSE) %>%
       gsub(pattern = "//", replacement = "/") %>%
       gsub(pattern = "^/", replacement = "")

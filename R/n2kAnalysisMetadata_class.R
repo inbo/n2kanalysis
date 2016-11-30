@@ -144,8 +144,8 @@ outside imported range."
     }
 
     ok.status <- c(
-      "new", "working", "waiting", "error", "converged", "false convergence",
-      "unstable", "insufficient data"
+      "new", "working", "waiting", "error", "converged", "false_convergence",
+      "unstable", "insufficient_data"
     )
     if (!all(object@AnalysisMetadata$Status %in% ok.status)) {
       stop(

@@ -7,20 +7,18 @@
 \alias{store_model,ANY,s3_bucket-method}
 \title{Store a n2kModel object}
 \usage{
-store_model(x, base, root, path)
+store_model(x, base, project)
 
-\S4method{store_model}{ANY,character}(x, base, root, path)
+\S4method{store_model}{ANY,character}(x, base, project)
 
-\S4method{store_model}{ANY,s3_bucket}(x, base, root, path)
+\S4method{store_model}{ANY,s3_bucket}(x, base, project)
 }
 \arguments{
 \item{x}{the n2kModel}
 
 \item{base}{the base location to store the model}
 
-\item{root}{the path relative to the base location}
-
-\item{path}{the path relative to the root location}
+\item{project}{will be a relative path within the base location}
 }
 \description{
 Store a n2kModel object

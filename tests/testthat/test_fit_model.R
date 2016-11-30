@@ -71,11 +71,11 @@ describe("fit_model() on GlmerPoisson based objects", {
     )
   })
   it("works with objects saved in rds files", {
-    filename <- store_model(object, base = temp.dir, root = "", path = "")
+    filename <- store_model(object, base = temp.dir, path = "")
     expect_identical(status(filename)$Status, "new")
     fit_model(filename)
     expect_identical(status(filename)$Status, "converged")
-    filename <- store_model(weighted.object, base = temp.dir, root = "", path = "")
+    filename <- store_model(weighted.object, base = temp.dir, path = "")
     expect_identical(status(filename)$Status, "new")
     fit_model(filename)
     expect_identical(status(filename)$Status, "converged")
@@ -232,12 +232,12 @@ describe("fit_model() on INLA nbinomial based objects", {
   })
   it("works with objects saved in rds files", {
     analysis <- object
-    filename <- store_model(analysis, base = temp.dir, root = "", path = "")
+    filename <- store_model(analysis, base = temp.dir, path = "")
     expect_identical(status(filename)$Status, "new")
     fit_model(filename)
     expect_identical(status(filename)$Status, "converged")
     analysis <- object.lc
-    filename <- store_model(analysis, base = temp.dir, root = "", path = "")
+    filename <- store_model(analysis, base = temp.dir, path = "")
     expect_identical(status(filename)$Status, "new")
     fit_model(filename)
     expect_identical(status(filename)$Status, "converged")
@@ -289,7 +289,7 @@ test_that("fit_model() works on n2kInlaComparison", {
     data = dataset
   )
   p1 <- get_file_fingerprint(analysis)
-  filename1 <- store_model(analysis, base = temp.dir, root = "", path = "")
+  filename1 <- store_model(analysis, base = temp.dir, path = "")
   analysis <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -302,7 +302,7 @@ test_that("fit_model() works on n2kInlaComparison", {
     data = dataset
   )
   p2 <- get_file_fingerprint(analysis)
-  filename2 <- store_model(analysis, base = temp.dir, root = "", path = "")
+  filename2 <- store_model(analysis, base = temp.dir, path = "")
 
   analysis <- n2k_inla_comparison(
     scheme.id = this.scheme.id,
@@ -321,7 +321,7 @@ test_that("fit_model() works on n2kInlaComparison", {
         ParentStatusFingerprint = ~StatusFingerprint
       )
   )
-  filename3 <- store_model(analysis, base = temp.dir, root = "", path = "")
+  filename3 <- store_model(analysis, base = temp.dir, path = "")
   fit_model(filename3, verbose = FALSE)
 
   fit_model(filename1, verbose = FALSE)
