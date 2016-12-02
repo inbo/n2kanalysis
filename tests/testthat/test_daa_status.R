@@ -50,9 +50,9 @@ describe("n2kGlmerPoisson", {
     this.duration
   )
   analysis <- object
-  filename <- store_model(analysis, base = temp.dir, path = "")
+  filename <- store_model(analysis, base = temp.dir, project = "status")
   analysis <- object.2
-  filename <- store_model(analysis, base = temp.dir, path = "")
+  filename <- store_model(analysis, base = temp.dir, project = "status")
   file.list <- normalizePath(
     list.files(
       temp.dir,

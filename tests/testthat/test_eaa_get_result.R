@@ -50,12 +50,13 @@ describe("get_result on n2kInlaNbinomial", {
       0L
     )
   })
-  filename <- store_model(analysis, base = temp.dir, path = "")
+  filename <- store_model(analysis, base = temp.dir, project = "get_result")
   expect_equal(
     get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
   )
   fit_model(filename, verbose = FALSE)
+  filename <- gsub(pattern = "new", replacement = "converged", filename)
   result <- get_result(
     readRDS(filename),
     datasource.id = this.datasource,
@@ -137,12 +138,13 @@ describe("get_result on n2kInlaNbinomial", {
       0L
     )
   })
-  filename <- store_model(analysis, base = temp.dir, path = "")
+  filename <- store_model(analysis, base = temp.dir, project = "get_result")
   expect_equal(
     get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
   )
   fit_model(filename, verbose = FALSE)
+  filename <- gsub(pattern = "new", replacement = "converged", filename)
   result <- get_result(
     readRDS(filename),
     datasource.id = this.datasource,
@@ -224,12 +226,13 @@ describe("get_result on n2kInlaNbinomial", {
       0L
     )
   })
-  filename <- store_model(analysis, base = temp.dir, path = "")
+  filename <- store_model(analysis, base = temp.dir, project = "get_result")
   expect_equal(
     get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
   )
   fit_model(filename, verbose = FALSE)
+  filename <- gsub(pattern = "new", replacement = "converged", filename)
   result <- get_result(
     readRDS(filename),
     datasource.id = this.datasource,
@@ -331,12 +334,13 @@ describe("get_result on n2kInlaNbinomial", {
       0L
     )
   })
-  filename <- store_model(analysis, base = temp.dir, path = "")
+  filename <- store_model(analysis, base = temp.dir, project = "get_result")
   expect_equal(
     get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
   )
   fit_model(filename, verbose = FALSE)
+  filename <- gsub(pattern = "new", replacement = "converged", filename)
   result <- get_result(
     readRDS(filename),
     datasource.id = this.datasource,
@@ -453,12 +457,13 @@ describe("get_result on n2kInlaNbinomial with replicated random effects", {
       0L
     )
   })
-  filename <- store_model(analysis, base = temp.dir, path = "")
+  filename <- store_model(analysis, base = temp.dir, project = "get_result")
   expect_equal(
     get_result(filename, datasource.id = this.datasource, verbose = FALSE),
     result
   )
   fit_model(filename, verbose = FALSE)
+  filename <- gsub(pattern = "new", replacement = "converged", filename)
   result <- get_result(
     readRDS(filename),
     datasource.id = this.datasource,

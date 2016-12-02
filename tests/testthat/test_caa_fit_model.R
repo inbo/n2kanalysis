@@ -71,14 +71,27 @@ describe("fit_model() on GlmerPoisson based objects", {
     )
   })
   it("works with objects saved in rds files", {
-    filename <- store_model(object, base = temp.dir, path = "")
+    filename <- store_model(object, base = temp.dir, project = "fit_model")
+    expect_identical(status(filename)$Status, "new")
+cat("\n\n\n\nStart problem zone\n\n\n\n")
+# cat("prefit files:\n", list.files(paste0(temp.dir, "/fit_model"), recursive = TRUE, full.names = TRUE), sep = "\n")
+    fit_model(filename)
+# cat("postfit files:\n", list.files(paste0(temp.dir, "/fit_model"), recursive = TRUE, full.names = TRUE), sep = "\n")
+    filename <- gsub("new", "converged", filename)
+# cat("filename:\n", filename, "\n", sep = "")
+    expect_identical(
+      status(filename)$Status,
+      "converged"
+    )
+cat("\n\n\n\nEnd problem zone\n\n\n\n")
+    filename <- store_model(weighted.object, base = temp.dir, project = "fit_model")
     expect_identical(status(filename)$Status, "new")
     fit_model(filename)
-    expect_identical(status(filename)$Status, "converged")
-    filename <- store_model(weighted.object, base = temp.dir, path = "")
-    expect_identical(status(filename)$Status, "new")
-    fit_model(filename)
-    expect_identical(status(filename)$Status, "converged")
+    filename <- gsub("new", "converged", filename)
+    expect_identical(
+      status(filename)$Status,
+      "converged"
+    )
   })
 
   # clean temp files
@@ -232,15 +245,23 @@ describe("fit_model() on INLA nbinomial based objects", {
   })
   it("works with objects saved in rds files", {
     analysis <- object
-    filename <- store_model(analysis, base = temp.dir, path = "")
+    filename <- store_model(analysis, base = temp.dir, project = "fit_model")
     expect_identical(status(filename)$Status, "new")
     fit_model(filename)
-    expect_identical(status(filename)$Status, "converged")
+    filename <- gsub("new", "converged", filename)
+    expect_identical(
+      status(filename)$Status,
+      "converged"
+    )
     analysis <- object.lc
-    filename <- store_model(analysis, base = temp.dir, path = "")
+    filename <- store_model(analysis, base = temp.dir, project = "fit_model")
     expect_identical(status(filename)$Status, "new")
     fit_model(filename)
-    expect_identical(status(filename)$Status, "converged")
+    filename <- gsub("new", "converged", filename)
+    expect_identical(
+      status(filename)$Status,
+      "converged"
+    )
   })
 
   it("doesn't refit converged models with the default status", {
@@ -289,7 +310,7 @@ test_that("fit_model() works on n2kInlaComparison", {
     data = dataset
   )
   p1 <- get_file_fingerprint(analysis)
-  filename1 <- store_model(analysis, base = temp.dir, path = "")
+  filename1 <- store_model(analysis, base = temp.dir, project = "fit_model")
   analysis <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -302,7 +323,7 @@ test_that("fit_model() works on n2kInlaComparison", {
     data = dataset
   )
   p2 <- get_file_fingerprint(analysis)
-  filename2 <- store_model(analysis, base = temp.dir, path = "")
+  filename2 <- store_model(analysis, base = temp.dir, project = "fit_model")
 
   analysis <- n2k_inla_comparison(
     scheme.id = this.scheme.id,
@@ -321,7 +342,7 @@ test_that("fit_model() works on n2kInlaComparison", {
         ParentStatusFingerprint = ~StatusFingerprint
       )
   )
-  filename3 <- store_model(analysis, base = temp.dir, path = "")
+  filename3 <- store_model(analysis, base = temp.dir, project = "fit_model")
   fit_model(filename3, verbose = FALSE)
 
   fit_model(filename1, verbose = FALSE)
@@ -329,7 +350,7 @@ test_that("fit_model() works on n2kInlaComparison", {
 
   fit_model(filename2, verbose = FALSE)
   fit_model(filename3, verbose = FALSE)
-
+  filename3 <- gsub("waiting", "converged", filename3)
   fit_model(filename3, verbose = FALSE)
 
   # clean temp files
