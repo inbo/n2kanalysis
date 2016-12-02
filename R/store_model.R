@@ -67,7 +67,8 @@ setMethod(
 #' @rdname store_model
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.string
-#' @importFrom aws.s3 bucket_exists get_bucket s3saveRDS
+#' @importFrom aws.s3 bucket_exists get_bucket s3saveRDS delete_object
+#' @include import_S3_classes.R
 setMethod(
   f = "store_model",
   signature = signature(base = "s3_bucket"),
@@ -77,6 +78,8 @@ setMethod(
     validObject(x, complete = TRUE)
     status <- status(x)
 
+    # try several times to connect to S3 bucket
+    # avoids errors due to time out
     i <- 1
     repeat {
       bucket_ok <- tryCatch(bucket_exists(base))
@@ -87,7 +90,11 @@ setMethod(
         stop("Unable to connect to S3 bucket")
       }
       i <- i + 1
+      # waiting time between tries increases with the number of tries
       Sys.sleep(i)
+    }
+    if (!bucket_ok) {
+      stop("Unable to connect to S3 bucket")
     }
 
     # check if object with same fingerprint exists
@@ -95,7 +102,10 @@ setMethod(
     existing <- existing[names(existing) == "Contents"] %>%
       sapply("[[", "Key")
     fingerprint <- get_file_fingerprint(x)
-    filename <- existing[grepl(sprintf("%s.rds$", fingerprint), existing)]
+    current <- existing[grepl(sprintf("%s.rds$", fingerprint), existing)]
+    exists <- grepl(sprintf("%s/%s.rds$", status, fingerprint), current)
+    filename <- current[exists] %>%
+      unname()
     if (length(filename) > 0) {
       return(filename)
     }
@@ -106,6 +116,10 @@ setMethod(
       gsub(pattern = "//", replacement = "/") %>%
       gsub(pattern = "^/", replacement = "")
     s3saveRDS(x, bucket = base, object = filename)
+    if (any(!exists)) {
+      delete_object(object = current[!exists], bucket = base)
+    }
+
     return(filename)
   }
 )

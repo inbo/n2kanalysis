@@ -9,11 +9,14 @@
 \alias{fit_model,n2kInlaComparison-method}
 \alias{fit_model,n2kInlaNbinomial-method}
 \alias{fit_model,n2kLrtGlmer-method}
+\alias{fit_model,s3_object-method}
 \title{Fit a n2kModel object}
 \usage{
 fit_model(x, ...)
 
 \S4method{fit_model}{character}(x, ...)
+
+\S4method{fit_model}{s3_object}(x, ...)
 
 \S4method{fit_model}{n2kGlmerPoisson}(x, ...)
 
@@ -34,6 +37,11 @@ fit_model(x, ...)
 Fit a n2kModel object
 }
 \details{
+\describe{
+ \item{\code{status}}{A vector with status levels naming the levels which should be recalculated. Defaults to \code{"new"}}
+ \item{\code{verbose}}{A logical indicating if the function should display the name of the file and the status. Defaults to \code{TRUE}}
+}
+
 \describe{
  \item{\code{status}}{A vector with status levels naming the levels which should be recalculated. Defaults to \code{"new"}}
  \item{\code{verbose}}{A logical indicating if the function should display the name of the file and the status. Defaults to \code{TRUE}}
