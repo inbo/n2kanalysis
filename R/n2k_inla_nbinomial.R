@@ -51,6 +51,9 @@ setMethod(
     if (is.null(dots$status)) {
       dots$status <- "new"
     }
+    if (is.null(dots$minimum)) {
+      dots$minimum <- ""
+    }
     if (is.null(dots$seed)) {
       dots$seed <- sample(.Machine$integer.max, 1)
     } else {
@@ -117,7 +120,7 @@ setMethod(
         dots$model.type, dots$formula, dots$first.imported.year,
         dots$last.imported.year, dots$duration, dots$last.analysed.year,
         dots$analysis.date, dots$seed, dots$parent, dots$replicate.name,
-        dots$lin.comb, dots$imputation.size
+        dots$lin.comb, dots$imputation.size, dots$minimum
       )
     )
 
@@ -192,6 +195,7 @@ setMethod(
       LinearCombination = dots$lin.comb,
       Model = NULL,
       ImputationSize = dots$imputation.size,
+      Minimum = dots$minimum,
       RawImputed = NULL
     )
   }

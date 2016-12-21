@@ -73,17 +73,12 @@ describe("fit_model() on GlmerPoisson based objects", {
   it("works with objects saved in rds files", {
     filename <- store_model(object, base = temp.dir, project = "fit_model")
     expect_identical(status(filename)$Status, "new")
-cat("\n\n\n\nStart problem zone\n\n\n\n")
-# cat("prefit files:\n", list.files(paste0(temp.dir, "/fit_model"), recursive = TRUE, full.names = TRUE), sep = "\n")
     fit_model(filename)
-# cat("postfit files:\n", list.files(paste0(temp.dir, "/fit_model"), recursive = TRUE, full.names = TRUE), sep = "\n")
     filename <- gsub("new", "converged", filename)
-# cat("filename:\n", filename, "\n", sep = "")
     expect_identical(
       status(filename)$Status,
       "converged"
     )
-cat("\n\n\n\nEnd problem zone\n\n\n\n")
     filename <- store_model(weighted.object, base = temp.dir, project = "fit_model")
     expect_identical(status(filename)$Status, "new")
     fit_model(filename)
@@ -207,11 +202,11 @@ describe("fit_model() on INLA nbinomial based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "892efcddad58c8ae24564e997f3fda5585c7cff7"
-  object.lc.file <- "93c112f7fa4864f9cf2f3db91da15e39bf278569"
-  object.lc.list.file <- "72eee99fcd17a2f4edaded27b88ff4e5e5fad769"
-  object.lc.list2.file <- "b123db6858979de13f4c0c95cb3e263a0740fb6f"
-  object.badlc.file <- "33ba3961bdad53706408318f8c68a1c20ac0a831"
+  object.file <- "f1804a280983c87ae1e6e0ae1f4a25fd3a368d21"
+  object.lc.file <- "f62d83dbbffcb6c5ca389c4aa382b73d6ea9278d"
+  object.lc.list.file <- "61724622f28c1fc4a516a5e93d4efd47231d9d8e"
+  object.lc.list2.file <- "64e43b3dd33b1c6a5f63fdbc0d3bf660a664c48f"
+  object.badlc.file <- "cef68eb4b2dfca4bdc61ae7f491da41560b30367"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))

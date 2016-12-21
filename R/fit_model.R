@@ -278,7 +278,11 @@ setMethod(
       n2k_inla_nbinomial(
         data = x,
         model.fit = model,
-        raw.imputed = impute(model = model, n.imp = x@ImputationSize),
+        raw.imputed = impute(
+          model = model,
+          n.imp = x@ImputationSize,
+          minimum = x@Minimum
+        ),
         status = "converged"
       )
     )

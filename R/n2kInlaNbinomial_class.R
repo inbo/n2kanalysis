@@ -16,6 +16,7 @@ setClassUnion("maybeRawImputed", c("rawImputed", "NULL"))
 #'    \item{\code{ReplicateName}}{an optional list with names of replicates}
 #'    \item{\code{Model}}{Either NULL or the resulting INLA model.}
 #'    \item{\code{ImputationSize}}{The number of multiple imputations. Defaults to 0, indication no multiple imputation.}
+#'    \item{\code{Minimum}}{an optional string containing the name of the variable in \code{Data} holding the minimal values for imputation}
 #'    \item{\code{RawImputed}}{A \code{rawImputed} object with multiple imputations.}
 #'   }
 #' @name n2kInlaNbinomial-class
@@ -33,6 +34,7 @@ setClass(
     ReplicateName = "list",
     Model = "maybeInla",
     ImputationSize = "integer",
+    Minimum = "character",
     RawImputed = "maybeRawImputed"
   ),
   contains = "n2kModel"
@@ -41,6 +43,7 @@ setClass(
 #' @importFrom methods setValidity
 #' @importFrom n2khelper check_dataframe_variable
 #' @importFrom digest sha1
+#' @importFrom assertthat assert_that has_name
 setValidity(
   "n2kInlaNbinomial",
   function(object){
@@ -62,6 +65,11 @@ setValidity(
       if (object@Model$all.hyper$family[[1]]$label != "nbinomial") {
         stop("The model must be from the nbinomial family")
       }
+    }
+
+    assert_that(length(object@Minimum) == 1)
+    if (!is.na(object@Minimum) && object@Minimum != "") {
+      assert_that(has_name(object@Data, object@Minimum))
     }
 
     if (is.matrix(object@LinearCombination)) {
@@ -92,7 +100,8 @@ setValidity(
         object@AnalysisMetadata$LastAnalysedYear,
         object@AnalysisMetadata$AnalysisDate, object@AnalysisMetadata$Seed,
         object@AnalysisRelation$ParentAnalysis,
-        object@ReplicateName, object@LinearCombination, object@ImputationSize
+        object@ReplicateName, object@LinearCombination, object@ImputationSize,
+        object@Minimum
       )
     )
     if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
