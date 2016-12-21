@@ -24,7 +24,7 @@ Imports:
     lme4,
     MASS,
     methods,
-    multimput,
+    multimput  (>= 0.2.5),
     n2khelper (>= 0.2),
     RODBC,
     tibble,

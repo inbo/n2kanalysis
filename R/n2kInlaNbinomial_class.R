@@ -1,6 +1,6 @@
 #' @importFrom methods setClassUnion
 #' @include import_S3_classes.R
-#' @importClassesFrom multimput rawImputed
+#' @importClassesFrom multimput inla rawImputed
 setClassUnion("maybeMatrix", c("matrix", "list", "NULL"))
 setClassUnion("maybeInla", c("inla", "NULL"))
 setClassUnion("maybeRawImputed", c("rawImputed", "NULL"))
