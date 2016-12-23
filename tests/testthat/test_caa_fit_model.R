@@ -95,7 +95,7 @@ describe("fit_model() on GlmerPoisson based objects", {
 
 describe("fit_model() on INLA nbinomial based objects", {
   temp.dir <- tempdir()
-  dataset <- n2kanalysis:::test_data(missing = 0.2)
+  dataset <- test_data(missing = 0.2)
   this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
   this.scheme.id <- sha1(letters)
   this.species.group.id <- sha1(letters)
@@ -290,7 +290,7 @@ test_that("fit_model() works on n2kInlaComparison", {
   this.last.imported.year <- 2015L
   this.last.analysed.year <- 2014L
   this.duration <- 1L
-  dataset <- n2kanalysis:::test_data()
+  dataset <- test_data()
   temp.dir <- tempdir()
 
   analysis <- n2k_inla_nbinomial(

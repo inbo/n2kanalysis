@@ -9,7 +9,7 @@ this.last.imported.year <- 2015L
 this.last.analysed.year <- 2014L
 this.duration <- 1L
 this.datasource <- sha1(letters)
-dataset <- n2kanalysis:::test_data(this.datasource)
+dataset <- test_data(this.datasource)
 describe("get_result on n2kInlaNbinomial", {
   this.model.type <- "inla nbinomial: period + herd"
   this.formula <-

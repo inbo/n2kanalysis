@@ -14,7 +14,7 @@ test_that("store_model stores the model on a local file system", {
   this.last.imported.year <- 2015L
   this.last.analysed.year <- 2014L
   this.duration <- 1L
-  dataset <- n2kanalysis:::test_data()
+  dataset <- test_data()
   object <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -59,7 +59,7 @@ test_that("store_model stores the model on an S3 bucket", {
   this.last.imported.year <- 2015L
   this.last.analysed.year <- 2014L
   this.duration <- 1L
-  dataset <- n2kanalysis:::test_data()
+  dataset <- test_data()
   object <- n2k_inla_nbinomial(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,

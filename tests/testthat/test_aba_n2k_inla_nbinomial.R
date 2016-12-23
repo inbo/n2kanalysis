@@ -13,7 +13,7 @@ this.first.imported.year <- 1990L
 this.last.imported.year <- 2015L
 this.last.analysed.year <- 2014L
 this.duration <- 1L
-dataset <- n2kanalysis:::test_data()
+dataset <- test_data()
 lin.comb <- dataset %>%
   select_(~A, ~B, ~C, ~D) %>%
   filter_(~C == max(C), ~D == max(D)) %>%

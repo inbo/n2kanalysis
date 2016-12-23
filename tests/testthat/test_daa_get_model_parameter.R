@@ -131,7 +131,7 @@ test_that(
 test_that(
   "n2kInlaNbinomial with categorical and numeric fixed effect without random
     effect", {
-  dataset <- n2kanalysis:::test_data()
+  dataset <- test_data()
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
   this.scheme.id <- sha1(letters)
   this.species.group.id <- sha1(letters)
@@ -225,7 +225,7 @@ test_that(
 test_that(
   "n2kInlaNbinomial with single random effect, categorical-categorical
       interaction and categorical numeric interaction", {
-  dataset <- n2kanalysis:::test_data()
+  dataset <- test_data()
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
   this.scheme.id <- sha1(letters)
   this.species.group.id <- sha1(letters)
@@ -345,7 +345,7 @@ test_that(
 test_that(
   "n2kInlaNbinomial with numeric-numeric interaction and two random effects of
     which on replicated", {
-  dataset <- n2kanalysis:::test_data()
+  dataset <- test_data()
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
   this.scheme.id <- sha1(letters)
   this.species.group.id <- sha1(letters)
