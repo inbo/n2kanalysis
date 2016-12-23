@@ -115,7 +115,24 @@ setMethod(
       normalizePath(winslash = "/", mustWork = FALSE) %>%
       gsub(pattern = "//", replacement = "/") %>%
       gsub(pattern = "^/", replacement = "")
-    s3saveRDS(x, bucket = base, object = filename)
+    # try several times to write to S3 bucket
+    # avoids errors due to time out
+    i <- 1
+    repeat {
+      bucket_ok <- tryCatch(s3saveRDS(x, bucket = base, object = filename))
+      if (is.logical(bucket_ok)) {
+        break
+      }
+      if (i > 10) {
+        stop("Unable to write to S3 bucket")
+      }
+      i <- i + 1
+      # waiting time between tries increases with the number of tries
+      Sys.sleep(i)
+    }
+    if (!bucket_ok) {
+      stop("Unable to write to S3 bucket")
+    }
     if (any(!exists)) {
       delete_object(object = current[!exists], bucket = base)
     }
