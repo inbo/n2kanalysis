@@ -54,6 +54,7 @@ setValidity(
         object@Function, object@Filter, object@Join
       )
     )
+
     if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
       stop("Corrupt FileFingerprint")
     }
@@ -61,8 +62,8 @@ setValidity(
     status.fingerprint <- sha1(
       list(
         object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
-        object@Model, object@AnalysisMetadata$AnalysisVersion,
-        object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
+        object@AnalysisMetadata$AnalysisVersion, object@AnalysisVersion,
+        object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation, object@RawImputed, object@AggregatedImputed
       ),
       digits = 6L
