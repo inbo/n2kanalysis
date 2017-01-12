@@ -67,6 +67,7 @@ Collate:
     'inla_inverse.R'
     'mark_obsolete_dataset.R'
     'n2kAggregate_class.R'
+    'n2kModelImputed_class.R'
     'n2k_aggregated.R'
     'n2k_composite.R'
     'n2k_glmer_poisson.R'
