@@ -90,7 +90,11 @@ setMethod(
     if (is.null(dots$join)) {
       dots$join <- list()
     } else {
-      assert_that(is.list(dots$join))
+      if (inherits(dots$join, "data.frame")) {
+        dots$join <- list(dots$join)
+      } else {
+        assert_that(is.list(dots$join))
+      }
     }
     assert_that(is.function(dots$fun))
     assert_that(is.string(dots$parent))
