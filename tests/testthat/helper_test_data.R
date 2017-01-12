@@ -13,7 +13,7 @@ test_data <- function(datasource.id = sha1(letters), missing = 0){
   set.seed(999)
   n.e <- 10
   sd.random <- 0.1
-  theta <- 4
+  theta <- 4 #nolint
 
   dataset <- expand.grid(
     A = factor(c("a1", "a2", "a3")),
@@ -41,7 +41,7 @@ test_data <- function(datasource.id = sha1(letters), missing = 0){
     matrix(nrow = n.e) %>%
     apply(2, cumsum) %>%
     as.vector()
-  eta <- mm.fixed %*% fixed + mm.random %*% random
+  eta <- mm.fixed %*% fixed + mm.random %*% random #nolint
   dataset <- dataset %>%
     mutate_(
       Count = ~ifelse(

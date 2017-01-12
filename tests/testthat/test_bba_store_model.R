@@ -39,7 +39,7 @@ test_that("store_model stores the model on a local file system", {
   expect_identical(filename, filename2)
   expect_identical(file_info, file_info2)
 
-  paste0(temp_dir, "/store_model") %>%
+  paste0(temp_dir, "/store_model") %>% # nolint
     list.files(recursive = TRUE, full.names = TRUE) %>%
     file.remove()
 })

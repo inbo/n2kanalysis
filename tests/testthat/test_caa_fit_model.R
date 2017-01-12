@@ -79,7 +79,11 @@ describe("fit_model() on GlmerPoisson based objects", {
       status(filename)$Status,
       "converged"
     )
-    filename <- store_model(weighted.object, base = temp.dir, project = "fit_model")
+    filename <- store_model(
+      weighted.object,
+      base = temp.dir,
+      project = "fit_model"
+    )
     expect_identical(status(filename)$Status, "new")
     fit_model(filename)
     filename <- gsub("new", "converged", filename)

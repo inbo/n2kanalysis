@@ -465,7 +465,9 @@ setMethod(
         function(x){
           tryCatch(
             x %>%
-              inla.tmarginal(fun = function(x){1/x}) %>%
+              inla.tmarginal(fun = function(x){
+                1 / x
+              }) %>%
               inla.qmarginal(p = c(
                 Estimate = .5,
                 LowerConfidenceLimit = .025,
