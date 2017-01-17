@@ -88,7 +88,7 @@ setMethod(
       assert_that(is.list(dots$filter))
     }
     if (is.null(dots$mutate)) {
-      dots$join <- list()
+      dots$mutate <- list()
     } else {
       assert_that(is.list(dots$mutate))
     }
