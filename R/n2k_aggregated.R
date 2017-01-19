@@ -109,7 +109,7 @@ setMethod(
       )
     )
 
-    if (is.null(dots$parent.status.fingerprint)) {
+    if (is.null(dots$parent.statusfingerprint)) {
       if (is.null(dots$parent.status)) {
         dots$parent.status <- "waiting"
       }
