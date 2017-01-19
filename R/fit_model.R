@@ -81,7 +81,7 @@ setMethod(
       assert_that(noNA(dots$verbose))
     }
     if (dots$verbose) {
-      message(x)
+      message(x$Key)
     }
     analysis <- s3readRDS(object = x)
     current_status <- status(analysis)
