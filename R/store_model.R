@@ -82,13 +82,19 @@ setMethod(
     # avoids errors due to time out
     i <- 1
     repeat {
-      bucket_ok <- tryCatch(bucket_exists(base))
+      bucket_ok <- tryCatch(
+        bucket_exists(base),
+        error = function(err) {
+          err
+        }
+      )
       if (is.logical(bucket_ok)) {
         break
       }
       if (i > 10) {
         stop("Unable to connect to S3 bucket")
       }
+      message("attempt ", i, " to connect to S3 bucket failed. Trying again...")
       i <- i + 1
       # waiting time between tries increases with the number of tries
       Sys.sleep(i)
@@ -98,7 +104,7 @@ setMethod(
     }
 
     # check if object with same fingerprint exists
-    existing <- get_bucket(base, prefix = project)
+    existing <- get_bucket(base, prefix = project, max = Inf)
     existing <- existing[names(existing) == "Contents"] %>%
       sapply("[[", "Key")
     fingerprint <- get_file_fingerprint(x)
@@ -119,13 +125,19 @@ setMethod(
     # avoids errors due to time out
     i <- 1
     repeat {
-      bucket_ok <- tryCatch(s3saveRDS(x, bucket = base, object = filename))
+      bucket_ok <- tryCatch(
+        s3saveRDS(x, bucket = base, object = filename),
+        error = function(err) {
+          err
+        }
+      )
       if (is.logical(bucket_ok)) {
         break
       }
       if (i > 10) {
         stop("Unable to write to S3 bucket")
       }
+      message("attempt ", i, " to write to S3 bucket failed. Trying again...")
       i <- i + 1
       # waiting time between tries increases with the number of tries
       Sys.sleep(i)
