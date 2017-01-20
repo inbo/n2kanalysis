@@ -210,3 +210,48 @@ setReplaceMethod(
     return(x)
   }
 )
+
+#' @rdname status.change
+#' @importFrom methods setReplaceMethod
+#' @importFrom digest sha1
+#' @include n2kAggregate_class.R
+setReplaceMethod(
+  "status",
+  "n2kAggregate",
+  function(x, value){
+    x@AnalysisMetadata$Status <- value
+    x@AnalysisMetadata$StatusFingerprint <- sha1(
+      list(
+        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
+        x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
+        x@AnalysisVersionRPackage, x@AnalysisRelation, x@RawImputed,
+        x@AggregatedImputed
+      ),
+      digits = 6L
+    )
+    validObject(x)
+    return(x)
+  }
+)
+
+#' @rdname status.change
+#' @importFrom methods setReplaceMethod
+#' @importFrom digest sha1
+#' @include n2kModelImputed_class.R
+setReplaceMethod(
+  "status",
+  "n2kModelImputed",
+  function(x, value){
+    x@AnalysisMetadata$Status <- value
+    x@AnalysisMetadata$StatusFingerprint <- sha1(
+      list(
+        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
+        x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
+        x@AnalysisVersionRPackage, x@AnalysisRelation, x@AggregatedImputed
+      ),
+      digits = 6L
+    )
+    validObject(x)
+    return(x)
+  }
+)

@@ -61,3 +61,20 @@ sha1.rawImputed <- function(x, digits = 14L, zapsmall = 7L) {
   )
   sha1(parameter, digits = digits, zapsmall = zapsmall)
 }
+
+#' @importFrom digest sha1
+#' @importClassesFrom multimput aggregatedImputed
+#' @export
+#' @method sha1 aggregatedImputed
+sha1.aggregatedImputed <- function(x, digits = 14L, zapsmall = 7L) {
+  parameter <- list(
+    Covariate = x@Covariate,
+    Imputation = x@Imputation
+  )
+  attr(parameter, "digest::sha1") <- list(
+    class = class(x),
+    digits = as.integer(digits),
+    zapsmall = as.integer(zapsmall)
+  )
+  sha1(parameter, digits = digits, zapsmall = zapsmall)
+}

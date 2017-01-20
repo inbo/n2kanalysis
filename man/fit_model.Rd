@@ -4,6 +4,7 @@
 \name{fit_model}
 \alias{fit_model}
 \alias{fit_model,character-method}
+\alias{fit_model,n2kAggregate-method}
 \alias{fit_model,n2kComposite-method}
 \alias{fit_model,n2kGlmerPoisson-method}
 \alias{fit_model,n2kInlaComparison-method}
@@ -27,6 +28,8 @@ fit_model(x, ...)
 \S4method{fit_model}{n2kComposite}(x, ...)
 
 \S4method{fit_model}{n2kInlaComparison}(x, ...)
+
+\S4method{fit_model}{n2kAggregate}(x, ...)
 }
 \arguments{
 \item{x}{the n2kModel}
