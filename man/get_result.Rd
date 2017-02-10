@@ -6,6 +6,7 @@
 \alias{get_result,character-method}
 \alias{get_result,n2kInlaNbinomial-method}
 \alias{get_result,n2kModel-method}
+\alias{get_result,s3_object-method}
 \title{Add the results from an analysis}
 \usage{
 get_result(x, ...)
@@ -15,6 +16,8 @@ get_result(x, ...)
 \S4method{get_result}{n2kInlaNbinomial}(x, verbose = TRUE, ...)
 
 \S4method{get_result}{character}(x, n.cluster = 1, verbose = TRUE, ...)
+
+\S4method{get_result}{s3_object}(x, ...)
 }
 \arguments{
 \item{x}{object with the current results}
