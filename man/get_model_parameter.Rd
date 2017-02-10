@@ -9,6 +9,7 @@
 \alias{get_model_parameter,n2kInlaComparison-method}
 \alias{get_model_parameter,n2kInlaNbinomial-method}
 \alias{get_model_parameter,n2kLrtGlmer-method}
+\alias{get_model_parameter,n2kModelImputed-method}
 \title{Add the model parameters from a model}
 \usage{
 get_model_parameter(analysis, ...)
@@ -25,6 +26,8 @@ get_model_parameter(analysis, ...)
 \S4method{get_model_parameter}{n2kInlaComparison}(analysis, ...)
 
 \S4method{get_model_parameter}{n2kAggregate}(analysis, ...)
+
+\S4method{get_model_parameter}{n2kModelImputed}(analysis, ...)
 }
 \arguments{
 \item{analysis}{The model to add}
