@@ -726,3 +726,16 @@ setMethod(
     return(new("n2kParameter"))
   }
 )
+
+
+#' @rdname get_model_parameter
+#' @importFrom methods setMethod new
+#' @include n2kAggregate_class.R
+#' @include n2kParameter_class.R
+setMethod(
+  f = "get_model_parameter",
+  signature = signature(analysis = "n2kAggregate"),
+  definition = function(analysis, ...){
+    return(new("n2kParameter"))
+  }
+)

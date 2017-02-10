@@ -3,6 +3,7 @@
 \docType{methods}
 \name{get_model_parameter}
 \alias{get_model_parameter}
+\alias{get_model_parameter,n2kAggregate-method}
 \alias{get_model_parameter,n2kComposite-method}
 \alias{get_model_parameter,n2kGlmerPoisson-method}
 \alias{get_model_parameter,n2kInlaComparison-method}
@@ -22,6 +23,8 @@ get_model_parameter(analysis, ...)
   ...)
 
 \S4method{get_model_parameter}{n2kInlaComparison}(analysis, ...)
+
+\S4method{get_model_parameter}{n2kAggregate}(analysis, ...)
 }
 \arguments{
 \item{analysis}{The model to add}
