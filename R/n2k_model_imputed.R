@@ -13,7 +13,8 @@
 #'    \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
 #'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
-#'    \item{\code{model.fun}}{an option list for the \code{model.fun} argument of \code{\link[multimput]{model_impute}}}
+#'    \item{\code{model.fun}}{the \code{model.fun} argument of \code{\link[multimput]{model_impute}}}
+#'    \item{\code{package}}{a character vector of package names which must be loaded for \code{model.fun}}
 #'    \item{\code{model.args}}{an option list for the \code{model.args} argument of \code{\link[multimput]{model_impute}}}
 #'    \item{\code{extractor}}{an option list for the \code{extractor} argument of \code{\link[multimput]{model_impute}}}
 #'    \item{\code{extractor.args}}{an option list for the \code{extractor.args} argument of \code{\link[multimput]{model_impute}}}
@@ -104,6 +105,11 @@ setMethod(
     } else {
       assert_that(is.list(dots$extractor.args))
     }
+    if (is.null(dots$package)) {
+      dots$package <- character(0)
+    } else {
+      assert_that(is.character(dots$package))
+    }
     assert_that(is.string(dots$parent))
 
     file.fingerprint <- sha1(
@@ -112,8 +118,10 @@ setMethod(
         dots$model.type, dots$formula, dots$first.imported.year,
         dots$last.imported.year, dots$duration, dots$last.analysed.year,
         dots$analysis.date, dots$seed, dots$parent, dots$model.fun, dots$filter,
-        dots$mutate, dots$model.args, dots$extractor, dots$extractor.args
-      )
+        dots$mutate, dots$model.args, dots$extractor, dots$extractor.args,
+        dots$package
+      ),
+      environment = FALSE
     )
 
     if (is.null(dots$parent.statusfingerprint)) {
@@ -140,7 +148,7 @@ setMethod(
       list(
         file.fingerprint, dots$status, version@AnalysisVersion$Fingerprint,
         version@AnalysisVersion, version@RPackage,
-        version@AnalysisVersionRPackage, analysis.relation, NULL
+        version@AnalysisVersionRPackage, analysis.relation, NULL, NULL
       ),
       digits = 6L
     )
@@ -171,12 +179,14 @@ setMethod(
       AnalysisFormula = list(as.formula(dots$formula)),
       AnalysisRelation = analysis.relation,
       Function = dots$model.fun,
+      Package = dots$package,
       Filter = dots$filter,
       Mutate = dots$mutate,
       ModelArgs = dots$model.args,
       Extractor = dots$extractor,
       ExtractorArgs = dots$extractor.args,
-      AggregatedImputed = NULL
+      AggregatedImputed = NULL,
+      Results = NULL
     )
   }
 )

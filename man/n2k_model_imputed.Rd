@@ -32,7 +32,8 @@ A new n2kModelImputed model.
    \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
-   \item{\code{model.fun}}{an option list for the \code{model.fun} argument of \code{\link[multimput]{model_impute}}}
+   \item{\code{model.fun}}{the \code{model.fun} argument of \code{\link[multimput]{model_impute}}}
+   \item{\code{package}}{a character vector of package names which must be loaded for \code{model.fun}}
    \item{\code{model.args}}{an option list for the \code{model.args} argument of \code{\link[multimput]{model_impute}}}
    \item{\code{extractor}}{an option list for the \code{extractor} argument of \code{\link[multimput]{model_impute}}}
    \item{\code{extractor.args}}{an option list for the \code{extractor.args} argument of \code{\link[multimput]{model_impute}}}

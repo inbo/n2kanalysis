@@ -10,6 +10,7 @@
 \alias{fit_model,n2kInlaComparison-method}
 \alias{fit_model,n2kInlaNbinomial-method}
 \alias{fit_model,n2kLrtGlmer-method}
+\alias{fit_model,n2kModelImputed-method}
 \alias{fit_model,s3_object-method}
 \title{Fit a n2kModel object}
 \usage{
@@ -28,6 +29,8 @@ fit_model(x, ...)
 \S4method{fit_model}{n2kComposite}(x, ...)
 
 \S4method{fit_model}{n2kInlaComparison}(x, ...)
+
+\S4method{fit_model}{n2kModelImputed}(x, ...)
 
 \S4method{fit_model}{n2kAggregate}(x, ...)
 }

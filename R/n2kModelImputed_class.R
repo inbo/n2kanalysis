@@ -4,12 +4,14 @@
 #' @section Slots:
 #'   \describe{
 #'    \item{\code{Function}}{The object to pass to the \code{model.fun} argument of \code{\link[multimput]{model_impute}}}
+#'    \item{\code{Package}}{A vector of package names which must be loaded to run the function.}
 #'    \item{\code{ModelArgs}}{The object to pass to the \code{model.args} argument of \code{\link[multimput]{model_impute}}}
 #'    \item{\code{Extractor}}{The object to pass to the \code{extractor} argument of \code{\link[multimput]{model_impute}}}
 #'    \item{\code{ExtractorArgs}}{The object to pass to the \code{extractor.args} argument of \code{\link[multimput]{model_impute}}}
 #'    \item{\code{Filter}}{The object to pass to the \code{filter} argument of \code{\link[multimput]{model_impute}}}
 #'    \item{\code{Mutate}}{The object to pass to the \code{mutate} argument of \code{\link[multimput]{model_impute}}}
 #'    \item{\code{AggregatedImputed}}{An \code{aggregatedImputed} object with multiple imputations.}
+#'    \item{\code{Results}}{The dataframe with the results of \code{\link[multimput]{model_impute}}}
 #'   }
 #' @name n2kModelImputed-class
 #' @rdname n2kModelImputed-class
@@ -18,16 +20,19 @@
 #' @importFrom methods setClass
 #' @docType class
 #' @include n2kModelImputed_class.R
+#' @include n2kInlaComparison_class.R
 setClass(
   "n2kModelImputed",
   representation = representation(
     Function = "function",
+    Package = "character",
     ModelArgs = "list",
     Extractor = "function",
     ExtractorArgs = "list",
     Filter = "list",
     Mutate = "list",
-    AggregatedImputed = "maybeAggregatedImputed"
+    AggregatedImputed = "maybeAggregatedImputed",
+    Results = "maybeDataFrame"
   ),
   contains = "n2kModel"
 )
@@ -51,8 +56,9 @@ setValidity(
         object@AnalysisMetadata$AnalysisDate, object@AnalysisMetadata$Seed,
         object@AnalysisRelation$ParentAnalysis,
         object@Function, object@Filter, object@Mutate, object@ModelArgs,
-        object@Extractor, object@ExtractorArgs
-      )
+        object@Extractor, object@ExtractorArgs, object@Package
+      ),
+      environment = FALSE
     )
 
     if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
@@ -64,7 +70,7 @@ setValidity(
         object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
         object@AnalysisMetadata$AnalysisVersion, object@AnalysisVersion,
         object@RPackage, object@AnalysisVersionRPackage,
-        object@AnalysisRelation, object@AggregatedImputed
+        object@AnalysisRelation, object@AggregatedImputed, object@Results
       ),
       digits = 6L
     )
