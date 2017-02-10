@@ -106,7 +106,8 @@ setMethod(
         dots$last.imported.year, dots$duration, dots$last.analysed.year,
         dots$analysis.date, dots$seed, dots$parent,
         dots$fun, dots$filter, dots$join
-      )
+      ),
+      environment = FALSE
     )
 
     if (is.null(dots$parent.statusfingerprint)) {

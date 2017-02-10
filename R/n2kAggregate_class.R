@@ -52,7 +52,8 @@ setValidity(
         object@AnalysisMetadata$AnalysisDate, object@AnalysisMetadata$Seed,
         object@AnalysisRelation$ParentAnalysis,
         object@Function, object@Filter, object@Join
-      )
+      ),
+      environment = FALSE
     )
 
     if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
