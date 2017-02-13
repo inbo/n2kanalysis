@@ -7,9 +7,10 @@ describe("n2kGlmerPoisson", {
   cbpp$DatasourceID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01")
-  this.scheme.id <- sha1(letters)
-  this.species.group.id <- sha1(letters)
-  this.location.group.id <- sha1(letters)
+  this.result.datasource.id <- sha1(sample(letters))
+  this.scheme.id <- sha1(sample(letters))
+  this.species.group.id <- sha1(sample(letters))
+  this.location.group.id <- sha1(sample(letters))
   this.seed <- 4L
   this.model.type <- "glmer poisson: period + herd"
   this.formula <- "incidence ~ offset(log(size)) + period + (1|herd)"
@@ -20,6 +21,7 @@ describe("n2kGlmerPoisson", {
   this.parent <- "abcdef"
   this.duration <- this.last.imported.year - this.first.imported.year + 1
   object <- n2k_glmer_poisson(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -35,6 +37,7 @@ describe("n2kGlmerPoisson", {
     this.duration
   )
   object.2 <- n2k_glmer_poisson(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,

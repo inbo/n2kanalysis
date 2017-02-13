@@ -1,8 +1,9 @@
 context("prepare a n2kAggregate object")
 require(INLA)
-this.scheme.id <- sha1(letters)
-this.species.group.id <- sha1(letters)
-this.location.group.id <- sha1(letters)
+this.result.datasource.id <- sha1(sample(letters))
+this.scheme.id <- sha1(sample(letters))
+this.species.group.id <- sha1(sample(letters))
+this.location.group.id <- sha1(sample(letters))
 this.analysis.date <- Sys.time()
 this.model.type <- "inla nbinomial: A * (B + C) + C:D"
 this.formula <-
@@ -15,6 +16,7 @@ this.last.analysed.year <- 2014L
 this.duration <- 1L
 dataset <- test_data()
 object <- n2k_inla_nbinomial(
+  result.datasource.id = this.result.datasource.id,
   scheme.id = this.scheme.id,
   species.group.id = this.species.group.id,
   location.group.id = this.location.group.id,
@@ -26,6 +28,7 @@ object <- n2k_inla_nbinomial(
   data = dataset
 )
 n2k_aggregate(
+  result.datasource.id = this.result.datasource.id,
   scheme.id = this.scheme.id,
   species.group.id = this.species.group.id,
   location.group.id = this.location.group.id,

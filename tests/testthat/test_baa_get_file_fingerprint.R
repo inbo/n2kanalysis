@@ -6,9 +6,10 @@ describe("file fingerprint for n2k_glmer_poisson", {
   cbpp$DatasourceID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
-  this.scheme.id <- sha1(letters)
-  this.species.group.id <- sha1(letters)
-  this.location.group.id <- sha1(letters)
+  this.result.datasource.id <- sha1(sample(letters))
+  this.scheme.id <- sha1(sample(letters))
+  this.species.group.id <- sha1(sample(letters))
+  this.location.group.id <- sha1(sample(letters))
   this.seed <- 4L
   this.model.type <- "glmer poisson: period + herd"
   this.formula <- "incidence ~ offset(log(size)) + period + (1|herd)"
@@ -20,6 +21,7 @@ describe("file fingerprint for n2k_glmer_poisson", {
 
   it("sets the correct fingerprint for an new object", {
     object <- n2k_glmer_poisson(
+      result.datasource.id = this.result.datasource.id,
       scheme.id = this.scheme.id,
       species.group.id = this.species.group.id,
       location.group.id = this.location.group.id,
@@ -36,7 +38,8 @@ describe("file fingerprint for n2k_glmer_poisson", {
     )
     file.fingerprint <- sha1(
       list(
-        cbpp, this.scheme.id, this.species.group.id, this.location.group.id,
+        cbpp, this.result.datasource.id, this.scheme.id, this.species.group.id,
+        this.location.group.id,
         this.model.type, this.formula, this.first.imported.year,
         this.last.imported.year, this.duration, this.last.analysed.year,
         this.analysis.date, this.seed, this.parent

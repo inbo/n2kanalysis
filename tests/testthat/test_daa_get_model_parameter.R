@@ -6,9 +6,10 @@ test_that(
   cbpp$DatasourceID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
-  this.scheme.id <- sha1(letters)
-  this.species.group.id <- sha1(letters)
-  this.location.group.id <- sha1(letters)
+  this.result.datasource.id <- sha1(sample(letters))
+  this.scheme.id <- sha1(sample(letters))
+  this.species.group.id <- sha1(sample(letters))
+  this.location.group.id <- sha1(sample(letters))
   this.seed <- 4L
   this.model.type <- "glmer poisson: period + herd"
   this.formula <- "incidence ~ offset(log(size)) + period + (1|herd)"
@@ -18,6 +19,7 @@ test_that(
   this.parent <- "abcdef"
   this.duration <- this.last.imported.year - this.first.imported.year + 1
   object <- n2k_glmer_poisson(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -85,6 +87,7 @@ test_that(
   )
 
   object <- n2k_glmer_poisson(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -106,6 +109,7 @@ test_that(
   )
 
   object <- n2k_glmer_poisson(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -133,9 +137,10 @@ test_that(
     effect", {
   dataset <- test_data()
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
-  this.scheme.id <- sha1(letters)
-  this.species.group.id <- sha1(letters)
-  this.location.group.id <- sha1(letters)
+  this.result.datasource.id <- sha1(sample(letters))
+  this.scheme.id <- sha1(sample(letters))
+  this.species.group.id <- sha1(sample(letters))
+  this.location.group.id <- sha1(sample(letters))
   this.seed <- 4L
   this.model.type <- "inla nbinomial: A * B + E"
   this.first.imported.year <- 1990L
@@ -145,6 +150,7 @@ test_that(
   this.duration <- this.last.imported.year - this.first.imported.year + 1
   analysis <- n2k_inla_nbinomial(
     formula = "Count ~ A + C",
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -227,9 +233,10 @@ test_that(
       interaction and categorical numeric interaction", {
   dataset <- test_data()
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
-  this.scheme.id <- sha1(letters)
-  this.species.group.id <- sha1(letters)
-  this.location.group.id <- sha1(letters)
+  this.result.datasource.id <- sha1(sample(letters))
+  this.scheme.id <- sha1(sample(letters))
+  this.species.group.id <- sha1(sample(letters))
+  this.location.group.id <- sha1(sample(letters))
   this.seed <- 4L
   this.model.type <- "inla nbinomial: A * B + E"
   this.first.imported.year <- 1990L
@@ -239,6 +246,7 @@ test_that(
   this.duration <- this.last.imported.year - this.first.imported.year + 1
   analysis <- n2k_inla_nbinomial(
     formula = "Count ~ 0 + A * C + A * B + f(E, model = \"iid\")",
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -347,9 +355,10 @@ test_that(
     which on replicated", {
   dataset <- test_data()
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
-  this.scheme.id <- sha1(letters)
-  this.species.group.id <- sha1(letters)
-  this.location.group.id <- sha1(letters)
+  this.result.datasource.id <- sha1(sample(letters))
+  this.scheme.id <- sha1(sample(letters))
+  this.species.group.id <- sha1(sample(letters))
+  this.location.group.id <- sha1(sample(letters))
   this.seed <- 4L
   this.model.type <- "inla nbinomial: A * B + E"
   this.first.imported.year <- 1990L
@@ -361,6 +370,7 @@ test_that(
     formula = "Count ~ C * D +
     f(E, model = \"rw1\", replicate = as.integer(A)) +
     f(F, model = \"iid\")",
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,

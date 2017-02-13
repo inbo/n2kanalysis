@@ -1,7 +1,7 @@
 Package: n2kanalysis
 Title: Generic Functions to Analyse Data from the Natura 2000 Monitoring
-Version: 0.1
-Date: 2016-02-10
+Version: 0.2
+Date: 2017-02-13
 Authors@R: c(person("Thierry", "Onkelinx", email = "thierry.onkelinx@inbo.be", role = c("aut", "cre")))
 Description: All generic functions for the analysis. The full analysis is
     defined in the analysis package of each monitoring scheme.
@@ -18,7 +18,7 @@ Suggests:
 Imports:
     assertthat,
     aws.s3,
-    digest (>= 0.6.9.3),
+    digest (>= 0.6.12),
     dplyr,
     INLA,
     lme4,
@@ -85,4 +85,4 @@ Collate:
     'store_model.R'
     'union.R'
     'validOject.R'
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

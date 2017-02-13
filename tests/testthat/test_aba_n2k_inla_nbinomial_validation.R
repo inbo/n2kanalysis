@@ -5,6 +5,7 @@ cbpp$DatasourceID <- sha1(letters)
 cbpp$ObservationID <- seq_len(nrow(cbpp))
 lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
 object <- n2k_inla_nbinomial(
+  result.datasource.id = sha1(letters),
   scheme.id = sha1(letters),
   species.group.id = sha1(letters),
   location.group.id = sha1(letters),

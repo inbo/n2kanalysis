@@ -32,6 +32,7 @@ setClass(
 setValidity(
   "n2kAnalysisMetadata",
   function(object){
+    assert_that(has_name(object@AnalysisMetadata, "ResultDatasourceID"))
     assert_that(has_name(object@AnalysisMetadata, "SchemeID"))
     assert_that(has_name(object@AnalysisMetadata, "SpeciesGroupID"))
     assert_that(has_name(object@AnalysisMetadata, "LocationGroupID"))
@@ -49,6 +50,7 @@ setValidity(
     assert_that(has_name(object@AnalysisMetadata, "AnalysisVersion"))
     assert_that(has_name(object@AnalysisMetadata, "StatusFingerprint"))
 
+    assert_that(is.chartor(object@AnalysisMetadata$ResultDatasourceID))
     assert_that(is.chartor(object@AnalysisMetadata$SchemeID))
     assert_that(is.chartor(object@AnalysisMetadata$SpeciesGroupID))
     assert_that(is.chartor(object@AnalysisMetadata$LocationGroupID))

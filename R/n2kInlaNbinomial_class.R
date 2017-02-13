@@ -89,7 +89,9 @@ setValidity(
     }
     file.fingerprint <- sha1(
       list(
-        object@Data, object@AnalysisMetadata$SchemeID,
+        object@Data,
+        object@AnalysisMetadata$ResultDatasourceID,
+        object@AnalysisMetadata$SchemeID,
         object@AnalysisMetadata$SpeciesGroupID,
         object@AnalysisMetadata$LocationGroupID,
         object@AnalysisMetadata$ModelType, object@AnalysisMetadata$Formula,

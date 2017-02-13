@@ -74,6 +74,7 @@ setMethod(
       }
       assert_that(dots$imputation.size >= 0)
     }
+    assert_that(is.string(dots$result.datasource.id))
     assert_that(is.string(dots$scheme.id))
     assert_that(is.string(dots$species.group.id))
     assert_that(is.string(dots$location.group.id))
@@ -116,7 +117,8 @@ setMethod(
     }
     file.fingerprint <- sha1(
       list(
-        data, dots$scheme.id, dots$species.group.id, dots$location.group.id,
+        data, dots$result.datasource.id, dots$scheme.id, dots$species.group.id,
+        dots$location.group.id,
         dots$model.type, dots$formula, dots$first.imported.year,
         dots$last.imported.year, dots$duration, dots$last.analysed.year,
         dots$analysis.date, dots$seed, dots$parent, dots$replicate.name,
@@ -171,6 +173,7 @@ setMethod(
       RPackage = version@RPackage,
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
       AnalysisMetadata = data.frame(
+        ResultDatasourceID = dots$result.datasource.id,
         SchemeID = dots$scheme.id,
         SpeciesGroupID = dots$species.group.id,
         LocationGroupID = dots$location.group.id,

@@ -3,6 +3,7 @@ data("cbpp", package = "lme4")
 cbpp$DatasourceID <- sha1(letters)
 cbpp$ObservationID <- seq_len(nrow(cbpp))
 object <- n2k_glmer_poisson(
+  result.datasource.id = sha1(letters),
   scheme.id = sha1(letters),
   species.group.id = sha1(letters),
   location.group.id = sha1(letters),

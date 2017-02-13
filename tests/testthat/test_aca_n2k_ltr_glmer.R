@@ -1,8 +1,9 @@
 context("prepare a n2kLrtGlmer object")
 this.seed <- 50L
-this.scheme.id <- sha1(letters)
-this.species.group.id <- sha1(letters)
-this.location.group.id <- sha1(letters)
+this.result.datasource.id <- sha1(sample(letters))
+this.scheme.id <- sha1(sample(letters))
+this.species.group.id <- sha1(sample(letters))
+this.location.group.id <- sha1(sample(letters))
 this.analysis.date <- Sys.time()
 this.model.type.parent <- "glmer poisson: period + herd"
 this.model.type <- "glmer lrt: cYear / fYear"
@@ -17,6 +18,7 @@ data("cbpp", package = "lme4")
 cbpp$DatasourceID <- sha1(letters)
 cbpp$ObservationID <- seq_len(nrow(cbpp))
 object.1 <- n2k_glmer_poisson(
+  result.datasource.id = this.result.datasource.id,
   scheme.id = this.scheme.id,
   species.group.id = this.species.group.id,
   location.group.id = this.location.group.id,
@@ -28,6 +30,7 @@ object.1 <- n2k_glmer_poisson(
   data = cbpp
 )
 object.0 <- n2k_glmer_poisson(
+  result.datasource.id = this.result.datasource.id,
   scheme.id = this.scheme.id,
   species.group.id = this.species.group.id,
   location.group.id = this.location.group.id,
@@ -91,6 +94,7 @@ expect_is(
     parent.0 = get_file_fingerprint(object.0),
     parent.status = this.parent.status,
     seed = as.numeric(this.seed),
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -111,6 +115,7 @@ expect_true(
         parent = get_file_fingerprint(object.1),
         parent.0 = get_file_fingerprint(object.0),
         parent.status = this.parent.status,
+        result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -133,6 +138,7 @@ expect_error(
     parent = get_file_fingerprint(object.1),
     parent.0 = get_file_fingerprint(object.0),
     parent.status = this.parent.status.factor,
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,

@@ -1,9 +1,10 @@
 context("store_model")
 test_that("store_model stores the model on a local file system", {
   temp_dir <- tempdir()
-  this.scheme.id <- sha1(letters)
-  this.species.group.id <- sha1(letters)
-  this.location.group.id <- sha1(letters)
+  this.result.datasource.id <- sha1(sample(letters))
+  this.scheme.id <- sha1(sample(letters))
+  this.species.group.id <- sha1(sample(letters))
+  this.location.group.id <- sha1(sample(letters))
   this.analysis.date <- Sys.time()
   this.model.type <- "inla nbinomial: A * (B + C) + C:D"
   this.formula <-
@@ -16,6 +17,7 @@ test_that("store_model stores the model on a local file system", {
   this.duration <- 1L
   dataset <- test_data()
   object <- n2k_inla_nbinomial(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -46,9 +48,10 @@ test_that("store_model stores the model on a local file system", {
 
 test_that("store_model stores the model on an S3 bucket", {
   bucket <- get_bucket("n2kmonitoring")
-  this.scheme.id <- sha1(letters)
-  this.species.group.id <- sha1(letters)
-  this.location.group.id <- sha1(letters)
+  this.result.datasource.id <- sha1(sample(letters))
+  this.scheme.id <- sha1(sample(letters))
+  this.species.group.id <- sha1(sample(letters))
+  this.location.group.id <- sha1(sample(letters))
   this.analysis.date <- Sys.time()
   this.model.type <- "inla nbinomial: A * (B + C) + C:D"
   this.formula <-
@@ -61,6 +64,7 @@ test_that("store_model stores the model on an S3 bucket", {
   this.duration <- 1L
   dataset <- test_data()
   object <- n2k_inla_nbinomial(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,

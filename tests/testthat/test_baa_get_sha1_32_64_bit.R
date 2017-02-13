@@ -6,9 +6,10 @@ describe("file fingerprint for n2k_glmer_poisson", {
   cbpp$DatasourceID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
-  this.scheme.id <- sha1(letters)
-  this.species.group.id <- sha1(letters)
-  this.location.group.id <- sha1(letters)
+  this.result.datasource.id <- sha1(letters[1:5])
+  this.scheme.id <- sha1(letters[6:10])
+  this.species.group.id <- sha1(letters[11:15])
+  this.location.group.id <- sha1(letters[16:20])
   this.seed <- 4L
   this.model.type <- "glmer poisson: period + herd"
   this.formula <- "incidence ~ offset(log(size)) + period + (1|herd)"
@@ -18,6 +19,7 @@ describe("file fingerprint for n2k_glmer_poisson", {
   this.parent <- "abcdef"
   this.duration <- this.last.imported.year - this.first.imported.year + 1
   object <- n2k_glmer_poisson(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -40,7 +42,8 @@ describe("file fingerprint for n2k_glmer_poisson", {
 
 
   test.element <- list(
-    cbpp, this.scheme.id, this.species.group.id, this.location.group.id,
+    cbpp, this.result.datasource.id,
+    this.scheme.id, this.species.group.id, this.location.group.id,
     this.model.type, this.formula, this.first.imported.year,
     this.last.imported.year, this.duration, this.last.analysed.year,
     this.analysis.date, this.seed, this.parent, gm1,
@@ -56,9 +59,10 @@ describe("file fingerprint for n2k_glmer_poisson", {
   # 32-bit windows 7
   correct <- c(
     "15a3dfe9aab0afff4b2a44dc3008fbf472f3ab43",
-    "2bd213d075fa7bdf9d71186fd0fd2a84eb3fe3f6",
-    "2bd213d075fa7bdf9d71186fd0fd2a84eb3fe3f6",
-    "2bd213d075fa7bdf9d71186fd0fd2a84eb3fe3f6",
+    "70095252e47ccdbabc7bcd32ea13c5057a9776dc",
+    "49c22e6e1d9b2f48a4478975f0b14f9911c8499a",
+    "b17832f39416892d8b44d09e4b14994fa603b5dd",
+    "313bbe15527b560c326d6a523ad82c7e6c0c7375",
     "e096044ac3b55cc74e03c6085619e4e3850d91af",
     "5ff0998ae6ef94d64f63dc7c1c89954f2e6f3f81",
     "24f565badff755cba798cb8f5a54754b62b5f2c4",

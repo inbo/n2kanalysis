@@ -1,7 +1,8 @@
 context("prepare a n2kGlmerPoisson object")
-this.scheme.id <- sha1(letters)
-this.species.group.id <- sha1(letters)
-this.location.group.id <- sha1(letters)
+this.result.datasource.id <- sha1(sample(letters))
+this.scheme.id <- sha1(sample(letters))
+this.species.group.id <- sha1(sample(letters))
+this.location.group.id <- sha1(sample(letters))
 this.seed <- 4L
 this.analysis.date <- Sys.time()
 this.model.type <- "glmer poisson: period + herd"
@@ -15,6 +16,7 @@ data("cbpp", package = "lme4")
 cbpp$DatasourceID <- sha1(letters)
 cbpp$ObservationID <- seq_len(nrow(cbpp))
 object <- n2k_glmer_poisson(
+  result.datasource.id = this.result.datasource.id,
   scheme.id = this.scheme.id,
   species.group.id = this.species.group.id,
   location.group.id = this.location.group.id,
@@ -57,6 +59,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -72,6 +75,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -89,6 +93,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -105,6 +110,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -122,6 +128,7 @@ describe("n2k_glmer_poisson", {
       nrow(
         n2k_glmer_poisson(
           data = cbpp,
+          result.datasource.id = this.result.datasource.id,
           scheme.id = this.scheme.id,
           species.group.id = this.species.group.id,
           location.group.id = this.location.group.id,
@@ -139,6 +146,7 @@ describe("n2k_glmer_poisson", {
     expect_identical(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -156,6 +164,7 @@ describe("n2k_glmer_poisson", {
     expect_identical(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -172,6 +181,7 @@ describe("n2k_glmer_poisson", {
     expect_error(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -191,6 +201,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -209,6 +220,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -225,6 +237,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
@@ -248,6 +261,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -265,6 +279,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -282,6 +297,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -299,6 +315,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -315,6 +332,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -329,6 +347,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -347,6 +366,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -364,6 +384,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -380,6 +401,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -394,6 +416,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -412,6 +435,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -428,6 +452,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -442,6 +467,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -459,6 +485,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -474,6 +501,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -490,6 +518,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -505,6 +534,7 @@ describe("n2k_glmer_poisson", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -524,6 +554,7 @@ ranges", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -541,6 +572,7 @@ ranges", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -561,6 +593,7 @@ ranges", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -577,6 +610,7 @@ ranges", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -594,6 +628,7 @@ ranges", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -610,6 +645,7 @@ ranges", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -630,6 +666,7 @@ ranges", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -645,6 +682,7 @@ ranges", {
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -667,6 +705,7 @@ outside imported range."
     expect_that(
       n2k_glmer_poisson(
         data = cbpp,
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -683,6 +722,7 @@ outside imported range."
     expect_that(
       n2k_glmer_poisson(
         data = cbpp[, c("herd", "period", "size")],
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -699,6 +739,7 @@ outside imported range."
         data = cbpp[,
           c("herd", "period", "incidence", "DatasourceID", "ObservationID")
         ],
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -715,6 +756,7 @@ outside imported range."
         data = cbpp[,
           c("herd", "size", "incidence", "DatasourceID", "ObservationID")
         ],
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,
@@ -731,6 +773,7 @@ outside imported range."
         data = cbpp[,
           c("size", "period", "incidence", "DatasourceID", "ObservationID")
         ],
+        result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
         location.group.id = this.location.group.id,
         model.type = this.model.type,

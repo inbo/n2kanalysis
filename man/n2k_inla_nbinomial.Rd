@@ -4,6 +4,7 @@
 \name{n2k_inla_nbinomial}
 \alias{n2k_inla_nbinomial}
 \alias{n2k_inla_nbinomial,data.frame,ANY-method}
+\alias{n2k_inla_nbinomial,n2kInlaNbinomial-methods}
 \alias{n2k_inla_nbinomial,n2kInlaNbinomial,inla-method}
 \alias{n2k_inla_nbinomial,n2kInlaNbinomial-methods}
 \title{Create a n2kInlaNbinomial object}
@@ -46,4 +47,3 @@ In case \code{data} a n2kInlaNbinomial object is, then only the model and status
    \item{\code{imputation.size}}{The required number of imputations defaults to 0.}
   }
 }
-

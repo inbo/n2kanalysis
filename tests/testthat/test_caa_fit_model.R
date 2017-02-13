@@ -8,6 +8,7 @@ describe("fit_model() on GlmerPoisson based objects", {
   this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
   this.seed <- 1L
   object <- n2k_glmer_poisson(
+    result.datasource.id = sha1(letters),
     scheme.id = sha1(letters),
     species.group.id = sha1(letters),
     location.group.id = sha1(letters),
@@ -20,6 +21,7 @@ describe("fit_model() on GlmerPoisson based objects", {
     data = cbpp
   )
   weighted.object <- n2k_glmer_poisson(
+    result.datasource.id = sha1(letters),
     scheme.id = sha1(letters),
     species.group.id = sha1(letters),
     location.group.id = sha1(letters),
@@ -40,8 +42,8 @@ describe("fit_model() on GlmerPoisson based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "87a9ee64c60440d7b31d1734c1e46250ffbad80b"
-  weighted.object.file <- "a995b4add88cc08e755c10a842abc29e83bfe65f"
+  object.file <- "b31e72f3676880095c08bb39bd2c4d0e84f03f9c"
+  weighted.object.file <- "cf744b57db553a602ddd0830968c3ee229a1498e"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
@@ -101,6 +103,7 @@ describe("fit_model() on INLA nbinomial based objects", {
   temp.dir <- tempdir()
   dataset <- test_data(missing = 0.2)
   this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
+  this.result.datasource.id <- sha1(letters)
   this.scheme.id <- sha1(letters)
   this.species.group.id <- sha1(letters)
   this.location.group.id <- sha1(letters)
@@ -121,6 +124,7 @@ describe("fit_model() on INLA nbinomial based objects", {
   lin.comb.list2 <- list(E = diag(length(unique(dataset$E))))
   rownames(lin.comb.list2[[1]]) <- seq_along(unique(dataset$E))
   object <- n2k_inla_nbinomial(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -132,6 +136,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     data = dataset
   )
   object.lc <- n2k_inla_nbinomial(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -144,6 +149,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     lin.comb = lin.comb
   )
   object.lc.list <- n2k_inla_nbinomial(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -156,6 +162,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     lin.comb = lin.comb.list
   )
   object.lc.list2 <- n2k_inla_nbinomial(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -168,6 +175,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     lin.comb = lin.comb.list2
   )
   object.badlc <- n2k_inla_nbinomial(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -180,6 +188,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     lin.comb = bad.lin.comb
   )
   object.imp <- n2k_inla_nbinomial(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -206,11 +215,11 @@ describe("fit_model() on INLA nbinomial based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "f1804a280983c87ae1e6e0ae1f4a25fd3a368d21"
-  object.lc.file <- "f62d83dbbffcb6c5ca389c4aa382b73d6ea9278d"
-  object.lc.list.file <- "61724622f28c1fc4a516a5e93d4efd47231d9d8e"
-  object.lc.list2.file <- "64e43b3dd33b1c6a5f63fdbc0d3bf660a664c48f"
-  object.badlc.file <- "cef68eb4b2dfca4bdc61ae7f491da41560b30367"
+  object.file <- "d98de0f8a48243fe392ed3d0f760f91284f3582a"
+  object.lc.file <- "352cebc16fd37fb56e75377475410dcf8944bf2e"
+  object.lc.list.file <- "ba810e504acc3c2431b60b67c52a9366d85d6f1e"
+  object.lc.list2.file <- "e84c5f829a438664602ef91b9f16bc9799505db7"
+  object.badlc.file <- "29d741b368e22646577fb1deb029867a5a9ac8cc"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
@@ -285,6 +294,7 @@ describe("fit_model() on INLA nbinomial based objects", {
 })
 
 test_that("fit_model() works on n2kInlaComparison", {
+  this.result.datasource.id <- sha1(letters)
   this.scheme.id <- sha1(letters)
   this.species.group.id <- sha1(letters)
   this.location.group.id <- sha1(letters)
@@ -298,6 +308,7 @@ test_that("fit_model() works on n2kInlaComparison", {
   temp.dir <- tempdir()
 
   analysis <- n2k_inla_nbinomial(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -311,6 +322,7 @@ test_that("fit_model() works on n2kInlaComparison", {
   p1 <- get_file_fingerprint(analysis)
   filename1 <- store_model(analysis, base = temp.dir, project = "fit_model")
   analysis <- n2k_inla_nbinomial(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
@@ -325,6 +337,7 @@ test_that("fit_model() works on n2kInlaComparison", {
   filename2 <- store_model(analysis, base = temp.dir, project = "fit_model")
 
   analysis <- n2k_inla_comparison(
+    result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
