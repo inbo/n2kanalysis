@@ -20,4 +20,3 @@ the file fingerprint of the object
 \description{
 Get the file fingerprint of a n2kModel object
 }
-

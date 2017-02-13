@@ -3,12 +3,12 @@
 \docType{methods}
 \name{get_model_parameter}
 \alias{get_model_parameter}
-\alias{get_model_parameter,n2kAggregate-method}
-\alias{get_model_parameter,n2kComposite-method}
 \alias{get_model_parameter,n2kGlmerPoisson-method}
-\alias{get_model_parameter,n2kInlaComparison-method}
-\alias{get_model_parameter,n2kInlaNbinomial-method}
 \alias{get_model_parameter,n2kLrtGlmer-method}
+\alias{get_model_parameter,n2kComposite-method}
+\alias{get_model_parameter,n2kInlaNbinomial-method}
+\alias{get_model_parameter,n2kInlaComparison-method}
+\alias{get_model_parameter,n2kAggregate-method}
 \alias{get_model_parameter,n2kModelImputed-method}
 \title{Add the model parameters from a model}
 \usage{
@@ -39,4 +39,3 @@ get_model_parameter(analysis, ...)
 \description{
 Add the model parameters from a model
 }
-

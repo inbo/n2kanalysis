@@ -20,4 +20,3 @@ the location group id of the object
 \description{
 Get the location group id of a n2kModel object
 }
-

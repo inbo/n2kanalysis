@@ -23,4 +23,3 @@ store_model(x, base, project)
 \description{
 Store a n2kModel object
 }
-

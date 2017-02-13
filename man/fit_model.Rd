@@ -4,14 +4,14 @@
 \name{fit_model}
 \alias{fit_model}
 \alias{fit_model,character-method}
-\alias{fit_model,n2kAggregate-method}
-\alias{fit_model,n2kComposite-method}
+\alias{fit_model,s3_object-method}
 \alias{fit_model,n2kGlmerPoisson-method}
-\alias{fit_model,n2kInlaComparison-method}
 \alias{fit_model,n2kInlaNbinomial-method}
 \alias{fit_model,n2kLrtGlmer-method}
+\alias{fit_model,n2kComposite-method}
+\alias{fit_model,n2kInlaComparison-method}
 \alias{fit_model,n2kModelImputed-method}
-\alias{fit_model,s3_object-method}
+\alias{fit_model,n2kAggregate-method}
 \title{Fit a n2kModel object}
 \usage{
 fit_model(x, ...)
@@ -53,4 +53,3 @@ Fit a n2kModel object
  \item{\code{verbose}}{A logical indicating if the function should display the name of the file and the status. Defaults to \code{TRUE}}
 }
 }
-

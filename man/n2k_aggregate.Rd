@@ -37,4 +37,3 @@ A new n2kAggregate model.
    \item{\code{join}}{an option list for the \code{join} argument of \code{\link[multimput]{aggregate_impute}}}
   }
 }
-

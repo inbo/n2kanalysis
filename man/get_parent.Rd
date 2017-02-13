@@ -3,10 +3,10 @@
 \docType{methods}
 \name{get_parent}
 \alias{get_parent}
-\alias{get_parent,n2kComposite-method}
-\alias{get_parent,n2kComposite-methods}
 \alias{get_parent,n2kLrtGlmer-method}
 \alias{get_parent,n2kLrtGlmer-methods}
+\alias{get_parent,n2kComposite-method}
+\alias{get_parent,n2kComposite-methods}
 \title{Get the fingerprint of the parent analysis of a n2kModel object}
 \usage{
 get_parent(x, ...)
@@ -28,4 +28,3 @@ the parent of the object
 \description{
 Get the fingerprint of the parent analysis of a n2kModel object
 }
-

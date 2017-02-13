@@ -41,4 +41,3 @@ A new n2kModelImputed model.
    \item{\code{mutate}}{an option list for the \code{mutate} argument of \code{\link[multimput]{model_impute}}}
   }
 }
-

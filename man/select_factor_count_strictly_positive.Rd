@@ -38,4 +38,3 @@ select_factor_count_strictly_positive(
   observation, variable = c("LocationID", "Year"), treshold = 2, dimension = 2
 )
 }
-

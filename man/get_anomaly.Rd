@@ -5,9 +5,9 @@
 \alias{get_anomaly}
 \alias{get_anomaly,n2kGlmerPoisson-method}
 \alias{get_anomaly,n2kGlmerPoisson-methods}
+\alias{get_anomaly,n2kModel-method}
 \alias{get_anomaly,n2kInlaNbinomial-method}
 \alias{get_anomaly,n2kInlaNbinomial-methods}
-\alias{get_anomaly,n2kModel-method}
 \title{Get the anomalies from a model}
 \usage{
 get_anomaly(analysis, ...)
@@ -42,4 +42,3 @@ get_anomaly(analysis, ...)
 \description{
 Get the anomalies from a model
 }
-

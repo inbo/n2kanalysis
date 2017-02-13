@@ -37,4 +37,3 @@ A new n2kComposite model is created when \code{parent} is a data.frame
    \item{\code{extractor}}{a function to extract the relevant parameters from the model}
   }
 }
-

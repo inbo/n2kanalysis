@@ -3,9 +3,9 @@
 \docType{methods}
 \name{get_result}
 \alias{get_result}
-\alias{get_result,character-method}
-\alias{get_result,n2kInlaNbinomial-method}
 \alias{get_result,n2kModel-method}
+\alias{get_result,n2kInlaNbinomial-method}
+\alias{get_result,character-method}
 \alias{get_result,s3_object-method}
 \title{Add the results from an analysis}
 \usage{
@@ -31,4 +31,3 @@ get_result(x, ...)
 \description{
 Add the results from an analysis
 }
-

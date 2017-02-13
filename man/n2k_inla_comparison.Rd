@@ -36,4 +36,3 @@ A new n2kInlaComparison model is created when \code{parent} is a character
    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
   }
 }
-

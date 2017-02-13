@@ -20,4 +20,3 @@ the status fingerprint of the object
 \description{
 Get the status fingerprint of a n2kModel object
 }
-

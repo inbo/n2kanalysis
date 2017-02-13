@@ -5,10 +5,10 @@
 \alias{combine}
 \alias{combine,n2kAnalysisVersion-method}
 \alias{combine,n2kAnalysisVersion-methods}
-\alias{combine,n2kAnamoly-methods}
-\alias{combine,n2kAnomaly-method}
 \alias{combine,n2kParameter-method}
 \alias{combine,n2kParameter-methods}
+\alias{combine,n2kAnomaly-method}
+\alias{combine,n2kAnamoly-methods}
 \alias{combine,n2kResult-method}
 \alias{combine,n2kResult-methods}
 \title{Combine multiple n2k objects}
@@ -29,4 +29,3 @@ combine(...)
 \description{
 Combine multiple n2k objects
 }
-

@@ -20,4 +20,3 @@ a data.frame with the packages of a sessionInfo()
 \description{
 Convert a sessionInfo() to a data.frame of packages
 }
-

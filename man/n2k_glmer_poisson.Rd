@@ -4,9 +4,9 @@
 \name{n2k_glmer_poisson}
 \alias{n2k_glmer_poisson}
 \alias{n2k_glmer_poisson,data.frame,ANY-method}
-\alias{n2k_glmer_poisson,my_lmer-methods}
-\alias{n2k_glmer_poisson,n2kGlmerPoisson,glmerMod-method}
 \alias{n2k_glmer_poisson,n2kGlmerPoisson-methods}
+\alias{n2k_glmer_poisson,n2kGlmerPoisson,glmerMod-method}
+\alias{n2k_glmer_poisson,my_lmer-methods}
 \title{Create a n2kGlmerPoisson object}
 \usage{
 n2k_glmer_poisson(data, ..., model.fit)
@@ -46,4 +46,3 @@ In case \code{data} a n2kGlmerPoisson object is, then only the model and status 
    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
   }
 }
-

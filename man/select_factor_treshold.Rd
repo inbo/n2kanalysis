@@ -23,4 +23,3 @@ observation <- data.frame(
 )
 select_factor_treshold(observation, "LocationID", treshold = 0.05)
 }
-
