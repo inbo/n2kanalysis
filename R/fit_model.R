@@ -48,7 +48,7 @@ setMethod(
     analysis.fitted <- fit_model(
       x = analysis,
       status = dots$status,
-      path = dirname(x)
+      path = base_dir
     )
     if (dots$verbose) {
       message(status(analysis.fitted))
@@ -777,13 +777,39 @@ setMethod(
             return(x)
           } else {
             stop(
-"Parent analysis has status different from converged, new of waiting. To do..."
+"Parent analysis has status different from converged, new or waiting. To do..."
             )
           }
         }
         parent <- s3readRDS(object = available[[1]])
       } else {
-        stop("path file system not handled yet")
+        parent <- list.files(
+          dots$path,
+          pattern = x@AnalysisRelation$ParentAnalysis,
+          recursive = TRUE,
+          full.names = TRUE
+        )
+        if (length(parent) == 0) {
+          stop("Parent analysis not found")
+        }
+        if (length(parent) > 1) {
+          stop("Multiple parents")
+        }
+        if (grepl("/(new|waiting)/[0-9a-f]{40}.rds$", parent)) {
+          status(x) <- "waiting"
+          return(x)
+        }
+        if (grepl("/error/[0-9a-f]{40}.rds$", parent)) {
+          status(x) <- "error"
+          return(x)
+        }
+        if (grepl("/converged/[0-9a-f]{40}.rds$", parent)) {
+          parent <- readRDS(parent)
+        } else {
+            stop(
+"Parent analysis has status different from converged, new, waiting or error. To do..."
+            )
+        }
       }
       x@RawImputed <- parent@RawImputed
       x@AnalysisRelation$ParentStatus <- parent@AnalysisMetadata$Status
