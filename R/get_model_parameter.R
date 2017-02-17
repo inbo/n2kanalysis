@@ -36,7 +36,7 @@ setMethod(
       Description = c(
         "Fixed effect", "Random effect BLUP", "Random effect variance", "Fitted"
       ),
-      Parent = NA,
+      Parent = NA_character_,
       stringsAsFactors = FALSE
     )
     parameter$Fingerprint <- apply(parameter, 1, sha1)
@@ -124,8 +124,8 @@ setMethod(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
       Parameter = extra$Fingerprint,
       Estimate = unlist(random.variance),
-      LowerConfidenceLimit = NA,
-      UpperConfidenceLimit = NA,
+      LowerConfidenceLimit = NA_real_,
+      UpperConfidenceLimit = NA_real_,
       stringsAsFactors = FALSE
     )
     rownames(tmp) <- NULL
@@ -186,8 +186,8 @@ setMethod(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
       Parameter = extra.fitted$Fingerprint,
       Estimate = fitted(get_model(analysis)),
-      LowerConfidenceLimit = NA,
-      UpperConfidenceLimit = NA,
+      LowerConfidenceLimit = NA_real_,
+      UpperConfidenceLimit = NA_real_,
       stringsAsFactors = FALSE
     )
     rownames(tmp) <- NULL
@@ -214,7 +214,7 @@ setMethod(
 
     parameter <- data.frame(
       Description = "LRT test",
-      Parent = NA,
+      Parent = NA_character_,
       stringsAsFactors = FALSE
     )
     parameter$Fingerprint <- apply(parameter, 1, sha1)
@@ -223,8 +223,8 @@ setMethod(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
       Parameter = parameter$Fingerprint,
       Estimate = analysis@Anova[2, "Pr(>Chisq)"],
-      LowerConfidenceLimit = NA,
-      UpperConfidenceLimit = NA,
+      LowerConfidenceLimit = NA_real_,
+      UpperConfidenceLimit = NA_real_,
       stringsAsFactors = FALSE
     )
     row.names(parameter.estimate) <- NULL
@@ -250,7 +250,7 @@ setMethod(
 
     parameter <- data.frame(
       Description = "Composite index",
-      Parent = NA,
+      Parent = NA_character_,
       stringsAsFactors = FALSE
     )
     parameter$Fingerprint <- apply(parameter, 1, sha1)
@@ -306,7 +306,7 @@ setMethod(
         "Fixed effect", "Random effect BLUP", "Random effect variance",
         "Fitted", "Overdispersion", "WAIC"
       ),
-      Parent = NA
+      Parent = NA_character_
     ) %>%
       rowwise() %>%
       mutate_(
@@ -475,9 +475,9 @@ setMethod(
               )),
             error = function(e){
               c(
-                Estimate = NA,
-                LowerConfidenceLimit = NA,
-                UpperConfidenceLimit = NA
+                Estimate = NA_real_,
+                LowerConfidenceLimit = NA_real_,
+                UpperConfidenceLimit = NA_real_
               )
             }
           )
@@ -544,8 +544,8 @@ setMethod(
           Analysis = analysis@AnalysisMetadata$FileFingerprint,
           Parameter = parent$Fingerprint,
           Estimate = get_model(analysis)$waic$waic,
-          LowerConfidenceLimit = NA,
-          UpperConfidenceLimit = NA
+          LowerConfidenceLimit = NA_real_,
+          UpperConfidenceLimit = NA_real_
         )
       )
 
@@ -683,7 +683,7 @@ setMethod(
       LowerConfidenceLimit = fitted[, "0.025quant"],
       UpperConfidenceLimit = ifelse(
         fitted[, "mean"] > fitted[, "0.975quant"],
-        NA,
+        NA_real_,
         fitted[, "0.975quant"]
       )
     ) %>%
