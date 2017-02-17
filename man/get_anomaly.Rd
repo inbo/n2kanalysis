@@ -12,13 +12,13 @@
 \usage{
 get_anomaly(analysis, ...)
 
-\S4method{get_anomaly}{n2kGlmerPoisson}(analysis, datasource.id, n = 20,
+\S4method{get_anomaly}{n2kGlmerPoisson}(analysis, n = 20,
   log.expected.ratio = log(5), log.expected.absent = log(5),
   random.treshold = log(5), verbose = TRUE, ...)
 
 \S4method{get_anomaly}{n2kModel}(analysis, verbose = TRUE, ...)
 
-\S4method{get_anomaly}{n2kInlaNbinomial}(analysis, datasource.id, n = 20,
+\S4method{get_anomaly}{n2kInlaNbinomial}(analysis, n = 20,
   log.expected.ratio = log(5), log.expected.absent = log(5),
   random.treshold = log(1.05), verbose = TRUE, ...)
 }
@@ -26,8 +26,6 @@ get_anomaly(analysis, ...)
 \item{analysis}{The model to add}
 
 \item{...}{Extra options. See details}
-
-\item{datasource.id}{ID of the datasource for the random effects}
 
 \item{n}{the maximum number of anomalies per type of anomalies}
 

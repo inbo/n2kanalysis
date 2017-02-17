@@ -23,7 +23,6 @@ setGeneric(
 #' @importFrom utils tail head
 #' @include n2kGlmerPoisson_class.R
 #' @include n2kAnomaly_class.R
-#' @param datasource.id ID of the datasource for the random effects
 #' @param n the maximum number of anomalies per type of anomalies
 #' @param log.expected.ratio observations that have a abs(log(observed/fitted)) above this ratio are potential anomalies. Defaults to log(5), which implies that observed values that are 5 times higher of lower than the fitted values are potential anomalies.
 #' @param log.expected.absent Zero observations with log(fitted) larger than this treshold are potential anomalies.
@@ -34,7 +33,6 @@ setMethod(
   signature = signature(analysis = "n2kGlmerPoisson"),
   definition = function(
     analysis,
-    datasource.id,
     n = 20,
     log.expected.ratio = log(5),
     log.expected.absent = log(5),
@@ -42,7 +40,6 @@ setMethod(
     verbose = TRUE,
     ...
   ){
-    assert_that(is.string(datasource.id))
     assert_that(is.count(n))
     assert_that(is.number(log.expected.ratio))
     assert_that(is.number(log.expected.absent))
@@ -228,7 +225,7 @@ setMethod(
           AnomalyType = extra$Fingerprint,
           Analysis = get_file_fingerprint(analysis),
           Parameter = selection$Fingerprint,
-          DatasourceID = datasource.id,
+          DatasourceID = x@AnalysisMetadata$ResultDatasourceID,
           Datafield = data.field[i],
           stringsAsFactors = FALSE
         )
@@ -282,7 +279,6 @@ setMethod(
   signature = signature(analysis = "n2kInlaNbinomial"),
   definition = function(
     analysis,
-    datasource.id,
     n = 20,
     log.expected.ratio = log(5),
     log.expected.absent = log(5),
@@ -290,7 +286,6 @@ setMethod(
     verbose = TRUE,
     ...
   ){
-    assert_that(is.string(datasource.id))
     assert_that(is.count(n))
     assert_that(is.number(log.expected.ratio))
     assert_that(is.number(log.expected.absent))
@@ -454,7 +449,7 @@ setMethod(
       anomaly <- re.anomaly %>%
         inner_join(anomaly.type, by = c("AnomalyType" = "Description")) %>%
         select_(~-AnomalyType, AnomalyType = ~ Fingerprint) %>%
-        mutate_(DatasourceID = ~datasource.id) %>%
+        mutate_(DatasourceID = ~x@AnalysisMetadata$ResultDatasourceID) %>%
         bind_rows(anomaly)
     }
 
