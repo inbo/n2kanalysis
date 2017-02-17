@@ -513,8 +513,9 @@ setMethod(
       message(", overdispersion", appendLF = FALSE)
     }
     utils::flush.console()
-    overdispersion <- get_model(analysis)$summary.hyperpar[
-      "size for the nbinomial observations (overdispersion)",
+    overdispersion <- get_model(analysis)$summary.hyperpar
+    overdispersion <- overdispersion[
+      grep("size for the nbinomial observations", rownames(overdispersion)),
     ]
     parent <- parameter %>%
       filter_(~is.na(Parent), ~Description == "Overdispersion")
