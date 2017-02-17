@@ -690,7 +690,33 @@ setMethod(
         }
         parent <- s3readRDS(object = available[[1]])
       } else {
-        stop("path file system not handled yet")
+        parent <- list.files(
+          dots$path,
+          pattern = x@AnalysisRelation$ParentAnalysis,
+          recursive = TRUE,
+          full.names = TRUE
+        )
+        if (length(parent) == 0) {
+          stop("Parent analysis not found")
+        }
+        if (length(parent) > 1) {
+          stop("Multiple parents")
+        }
+        if (grepl("/(new|waiting)/[0-9a-f]{40}.rds$", parent)) {
+          status(x) <- "waiting"
+          return(x)
+        }
+        if (grepl("/error/[0-9a-f]{40}.rds$", parent)) {
+          status(x) <- "error"
+          return(x)
+        }
+        if (grepl("/converged/[0-9a-f]{40}.rds$", parent)) {
+          parent <- readRDS(parent)
+        } else {
+            stop(
+"Parent analysis has status different from converged, new, waiting or error. To do..."
+            )
+        }
       }
       x@AggregatedImputed <- parent@AggregatedImputed
       x@AnalysisRelation$ParentStatus <- parent@AnalysisMetadata$Status
