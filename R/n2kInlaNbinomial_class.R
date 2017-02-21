@@ -57,6 +57,12 @@ setValidity(
       ),
       error = TRUE
     )
+    if (any(is.na(object@Data$DatasourceID))) {
+      stop("DatasourceID cannot be NA")
+    }
+    if (any(is.na(object@Data$DatasourceID))) {
+      stop("ObservationID cannot be NA")
+    }
     if (!grepl("^inla nbinomial", object@AnalysisMetadata$ModelType)) {
       stop("ModelType should be 'inla nbinomial'")
     }
