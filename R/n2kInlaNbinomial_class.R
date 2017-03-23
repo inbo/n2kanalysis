@@ -53,14 +53,11 @@ setValidity(
       df = object@Data[1, ],
       variable = c(
         all.vars(object@AnalysisFormula[[1]]),
-        "DatasourceID", "ObservationID"
+        "ObservationID"
       ),
       error = TRUE
     )
-    if (any(is.na(object@Data$DatasourceID))) {
-      stop("DatasourceID cannot be NA")
-    }
-    if (any(is.na(object@Data$DatasourceID))) {
+    if (any(is.na(object@Data$ObservationID))) {
       stop("ObservationID cannot be NA")
     }
     if (!grepl("^inla nbinomial", object@AnalysisMetadata$ModelType)) {
