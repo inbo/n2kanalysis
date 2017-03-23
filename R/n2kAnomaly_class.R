@@ -23,8 +23,7 @@ setClass(
       AnomalyType = character(0),
       Analysis = character(0),
       Parameter = character(0),
-      DatasourceID = character(0),
-      Datafield = character(0),
+      Observation = character(0),
       stringsAsFactors = FALSE
     )
   )
@@ -46,8 +45,7 @@ setValidity(
     assert_that(has_name(object@Anomaly, "AnomalyType"))
     assert_that(has_name(object@Anomaly, "Analysis"))
     assert_that(has_name(object@Anomaly, "Parameter"))
-    assert_that(has_name(object@Anomaly, "DatasourceID"))
-    assert_that(has_name(object@Anomaly, "Datafield"))
+    assert_that(has_name(object@Anomaly, "Observation"))
 
     assert_that(is.chartor(object@Anomaly$AnomalyType))
     assert_that(is.chartor(object@Anomaly$Analysis))
