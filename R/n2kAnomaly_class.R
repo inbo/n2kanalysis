@@ -50,8 +50,7 @@ setValidity(
     assert_that(is.chartor(object@Anomaly$AnomalyType))
     assert_that(is.chartor(object@Anomaly$Analysis))
     assert_that(is.chartor(object@Anomaly$Parameter))
-    assert_that(is.chartor(object@Anomaly$DatasourceID))
-    assert_that(is.chartor(object@Anomaly$Datafield))
+    assert_that(is.chartor(object@Anomaly$Observation))
 
     antijoin.anomalytype <- object@Anomaly %>%
       anti_join(object@AnomalyType, by = c("AnomalyType" = "Fingerprint")) %>%
