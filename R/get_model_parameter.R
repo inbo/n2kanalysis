@@ -468,23 +468,20 @@ setMethod(
               inla.tmarginal(fun = function(x){
                 1 / x
               }) %>%
-              inla.qmarginal(p = c(
-                Estimate = .5,
-                LowerConfidenceLimit = .025,
-                UpperConfidenceLimit = .975
-              )),
+              inla.qmarginal(p = c(0.5, 0.025, 0.975)),
             error = function(e){
-              c(
-                Estimate = NA_real_,
-                LowerConfidenceLimit = NA_real_,
-                UpperConfidenceLimit = NA_real_
-              )
+              rep(NA_real_, 3)
             }
           )
         }
       ) %>%
         t() %>%
         as.data.frame() %>%
+        select_(
+          Estimate = ~1,
+          LowerConfidenceLimit = ~2,
+          UpperConfidenceLimit = ~3
+        ) %>%
         rownames_to_column("Parameter") %>%
         mutate_(
           Parameter = ~gsub("^Precision for ", "", Parameter),
