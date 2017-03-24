@@ -304,7 +304,7 @@ setMethod(
     parameter <- data_frame(
       Description = c(
         "Fixed effect", "Random effect BLUP", "Random effect variance",
-        "Fitted", "Overdispersion", "WAIC"
+        "Fitted", "Overdispersion", "WAIC", "Imputed value"
       ),
       Parent = NA_character_
     ) %>%
@@ -702,6 +702,51 @@ setMethod(
       inner_join(parameter, by = c("Parent", "Parameter" = "Description")) %>%
       select_(~-Parent, ~-Parameter, Parameter = ~Fingerprint) %>%
       bind_rows(parameter.estimate)
+
+    # imputed values
+    if (!is.null(analysis@RawImputed)) {
+      ri <- analysis@RawImputed
+      extra <- ri@Data %>%
+        mutate_(Response = ri@Response) %>%
+        filter_(~is.na(Response)) %>%
+        select_(~ObservationID) %>%
+        mutate_(
+          Analysis = ~get_file_fingerprint(analysis),
+          Estimate =
+            ~apply(ri@Imputation, 1, quantile, probs = 0.500),
+          LowerConfidenceLimit =
+            ~apply(ri@Imputation, 1, quantile, probs = 0.025),
+          UpperConfidenceLimit =
+            ~apply(ri@Imputation, 1, quantile, probs = 0.975)
+        )
+      parent <- parameter %>%
+        filter(Description == "Imputed value", is.na(Parent))
+      impute.parameter <- extra %>%
+        distinct_(~ObservationID) %>%
+        transmute_(
+          Parent = ~parent$Fingerprint,
+          Description = ~ObservationID
+        ) %>%
+        rowwise() %>%
+        mutate_(
+          Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
+        )
+      parameter <- parameter %>%
+        bind_rows(impute.parameter)
+      parameter.estimate <- extra %>%
+        inner_join(
+          impute.parameter,
+          by = c("ObservationID" = "Description")
+        ) %>%
+        select_(
+          ~Analysis,
+          ~Estimate,
+          ~LowerConfidenceLimit,
+          ~UpperConfidenceLimit,
+          Parameter = ~Fingerprint
+        ) %>%
+        bind_rows(parameter.estimate)
+    }
 
     new(
       "n2kParameter",
