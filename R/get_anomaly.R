@@ -225,7 +225,7 @@ setMethod(
           AnomalyType = extra$Fingerprint,
           Analysis = get_file_fingerprint(analysis),
           Parameter = selection$Fingerprint,
-          DatasourceID = x@AnalysisMetadata$ResultDatasourceID,
+          DatasourceID = analysis@AnalysisMetadata$ResultDatasourceID,
           Datafield = data.field[i],
           stringsAsFactors = FALSE
         )
