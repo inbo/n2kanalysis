@@ -720,7 +720,7 @@ setMethod(
             ~apply(ri@Imputation, 1, quantile, probs = 0.975)
         )
       parent <- parameter %>%
-        filter(Description == "Imputed value", is.na(Parent))
+        filter_(~Description == "Imputed value", ~is.na(Parent))
       impute.parameter <- extra %>%
         distinct_(~ObservationID) %>%
         transmute_(
