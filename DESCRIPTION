@@ -29,7 +29,7 @@ Imports:
     RODBC,
     tibble,
     tidyr (>= 0.4.0)
-Collate:
+Collate: 
     'n2kParameter_class.R'
     'n2kAnomaly_class.R'
     'n2kAnalysisVersion_class.R'
@@ -59,6 +59,13 @@ Collate:
     'get_location_group_id.R'
     'get_model.R'
     'get_model_parameter.R'
+    'get_model_parameter_n2kAggregated.R'
+    'get_model_parameter_n2kComposite.R'
+    'get_model_parameter_n2kGlmerPoisson.R'
+    'get_model_parameter_n2kInlaComparison.R'
+    'get_model_parameter_n2kInlaNbinomial.R'
+    'get_model_parameter_n2kLrtGlmer.R'
+    'get_model_parameter_n2kModelImputed.R'
     'get_model_type.R'
     'get_parent.R'
     'get_result.R'
