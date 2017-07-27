@@ -92,6 +92,7 @@ anomaly <- expand.grid(
   Analysis = metadata$FileFingerprint,
   Parameter = sample(parameter$Fingerprint, min(5, nrow(parameter))),
   DatasourceID = datasourceid,
+  Observation = "1",
   Datafield = "UnitTest",
   stringsAsFactors = FALSE
 ) %>%
@@ -133,7 +134,7 @@ expect_error(
     Anomaly = cbind(anomaly, anomaly)
   ),
   paste(
-    "Each variable must have a unique name"
+    "must have unique name"
   )
 )
 expect_error(
