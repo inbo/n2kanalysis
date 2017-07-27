@@ -50,7 +50,7 @@ test_data <- function(datasource.id = sha1(letters), missing = 0){
         rnbinom(n(), mu = exp(eta), size = theta)
       ),
       DatasourceID = ~datasource.id,
-      ObservationID = ~row_number(Count)
+      ObservationID = ~row_number(DatasourceID)
     )
   return(dataset)
 }
