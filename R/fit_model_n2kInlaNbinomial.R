@@ -1,0 +1,84 @@
+#' @rdname fit_model
+#' @importFrom methods setMethod new
+#' @importFrom assertthat assert_that
+#' @importMethodsFrom multimput impute
+#' @include n2kInlaNbinomial_class.R
+setMethod(
+  f = "fit_model",
+  signature = signature(x = "n2kInlaNbinomial"),
+  definition = function(x, ...){
+    validObject(x)
+
+    dots <- list(...)
+    if (is.null(dots$status)) {
+      dots$status <- c("new", "waiting")
+    }
+    if (!(status(x) %in% dots$status)) {
+      return(x)
+    }
+
+    if (!require("INLA")) {
+      stop("The INLA package is required but not installed.") #nocov
+    }
+
+    set.seed(get_seed(x))
+
+    data <- get_data(x)
+    model.formula <- x@AnalysisFormula[[1]]
+
+    response <- data[, as.character(x@AnalysisFormula[[1]][[2]])]
+    link <- ifelse(is.na(response), 1, NA)
+
+    if (is.null(x@LinearCombination)) {
+      lc <- NULL
+    } else {
+      lincomb <- x@LinearCombination
+      if (class(lincomb) == "matrix") {
+        lc <- lincomb %>%
+          as.data.frame() %>%
+          as.list() %>%
+          INLA::inla.make.lincombs()
+        names(lc) <- rownames(lincomb)
+      } else {
+        lc <- INLA::inla.make.lincombs(lincomb)
+        if (is.matrix(lincomb[[1]])) {
+          names(lc) <- rownames(lincomb[[1]])
+        } else {
+          names(lc) <- names(lincomb[[1]])
+        }
+      }
+    }
+    model <- try(
+      INLA::inla(
+        formula = model.formula,
+        family = "nbinomial",
+        data = data,
+        lincomb = lc,
+        control.compute = list(dic = TRUE, waic = TRUE, cpo = TRUE),
+        control.predictor = list(compute = TRUE, link = link),
+        control.fixed = list(prec.intercept = 1)
+      )
+    )
+    if ("try-error" %in% class(model)) {
+      status(x) <- "error"
+      return(x)
+    }
+    if (x@ImputationSize == 0) {
+      return(
+        n2k_inla_nbinomial(data = x, model.fit = model, status = "converged")
+      )
+    }
+    return(
+      n2k_inla_nbinomial(
+        data = x,
+        model.fit = model,
+        raw.imputed = impute(
+          model = model,
+          n.imp = x@ImputationSize,
+          minimum = x@Minimum
+        ),
+        status = "converged"
+      )
+    )
+  }
+)
