@@ -174,7 +174,7 @@ test_that(
   analysis <- fit_model(analysis)
   expect_message(
     param <- get_model_parameter(analysis, verbose = TRUE),
-    "reading model parameters: fixed effects"
+    "reading model parameters"
   )
   expect_is(param, "n2kParameter")
   expect_identical(
