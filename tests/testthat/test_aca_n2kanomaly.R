@@ -134,7 +134,7 @@ expect_error(
     Anomaly = cbind(anomaly, anomaly)
   ),
   paste(
-    "must have unique name"
+    "must have.*unique name"
   )
 )
 expect_error(
