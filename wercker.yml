@@ -1,7 +1,9 @@
 build:
   box: inbobmk/rstable:latest
   steps:
-    - script: Rscript -e 'devtools::install_github("inbo/n2khelper")'
+    - script:
+        name: "Install dependencies"
+        code: Rscript -e 'devtools::install_github("inbo/n2khelper")'
     - inbobmk/r-check
     - inbobmk/r-coverage
     - inbobmk/r-lint
@@ -9,7 +11,9 @@ build:
 buildolder:
   box: inbobmk/rstable:oldrel
   steps:
-    - script: Rscript -e 'devtools::install_github("inbo/n2khelper")'
+    - script:
+        name: "Install dependencies"
+        code: Rscript -e 'devtools::install_github("inbo/n2khelper")'
     - inbobmk/r-check
     - inbobmk/r-coverage
     - inbobmk/r-lint
