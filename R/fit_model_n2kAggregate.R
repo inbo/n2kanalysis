@@ -72,19 +72,20 @@ setMethod(
         if (length(parent) > 1) {
           stop("Multiple parents")
         }
-        if (grepl("/(new|waiting)/[0-9a-f]{40}.rds$", parent)) {
+        if (grepl("(new|waiting)/[0-9a-f]{40}.rds$", parent)) {
           status(x) <- "waiting"
           return(x)
         }
-        if (grepl("/error/[0-9a-f]{40}.rds$", parent)) {
+        if (grepl("error/[0-9a-f]{40}.rds$", parent)) {
           status(x) <- "error"
           return(x)
         }
-        if (grepl("/converged/[0-9a-f]{40}.rds$", parent)) {
+        if (grepl("converged/[0-9a-f]{40}.rds$", parent)) {
           parent <- readRDS(parent)
         } else {
             stop(
-"Parent analysis has status different from converged, new, waiting or error. To do..."
+"Parent analysis has status different from converged, new, waiting or error.
+To do..."
             )
         }
       }
