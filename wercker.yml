@@ -13,7 +13,9 @@ buildolder:
   steps:
     - script:
         name: "Install dependencies"
-        code: Rscript -e 'devtools::install_github("inbo/n2khelper", upgrade = FALSE)'
+        code: |
+          Rscript -e 'devtools::install_github("inbo/n2khelper", upgrade = FALSE)'
+          rm output.txt
     - inbobmk/r-check
     - inbobmk/r-coverage
     - inbobmk/r-lint
