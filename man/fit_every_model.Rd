@@ -18,4 +18,3 @@ fit_every_model(path = ".", status, verbose = TRUE, n.cluster = 1)
 \description{
 Fit the model to the analysis files
 }
-

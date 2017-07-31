@@ -21,4 +21,3 @@ observation <- data.frame(
 )
 select_observed_range(observation, "Year")
 }
-

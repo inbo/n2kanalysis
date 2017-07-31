@@ -3,8 +3,8 @@
 \docType{methods}
 \name{parent_status<-}
 \alias{parent_status<-}
-\alias{parent_status<-,n2kComposite-method}
 \alias{parent_status<-,n2kLrtGlmer-method}
+\alias{parent_status<-,n2kComposite-method}
 \title{Overwrite the status of a n2kAnalysisMetadata}
 \usage{
 parent_status(x) <- value
@@ -21,4 +21,3 @@ parent_status(x) <- value
 \description{
 Overwrite the status of a n2kAnalysisMetadata
 }
-

@@ -1,7 +1,7 @@
 Package: n2kanalysis
 Title: Generic Functions to Analyse Data from the Natura 2000 Monitoring
-Version: 0.1
-Date: 2016-02-10
+Version: 0.2
+Date: 2017-02-13
 Authors@R: c(person("Thierry", "Onkelinx", email = "thierry.onkelinx@inbo.be", role = c("aut", "cre")))
 Description: All generic functions for the analysis. The full analysis is
     defined in the analysis package of each monitoring scheme.
@@ -10,23 +10,26 @@ Depends:
 License: GPL-3
 LazyData: true
 Suggests:
-    optimx,
-    Matrix,
-    parallel,
     INLA,
+    Matrix,
+    optimx,
+    parallel,
     testthat
 Imports:
-    methods,
-    MASS,
+    assertthat,
+    aws.s3,
+    digest (>= 0.6.12),
+    dplyr,
     INLA,
     lme4,
+    MASS,
+    methods,
+    multimput (>= 0.2.5),
+    n2khelper (>= 0.2),
     RODBC,
-    assertthat,
-    dplyr,
-    tidyr (>= 0.4.0),
-    digest (>= 0.6.9.3),
-    n2khelper (>= 0.2)
-Collate:
+    tibble,
+    tidyr (>= 0.4.0)
+Collate: 
     'n2kParameter_class.R'
     'n2kAnomaly_class.R'
     'n2kAnalysisVersion_class.R'
@@ -36,24 +39,45 @@ Collate:
     'n2kResult_class.R'
     'combine_result.R'
     'n2kModel_class.R'
-    'import_S3_classes.R'
     'n2kInlaNbinomial_class.R'
     'extract.R'
     'fit_every_model.R'
-    'n2kGlmerPoisson_class.R'
-    'n2kInlaComparison_class.R'
-    'n2kComposite_class.R'
-    'n2kLrtGlmer_class.R'
     'fit_model.R'
+    'fit_model_character.R'
+    'n2kAggregate_class.R'
+    'fit_model_n2kAggregate.R'
+    'n2kComposite_class.R'
+    'fit_model_n2kComposite.R'
+    'n2kGlmerPoisson_class.R'
+    'fit_model_n2kGlmerPoisson.R'
+    'n2kInlaComparison_class.R'
+    'fit_model_n2kInlaComparison.R'
+    'fit_model_n2kInlaNbinomial.R'
+    'import_S3_classes.R'
+    'n2kLrtGlmer_class.R'
+    'fit_model_n2kLrtGlmer.R'
+    'n2kModelImputed_class.R'
+    'fit_model_n2kModelImputed.R'
+    'fit_model_s3_object.R'
     'get_analysis_date.R'
     'get_analysis_version.R'
     'get_anomaly.R'
+    'get_anomaly_n2kGlmerPoisson.R'
+    'get_anomaly_n2kInlaNbinomial.R'
+    'get_anomaly_n2kModel.R'
     'get_data.R'
     'get_file_fingerprint.R'
     'get_formula.R'
     'get_location_group_id.R'
     'get_model.R'
     'get_model_parameter.R'
+    'get_model_parameter_n2kAggregated.R'
+    'get_model_parameter_n2kComposite.R'
+    'get_model_parameter_n2kGlmerPoisson.R'
+    'get_model_parameter_n2kInlaComparison.R'
+    'get_model_parameter_n2kInlaNbinomial.R'
+    'get_model_parameter_n2kLrtGlmer.R'
+    'get_model_parameter_n2kModelImputed.R'
     'get_model_type.R'
     'get_parent.R'
     'get_result.R'
@@ -61,23 +85,23 @@ Collate:
     'get_seed.R'
     'get_species_group_id.R'
     'get_status_fingerprint.R'
-    'import_result.R'
     'inla_inverse.R'
     'mark_obsolete_dataset.R'
+    'n2k_aggregated.R'
     'n2k_composite.R'
     'n2k_glmer_poisson.R'
     'n2k_inla_comparison.R'
     'n2k_inla_nbinomial.R'
     'n2k_lrt_glmer.R'
+    'n2k_model_imputed.R'
     'parent_status.R'
     'select_factor_count_strictly_positive.R'
-    'select_factor_threshold.R'
+    'select_factor_treshold.R'
     'select_observed_range.R'
     'session_package.R'
     'sha1.R'
-    'simplify_result.R'
     'status.R'
-    'test_data.R'
+    'store_model.R'
     'union.R'
     'validOject.R'
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

@@ -73,8 +73,14 @@ setValidity(
     if (nrow(object@ParameterEstimate) > 0) {
       test <- object@ParameterEstimate %>%
         summarise_(
-          TestLCL = ~any(Estimate < LowerConfidenceLimit, na.rm = TRUE),
-          TestUCL = ~any(Estimate > UpperConfidenceLimit, na.rm = TRUE)
+          TestLCL = ~any(
+            Estimate - LowerConfidenceLimit < -.Machine$double.neg.eps,
+            na.rm = TRUE
+          ),
+          TestUCL = ~any(
+            Estimate - UpperConfidenceLimit > .Machine$double.neg.eps,
+            na.rm = TRUE
+          )
         )
       if (test$TestLCL) {
         stop(

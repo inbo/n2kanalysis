@@ -4,8 +4,8 @@
 \name{extract}
 \alias{extract}
 \alias{extract,ANY,character-method}
-\alias{extract,ANY,n2kInlaNbinomial-method}
 \alias{extract,character-methods}
+\alias{extract,ANY,n2kInlaNbinomial-method}
 \alias{extract,n2kInlaNbinomial-methods}
 \title{Extract the relevant coefficients}
 \usage{
@@ -28,4 +28,3 @@ the relevant coefficients
 \description{
 Extract the relevant coefficients
 }
-

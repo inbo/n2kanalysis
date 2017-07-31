@@ -20,4 +20,3 @@ the seed of the object
 \description{
 Get the seed of a n2kModel object
 }
-

@@ -29,7 +29,7 @@ setMethod(
         path <- check_path(object, type = "directory")
         files <- list.files(
           path = path,
-          pattern = "\\.rda$",
+          pattern = "\\.rd(s|a)$",
           full.names = TRUE,
           recursive = TRUE
         )
@@ -51,9 +51,16 @@ setMethod(
 
         # handle a file
         object <- check_path(object, type = "file")
-        local.environment <- new.env()
-        load(object, envir = local.environment)
-        objects <- ls(envir = local.environment)
+        if (grepl("\\.rds$", object)) {
+          objects <- list(readRDS(file = object))
+          names(objects) <- object
+        } else {
+          local.environment <- new.env()
+          load(object, envir = local.environment)
+          objects <- ls(envir = local.environment) %>%
+            lapply(read_object_environment, env = local.environment)
+          names(objects) <- ls(envir = local.environment)
+        }
         # handles an empty file
         if (length(objects) == 0) {
           return(
@@ -64,21 +71,17 @@ setMethod(
             )
           )
         }
-        valid <- sapply(
+        invalid <- sapply(
           objects,
           function(x){
-            y <- read_object_environment(
-              object = x,
-              env = local.environment
-            )
-            check <- try(validObject(y, test = test, complete = complete))
-            class(check) != "try-error"
+            try(validObject(x, test = test, complete = complete)) %>%
+              inherits("try-error")
           }
         )
         data.frame(
           Filename = object,
-          Object = objects,
-          Valid = valid,
+          Object = names(objects),
+          Valid = !invalid,
           stringsAsFactors = FALSE
         )
       }

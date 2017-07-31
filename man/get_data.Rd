@@ -24,4 +24,3 @@ the data of the object
 \description{
 Get the data of a n2kModel object
 }
-

@@ -7,4 +7,3 @@
 \description{
 The n2kAnalysisVersion class
 }
-

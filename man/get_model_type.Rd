@@ -20,4 +20,3 @@ the model type of the object
 \description{
 Get the model type of a n2kModel object
 }
-

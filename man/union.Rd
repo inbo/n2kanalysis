@@ -12,4 +12,3 @@ union(...)
 \description{
 Make a union of AnalysisVersions
 }
-

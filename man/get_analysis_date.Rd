@@ -20,4 +20,3 @@ the analysis date of the object
 \description{
 Get the analysis date of a n2kModel object
 }
-

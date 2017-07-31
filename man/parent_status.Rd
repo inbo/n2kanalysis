@@ -20,4 +20,3 @@ the parent status of the object
 \description{
 Get the parent status of a n2kModel
 }
-

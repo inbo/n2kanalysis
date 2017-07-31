@@ -39,6 +39,7 @@ setValidity(
 
     file.fingerprint <- sha1(
       list(
+        object@AnalysisMetadata$ResultDatasourceID,
         object@AnalysisMetadata$SchemeID,
         object@AnalysisMetadata$SpeciesGroupID,
         object@AnalysisMetadata$LocationGroupID,

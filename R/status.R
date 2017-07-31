@@ -36,38 +36,37 @@ setMethod(
   f = "status",
   signature = signature(x = "character"),
   definition = function(x){
+    if (length(x) == 0) {
+      stop("no filename provided")
+    }
     if (length(x) > 1) {
       # assume x are files when length(x) > 1
       files <- x[file_test("-f", x)]
       # ignore elements of x which are not existing files
       return(do.call(rbind, lapply(files, status)))
-    } else {
-      # assume x is a file or directory when length(x) == 1
-      if (file_test("-d", x)) {
-        # handle a directory
-        path <- check_path(x, type = "directory")
-        files <- list.files(path = path, pattern = "\\.rda$", full.names = TRUE)
-        return(status(files))
-      } else {
-        # handle a file
-        x <- check_path(x, type = "file")
-        local.environment <- new.env()
-        load(x, envir = local.environment)
-        analysis <- read_object_environment(
-          object = "analysis",
-          env = local.environment
-        )
-        return(
-          data.frame(
-            Filename = x,
-            FileFingerprint = analysis@AnalysisMetadata$FileFingerprint,
-            StatusFingerprint = analysis@AnalysisMetadata$StatusFingerprint,
-            Status = analysis@AnalysisMetadata$Status,
-            stringsAsFactors = FALSE
-          )
-        )
-      }
     }
+    # assume x is a file or directory when length(x) == 1
+    if (file_test("-d", x)) {
+      # handle a directory
+      files <- list.files(
+        path = x,
+        pattern = "\\.rds$",
+        full.names = TRUE,
+        recursive = TRUE
+      )
+      return(status(files))
+    }
+    # handle a file
+    analysis <- readRDS(x)
+    return(
+      data.frame(
+        Filename = x,
+        FileFingerprint = analysis@AnalysisMetadata$FileFingerprint,
+        StatusFingerprint = analysis@AnalysisMetadata$StatusFingerprint,
+        Status = analysis@AnalysisMetadata$Status,
+        stringsAsFactors = FALSE
+      )
+    )
   }
 )
 
@@ -123,7 +122,7 @@ setReplaceMethod(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Model,
         x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
-        x@AnalysisVersionRPackage, x@AnalysisRelation
+        x@AnalysisVersionRPackage, x@AnalysisRelation, x@RawImputed
       ),
       digits = 6L
     )
@@ -204,6 +203,52 @@ setReplaceMethod(
         x@Models, x@WAIC, x@AnalysisMetadata$AnalysisVersion,
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
+      ),
+      digits = 6L
+    )
+    validObject(x)
+    return(x)
+  }
+)
+
+#' @rdname status.change
+#' @importFrom methods setReplaceMethod
+#' @importFrom digest sha1
+#' @include n2kAggregate_class.R
+setReplaceMethod(
+  "status",
+  "n2kAggregate",
+  function(x, value){
+    x@AnalysisMetadata$Status <- value
+    x@AnalysisMetadata$StatusFingerprint <- sha1(
+      list(
+        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
+        x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
+        x@AnalysisVersionRPackage, x@AnalysisRelation, x@RawImputed,
+        x@AggregatedImputed
+      ),
+      digits = 6L
+    )
+    validObject(x)
+    return(x)
+  }
+)
+
+#' @rdname status.change
+#' @importFrom methods setReplaceMethod
+#' @importFrom digest sha1
+#' @include n2kModelImputed_class.R
+setReplaceMethod(
+  "status",
+  "n2kModelImputed",
+  function(x, value){
+    x@AnalysisMetadata$Status <- value
+    x@AnalysisMetadata$StatusFingerprint <- sha1(
+      list(
+        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
+        x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
+        x@AnalysisVersionRPackage, x@AnalysisRelation, x@AggregatedImputed,
+        x@Results
       ),
       digits = 6L
     )

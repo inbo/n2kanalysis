@@ -12,4 +12,3 @@ inla_inverse(marginal)
 \description{
 This is useful for calculating the variance of a random effect when the marginal gives the precision of the random effect
 }
-
