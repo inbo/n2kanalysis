@@ -7,3 +7,9 @@ build:
     - inbobmk/r-check
     - inbobmk/r-coverage
     - inbobmk/r-lint
+build-dev:
+  box: rocker/verse
+  steps:
+    - jimhester/r-check
+    - jimhester/r-coverage
+    - jimhester/r-lint
