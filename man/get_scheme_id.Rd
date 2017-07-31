@@ -20,4 +20,3 @@ the scheme_id of the object
 \description{
 Get the scheme_id of a n2kModel object
 }
-

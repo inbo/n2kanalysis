@@ -26,16 +26,19 @@ setGeneric(
   def = function(
     parent.status, ...
   ){
-    standard.generic("n2k_composite") # nocov
+    standardGeneric("n2k_composite") # nocov
   }
 )
 
 #' @description A new n2kComposite model is created when \code{parent} is a data.frame
 #' @rdname n2k_composite
 #' @aliases n2k_composite,n2kComposite-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom n2khelper check_dataframe_variable
 #' @importFrom assertthat assert_that is.count is.string is.time
+#' @importFrom digest sha1
+#' @importFrom stats as.formula
+#' @importFrom utils sessionInfo
 #' @include n2kLrtGlmer_class.R
 setMethod(
   f = "n2k_composite",
@@ -60,12 +63,10 @@ setMethod(
     }
     assert_that(is.count(dots$seed))
     dots$seed <- as.integer(dots$seed)
-    assert_that(is.count(dots$scheme.id))
-    dots$scheme.id <- as.integer(dots$scheme.id)
-    assert_that(is.count(dots$species.group.id))
-    dots$species.group.id <- as.integer(dots$species.group.id)
-    assert_that(is.count(dots$location.group.id))
-    dots$location.group.id <- as.integer(dots$location.group.id)
+    assert_that(is.string(dots$result.datasource.id))
+    assert_that(is.string(dots$scheme.id))
+    assert_that(is.string(dots$species.group.id))
+    assert_that(is.string(dots$location.group.id))
     assert_that(is.string(dots$model.type))
     assert_that(is.string(dots$formula))
     assert_that(is.count(dots$first.imported.year))
@@ -86,8 +87,9 @@ setMethod(
     }
     assert_that(is.time(dots$analysis.date))
     assert_that(inherits(dots$extractor, "function"))
-    file.fingerprint <- get_sha1(
+    file.fingerprint <- sha1(
       list(
+        dots$result.datasource.id,
         dots$scheme.id, dots$species.group.id, dots$location.group.id,
         dots$model.type, dots$formula, dots$first.imported.year,
         dots$last.imported.year, dots$duration, dots$last.analysed.year,
@@ -120,12 +122,13 @@ setMethod(
     )
 
     version <- get_analysis_version(sessionInfo())
-    status.fingerprint <- get_sha1(
+    status.fingerprint <- sha1(
       list(
         file.fingerprint, dots$status, parameter, index,
         version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
         version@RPackage, version@AnalysisVersionRPackage, parent.status
-      )
+      ),
+      digits = 6L
     )
 
     new(
@@ -134,6 +137,7 @@ setMethod(
       RPackage = version@RPackage,
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
       AnalysisMetadata = data.frame(
+        ResultDatasourceID = dots$result.datasource.id,
         SchemeID = dots$scheme.id,
         SpeciesGroupID = dots$species.group.id,
         LocationGroupID = dots$location.group.id,

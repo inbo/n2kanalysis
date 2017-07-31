@@ -9,13 +9,13 @@
 setGeneric(
   name = "get_scheme_id",
   def = function(x){
-    standard.generic("get_scheme_id") # nocov
+    standardGeneric("get_scheme_id") # nocov
   }
 )
 
 #' @rdname get_scheme_id
 #' @aliases get_scheme_id,n2kAnalysisMetadata-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kAnalysisMetadata_class.R
 setMethod(
   f = "get_scheme_id",

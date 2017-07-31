@@ -9,13 +9,13 @@
 setGeneric(
   name = "get_result",
   def = function(x, ...){
-    standard.generic("get_result") # nocov
+    standardGeneric("get_result") # nocov
   }
 )
 
 
 #' @rdname get_result
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.flag noNA
 #' @include n2kModel_class.R
 #' @include n2kResult_class.R
@@ -48,11 +48,12 @@ setMethod(
 )
 
 #' @rdname get_result
-#' @importFrom methods setMethod
-#' @importFrom dplyr %>% rowwise mutate_ add_rownames inner_join select_ transmute_ arrange_ filter_
-#' @importFrom n2khelper get_sha1
+#' @importFrom methods setMethod new
+#' @importFrom dplyr %>% rowwise mutate_ inner_join select_ transmute_ arrange_ filter_ semi_join
+#' @importFrom digest sha1
 #' @importFrom tidyr gather_
 #' @importFrom assertthat assert_that is.flag noNA
+#' @importFrom stats as.formula
 #' @include n2kResult_class.R
 #' @include n2kInlaNbinomial_class.R
 setMethod(
@@ -81,18 +82,26 @@ setMethod(
         )
       )
     }
+    if (is.matrix(x@LinearCombination)) {
+      description <- rownames(x@LinearCombination)
+    } else {
+      if (is.matrix(x@LinearCombination[[1]])) {
+        description <- rownames(x@LinearCombination[[1]])
+      } else {
+        description <- names(x@LinearCombination[[1]])
+      }
+    }
     contrast <- data_frame(
-      Description = rownames(x@LinearCombination),
-      Analysis = get_file_fingerprint(x)
-    ) %>%
+        Description = description,
+        Analysis = get_file_fingerprint(x)
+      ) %>%
       rowwise() %>%
       mutate_(
-        Fingerprint = ~get_sha1(
+        Fingerprint = ~sha1(
           c(Description = Description, Analysis = Analysis)
         )
       ) %>%
       select_(~Fingerprint, ~Description, ~Analysis) %>%
-      arrange_(~Analysis, ~Description) %>%
       as.data.frame()
     if (is.null(x@Model)) {
       return(
@@ -112,23 +121,9 @@ setMethod(
         )
       )
     }
-    contrast.coefficient <- x@LinearCombination %>%
-      as.data.frame() %>%
-      add_rownames("Description")
-    contrast.coefficient <- contrast.coefficient %>%
-      gather_(
-        "ParameterID",
-        "Coefficient",
-        tail(colnames(contrast.coefficient), -1)
-      ) %>%
-      inner_join(
-        contrast %>%
-          select_(~-Analysis),
-        by = "Description"
-      ) %>%
-      select_(~-Description, Contrast = ~Fingerprint) %>%
-      filter_(~ abs(Coefficient) > 1e-8)
+
     concat <- function(parent, child){
+      child[is.na(child)] <- ""
       parent.split <- strsplit(parent, ":")
       child.split <- strsplit(child, ":")
       too.short <- sapply(child.split, length) < sapply(parent.split, length)
@@ -152,20 +147,133 @@ setMethod(
         }
       )
     }
-    fixed.fingerprint <- anomaly@Parameter %>%
-      filter_(~Description == "Fixed effect") %>%
-      select_(~Fingerprint)
-    contrast.coefficient <- anomaly@Parameter %>%
-      filter_(~Parent == fixed.fingerprint$Fingerprint) %>%
+
+    fixed.parameterid <- anomaly@Parameter %>%
+      semi_join(
+        anomaly@Parameter %>%
+          filter_(~Description == "Fixed effect"),
+        by = c("Parent" = "Fingerprint")
+      ) %>%
       select_(ParentDescription = ~Description, Parent = ~Fingerprint) %>%
       left_join(anomaly@Parameter, by = "Parent") %>%
       transmute_(
         Parameter = ~ifelse(is.na(Fingerprint), Parent, Fingerprint),
         ParameterID = ~concat(child = Description, parent = ParentDescription)
+      )
+
+    if (is.matrix(x@LinearCombination)) {
+      contrast.coefficient <- x@LinearCombination
+      contrast.coefficient[abs(contrast.coefficient) < 1e-8] <- NA
+      contrast.coefficient <- contrast.coefficient %>%
+        as.data.frame() %>%
+        rownames_to_column("Description") %>%
+        gather_(
+          "ParameterID",
+          "Coefficient",
+          colnames(contrast.coefficient)[
+            !grepl("Description", colnames(contrast.coefficient))
+          ],
+          na.rm = TRUE
+        ) %>%
+        inner_join(
+          contrast %>%
+            select_(~-Analysis),
+          by = "Description"
+        ) %>%
+        select_(~-Description, Contrast = ~Fingerprint) %>%
+        mutate_(ParameterID = ~gsub("[\\(|\\)]", "", ParameterID)) %>%
+        inner_join(fixed.parameterid, by = "ParameterID") %>%
+        select_(~Contrast, ~Parameter, ~Coefficient) %>%
+        arrange_(~Contrast, ~Parameter) %>%
+        as.data.frame()
+    } else {
+      contrast.coefficient <- lapply(
+        names(x@LinearCombination),
+        function(y){
+          if (is.vector(x@LinearCombination[[y]])) {
+            data.frame(
+              Contrast = contrast$Fingerprint,
+              ParameterID = gsub("[\\(|\\)]", "", y),
+              Coefficient = x@LinearCombination[[y]],
+              stringsAsFactors = FALSE
+            ) %>%
+              filter_(~abs(Coefficient) >= 1e-8) %>%
+              inner_join(fixed.parameterid, by = "ParameterID") %>%
+              select_(~Contrast, ~Parameter, ~Coefficient)
+          } else {
+            random.id <- anomaly@Parameter %>%
+              semi_join(
+                anomaly@Parameter %>%
+                semi_join(
+                  anomaly@Parameter %>%
+                    semi_join(
+                      data.frame(
+                        Description = "Random effect BLUP",
+                        stringsAsFactors = FALSE
+                      ),
+                      by = "Description"
+                    ) %>%
+                    mutate_(Description = ~y),
+                  by = c("Parent" = "Fingerprint", "Description")
+                ),
+                by = c("Parent" = "Fingerprint")
+              ) %>%
+              select_(~-Parent, Parameter = ~Fingerprint)
+            lc <- x@LinearCombination[[y]] %>%
+              as.data.frame()
+            lc[abs(lc) < 1e-8] <- NA
+            if (anyDuplicated(x@Model$summary.random[[y]]$ID) == 0) {
+              lc %>%
+                mutate_(Contrast = ~contrast$Fingerprint) %>%
+                gather_(
+                  "Description",
+                  "Coefficient",
+                  colnames(lc)[
+                    !grepl("Contrast", colnames(lc))
+                  ],
+                  na.rm = TRUE,
+                  factor_key = TRUE
+                ) %>%
+                mutate_(
+                  Description = ~ as.character(
+                    x@Model$summary.random[[y]]$ID[Description]
+                  )
+                ) %>%
+                inner_join(random.id, by = "Description") %>%
+                select_(~-Description)
+            } else {
+              lc %>%
+                mutate_(Contrast = ~contrast$Fingerprint) %>%
+                gather_(
+                  "Description",
+                  "Coefficient",
+                  colnames(lc)[
+                    !grepl("Contrast", colnames(lc))
+                  ],
+                  na.rm = TRUE
+                ) %>%
+                inner_join(
+                  anomaly@Parameter %>%
+                    inner_join(
+                      random.id %>%
+                        rename_(Main = ~Description),
+                      by = c("Parent" = "Parameter")
+                    ) %>%
+                    mutate_(
+                      Description = ~ paste(Main, Description, sep = ":")
+                    ) %>%
+                    select_(Parameter = ~Fingerprint, ~Description),
+                  by = "Description"
+                ) %>%
+                select_(~-Description)
+            }
+          }
+        }
       ) %>%
-      inner_join(contrast.coefficient, by = "ParameterID") %>%
-      select_(~Contrast, ~Parameter, ~Coefficient) %>%
-      arrange_(~Contrast, ~Parameter)
+        bind_rows() %>%
+        arrange_(~Contrast, ~Parameter) %>%
+        as.data.frame()
+    }
     if (nrow(x@Model$summary.lincomb) == 0) {
       lc <- x@Model$summary.lincomb.derived
     } else {
@@ -210,23 +318,21 @@ setMethod(
 )
 
 #' @rdname get_result
-#' @importFrom methods setMethod validObject
+#' @importFrom methods setMethod validObject new
 #' @importFrom assertthat assert_that is.string is.flag is.count noNA
-#' @param keep.fingerprint Keep the character fingerprints? Otherwise change them into integers
+#' @importFrom utils file_test
 #' @param n.cluster the number of clusters to run this function in parallel. Defaults to 1 (= no parallel computing).
 setMethod(
   f = "get_result",
   signature = signature(x = "character"),
   definition = function(
     x,
-    keep.fingerprint = TRUE,
     n.cluster = 1,
     verbose = TRUE,
     ...
   ){
     # check arguments
     assert_that(is.string(x))
-    assert_that(is.flag(keep.fingerprint))
     assert_that(is.count(n.cluster))
     assert_that(is.flag(verbose))
     assert_that(noNA(verbose))
@@ -236,13 +342,7 @@ setMethod(
       if (verbose) {
         message(x)
       }
-      local.environment <- new.env()
-      load(x, envir = local.environment)
-      analysis <- read_object_environment(
-        object = "analysis",
-        env = local.environment
-      )
-      return(get_result(x = analysis, verbose = verbose, ...))
+      return(get_result(x = readRDS(x), verbose = verbose, ...))
     }
 
     if (!file_test("-d", x)) {
@@ -251,7 +351,15 @@ setMethod(
 
     # x is an existing directory
     x <- normalizePath(x, winslash = "/", mustWork = TRUE)
-    files <- list.files(path = x, pattern = "\\.rda$", full.names = TRUE)
+    files <- list.files(
+      path = x,
+      pattern = "\\.rds$",
+      full.names = TRUE,
+      recursive = TRUE
+    )
+    if (length(files) == 0) {
+      return(new("n2kResult"))
+    }
     if (n.cluster == 1) {
       result <- lapply(files, get_result, verbose = verbose, ...)
     } else {
@@ -294,14 +402,18 @@ setMethod(
     utils::flush.console()
     result <- do.call(combine, result)
 
-    if (keep.fingerprint) {
-      return(result)
-    }
+    return(result)
+  }
+)
 
-    if (verbose) {
-      message("Converting sha1 to integer")
-    }
-    utils::flush.console()
-    return(simplify_result(result = result))
+#' @rdname get_result
+#' @importFrom methods setMethod new
+#' @include import_S3_classes.R
+setMethod(
+  f = "get_result",
+  signature = signature(x = "s3_object"),
+  definition = function(x, ...){
+    x <- s3readRDS(object = x)
+    get_result(x, ...)
   }
 )

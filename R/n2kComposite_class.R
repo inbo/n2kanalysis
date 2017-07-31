@@ -26,6 +26,7 @@ setClass(
 
 
 #' @importFrom methods setValidity
+#' @importFrom digest sha1
 setValidity(
   "n2kComposite",
   function(object){
@@ -36,8 +37,9 @@ setValidity(
       stop("'ParentAnalysis' in 'AnalysisRelation' slot cannot be missing")
     }
 
-    file.fingerprint <- get_sha1(
+    file.fingerprint <- sha1(
       list(
+        object@AnalysisMetadata$ResultDatasourceID,
         object@AnalysisMetadata$SchemeID,
         object@AnalysisMetadata$SpeciesGroupID,
         object@AnalysisMetadata$LocationGroupID,
@@ -55,13 +57,14 @@ setValidity(
     if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
       stop("Corrupt FileFingerprint")
     }
-    status.fingerprint <- get_sha1(
+    status.fingerprint <- sha1(
       list(
         object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
         object@Parameter, object@Index, object@AnalysisMetadata$AnalysisVersion,
         object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation
-      )
+      ),
+      digits = 6L
     )
     if (object@AnalysisMetadata$StatusFingerprint != status.fingerprint) {
       stop("Corrupt StatusFingerprint")

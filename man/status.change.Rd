@@ -3,11 +3,13 @@
 \docType{methods}
 \name{status<-}
 \alias{status<-}
-\alias{status<-,n2kComposite-method}
 \alias{status<-,n2kGlmerPoisson-method}
-\alias{status<-,n2kInlaComparison-method}
 \alias{status<-,n2kInlaNbinomial-method}
 \alias{status<-,n2kLrtGlmer-method}
+\alias{status<-,n2kComposite-method}
+\alias{status<-,n2kInlaComparison-method}
+\alias{status<-,n2kAggregate-method}
+\alias{status<-,n2kModelImputed-method}
 \title{Overwrite the status of a n2kAnalysisMetadata}
 \usage{
 status(x) <- value
@@ -21,6 +23,10 @@ status(x) <- value
 \S4method{status}{n2kComposite}(x) <- value
 
 \S4method{status}{n2kInlaComparison}(x) <- value
+
+\S4method{status}{n2kAggregate}(x) <- value
+
+\S4method{status}{n2kModelImputed}(x) <- value
 }
 \arguments{
 \item{x}{the n2kAnalysisMetadata object}
@@ -30,4 +36,3 @@ status(x) <- value
 \description{
 Overwrite the status of a n2kAnalysisMetadata
 }
-

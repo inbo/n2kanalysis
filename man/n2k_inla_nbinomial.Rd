@@ -4,6 +4,7 @@
 \name{n2k_inla_nbinomial}
 \alias{n2k_inla_nbinomial}
 \alias{n2k_inla_nbinomial,data.frame,ANY-method}
+\alias{n2k_inla_nbinomial,n2kInlaNbinomial-methods}
 \alias{n2k_inla_nbinomial,n2kInlaNbinomial,inla-method}
 \alias{n2k_inla_nbinomial,n2kInlaNbinomial-methods}
 \title{Create a n2kInlaNbinomial object}
@@ -34,7 +35,7 @@ In case \code{data} a n2kInlaNbinomial object is, then only the model and status
    \item{\code{species.group.id}}{a single integer identifing the species group}
    \item{\code{location.group.id}}{a single integer identifing the location group}
    \item{\code{model.type}}{a single character identifying the type of model to fit to the data}
-   \item{\code{covariate}}{a single character holding the right hand side of the model formula}
+   \item{\code{formula}}{a single character holding the model formula}
    \item{\code{first.imported.year}}{Oldest year considered in the data}
    \item{\code{last.imported.year}}{Most recent year considered in the data}
    \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
@@ -42,6 +43,7 @@ In case \code{data} a n2kInlaNbinomial object is, then only the model and status
    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
    \item{\code{lin.comb}}{A model matrix to calculate linear combinations}
+   \item{\code{replicate.name}}{A list with the names of replicates. Defaults to an empty list. Used in case of \code{f(X, ..., replicate = Z)}}. Should be a named list like e.g. \code{list(X = c("a", "b", "c")).}
+   \item{\code{imputation.size}}{The required number of imputations defaults to 0.}
   }
 }
-

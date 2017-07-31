@@ -7,4 +7,3 @@
 \description{
 The n2kAnalysisMetadata class
 }
-

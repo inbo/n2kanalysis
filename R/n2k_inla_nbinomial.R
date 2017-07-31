@@ -6,7 +6,7 @@
 #'    \item{\code{species.group.id}}{a single integer identifing the species group}
 #'    \item{\code{location.group.id}}{a single integer identifing the location group}
 #'    \item{\code{model.type}}{a single character identifying the type of model to fit to the data}
-#'    \item{\code{covariate}}{a single character holding the right hand side of the model formula}
+#'    \item{\code{formula}}{a single character holding the model formula}
 #'    \item{\code{first.imported.year}}{Oldest year considered in the data}
 #'    \item{\code{last.imported.year}}{Most recent year considered in the data}
 #'    \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
@@ -14,6 +14,8 @@
 #'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
 #'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
 #'    \item{\code{lin.comb}}{A model matrix to calculate linear combinations}
+#'    \item{\code{replicate.name}}{A list with the names of replicates. Defaults to an empty list. Used in case of \code{f(X, ..., replicate = Z)}}. Should be a named list like e.g. \code{list(X = c("a", "b", "c")).}
+#'    \item{\code{imputation.size}}{The required number of imputations defaults to 0.}
 #'   }
 #' @name n2k_inla_nbinomial
 #' @rdname n2k_inla_nbinomial
@@ -25,15 +27,18 @@ setGeneric(
   def = function(
     data, ..., model.fit
   ){
-    standard.generic("n2k_inla_nbinomial") # nocov
+    standardGeneric("n2k_inla_nbinomial") # nocov
   }
 )
 
 #' @description A new n2kInlaNbinomial model is created when \code{data} is a data.frame.
 #' @rdname n2k_inla_nbinomial
 #' @aliases n2k_inla_nbinomial,n2kInlaNbinomial-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.count is.string is.time
+#' @importFrom digest sha1
+#' @importFrom stats as.formula
+#' @importFrom utils sessionInfo
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "n2k_inla_nbinomial",
@@ -46,18 +51,33 @@ setMethod(
     if (is.null(dots$status)) {
       dots$status <- "new"
     }
+    if (is.null(dots$minimum)) {
+      dots$minimum <- ""
+    }
     if (is.null(dots$seed)) {
       dots$seed <- sample(.Machine$integer.max, 1)
     } else {
       assert_that(is.count(dots$seed))
       dots$seed <- as.integer(dots$seed)
     }
-    assert_that(is.count(dots$scheme.id))
-    dots$scheme.id <- as.integer(dots$scheme.id)
-    assert_that(is.count(dots$species.group.id))
-    dots$species.group.id <- as.integer(dots$species.group.id)
-    assert_that(is.count(dots$location.group.id))
-    dots$location.group.id <- as.integer(dots$location.group.id)
+    if (is.null(dots$imputation.size)) {
+      dots$imputation.size <- 0L
+    } else {
+      if (!is.integer(dots$imputation.size)) {
+        if (
+          abs(as.integer(dots$imputation.size) - dots$imputation.size) > 1e-8
+        ) {
+          "imputation.size must be integer"
+        } else {
+          dots$imputation.size <- as.integer(dots$imputation.size)
+        }
+      }
+      assert_that(dots$imputation.size >= 0)
+    }
+    assert_that(is.string(dots$result.datasource.id))
+    assert_that(is.string(dots$scheme.id))
+    assert_that(is.string(dots$species.group.id))
+    assert_that(is.string(dots$location.group.id))
     assert_that(is.string(dots$model.type))
     assert_that(is.string(dots$formula))
     assert_that(is.count(dots$first.imported.year))
@@ -81,14 +101,28 @@ setMethod(
       dots$parent <- character(0)
     }
     if (!is.null(dots$lin.comb)) {
-      assert_that(inherits(dots$lin.comb, "matrix"))
+      assert_that(
+        inherits(dots$lin.comb, "matrix") |
+          inherits(dots$lin.comb, "list")
+      )
     }
-    file.fingerprint <- get_sha1(
+    if (is.null(dots$replicate.name)) {
+      dots$replicate.name <- list()
+    }
+    assert_that(is.list(dots$replicate.name))
+    if (length(dots$replicate.name) > 0) {
+      if (is.null(names(dots$replicate.name))) {
+        stop("replicate.name must have names")
+      }
+    }
+    file.fingerprint <- sha1(
       list(
-        data, dots$scheme.id, dots$species.group.id, dots$location.group.id,
-        dots$model.type, dots$covariate, dots$first.imported.year,
+        data, dots$result.datasource.id, dots$scheme.id, dots$species.group.id,
+        dots$location.group.id,
+        dots$model.type, dots$formula, dots$first.imported.year,
         dots$last.imported.year, dots$duration, dots$last.analysed.year,
-        dots$analysis.date, dots$seed, dots$parent, dots$lin.comb
+        dots$analysis.date, dots$seed, dots$parent, dots$replicate.name,
+        dots$lin.comb, dots$imputation.size, dots$minimum
       )
     )
 
@@ -106,9 +140,9 @@ setMethod(
         if (is.null(dots$parent.status)) {
           dots$parent.status <- "converged"
         }
-        dots$parent.statusfingerprint <- get_sha1(dots$parent.status)
+        dots$parent.statusfingerprint <- sha1(dots$parent.status)
       } else {
-        if (is.null(dots$parent.status)) {
+        if (is.null(dots[["parent.status"]])) {
           stop(
 "'parent.status' is required when 'parent.status.fingerprint' is provided"
           )
@@ -123,12 +157,14 @@ setMethod(
       )
     }
     version <- get_analysis_version(sessionInfo())
-    status.fingerprint <- get_sha1(
+    status.fingerprint <- sha1(
       list(
         file.fingerprint, dots$status, NULL,
         version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
-        version@RPackage,  version@AnalysisVersionRPackage, analysis.relation
-      )
+        version@RPackage,  version@AnalysisVersionRPackage, analysis.relation,
+        NULL
+      ),
+      digits = 6L
     )
 
     new(
@@ -137,6 +173,7 @@ setMethod(
       RPackage = version@RPackage,
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
       AnalysisMetadata = data.frame(
+        ResultDatasourceID = dots$result.datasource.id,
         SchemeID = dots$scheme.id,
         SpeciesGroupID = dots$species.group.id,
         LocationGroupID = dots$location.group.id,
@@ -157,8 +194,12 @@ setMethod(
       AnalysisFormula = list(as.formula(dots$formula)),
       AnalysisRelation = analysis.relation,
       Data = data,
+      ReplicateName = dots$replicate.name,
       LinearCombination = dots$lin.comb,
-      Model = NULL
+      Model = NULL,
+      ImputationSize = dots$imputation.size,
+      Minimum = dots$minimum,
+      RawImputed = NULL
     )
   }
 )
@@ -166,7 +207,9 @@ setMethod(
 #' @description In case \code{data} a n2kInlaNbinomial object is, then only the model and status are updated. All other slots are unaffected.
 #' @rdname n2k_inla_nbinomial
 #' @aliases n2k_inla_nbinomial,n2kInlaNbinomial-methods
-#' @importFrom methods setMethod validObject
+#' @importFrom methods setMethod validObject new
+#' @importFrom digest sha1
+#' @importFrom utils sessionInfo
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "n2k_inla_nbinomial",
@@ -183,13 +226,15 @@ setMethod(
     data@RPackage <- new.version$Union@RPackage
     data@AnalysisVersionRPackage <- new.version$Union@AnalysisVersionRPackage
     data@AnalysisMetadata$AnalysisVersion <- new.version$UnionFingerprint
-    data@AnalysisMetadata$StatusFingerprint <- get_sha1(
+    data@RawImputed <- dots$raw.imputed
+    data@AnalysisMetadata$StatusFingerprint <- sha1(
       list(
         data@AnalysisMetadata$FileFingerprint, data@AnalysisMetadata$Status,
         data@Model, data@AnalysisMetadata$AnalysisVersion,
         data@AnalysisVersion, data@RPackage, data@AnalysisVersionRPackage,
-        data@AnalysisRelation
-      )
+        data@AnalysisRelation, data@RawImputed
+      ),
+      digits = 6L
     )
 
     validObject(data)

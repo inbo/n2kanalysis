@@ -1,14 +1,9 @@
-box: rocker/hadleyverse
 build:
+  box: inbobmk/rstable:latest
   steps:
     - script:
-        name: installation of packages not covered by jimhester/r-dependencies
-        code: |
-          apt-get update -y
-          apt-get install -y r-cran-rodbc
-          Rscript -e 'devtools::install_bitbucket("thierry_onkelinx/n2khelper@develop")'
-          Rscript -e 'install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")'
-    - jimhester/r-dependencies
-    - jimhester/r-check
-    - jimhester/r-coverage
-    - jimhester/r-lint
+        name: "Install dependencies"
+        code: Rscript -e 'devtools::install_github("inbo/n2khelper", upgrade = FALSE)'
+    - inbobmk/r-check
+    - inbobmk/r-coverage
+    - inbobmk/r-lint

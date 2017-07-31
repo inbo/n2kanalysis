@@ -28,15 +28,19 @@ setGeneric(
   def = function(
     data, ..., model.fit
   ){
-    standard.generic("n2k_glmer_poisson") # nocov
+    standardGeneric("n2k_glmer_poisson") # nocov
   }
 )
 
 #' @description A new n2kGlmerPoisson model is created when \code{data} is a data.frame.
 #' @rdname n2k_glmer_poisson
 #' @aliases n2k_glmer_poisson,n2kGlmerPoisson-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.count is.string is.time noNA
+#' @importFrom digest sha1
+#' @importFrom stats as.formula
+#' @importFrom utils sessionInfo
+#' @importFrom n2khelper is.chartor
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "n2k_glmer_poisson",
@@ -48,6 +52,8 @@ setMethod(
     #set the defaults for missing arguments in dots
     if (is.null(dots$status)) {
       dots$status <- "new"
+    } else {
+      assert_that(is.string(dots$status))
     }
     if (is.null(dots$seed)) {
       dots$seed <- sample(.Machine$integer.max, 1)
@@ -55,12 +61,10 @@ setMethod(
       assert_that(is.count(dots$seed))
       dots$seed <- as.integer(dots$seed)
     }
-    assert_that(is.count(dots$scheme.id))
-    dots$scheme.id <- as.integer(dots$scheme.id)
-    assert_that(is.count(dots$species.group.id))
-    dots$species.group.id <- as.integer(dots$species.group.id)
-    assert_that(is.count(dots$location.group.id))
-    dots$location.group.id <- as.integer(dots$location.group.id)
+    assert_that(is.string(dots$result.datasource.id))
+    assert_that(is.string(dots$scheme.id))
+    assert_that(is.string(dots$species.group.id))
+    assert_that(is.string(dots$location.group.id))
     assert_that(is.string(dots$model.type))
     assert_that(is.string(dots$formula))
     assert_that(is.count(dots$first.imported.year))
@@ -83,15 +87,15 @@ setMethod(
     if (is.null(dots$parent)) {
       dots$parent <- character(0)
     } else {
-      assert_that(is.character(dots$parent))
+      assert_that(is.chartor(dots$parent))
       assert_that(noNA(dots$parent))
     }
-    file.fingerprint <- get_sha1(
+    file.fingerprint <- sha1(
       list(
-        data, dots$scheme.id, dots$species.group.id, dots$location.group.id,
-        dots$model.type, dots$formula, dots$first.imported.year,
-        dots$last.imported.year, dots$duration, dots$last.analysed.year,
-        dots$analysis.date, dots$seed, dots$parent
+        data, dots$result.datasource.id, dots$scheme.id, dots$species.group.id,
+        dots$location.group.id, dots$model.type, dots$formula,
+        dots$first.imported.year, dots$last.imported.year, dots$duration,
+        dots$last.analysed.year, dots$analysis.date, dots$seed, dots$parent
       )
     )
     if (length(dots$parent) == 0) {
@@ -107,7 +111,7 @@ setMethod(
         if (is.null(dots$parent.status)) {
           dots$parent.status <- "converged"
         }
-        dots$parent.status.fingerprint <- get_sha1(dots$parent.status)
+        dots$parent.status.fingerprint <- sha1(dots$parent.status)
       } else {
         if (is.null(dots$parent.status)) {
           stop(
@@ -124,13 +128,14 @@ setMethod(
       )
     }
     version <- get_analysis_version(sessionInfo())
-    status.fingerprint <- get_sha1(
+    status.fingerprint <- sha1(
       list(
         file.fingerprint, dots$status, NULL,
         version@AnalysisVersion$Fingerprint,
         version@AnalysisVersion, version@RPackage,
         version@AnalysisVersionRPackage, analysis.relation
-      )
+      ),
+      digits = 6L
     )
 
     new(
@@ -139,6 +144,7 @@ setMethod(
       RPackage = version@RPackage,
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
       AnalysisMetadata = data.frame(
+        ResultDatasourceID = dots$result.datasource.id,
         SchemeID = dots$scheme.id,
         SpeciesGroupID = dots$species.group.id,
         LocationGroupID = dots$location.group.id,
@@ -167,7 +173,8 @@ setMethod(
 #' @description In case \code{data} a n2kGlmerPoisson object is, then only the model and status are updated. All other slots are unaffected.
 #' @rdname n2k_glmer_poisson
 #' @aliases n2k_glmer_poisson,my_lmer-methods
-#' @importFrom methods setMethod validObject
+#' @importFrom methods setMethod validObject new
+#' @importFrom utils sessionInfo
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "n2k_glmer_poisson",

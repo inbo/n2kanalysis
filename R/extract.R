@@ -12,14 +12,14 @@ setGeneric(
   name = "extract",
   def = function(extractor, object, path){
     # nocov start
-    standard.generic("extract")
+    standardGeneric("extract")
     # nocov end
   }
 )
 
 #' @rdname extract
 #' @aliases extract,character-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @importFrom n2khelper check_path read_object_environment
 setMethod(
   f = "extract",
@@ -38,14 +38,9 @@ setMethod(
       return(output)
     }
     path <- check_path(path, type = "directory")
-    file <- paste0(path, "/", object, ".rda")
+    file <- paste0(path, "/", object, ".rds")
     file <- check_path(file, type = "file")
-    local.environment <- new.env()
-    load(file, envir = local.environment)
-    parent <- read_object_environment(
-      object = "analysis",
-      env = local.environment
-    )
+    parent <- readRDS(file)
     cbind(
       Parent = object,
       extract(extractor = extractor, object = parent, path = NULL)
@@ -55,7 +50,7 @@ setMethod(
 
 #' @rdname extract
 #' @aliases extract,n2kInlaNbinomial-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "extract",

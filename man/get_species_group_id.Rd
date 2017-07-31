@@ -20,4 +20,3 @@ the species group id of the object
 \description{
 Get the species group id of a n2kModel object
 }
-

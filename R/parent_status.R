@@ -9,13 +9,13 @@
 setGeneric(
   name = "parent_status",
   def = function(x){
-    standard.generic("parent_status") # nocov
+    standardGeneric("parent_status") # nocov
   }
 )
 
 #' @rdname parent_status
 #' @aliases parent_status,n2kAnalysisMetadata-methods
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod new
 #' @include n2kAnalysisMetadata_class.R
 setMethod(
   f = "parent_status",
@@ -36,19 +36,20 @@ setMethod(
 setGeneric(
   name = "parent_status<-",
   def = function(x, value){
-    standard.generic("parent_status<-") # nocov
+    standardGeneric("parent_status<-") # nocov
   }
 )
 
 #' @rdname parent.status.change
 #' @importFrom methods setReplaceMethod
+#' @importFrom digest sha1
 #' @include n2kLrtGlmer_class.R
 setReplaceMethod(
   "parent_status",
   "n2kLrtGlmer",
   function(x, value){
     x@AnalysisRelation <- value
-    x@StatusFingerprint <- get_sha1(
+    x@StatusFingerprint <- sha1(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Model,
         x@Model0,  x@Anova, x@AnalysisMetadata$AnalysisVersion,
@@ -62,18 +63,20 @@ setReplaceMethod(
 
 #' @rdname parent.status.change
 #' @importFrom methods setReplaceMethod
+#' @importFrom digest sha1
 #' @include n2kComposite_class.R
 setReplaceMethod(
   "parent_status",
   "n2kComposite",
   function(x, value){
     x@ParentStatus <- value
-    x@StatusFingerprint <- get_sha1(
+    x@StatusFingerprint <- sha1(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
         x@Parameter, x@Index, x@AnalysisMetadata$AnalysisVersion,
         x@AnalysisRelation
-      )
+      ),
+      digits = 6L
     )
     validObject(x)
     return(x)

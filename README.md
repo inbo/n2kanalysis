@@ -1,7 +1,9 @@
-**Branch** | **Build status** | **Test coverage**
--- | -- | --
-master | [![wercker status](https://app.wercker.com/status/f3a5129fdc8657713d873b39a2e0ee44/m/master "wercker status")](https://app.wercker.com/project/bykey/f3a5129fdc8657713d873b39a2e0ee44) | [![codecov.io](https://codecov.io/github/INBO-Natura2000/n2kanalysis/coverage.svg?branch=develop)](https://codecov.io/github/INBO-Natura2000/n2kanalysis?branch=master)
-develop | [![wercker status](https://app.wercker.com/status/f3a5129fdc8657713d873b39a2e0ee44/m/develop "wercker status")](https://app.wercker.com/project/bykey/f3a5129fdc8657713d873b39a2e0ee44) | [![codecov.io](https://codecov.io/github/INBO-Natura2000/n2kanalysis/coverage.svg?branch=develop)](https://codecov.io/github/INBO-Natura2000/n2kanalysis?branch=develop)
+[![License](http://img.shields.io/badge/license-GPL--3-blue.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
+
+Branch | Build status | Test coverage
+------ | ------------ | -------------
+master | [![wercker status](https://app.wercker.com/status/0dc9e0e76caa7b834a0ac6fa9c3ce908/m/master "wercker status")](https://app.wercker.com/project/bykey/0dc9e0e76caa7b834a0ac6fa9c3ce908) | [![codecov](https://codecov.io/gh/inbo/n2kanalysis/branch/master/graph/badge.svg)](https://codecov.io/gh/inbo/n2kanalysis)
+develop | [[![wercker status](https://app.wercker.com/status/0dc9e0e76caa7b834a0ac6fa9c3ce908/m/develop "wercker status")](https://app.wercker.com/project/bykey/0dc9e0e76caa7b834a0ac6fa9c3ce908) | [![codecov](https://codecov.io/gh/inbo/n2kanalysis/branch/develop/graph/badge.svg)](https://codecov.io/gh/inbo/n2kanalysis)
 
 # The n2kanalysis package
 

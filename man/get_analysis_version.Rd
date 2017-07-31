@@ -4,6 +4,7 @@
 \name{get_analysis_version}
 \alias{get_analysis_version}
 \alias{get_analysis_version,data.frame-method}
+\alias{get_analysis_version,sessionInfo-methods}
 \alias{get_analysis_version,n2kAnalysisMetadata-method}
 \alias{get_analysis_version,n2kAnalysisMetadata-methods}
 \alias{get_analysis_version,sessionInfo-method}
@@ -24,4 +25,3 @@ get_analysis_version(version)
 \description{
 Get an analysis version
 }
-

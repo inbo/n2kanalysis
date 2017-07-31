@@ -20,4 +20,3 @@ the formula of the object
 \description{
 Get the formula of a n2kModel object
 }
-

@@ -3,10 +3,10 @@
 \docType{methods}
 \name{status}
 \alias{status}
-\alias{status,character-method}
-\alias{status,character-methods}
 \alias{status,n2kAnalysisMetadata-method}
 \alias{status,n2kAnalysisMetadata-methods}
+\alias{status,character-method}
+\alias{status,character-methods}
 \title{Get the status of a n2kModel}
 \usage{
 status(x)
@@ -24,4 +24,3 @@ the status of the object
 \description{
 Get the status of a n2kModel
 }
-
