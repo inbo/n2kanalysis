@@ -47,6 +47,9 @@ test_that("store_model stores the model on a local file system", {
 })
 
 test_that("store_model stores the model on an S3 bucket", {
+  if (Sys.getenv("AWS_SECRET_ACCESS_KEY") == "") {
+    return(NULL)
+  }
   bucket <- get_bucket("n2kmonitoring")
   this.result.datasource.id <- sha1(sample(letters))
   this.scheme.id <- sha1(sample(letters))
