@@ -94,6 +94,7 @@ Collate:
     'n2k_inla_comparison.R'
     'n2k_inla_nbinomial.R'
     'n2k_lrt_glmer.R'
+    'n2k_manifest.R'
     'n2k_model_imputed.R'
     'parent_status.R'
     'select_factor_count_strictly_positive.R'
