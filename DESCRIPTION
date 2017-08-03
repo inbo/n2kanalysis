@@ -30,7 +30,7 @@ Imports:
     tibble,
     tidyr (>= 0.4.0)
 Remotes:
-  inbo/n2khelper
+  inbo/n2khelper,
   inbo/INLA
 Collate: 
     'n2kParameter_class.R'
