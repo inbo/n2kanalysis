@@ -18,7 +18,7 @@ setGeneric(
 #' @rdname n2k_manifest
 #' @aliases n2k_manifest,n2kManifest-methods
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% select_ arrange_
+#' @importFrom dplyr %>% distinct_ arrange_
 #' @importFrom digest sha1
 #' @include n2kManifest_class.R
 setMethod(
@@ -34,7 +34,7 @@ setMethod(
       manifest <- as.data.frame(manifest)
     }
     manifest <- manifest %>%
-      select_(~Fingerprint, ~Parent) %>%
+      distinct_(~Fingerprint, ~Parent) %>%
       arrange_(~Fingerprint, ~Parent)
     new(
       "n2kManifest",
