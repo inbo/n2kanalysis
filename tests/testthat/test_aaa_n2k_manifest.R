@@ -130,7 +130,7 @@ describe("n2k_manifest", {
 
   it("handles tbl()", {
     expect_is(
-      x <- n2k_manifest(tibble(Fingerprint = 1, Parent = NA)),
+      x <- n2k_manifest(dplyr::tibble(Fingerprint = 1, Parent = NA)),
       "n2kManifest"
     )
   })
