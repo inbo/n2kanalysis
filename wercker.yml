@@ -13,6 +13,7 @@ build-dev:
     - script:
         name: "Install dependencies"
         code: |
+          rm output.txt
           apt-get update
           apt-get install -y --no-install-recommends \
             pkg-config \
