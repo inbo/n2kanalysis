@@ -13,11 +13,11 @@ build-dev:
     - script:
         name: "Install dependencies"
         code: |
-        apt-get update
-        apt-get install -y --no-install-recommends \
-          pkg-config \
-          libltdl7 \
-          libodbc1 \
-          unixodbc-dev
-        Rscript -e 'devtools::install(dependencies = TRUE)'
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            pkg-config \
+            libltdl7 \
+            libodbc1 \
+            unixodbc-dev
+          Rscript -e 'devtools::install(dependencies = TRUE)'
     - inbobmk/r-check
