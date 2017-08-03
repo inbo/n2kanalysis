@@ -5,11 +5,15 @@
 \alias{get_file_fingerprint}
 \alias{get_file_fingerprint,n2kAnalysisMetadata-method}
 \alias{get_file_fingerprint,n2kAnalysisMetadata-methods}
+\alias{get_file_fingerprint,n2kManifest-method}
+\alias{get_file_fingerprint,n2kManifest-methods}
 \title{Get the file fingerprint of a n2kModel object}
 \usage{
 get_file_fingerprint(x)
 
 \S4method{get_file_fingerprint}{n2kAnalysisMetadata}(x)
+
+\S4method{get_file_fingerprint}{n2kManifest}(x)
 }
 \arguments{
 \item{x}{the n2kModel object}
