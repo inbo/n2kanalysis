@@ -8,6 +8,6 @@ build:
     - inbobmk/r-coverage
     - inbobmk/r-lint
 build-dev:
-  box: rocker/verse
+  box: rocker/verse:devel
   steps:
     - jimhester/r-check
