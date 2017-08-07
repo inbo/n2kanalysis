@@ -29,13 +29,13 @@ setMethod(
     validObject(x, complete = TRUE)
 
     #create dir is it doesn't exist
-    dir <- sprintf("%s/%s/%s/manifest", base, project) %>%
+    dir <- sprintf("%s/%s/manifest", base, project) %>%
       normalizePath(winslash = "/", mustWork = FALSE)
     if (!dir.exists(dir)) {
       dir.create(dir, recursive = TRUE)
     }
 
-    #test is file exists
+    #test if file exists
     fingerprint <- get_file_fingerprint(x)
     filename <- list.files(
         dir,
@@ -45,8 +45,8 @@ setMethod(
     if (length(filename) > 0) {
       return(filename)
     }
-
-    write.table(x, file = filename, row.names = FALSE, sep = "\t")
+    filename <- sprintf("%s/%s.manifest", dir, fingerprint)
+    write.table(x@Manifest, file = filename, row.names = FALSE, sep = "\t")
     return(filename)
   }
 )
@@ -54,7 +54,8 @@ setMethod(
 #' @rdname store_manifest
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.string
-#' @importFrom aws.s3 bucket_exists get_bucket s3saveRDS delete_object
+#' @importFrom aws.s3 bucket_exists get_bucket s3saveRDS delete_object s3write_using
+#' @importFrom utils write.table
 #' @include import_S3_classes.R
 setMethod(
   f = "store_manifest",
@@ -99,7 +100,7 @@ setMethod(
       sapply("[[", "Key")
     fingerprint <- get_file_fingerprint(x)
     current <- existing[grepl(sprintf("%s.manifest$", fingerprint), existing)]
-    exists <- grepl(sprintf("%s/%s.manifest$", fingerprint), current)
+    exists <- grepl(sprintf("manifest/%s.manifest$", fingerprint), current)
     filename <- current[exists] %>%
       unname()
     if (length(filename) > 0) {
@@ -116,7 +117,14 @@ setMethod(
     i <- 1
     repeat {
       bucket_ok <- tryCatch(
-        s3saveRDS(x, bucket = base, object = filename),
+        s3write_using(
+          x@Manifest,
+          write.table,
+          row.names = FALSE,
+          sep = "\t",
+          bucket = base,
+          object = filename
+        ),
         error = function(err) {
           err
         }
