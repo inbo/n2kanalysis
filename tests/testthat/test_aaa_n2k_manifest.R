@@ -15,34 +15,38 @@ describe("new('n2k_manifest')", {
       "Variables missing in Manifest: Parent"
     )
     expect_error(
-      new("n2kManifest", Manifest = data.frame(Fingerprint = NA, Parent = 1)),
-      "Fingerprint contains missing values"
-    )
-    expect_error(
-      new("n2kManifest", Manifest = data.frame(Fingerprint = 1, Parent = "1")),
-      "Fingerprint and Parent must be of the same class"
+      new(
+        "n2kManifest",
+        Manifest = data.frame(
+          Fingerprint = 1,
+          Parent = "1",
+          stringsAsFactors = FALSE
+        )
+      ),
+      "Fingerprint: got 'numeric'"
     )
     expect_error(
       new(
         "n2kManifest",
         Manifest = data.frame(
-          Fingerprint = factor(1),
-          Parent = "1",
+          Fingerprint = "1",
+          Parent = 1,
           stringsAsFactors = FALSE
         )
       ),
-      "Fingerprint and Parent must be of the same class"
+      "Parent: got 'numeric'"
     )
     expect_error(
-      new(
-        "n2kManifest",
-        Manifest = data.frame(Fingerprint = "A", Parent = "1")
-      ),
-      "Fingerprint and Parent must have the same levels"
+      new("n2kManifest", Manifest = data.frame(Fingerprint = "1", Parent = 1)),
+      "Fingerprint: got 'factor'"
     )
   })
   it("checks the fingerprint", {
-    manifest <- data.frame(Fingerprint = 1, Parent = NA)
+    manifest <- data.frame(
+      Fingerprint = "1",
+      Parent = NA,
+      stringsAsFactors = FALSE
+    )
     expect_error(
       new("n2kManifest", Manifest = manifest),
       "wrong fingerprint"
@@ -53,7 +57,7 @@ describe("new('n2k_manifest')", {
     )
     expect_error(
       new("n2kManifest", Manifest = manifest, Fingerprint = letters),
-      "Fingerprint must be a single character"
+      "Fingerprint is not a string \\(a length one character vector\\)."
     )
     expect_is(
       new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
@@ -61,27 +65,47 @@ describe("new('n2k_manifest')", {
     )
   })
   it("checks the correct link between parent and fingerprint", {
-    manifest <- data.frame(Fingerprint = 1, Parent = 2)
+    manifest <- data.frame(
+      Fingerprint = "1",
+      Parent = "2",
+      stringsAsFactors = FALSE
+    )
     expect_error(
       new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
       "All rows have parents"
     )
-    manifest <- data.frame(Fingerprint = c(1, 2), Parent = c(NA, 3))
+    manifest <- data.frame(
+      Fingerprint = c("1", "2"),
+      Parent = c(NA, "3"),
+      stringsAsFactors = FALSE
+    )
     expect_error(
       new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
       "Some Parent in 'Manifest' slot have no matching Fingerprint"
     )
-    manifest <- data.frame(Fingerprint = c(1, 2), Parent = c(NA, 2))
+    manifest <- data.frame(
+      Fingerprint = c("1", "2"),
+      Parent = c(NA, "2"),
+      stringsAsFactors = FALSE
+    )
     expect_error(
       new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
       "Self references between Parent and Fingerprint"
     )
-    manifest <- data.frame(Fingerprint = c(1, 2, 3), Parent = c(NA, 3, 2))
+    manifest <- data.frame(
+      Fingerprint = c("1", "2", "3"),
+      Parent = c(NA, "3", "2"),
+      stringsAsFactors = FALSE
+    )
     expect_error(
       new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
       "Too many parent - child levels"
     )
-    manifest <- data.frame(Fingerprint = seq(1, 20), Parent = c(NA, 1:19))
+    manifest <- data.frame(
+      Fingerprint = as.character(seq(1, 20)),
+      Parent = as.character(c(NA, 1:19)),
+      stringsAsFactors = FALSE
+    )
     expect_error(
       new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
       "Too many parent - child levels"
@@ -91,12 +115,20 @@ describe("new('n2k_manifest')", {
 
 describe("n2k_manifest", {
   it("generates the object", {
-    manifest <- data.frame(Fingerprint = 1, Parent = NA)
+    manifest <- data.frame(
+      Fingerprint = "1",
+      Parent = NA,
+      stringsAsFactors = FALSE
+    )
     expect_is(
       new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
       "n2kManifest"
     )
-    manifest <- data.frame(Fingerprint = c(1, 2), Parent = c(NA, 1))
+    manifest <- data.frame(
+      Fingerprint = c("1", "2"),
+      Parent = c(NA, "1"),
+      stringsAsFactors = FALSE
+    )
     expect_is(
       new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
       "n2kManifest"
@@ -119,7 +151,14 @@ describe("n2k_manifest", {
 
   it("ignore extra columns", {
     expect_is(
-      x <- n2k_manifest(data.frame(Fingerprint = 1, Parent = NA, junk = 1)),
+      x <- n2k_manifest(
+        data.frame(
+          Fingerprint = "1",
+          Parent = NA,
+          junk = 1,
+          stringsAsFactors = FALSE
+        )
+      ),
       "n2kManifest"
     )
     expect_identical(
@@ -130,7 +169,7 @@ describe("n2k_manifest", {
 
   it("handles tbl()", {
     expect_is(
-      x <- n2k_manifest(dplyr::tibble(Fingerprint = 1, Parent = NA)),
+      x <- n2k_manifest(dplyr::tibble(Fingerprint = "1", Parent = NA)),
       "n2kManifest"
     )
   })
@@ -138,19 +177,20 @@ describe("n2k_manifest", {
   it("sorts and compacts", {
     expect_is(
       x <- n2k_manifest(
-        data.frame(
-          Fingerprint = c(4, 4, 3, 2, 2, 1),
-          Parent = c(3, 2, 1, 1, 1, NA)
+        dplyr::tibble(
+          Fingerprint = as.character(c(4, 4, 3, 2, 2, 1)),
+          Parent = as.character(c(3, 2, 1, 1, 1, NA))
         )
       ),
       "n2kManifest"
     )
     expect_identical(
       x@Manifest,
-      data.frame(
-        Fingerprint = c(1, 2, 3, 4, 4),
-        Parent = c(NA, 1, 1, 2, 3)
-      )
+      dplyr::tibble(
+        Fingerprint = as.character(c(1, 2, 3, 4, 4)),
+        Parent = as.character(c(NA, 1, 1, 2, 3))
+      ) %>%
+        as.data.frame()
     )
   })
 })

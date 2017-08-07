@@ -35,32 +35,19 @@ setClass(
 setValidity(
   "n2kManifest",
   function(object){
+    assert_that(
+      is.string(object@Fingerprint),
+      msg = "Fingerprint is not a string (a length one character vector)."
+    )
     check_dataframe_variable(
       df = object@Manifest,
-      variable = c("Fingerprint", "Parent"),
+      variable = list(Fingerprint = "character", Parent = "character"),
       name = "Manifest"
     )
     assert_that(
       noNA(object@Manifest$Fingerprint),
       msg = "Fingerprint contains missing values"
     )
-
-    if (class(object@Manifest$Fingerprint) != class(object@Manifest$Parent)) {
-      if (!all(is.na(object@Manifest$Parent))) {
-        stop("Fingerprint and Parent must be of the same class")
-      }
-    }
-
-    if (class(object@Manifest$Fingerprint) == "factor") {
-      if (
-        !identical(
-          levels(object@Manifest$Fingerprint),
-          levels(object@Manifest$Parent)
-        )
-      ) {
-        stop("Fingerprint and Parent must have the same levels")
-      }
-    }
 
     if (all(!is.na(object@Manifest$Parent))) {
       stop("All rows have parents")
@@ -73,12 +60,14 @@ setValidity(
       stop("Self references between Parent and Fingerprint")
     }
 
-    missing_link <- object@Manifest %>%
-      filter_(~!is.na(Parent)) %>%
-      anti_join(object@Manifest, by = c("Parent" = "Fingerprint")) %>%
-      nrow()
-    if (missing_link  > 0) {
-      stop("Some Parent in 'Manifest' slot have no matching Fingerprint")
+    if (!all(is.na(object@Manifest$Parent))) {
+      missing_link <- object@Manifest %>%
+        filter_(~!is.na(Parent)) %>%
+        anti_join(object@Manifest, by = c("Parent" = "Fingerprint")) %>%
+        nrow()
+      if (missing_link  > 0) {
+        stop("Some Parent in 'Manifest' slot have no matching Fingerprint")
+      }
     }
 
     if (any(!is.na(object@Manifest$Parent))) {
@@ -97,9 +86,6 @@ setValidity(
       }
     }
 
-    if (length(object@Fingerprint) != 1) {
-      stop("Fingerprint must be a single character")
-    }
     if (sha1(object@Manifest) != object@Fingerprint) {
       stop("wrong fingerprint")
     }
