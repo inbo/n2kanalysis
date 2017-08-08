@@ -101,7 +101,5 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
     prefix = "unittest_read_manifest"
   ) %>%
     sapply("[[", "Key")
-  expect_true(filename2 %in% available)
-  expect_identical(filename, filename2)
   expect_true(all(sapply(available, delete_object, bucket = bucket)))
 })

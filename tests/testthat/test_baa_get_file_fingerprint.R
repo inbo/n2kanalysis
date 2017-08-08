@@ -51,7 +51,13 @@ describe("file fingerprint for n2k_glmer_poisson", {
 
 describe("get the correct fingerprint from an n2kManifest object", {
   it("gets the correct fingerprint", {
-    x <- n2k_manifest(data.frame(Fingerprint = 1, Parent = NA))
+    x <- n2k_manifest(
+      data.frame(
+        Fingerprint = "1",
+        Parent = NA_character_,
+        stringsAsFactors = FALSE
+      )
+    )
     expect_identical(x@Fingerprint, get_file_fingerprint(x))
   })
 })
