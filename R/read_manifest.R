@@ -129,7 +129,7 @@ setMethod(
       if (length(available) == 0) {
         stop("No manifest files in this project")
       }
-      latests <- sapply(available, function(x){x$LastModified}) %>%
+      latest <- sapply(available, function(x){x$LastModified}) %>%
         order() %>%
         which.max()
       manifest <- s3read_using(
@@ -138,7 +138,7 @@ setMethod(
         sep = "\t",
         colClasses = "character",
         as.is = TRUE,
-        object = available[[latests]]
+        object = available[[latest]]
       ) %>%
         n2k_manifest()
       return(manifest)
