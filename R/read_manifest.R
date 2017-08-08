@@ -129,7 +129,7 @@ setMethod(
       if (length(available) == 0) {
         stop("No manifest files in this project")
       }
-      latest <- sapply(available, function(x){x$LastModified}) %>%
+      latest <- sapply(available, "[[", "LastModified") %>%
         order() %>%
         which.max()
       manifest <- s3read_using(
