@@ -55,10 +55,6 @@ test_that("read_manifest reads the manifest on a local file system", {
 
 test_that("read_manifest reads the manifest on an S3 bucket", {
   bucket <- get_bucket("n2kmonitoring")
-  expect_error(
-    read_manifest(bucket, "unittest_read_manifest"),
-    "No manifest files in"
-  )
   object <- n2k_manifest(
     data.frame(
       Fingerprint = "10",
@@ -102,4 +98,8 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
   ) %>%
     sapply("[[", "Key")
   expect_true(all(sapply(available, delete_object, bucket = bucket)))
+  expect_error(
+    read_manifest(bucket, "unittest_read_manifest"),
+    "No manifest files in"
+  )
 })
