@@ -4,7 +4,7 @@ test_that("store_manifest stores the manifest on a local file system", {
   object <- n2k_manifest(
     data.frame(
       Fingerprint = "1",
-      Parent = NA,
+      Parent = NA_character_,
       stringsAsFactors = FALSE
     )
   )
@@ -31,7 +31,7 @@ test_that("store_manifest stores the manifest on an S3 bucket", {
   object <- n2k_manifest(
     data.frame(
       Fingerprint = "1",
-      Parent = NA,
+      Parent = NA_character_,
       stringsAsFactors = FALSE
     )
   )

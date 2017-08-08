@@ -42,6 +42,7 @@ setValidity(
     check_dataframe_variable(
       df = object@Manifest,
       variable = list(Fingerprint = "character", Parent = "character"),
+      force.NA = TRUE,
       name = "Manifest"
     )
     assert_that(

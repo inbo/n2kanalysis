@@ -44,7 +44,7 @@ describe("new('n2k_manifest')", {
   it("checks the fingerprint", {
     manifest <- data.frame(
       Fingerprint = "1",
-      Parent = NA,
+      Parent = NA_character_,
       stringsAsFactors = FALSE
     )
     expect_error(
@@ -117,7 +117,7 @@ describe("n2k_manifest", {
   it("generates the object", {
     manifest <- data.frame(
       Fingerprint = "1",
-      Parent = NA,
+      Parent = NA_character_,
       stringsAsFactors = FALSE
     )
     expect_is(
@@ -154,7 +154,7 @@ describe("n2k_manifest", {
       x <- n2k_manifest(
         data.frame(
           Fingerprint = "1",
-          Parent = NA,
+          Parent = NA_character_,
           junk = 1,
           stringsAsFactors = FALSE
         )
@@ -169,7 +169,12 @@ describe("n2k_manifest", {
 
   it("handles tbl()", {
     expect_is(
-      x <- n2k_manifest(dplyr::tibble(Fingerprint = "1", Parent = NA)),
+      x <- n2k_manifest(
+        dplyr::tibble(
+          Fingerprint = "1",
+          Parent = NA_character_
+        )
+      ),
       "n2kManifest"
     )
   })
