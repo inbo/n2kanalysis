@@ -156,13 +156,13 @@ setMethod(
     if (length(available) > 1) {
       stop("Multiple manifests found starting with '", hash, "'")
     }
-    manifest <- s3read_using(
+    s3read_using(
       read.table,
       header = TRUE,
       sep = "\t",
       colClasses = "character",
       as.is = TRUE,
-      object = available
+      object = available[[1]]
     ) %>%
       n2k_manifest()
   }
