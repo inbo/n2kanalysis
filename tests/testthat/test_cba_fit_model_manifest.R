@@ -60,7 +60,15 @@ describe("it handles a manifest", {
       stringsAsFactors = FALSE
     ) %>%
       n2k_manifest()
-    expect_identical(fit_model(x, base = base, project = project), NULL)
+    expect_identical(
+      fit_model(x, base = base, project = project),
+      NULL
+    )
+    x <- store_manifest(x, base, project)
+    expect_identical(
+      fit_model(x, base = base, project = project),
+      NULL
+    )
     sprintf("%s/%s", base, project) %>%
       list.files(recursive = TRUE, full.names = TRUE) %>%
       file.remove()
