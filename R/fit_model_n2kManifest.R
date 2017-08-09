@@ -44,7 +44,7 @@ setMethod(
         mutate_(
           Fingerprint = ~gsub(".*([[:xdigit:]]{40})\\.rds$", "\\1", Filename)
         ) %>%
-        left_join(manifest, by = "Fingerprint") %>%
+        left_join(x = manifest, by = "Fingerprint") %>%
         arrange_(~Level, ~Fingerprint)
       sapply(manifest$Filename, fit_model, ...)
       return(invisible(NULL))
