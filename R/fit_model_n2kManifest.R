@@ -1,5 +1,4 @@
 #' @rdname fit_model
-#' @inheritDotParams read_manifest
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.string is.flag noNA
 #' @importFrom dplyr %>% transmute_ mutate_ left_join arrange_

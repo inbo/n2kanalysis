@@ -31,7 +31,7 @@ setMethod(
         dots$project <- gsub(".*/(.*?)/manifest", "\\1", dirname(x))
       }
       read_manifest(base = dots$base, project = dots$project, hash = hash) %>%
-        fit_model(base = base, project = project, ...)
+        fit_model(base = dots$base, project = dots$project, ...)
       return(invisible(NULL))
     }
     analysis <- readRDS(x)

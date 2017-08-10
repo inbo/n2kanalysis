@@ -46,13 +46,6 @@ fit_model(x, ...)
 \item{x}{the n2kModel}
 
 \item{...}{other arguments. See details}
-
-\item{...}{Arguments passed on to \code{read_manifest}
-\describe{
-  \item{base}{the base location to read the manifest}
-  \item{project}{will be a relative path within the base location}
-  \item{hash}{optinaly the sha1 of the manifest. This can be abbreviated to to first unique characters. The function will return an error in case of multiple matches. If missing, then most recent manifest will be returned.}
-}}
 }
 \description{
 Fit a n2kModel object
