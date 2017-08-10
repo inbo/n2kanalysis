@@ -93,7 +93,16 @@ describe("it handles a manifest", {
       stringsAsFactors = FALSE
     ) %>%
       n2k_manifest()
-    expect_identical(fit_model(x, base = base, project = project), NULL)
+    expect_identical(
+      fit_model(x, base = base, project = project),
+      NULL
+    )
+
+    x <- store_manifest(x, base = base, project = project)
+    expect_identical(
+      fit_model(x$Contents, base = base, project = project),
+      NULL
+    )
 
     available <- get_bucket(
       base,
