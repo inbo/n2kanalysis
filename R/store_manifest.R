@@ -90,28 +90,25 @@ setMethod(
       stop("Unable to connect to S3 bucket")
     }
 
-    # check if object with same fingerprint exists
-    existing <- get_bucket(
-      base,
-      prefix = paste0(project, "/manifest"),
-      max = Inf
-    )
-    existing <- existing[names(existing) == "Contents"] %>%
-      sapply("[[", "Key")
-    fingerprint <- get_file_fingerprint(x)
-    current <- existing[grepl(sprintf("%s.manifest$", fingerprint), existing)]
-    exists <- grepl(sprintf("manifest/%s.manifest$", fingerprint), current)
-    filename <- current[exists] %>%
-      unname()
-    if (length(filename) > 0) {
-      return(filename)
-    }
-
-    # create object if it doesn't exists
-    filename <- sprintf("%s/manifest/%s.manifest", project, fingerprint) %>%
+    filename <- sprintf(
+      "%s/manifest/%s.manifest",
+      project,
+      get_file_fingerprint(x)
+    ) %>%
       normalizePath(winslash = "/", mustWork = FALSE) %>%
       gsub(pattern = "//", replacement = "/") %>%
       gsub(pattern = "^/", replacement = "")
+    # check if object with same fingerprint exists
+    existing <- get_bucket(
+      base,
+      prefix = filename,
+      max = Inf
+    )
+    if (length(existing) > 0) {
+      return(existing)
+    }
+
+    # create object if it doesn't exists
     # try several times to write to S3 bucket
     # avoids errors due to time out
     i <- 1
@@ -143,6 +140,10 @@ setMethod(
     if (!bucket_ok) {
       stop("Unable to write to S3 bucket")
     }
-    return(filename)
+    get_bucket(
+      base,
+      prefix = filename,
+      max = Inf
+    )
   }
 )

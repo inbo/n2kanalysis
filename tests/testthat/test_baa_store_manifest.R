@@ -36,27 +36,34 @@ test_that("store_manifest stores the manifest on an S3 bucket", {
     )
   )
   expect_is(
-    filename <- store_manifest(
+    stored <- store_manifest(
       x = object,
       base = bucket,
       project = "unittest_store_manifest"
     ),
-    "character"
+    "s3_bucket"
   )
-  available <- get_bucket("n2kmonitoring", prefix = "unittest_store_manifest") %>%
-    sapply("[[", "Key")
-  expect_true(filename %in% available)
+  available <- get_bucket(bucket, prefix = "unittest_store_manifest")
+  expect_equivalent(
+    stored,
+    available
+  )
   expect_is(
-    filename2 <- store_manifest(
+    stored2 <- store_manifest(
       x = object,
       base = bucket,
       project = "unittest_store_manifest"
     ),
-    "character"
+    "s3_bucket"
   )
-  available <- get_bucket("n2kmonitoring", prefix = "unittest_store_manifest") %>%
-    sapply("[[", "Key")
-  expect_true(filename2 %in% available)
-  expect_identical(filename, filename2)
+  available <- get_bucket(bucket, prefix = "unittest_store_manifest")
+  expect_equivalent(
+    stored2,
+    available
+  )
+  expect_equivalent(
+    stored,
+    stored2
+  )
   expect_true(all(sapply(available, delete_object, bucket = bucket)))
 })
