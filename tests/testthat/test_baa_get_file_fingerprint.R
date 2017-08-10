@@ -48,3 +48,16 @@ describe("file fingerprint for n2k_glmer_poisson", {
     expect_identical(file.fingerprint, get_file_fingerprint(object))
   })
 })
+
+describe("get the correct fingerprint from an n2kManifest object", {
+  it("gets the correct fingerprint", {
+    x <- n2k_manifest(
+      data.frame(
+        Fingerprint = "1",
+        Parent = NA_character_,
+        stringsAsFactors = FALSE
+      )
+    )
+    expect_identical(x@Fingerprint, get_file_fingerprint(x))
+  })
+})

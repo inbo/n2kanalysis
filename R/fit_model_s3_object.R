@@ -22,6 +22,12 @@ setMethod(
     if (dots$verbose) {
       message(x$Key)
     }
+    if (grepl("\\.manifest$", x$Key)) {
+      hash <- gsub(".*?([[:xdigit:]]{1,40}).manifest$", "\\1", x$Key)
+      read_manifest(base = dots$base, project = dots$project, hash = hash) %>%
+        fit_model(base = dots$base, project = dots$project, ...)
+      return(invisible(NULL))
+    }
     analysis <- s3readRDS(object = x)
     current_status <- status(analysis)
     if (dots$verbose) {

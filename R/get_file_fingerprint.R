@@ -24,3 +24,15 @@ setMethod(
     return(x@AnalysisMetadata$FileFingerprint)
   }
 )
+
+#' @rdname get_file_fingerprint
+#' @aliases get_file_fingerprint,n2kManifest-methods
+#' @importFrom methods setMethod new
+#' @include n2kManifest_class.R
+setMethod(
+  f = "get_file_fingerprint",
+  signature = signature(x = "n2kManifest"),
+  definition = function(x){
+    return(x@Fingerprint)
+  }
+)

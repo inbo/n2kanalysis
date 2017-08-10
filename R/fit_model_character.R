@@ -11,7 +11,7 @@ setMethod(
   f = "fit_model",
   signature = signature(x = "character"),
   definition = function(x, ...){
-    x <- check_path(x, type = "file")
+    assert_that(is.string(x))
     dots <- list(...)
     if (is.null(dots$verbose)) {
       dots$verbose <- TRUE
@@ -22,6 +22,19 @@ setMethod(
     if (dots$verbose) {
       message(x)
     }
+    if (grepl("\\.manifest$", x)) {
+      hash <- gsub(".*?([[:xdigit:]]{1,40}).manifest$", "\\1", x)
+      if (!"base" %in% names(dots)) {
+        dots$base <- gsub("(.*)/.*?/manifest", "\\1", dirname(x))
+      }
+      if (!"project" %in% names(dots)) {
+        dots$project <- gsub(".*/(.*?)/manifest", "\\1", dirname(x))
+      }
+      read_manifest(base = dots$base, project = dots$project, hash = hash) %>%
+        fit_model(base = dots$base, project = dots$project, ...)
+      return(invisible(NULL))
+    }
+    x <- check_path(x, type = "file")
     analysis <- readRDS(x)
     current_status <- status(analysis)
     base_dir <- sprintf("(.*)%s/[0-9a-f]{40}.rds", current_status) %>%
