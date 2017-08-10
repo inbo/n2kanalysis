@@ -11,7 +11,7 @@ setMethod(
   f = "fit_model",
   signature = signature(x = "character"),
   definition = function(x, ...){
-    x <- check_path(x, type = "file")
+    assert_that(is.string(x))
     dots <- list(...)
     if (is.null(dots$verbose)) {
       dots$verbose <- TRUE
@@ -34,6 +34,7 @@ setMethod(
         fit_model(base = dots$base, project = dots$project, ...)
       return(invisible(NULL))
     }
+    x <- check_path(x, type = "file")
     analysis <- readRDS(x)
     current_status <- status(analysis)
     base_dir <- sprintf("(.*)%s/[0-9a-f]{40}.rds", current_status) %>%
