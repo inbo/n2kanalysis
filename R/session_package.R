@@ -13,7 +13,7 @@ setGeneric(
   }
 )
 
-#' @importFrom assert_that has_name
+#' @importFrom assertthat has_name
 package_version <- function(x){
   if (has_name(x, "Repository")) {
     return(
