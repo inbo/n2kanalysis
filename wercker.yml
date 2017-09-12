@@ -1,5 +1,5 @@
 build:
-  box: inbobmk/rstable:latest
+  box: inbobmk/rstable:dplyr
   steps:
     - script:
         name: "Install dependencies"
