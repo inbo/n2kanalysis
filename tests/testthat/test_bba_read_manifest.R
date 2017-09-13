@@ -70,17 +70,19 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
     )
   )
   store_manifest(object, bucket, "unittest_read_manifest")
-  store_manifest(object2, bucket, "unittest_read_manifest")
   expect_equal(
     read_manifest(bucket, "unittest_read_manifest", object@Fingerprint),
     object
   )
+  store_manifest(object2, bucket, "unittest_read_manifest")
   expect_equal(
     read_manifest(bucket, "unittest_read_manifest", object2@Fingerprint),
     object2
   )
+  latest <- read_manifest(bucket, "unittest_read_manifest")
+  cat(latest@Fingerprint, object2@Fingerprint, object@Fingerprint, sep = "\n")
   expect_equal(
-    read_manifest(bucket, "unittest_read_manifest"),
+    latest,
     object2
   )
   expect_error(
