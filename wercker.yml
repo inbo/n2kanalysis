@@ -1,5 +1,5 @@
 build:
-  box: inbobmk/rstable:latest
+  box: inbobmk/rstable:dplyr
   steps:
     - script:
         name: "Install dependencies"
@@ -7,3 +7,18 @@ build:
     - inbobmk/r-check
     - inbobmk/r-coverage
     - inbobmk/r-lint
+build-dev:
+  box: rocker/verse:devel
+  steps:
+    - script:
+        name: "Install dependencies"
+        code: |
+          rm output.txt
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            pkg-config \
+            libltdl7 \
+            libodbc1 \
+            unixodbc-dev
+          Rscript -e 'devtools::install(dependencies = TRUE)'
+    - inbobmk/r-check

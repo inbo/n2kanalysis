@@ -23,7 +23,7 @@ setMethod(
   definition = function(version){
     check_dataframe_variable(
       df = version,
-      variable = c("Description", "Version", "Fingerprint"),
+      variable = c("Description", "Version", "Origin", "Fingerprint"),
       name = "version"
     )
     if (is.null(attr(version, "AnalysisVersion"))) {

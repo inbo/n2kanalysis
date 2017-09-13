@@ -21,6 +21,7 @@ setClass(
       Fingerprint = character(0),
       Description = character(0),
       Version = character(0),
+      Origin = character(0),
       stringsAsFactors = FALSE
     ),
     AnalysisVersionRPackage = data.frame(
@@ -43,7 +44,7 @@ setValidity(
     )
     check_dataframe_variable(
       df = object@RPackage,
-      variable = c("Fingerprint", "Description", "Version"),
+      variable = c("Fingerprint", "Description", "Version", "Origin"),
       name = "AnalysisVersionRPackage"
     )
     check_dataframe_variable(

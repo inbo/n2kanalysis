@@ -415,10 +415,10 @@ setMethod(
         Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
       ) %>%
       bind_rows(parameter)
-    parameter.estimate <- fitted %>%
+    tmp <- fitted %>%
       inner_join(parameter, by = c("Parent", "Parameter" = "Description")) %>%
-      select_(~-Parent, ~-Parameter, Parameter = ~Fingerprint) %>%
-      bind_rows(parameter.estimate)
+      select_(~-Parent, ~-Parameter, Parameter = ~Fingerprint)
+    parameter.estimate <- bind_rows(tmp, parameter.estimate)
 
     # imputed values
     if (!is.null(analysis@RawImputed)) {

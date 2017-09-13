@@ -1,7 +1,7 @@
 Package: n2kanalysis
 Title: Generic Functions to Analyse Data from the Natura 2000 Monitoring
-Version: 0.2.1
-Date: 2017-08-07
+Version: 0.2.2
+Date: 2017-08-10
 Authors@R: c(person("Thierry", "Onkelinx", email = "thierry.onkelinx@inbo.be", role = c("aut", "cre")))
 Description: All generic functions for the analysis. The full analysis is
     defined in the analysis package of each monitoring scheme.
@@ -29,6 +29,10 @@ Imports:
     RODBC,
     tibble,
     tidyr (>= 0.4.0)
+Remotes:
+  inbo/multimput,
+  inbo/n2khelper,
+  inbo/INLA
 Collate: 
     'n2kParameter_class.R'
     'n2kAnomaly_class.R'
@@ -83,6 +87,10 @@ Collate:
     'get_model_type.R'
     'get_parent.R'
     'get_result.R'
+    'get_result_character.R'
+    'get_result_n2kInlaNbinomial.R'
+    'get_result_n2kModel.R'
+    'get_result_s3_object.R'
     'get_scheme_id.R'
     'get_seed.R'
     'get_species_group_id.R'

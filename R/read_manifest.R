@@ -51,7 +51,7 @@ setMethod(
         rownames_to_column("filename") %>%
         arrange_(~desc(mtime)) %>%
         slice_(1) %>%
-        "[["("filename") %>%
+        "[["("filename") %>% #nolint
         read.table(
           header = TRUE,
           sep = "\t",
@@ -64,7 +64,7 @@ setMethod(
 
     assert_that(is.string(hash))
 
-    selection <- grep(sprintf("/manifest/%s.*\\.manifest$", hash), available)
+    selection <- grep(sprintf("manifest/%s.*\\.manifest$", hash), available)
     if (length(selection) == 0) {
       stop("No manifest found starting with '", hash, "'")
     }
@@ -123,7 +123,7 @@ setMethod(
     if (missing(hash)) {
       available <- get_bucket(
         base,
-        prefix = paste0(project, "/manifest"),
+        prefix = paste(project, "manifest", sep = "/"),
         max = Inf
       )
       if (length(available) == 0) {
@@ -147,7 +147,7 @@ setMethod(
     assert_that(is.string(hash))
     available <- get_bucket(
       base,
-      prefix = paste0(project, "/manifest/", hash),
+      prefix = paste(project, "manifest", hash, sep = "/"),
       max = Inf
     )
     if (length(available) == 0) {

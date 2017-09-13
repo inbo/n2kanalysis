@@ -13,6 +13,41 @@ setGeneric(
   }
 )
 
+#' @importFrom assertthat has_name
+package_version <- function(x){
+  if (has_name(x, "Repository")) {
+    return(
+      data.frame(
+        Description = x$Package,
+        Version = x$Version,
+        Origin = "CRAN",
+        stringsAsFactors = FALSE
+      )
+    )
+  }
+  if (has_name(x, "RemoteType")) {
+    if (x$RemoteType != "github") {
+      stop("Only github remotes are currently handled")
+    }
+    return(
+      data.frame(
+        Description = x$Package,
+        Version = x$Version,
+        Origin = sprintf(
+          "Github: %s/%s@%s", x$GithubUsername, x$GithubRepo, x$GithubSHA1
+        ),
+        stringsAsFactors = FALSE
+      )
+    )
+  }
+  data.frame(
+    Description = x$Package,
+    Version = x$Version,
+    Origin = "local",
+    stringsAsFactors = FALSE
+  )
+}
+
 #' @rdname session_package
 #' @aliases session_package,sessionInfo-methods
 #' @importFrom methods setMethod new
@@ -31,30 +66,19 @@ setMethod(
           collapse = "."
         )
       ),
+      Origin = "CRAN",
       stringsAsFactors = FALSE
     )
     if ("otherPkgs" %in% names(session)) {
       package <- rbind(
         package,
-        do.call(rbind, lapply(session$otherPkgs, function(i){
-          data.frame(
-            Description = i$Package,
-            Version = i$Version,
-            stringsAsFactors = FALSE
-          )
-        }))
+        do.call(rbind, lapply(session$otherPkgs, package_version))
       )
     }
     if ("loadedOnly" %in% names(session)) {
       package <- rbind(
         package,
-        do.call(rbind, lapply(session$loadedOnly, function(i){
-          data.frame(
-            Description = i$Package,
-            Version = i$Version,
-            stringsAsFactors = FALSE
-          )
-        }))
+        do.call(rbind, lapply(session$loadedOnly, package_version))
       )
     }
     rownames(package) <- NULL
