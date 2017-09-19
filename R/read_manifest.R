@@ -93,8 +93,6 @@ setMethod(
   f = "read_manifest",
   signature = signature(base = "s3_bucket"),
   definition = function(base, project, hash){
-    assert_that(is.string(project))
-
     # try several times to connect to S3 bucket
     # avoids errors due to time out
     i <- 1
@@ -121,6 +119,7 @@ setMethod(
     }
 
     if (missing(hash)) {
+      assert_that(is.string(project))
       available <- get_bucket(
         base,
         prefix = paste(project, "manifest", sep = "/"),
@@ -145,11 +144,15 @@ setMethod(
     }
 
     assert_that(is.string(hash))
-    available <- get_bucket(
-      base,
-      prefix = paste(project, "manifest", hash, sep = "/"),
-      max = Inf
-    )
+    if (missing(project)) {
+      available <- get_bucket(base, prefix = hash, max = Inf)
+    } else {
+      available <- get_bucket(
+        base,
+        prefix = paste(project, "manifest", hash, sep = "/"),
+        max = Inf
+      )
+    }
     if (length(available) == 0) {
       stop("No manifest found starting with '", hash, "'")
     }
