@@ -24,11 +24,19 @@ setMethod(
     }
     if (grepl("\\.manifest$", x)) {
       hash <- gsub(".*?([[:xdigit:]]{1,40}).manifest$", "\\1", x)
-      if (!"base" %in% names(dots)) {
-        dots$base <- gsub("(.*)/.*?/manifest", "\\1", dirname(x))
+      if ("bucket" %in% names(dots)) {
+        dots$base <- get_bucket(dots$bucket)
+      } else {
+        if (!"base" %in% names(dots)) {
+          dots$base <- dirname(x) %>%
+            normalizePath(winslash = "/", mustWork = FALSE) %>%
+            gsub(pattern = "(.*\\/)?(.*)\\/manifest", replacement = "\\1")
+        }
       }
       if (!"project" %in% names(dots)) {
-        dots$project <- gsub(".*/(.*?)/manifest", "\\1", dirname(x))
+        dots$project <- dirname(x) %>%
+          normalizePath(winslash = "/", mustWork = FALSE) %>%
+          gsub(pattern = "(.*\\/)?(.*)\\/manifest", replacement = "\\2")
       }
       read_manifest(base = dots$base, project = dots$project, hash = hash) %>%
         fit_model(base = dots$base, project = dots$project, ...)
