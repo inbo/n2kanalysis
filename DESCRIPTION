@@ -114,6 +114,7 @@ Collate:
     'sha1.R'
     'status.R'
     'store_manifest.R'
+    'store_manifest_yaml.R'
     'store_model.R'
     'union.R'
     'validOject.R'
