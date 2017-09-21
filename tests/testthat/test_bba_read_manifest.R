@@ -81,6 +81,8 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
   )
   latest <- read_manifest(bucket, "unittest_read_manifest")
   cat(latest@Fingerprint, object2@Fingerprint, object@Fingerprint, sep = "\n")
+  str(latest)
+  str(object2)
   expect_equal(
     latest,
     object2
