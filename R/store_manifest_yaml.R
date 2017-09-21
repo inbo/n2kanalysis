@@ -22,6 +22,10 @@ store_manifest_yaml <- function(x, base, project, docker, dependencies){
     )
   filename <- gsub("\\.manifest", ".yaml", stored$Contents$Key) %>%
     gsub(pattern = "(.*/)manifest(/.*)", replacement = "\\1yaml\\2")
+  available <- get_bucket(base, prefix = filename)
+  if (length(available)) {
+    return(available)
+  }
 
   # try several times to write to S3 bucket
   # avoids errors due to time out
