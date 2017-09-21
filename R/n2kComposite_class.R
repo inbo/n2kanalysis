@@ -48,7 +48,8 @@ setValidity(
         object@AnalysisMetadata$LastImportedYear,
         object@AnalysisMetadata$Duration,
         object@AnalysisMetadata$LastAnalysedYear,
-        object@AnalysisMetadata$AnalysisDate, object@AnalysisMetadata$Seed,
+        format(object@AnalysisMetadata$AnalysisDate, tz = "UTC"),
+        object@AnalysisMetadata$Seed,
         object@AnalysisRelation$ParentAnalysis,
         formals(object@Extractor),
         as.character(body(object@Extractor))

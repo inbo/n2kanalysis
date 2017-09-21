@@ -54,7 +54,8 @@ setValidity(
         object@AnalysisMetadata$LastImportedYear,
         object@AnalysisMetadata$Duration,
         object@AnalysisMetadata$LastAnalysedYear,
-        object@AnalysisMetadata$AnalysisDate, object@AnalysisMetadata$Seed,
+        format(object@AnalysisMetadata$AnalysisDate, tz = "UTC"),
+        object@AnalysisMetadata$Seed,
         object@AnalysisRelation$ParentAnalysis,
         object@Function, object@Filter, object@Mutate, object@ModelArgs,
         object@Extractor, object@ExtractorArgs, object@Package
