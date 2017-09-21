@@ -55,6 +55,7 @@ test_that("read_manifest reads the manifest on a local file system", {
 
 test_that("read_manifest reads the manifest on an S3 bucket", {
   bucket <- get_bucket("n2kmonitoring")
+  project <- "unittest_read_manifest"
   object <- n2k_manifest(
     data.frame(
       Fingerprint = "10",
@@ -69,17 +70,21 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
       stringsAsFactors = FALSE
     )
   )
-  store_manifest(object, bucket, "unittest_read_manifest")
+  store_manifest(object, bucket, project)
   expect_equal(
-    read_manifest(bucket, "unittest_read_manifest", object@Fingerprint),
+    read_manifest(bucket, project, object@Fingerprint),
     object
   )
-  store_manifest(object2, bucket, "unittest_read_manifest")
+  stored <- store_manifest(object2, bucket, project)
   expect_equal(
-    read_manifest(bucket, "unittest_read_manifest", object2@Fingerprint),
+    read_manifest(bucket, hash = stored$Contents$Key),
     object2
   )
-  latest <- read_manifest(bucket, "unittest_read_manifest")
+  expect_equal(
+    read_manifest(bucket, project, object2@Fingerprint),
+    object2
+  )
+  latest <- read_manifest(bucket, project)
   cat(latest@Fingerprint, object2@Fingerprint, object@Fingerprint, sep = "\n")
   str(latest)
   str(object2)
@@ -87,23 +92,20 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
     latest,
     object2
   )
+
+
+
   expect_error(
-    read_manifest(bucket, "unittest_read_manifest", "junk"),
+    read_manifest(bucket, project, "junk"),
     "No manifest found starting with 'junk'"
   )
   expect_error(
-    read_manifest(bucket, "unittest_read_manifest", "1"),
+    read_manifest(bucket, project, "1"),
     "Multiple manifests found starting with '1'"
   )
 
-  available <- get_bucket(
-    "n2kmonitoring",
-    prefix = "unittest_read_manifest"
-  ) %>%
+  available <- get_bucket("n2kmonitoring", prefix = project) %>%
     sapply("[[", "Key")
   expect_true(all(sapply(available, delete_object, bucket = bucket)))
-  expect_error(
-    read_manifest(bucket, "unittest_read_manifest"),
-    "No manifest files in"
-  )
+  expect_error(read_manifest(bucket, project), "No manifest files in")
 })
