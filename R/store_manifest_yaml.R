@@ -4,6 +4,7 @@
 #' @param dependencies extra github package to install
 #' @importFrom assertthat assert_that is.string
 #' @importFrom dplyr %>%
+#' @export
 store_manifest_yaml <- function(x, base, project, docker, dependencies){
   assert_that(inherits(base, "s3_bucket"))
   assert_that(is.string(docker))
