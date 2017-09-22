@@ -69,13 +69,19 @@ describe("it handles a manifest", {
       fit_model(x, base = base, project = project),
       NULL
     )
+    expect_identical(
+      fit_model(x),
+      NULL
+    )
+
     sprintf("%s/%s", base, project) %>%
       list.files(recursive = TRUE, full.names = TRUE) %>%
       file.remove()
   })
 
   it("works with an S3 bucket", {
-    base <- get_bucket("n2kmonitoring")
+    bucket <- "n2kmonitoring"
+    base <- get_bucket(bucket)
     store_model(object, base = base, project = project)
     store_model(object2, base = base, project = project)
     store_model(object3, base = base, project = project)
@@ -106,6 +112,11 @@ describe("it handles a manifest", {
 
     expect_identical(
       fit_model(x$Contents$Key, base = base, project = project),
+      NULL
+    )
+
+    expect_identical(
+      fit_model(x$Contents$Key, bucket = bucket),
       NULL
     )
 

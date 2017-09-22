@@ -93,7 +93,8 @@ setMethod(
         dots$scheme.id, dots$species.group.id, dots$location.group.id,
         dots$model.type, dots$formula, dots$first.imported.year,
         dots$last.imported.year, dots$duration, dots$last.analysed.year,
-        dots$analysis.date, dots$seed, parent.status$ParentAnalysis,
+        format(dots$analysis.date, tz = "UTC"),
+        dots$seed, parent.status$ParentAnalysis,
         formals(dots$extractor),
         as.character(body(dots$extractor))
       )

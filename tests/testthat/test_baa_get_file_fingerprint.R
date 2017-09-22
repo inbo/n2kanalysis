@@ -42,7 +42,7 @@ describe("file fingerprint for n2k_glmer_poisson", {
         this.location.group.id,
         this.model.type, this.formula, this.first.imported.year,
         this.last.imported.year, this.duration, this.last.analysed.year,
-        this.analysis.date, this.seed, this.parent
+        format(this.analysis.date, tz = "UTC"), this.seed, this.parent
       )
     )
     expect_identical(file.fingerprint, get_file_fingerprint(object))

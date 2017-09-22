@@ -42,8 +42,8 @@ describe("fit_model() on GlmerPoisson based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "b31e72f3676880095c08bb39bd2c4d0e84f03f9c"
-  weighted.object.file <- "cf744b57db553a602ddd0830968c3ee229a1498e"
+  object.file <- "fc1c87efe0011e8d306fd9c5d4c1b8fecc67c94c"
+  weighted.object.file <- "af640ba204e5f9268a26d0e8570ebeb0e1048506"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
@@ -215,11 +215,11 @@ describe("fit_model() on INLA nbinomial based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "629ae616d16d7e514e23374a992c13a550a99a00"
-  object.lc.file <- "be12c5de421889196f7b9d82b16399c0d8e147aa"
-  object.lc.list.file <- "2a3f2cad862ab23cd48697b69e9c676dfeef72a1"
-  object.lc.list2.file <- "bb9d8d18040a63401279c14ec1f46bd14095e7b2"
-  object.badlc.file <- "30e9c58acfd47752d487f2e2f348cf7ef3af7212"
+  object.file <- "c003f3ef708b55810e9645cb629724a1c6bed197"
+  object.lc.file <- "480013538a26ded79a2da5c1dc18bd42434a4830"
+  object.lc.list.file <- "8e1e94bdb5569a1aaadfe97d79a5edb322eeecb8"
+  object.lc.list2.file <- "e92be956a1d53b577267e4e2d8294cb79e79b590"
+  object.badlc.file <- "c3d7da408a78be3282b3677153357db26b5d6bca"
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
     expect_identical(object.lc.file, get_file_fingerprint(object.lc))

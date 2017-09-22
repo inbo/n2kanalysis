@@ -119,7 +119,8 @@ setMethod(
         dots$scheme.id, dots$species.group.id, dots$location.group.id,
         dots$model.type, dots$formula, dots$first.imported.year,
         dots$last.imported.year, dots$duration, dots$last.analysed.year,
-        dots$analysis.date, dots$seed, dots$parent, dots$model.fun, dots$filter,
+        format(dots$analysis.date, tz = "UTC"),
+        dots$seed, dots$parent, dots$model.fun, dots$filter,
         dots$mutate, dots$model.args, dots$extractor, dots$extractor.args,
         dots$package
       ),

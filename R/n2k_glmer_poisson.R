@@ -95,7 +95,8 @@ setMethod(
         data, dots$result.datasource.id, dots$scheme.id, dots$species.group.id,
         dots$location.group.id, dots$model.type, dots$formula,
         dots$first.imported.year, dots$last.imported.year, dots$duration,
-        dots$last.analysed.year, dots$analysis.date, dots$seed, dots$parent
+        dots$last.analysed.year, format(dots$analysis.date, tz = "UTC"),
+        dots$seed, dots$parent
       )
     )
     if (length(dots$parent) == 0) {
