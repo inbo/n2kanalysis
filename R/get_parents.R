@@ -5,10 +5,12 @@
 #' @export
 get_parents <- function(child, base, project) {
   assert_that(inherits(child, "n2kModel"))
-  lapply(
+  output <- lapply(
     child@AnalysisRelation$ParentAnalysis,
     read_model,
     base = base,
     project = project
   )
+  names(output) <- child@AnalysisRelation$ParentAnalysis
+  return(output)
 }
