@@ -29,7 +29,7 @@ setMethod(
     filename <- sprintf("%s/%s", base, project) %>%
       normalizePath() %>%
       list.files(pattern = x, full.names = TRUE, recursive = TRUE)
-    filename <- filesname[grepl("\\.rds$", filename)]
+    filename <- filename[grepl("\\.rds$", filename)]
 
     if (length(filename) == 1) {
       return(readRDS(filename))
