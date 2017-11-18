@@ -85,7 +85,7 @@ Collate:
     'get_model_parameter_n2kLrtGlmer.R'
     'get_model_parameter_n2kModelImputed.R'
     'get_model_type.R'
-    'get_parent.R'
+    'get_parents.R'
     'get_result.R'
     'get_result_character.R'
     'get_result_n2kInlaNbinomial.R'
