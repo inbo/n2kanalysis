@@ -4,11 +4,15 @@
 \name{store_manifest_yaml}
 \alias{store_manifest_yaml}
 \alias{store_manifest_yaml,ANY,s3_bucket-method}
+\alias{store_manifest_yaml,ANY,character-method}
 \title{Store a docker configuration}
 \usage{
 store_manifest_yaml(x, base, project, docker, dependencies)
 
 \S4method{store_manifest_yaml}{ANY,s3_bucket}(x, base, project, docker,
+  dependencies)
+
+\S4method{store_manifest_yaml}{ANY,character}(x, base, project, docker,
   dependencies)
 }
 \arguments{

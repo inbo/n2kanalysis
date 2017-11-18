@@ -76,3 +76,37 @@ setMethod(
     get_bucket(base, prefix = filename)
   }
 )
+
+#' @export
+#' @rdname store_manifest_yaml
+#' @importFrom methods setMethod new
+#' @importFrom assertthat assert_that is.string is.dir
+#' @importFrom dplyr %>%
+setMethod(
+  f = "store_manifest_yaml",
+  signature = signature(base = "character"),
+  definition = function(x, base, project, docker, dependencies){
+    assert_that(is.dir(base))
+    assert_that(is.string(docker))
+    assert_that(is.character(dependencies))
+
+    stored <- store_manifest(x = x, base = base, project = project)
+    yaml <- sprintf("  - %s", dependencies) %>%
+      paste(collapse = "\n") %>%
+      sprintf(
+        fmt = "github:\n%s\ndocker: %s\nbucket: %s\nproject: %s\nhash: %s",
+        docker,
+        attr(base, "Name"),
+        project,
+        basename(stored)
+      )
+    filename <- gsub("\\.manifest", ".yaml", stored) %>%
+      gsub(pattern = "(.*/)manifest(/.*)", replacement = "\\1yaml\\2")
+    if (file.exists(filename)) {
+      return(filename)
+    }
+
+    writeLines(yaml, filename, sep = "\t")
+    return(filename)
+  }
+)
