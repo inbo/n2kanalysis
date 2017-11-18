@@ -2,7 +2,7 @@
 #' @importClassesFrom multimput inla rawImputed
 setClassUnion("maybeMatrix", c("matrix", "list", "NULL"))
 setClassUnion("maybeInla", c("inla", "NULL"))
-setClassUnion("maybeRawImputed", c("rawImputed", "NULL"))
+setClassUnion("maybeRawImputed", c("rawImputed", "aggregatedImputed", "NULL"))
 
 #' The n2kInlaNBinomial class
 #'

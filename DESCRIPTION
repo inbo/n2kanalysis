@@ -107,6 +107,7 @@ Collate:
     'n2k_model_imputed.R'
     'parent_status.R'
     'read_manifest.R'
+    'read_model.R'
     'select_factor_count_strictly_positive.R'
     'select_factor_treshold.R'
     'select_observed_range.R'
