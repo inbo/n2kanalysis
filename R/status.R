@@ -30,7 +30,7 @@ setMethod(
 #' @rdname status
 #' @aliases status,character-methods
 #' @importFrom methods setMethod new
-#' @importFrom n2khelper check_path read_object_environment
+#' @importFrom n2khelper read_object_environment
 #' @importFrom utils file_test
 setMethod(
   f = "status",
@@ -51,6 +51,7 @@ setMethod(
       files <- list.files(
         path = x,
         pattern = "\\.rds$",
+        ignore.case = TRUE,
         full.names = TRUE,
         recursive = TRUE
       )

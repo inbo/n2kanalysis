@@ -22,6 +22,16 @@ setMethod(
     if (dots$verbose) {
       message(x$Key)
     }
+    if (is.null(dots$base)) {
+      dots$base <- get_bucket(x$Bucket)
+    }
+    if (is.null(dots$project)) {
+      dots$project <- gsub(
+        pattern = "(.*)/(.*)/([[:xdigit:]]{1,40})\\.(rds|manifest)$",
+        replacement = "\\1",
+        x$Key
+      )
+    }
     if (grepl("\\.manifest$", x$Key)) {
       hash <- gsub(".*?([[:xdigit:]]{1,40}).manifest$", "\\1", x$Key)
       read_manifest(base = dots$base, project = dots$project, hash = hash) %>%
@@ -37,7 +47,8 @@ setMethod(
     analysis.fitted <- fit_model(
       x = analysis,
       status = dots$status,
-      path = x
+      base = dots$base,
+      project = dots$project
     )
     if (dots$verbose) {
       message(status(analysis.fitted))
@@ -45,9 +56,8 @@ setMethod(
     }
     store_model(
       analysis.fitted,
-      base = get_bucket(x$Bucket),
-      project = sprintf("(.*)/%s/[0-9a-f]{40}.rds", current_status) %>%
-        gsub(replacement = "\\1", x = x$Key)
+      base = dots$base,
+      project = dots$project
     )
     return(invisible(NULL))
   }

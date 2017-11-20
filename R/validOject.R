@@ -2,7 +2,7 @@
 #' @rdname validObject
 #' @aliases validObject,character-methods
 #' @importFrom methods setMethod validObject new
-#' @importFrom n2khelper check_path read_object_environment
+#' @importFrom n2khelper read_object_environment
 #' @importFrom utils file_test
 #' @param object a single filename, a single path or a vector with filenames.
 #' @param test See \code{\link[methods]{validObject}}
@@ -26,10 +26,10 @@ setMethod(
       # assume x is a file or directory when length(x) == 1
       if (file_test("-d", object)) {
         # handle a directory
-        path <- check_path(object, type = "directory")
         files <- list.files(
-          path = path,
+          path = object,
           pattern = "\\.rd(s|a)$",
+          ignore.case = TRUE,
           full.names = TRUE,
           recursive = TRUE
         )
@@ -50,7 +50,6 @@ setMethod(
         }
 
         # handle a file
-        object <- check_path(object, type = "file")
         if (grepl("\\.rds$", object)) {
           objects <- list(readRDS(file = object))
           names(objects) <- object

@@ -1,6 +1,5 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom n2khelper check_path
 #' @importFrom assertthat assert_that is.flag noNA
 #' @details
 #' \describe{
@@ -22,31 +21,27 @@ setMethod(
     if (dots$verbose) {
       message(x)
     }
+    if (is.null(dots$base)) {
+      dots$base <- gsub(
+        pattern = "(.*)/(.*)/.*/[[:xdigit:]]{40}\\.(rds|manifest)",
+        replacement = "\\1",
+        x = x
+      )
+    }
+    if (is.null(dots$project)) {
+      dots$project <- gsub(
+        pattern = "(.*)/(.*)/.*/[[:xdigit:]]{40}\\.(rds|manifest)",
+        replacement = "\\2",
+        x = x
+      )
+    }
+    hash <- gsub(".*/([[:xdigit:]]{40})\\.(rds|manifest)", "\\1", x)
     if (grepl("\\.manifest$", x)) {
-      hash <- gsub(".*?([[:xdigit:]]{1,40}).manifest$", "\\1", x)
-      if ("bucket" %in% names(dots)) {
-        dots$base <- get_bucket(dots$bucket)
-      } else {
-        if (!"base" %in% names(dots)) {
-          dots$base <- dirname(x) %>%
-            normalizePath(winslash = "/", mustWork = FALSE) %>%
-            gsub(pattern = "(.*\\/)?(.*)\\/manifest", replacement = "\\1")
-        }
-      }
-      if (!"project" %in% names(dots)) {
-        dots$project <- dirname(x) %>%
-          normalizePath(winslash = "/", mustWork = FALSE) %>%
-          gsub(pattern = "(.*\\/)?(.*)\\/manifest", replacement = "\\2")
-      }
-      read_manifest(base = dots$base, project = dots$project, hash = hash) %>%
+      read_manifest(hash, base = dots$base, project = dots$project) %>%
         fit_model(base = dots$base, project = dots$project, ...)
       return(invisible(NULL))
     }
-    x <- check_path(x, type = "file")
-    analysis <- readRDS(x)
-    current_status <- status(analysis)
-    base_dir <- sprintf("(.*)%s/[0-9a-f]{40}.rds", current_status) %>%
-      gsub(replacement = "\\1", x = x)
+    analysis <- read_model(hash, base = dots$base, project = dots$project)
     if (dots$verbose) {
       message(status(analysis), " -> ", appendLF = FALSE)
       utils::flush.console()
@@ -54,13 +49,14 @@ setMethod(
     analysis.fitted <- fit_model(
       x = analysis,
       status = dots$status,
-      path = base_dir
+      base = dots$base,
+      project = dots$project
     )
     if (dots$verbose) {
       message(status(analysis.fitted))
       utils::flush.console()
     }
-    store_model(analysis.fitted, base = base_dir, project = "")
+    store_model(analysis.fitted, base = dots$base, project = dots$project)
     return(invisible(NULL))
   }
 )

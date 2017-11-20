@@ -2,6 +2,8 @@
 #' @importFrom methods setMethod new
 #' @importFrom utils file_test
 #' @importFrom stats anova
+#' @importFrom dplyr %>% select
+#' @importFrom rlang .data
 #' @include n2kLrtGlmer_class.R
 setMethod(
   f = "fit_model",
@@ -32,29 +34,23 @@ setMethod(
     }
 
     # check if parents are available
-    if (is.null(dots$path)) {
-      dots$path <- "."
-    }
-    if (inherits(dots$path, "s3_object")) {
-      stop("path to S3 object not handled yet")
-    }
     old.parent.status <- parent_status(x)
     colnames(old.parent.status)[3:4] <- c("OldStatusFingerprint", "OldStatus")
-    files.to.check <- normalizePath(
-      paste0(dots$path, "/", old.parent.status$ParentAnalysis, ".rds"),
-      winslash = "/",
-      mustWork = FALSE
-    )
-    if (!all(file_test("-f", files.to.check))) {
-      status(x) <- "error"
-      return(x)
-    }
+    parents <- get_parents(child = x, base = dots$base, project = dots$project)
+    current.parent.status <- lapply(
+      parents,
+      function(z){
+        z@AnalysisMetadata %>%
+          select(
+            ParentAnalysis = .data$FileFingerprint,
+            .data$StatusFingerprint,
+            .data$Status
+          )
+      }
+    ) %>%
+      bind_rows()
 
     #check if parents have changed
-    current.parent.status <- status(files.to.check)[
-      , c("FileFingerprint", "StatusFingerprint", "Status")
-    ]
-    colnames(current.parent.status)[1] <- "ParentAnalysis"
     compare <- merge(old.parent.status, current.parent.status)
     changes <- which(compare$OldStatusFingerprint != compare$StatusFingerprint)
     colnames(compare)[5:6] <- c("ParentStatusFingerprint", "ParentStatus")

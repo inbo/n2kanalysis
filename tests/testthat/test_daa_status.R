@@ -74,7 +74,7 @@ describe("n2kGlmerPoisson", {
   })
 
   it("returns the status in the object stored in a directory", {
-    this.status <- status(temp.dir)
+    this.status <- status(sprintf("%s/status", temp.dir))
     expect_true(
       all(this.status$Status == "new")
     )

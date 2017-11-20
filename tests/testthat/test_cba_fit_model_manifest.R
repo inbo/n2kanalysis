@@ -115,11 +115,6 @@ describe("it handles a manifest", {
       NULL
     )
 
-    expect_identical(
-      fit_model(x$Contents$Key, bucket = bucket),
-      NULL
-    )
-
     available <- get_bucket(
       base,
       prefix = project

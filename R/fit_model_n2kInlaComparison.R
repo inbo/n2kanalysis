@@ -1,6 +1,7 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom dplyr rename_ select_ inner_join arrange_ filter_ mutate_ bind_rows
+#' @importFrom dplyr select rename_ select_ inner_join arrange_ filter_ mutate_ bind_rows
+#' @importFrom rlang .data
 #' @importFrom utils file_test
 #' @include n2kInlaComparison_class.R
 setMethod(
@@ -36,40 +37,24 @@ setMethod(
     }
 
     # status: "waiting"
-    if (is.null(dots$path)) {
-      dots$path <- "."
-    }
-    if (inherits(dots$path, "s3_object")) {
-      stop("path to S3 object not handled yet")
-    }
-    old.parent.status <- parent_status(x)
-    available <- paste0("/", status(x), "$") %>%
-      gsub("", dots$path) %>%
-      list.files(
-        pattern = "\\.rds$",
-        recursive = TRUE,
-        full.names = TRUE
-      )
-    if (
-      !all(
-        old.parent.status$ParentAnalysis %in%
-          gsub(".*([0-9a-f]{40})\\.rds", "\\1", available)
-      )
-    ) {
-      status(x) <- "error"
-      return(x)
-    }
-    old.parent.status <- old.parent.status %>%
+    old.parent.status <- parent_status(x) %>%
       rename_(
         OldStatusFingerprint = ~ParentStatusFingerprint,
         OldStatus = ~ParentStatus
       )
-    compare <- status(available) %>%
-      select_(
-        ParentAnalysis = ~FileFingerprint,
-        ParentStatusFingerprint = ~StatusFingerprint,
-        ParentStatus = ~Status
-      ) %>%
+    parents <- get_parents(child = x, base = dots$base, project = dots$project)
+    compare <- lapply(
+      parents,
+      function(z){
+        z@AnalysisMetadata %>%
+          select(
+            ParentAnalysis = .data$FileFingerprint,
+            ParentStatusFingerprint = .data$StatusFingerprint,
+            ParentStatus = .data$Status
+          )
+      }
+    ) %>%
+      bind_rows() %>%
       inner_join(old.parent.status, by = "ParentAnalysis") %>%
       arrange_(~ParentAnalysis)
 
@@ -103,8 +88,7 @@ setMethod(
           paste0(ParentStatus, "/", ParentAnalysis, ".rds")
       ) %>%
       select_(~ParentAnalysis, ~Filename)
-    models <- lapply(to.update$Filename, get_model)
-    names(models) <- to.update$ParentAnalysis
+    models <- lapply(parents[to.update$ParentAnalysis], get_model)
     x@Models <- models
 
     if (all(

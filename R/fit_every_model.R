@@ -4,8 +4,9 @@
 #' @param verbose Show the name of the current analysis file on screen. Defaults to TRUE
 #' @param n.cluster the number of clusters to use
 #' @export
-#' @importFrom n2khelper check_character check_path
-fit_every_model <- function(path = ".", status, verbose = TRUE, n.cluster = 1){
+#' @importFrom n2khelper check_character
+fit_every_model <- function(path, status, verbose = TRUE, n.cluster = 1){
+  assert_that(is.dir(path))
   if (missing(status)) {
     status <- c("new", "waiting")
   } else {
@@ -20,7 +21,6 @@ fit_every_model <- function(path = ".", status, verbose = TRUE, n.cluster = 1){
       status <- status[test.status]
     }
   }
-  path <- check_path(path, type = "directory")
   files <- list.files(path = path, pattern = "\\.rds$", full.names = TRUE)
   if (n.cluster == 1) {
     lapply(files, fit_model, status = status, verbose = verbose)

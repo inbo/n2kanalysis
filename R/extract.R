@@ -1,7 +1,8 @@
 #' Extract the relevant coefficients
 #' @param extractor the extractor function
 #' @param object the n2kModel object
-#' @param path the optional path
+#' @param base the optional base location of the object
+#' @param project the optional subdirectory
 #' @return the relevant coefficients
 #' @name extract
 #' @rdname extract
@@ -10,7 +11,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "extract",
-  def = function(extractor, object, path){
+  def = function(extractor, object, base, project){
     # nocov start
     standardGeneric("extract")
     # nocov end
@@ -20,30 +21,32 @@ setGeneric(
 #' @rdname extract
 #' @aliases extract,character-methods
 #' @importFrom methods setMethod new
-#' @importFrom n2khelper check_path read_object_environment
+#' @importFrom n2khelper read_object_environment
+#' @importFrom dplyr %>% bind_rows
 setMethod(
   f = "extract",
   signature = signature(object = "character"),
-  definition = function(extractor, object, path){
+  definition = function(extractor, object, base, project){
     if (length(object) > 1) {
-      output <- do.call(
-        rbind,
-        lapply(
-          object,
-          extract,
-          path = path,
-          extractor = extractor
-        )
-      )
+      output <- lapply(
+        object,
+        extract,
+        base = base,
+        project = project,
+        extractor = extractor
+      ) %>%
+        bind_rows()
       return(output)
     }
-    path <- check_path(path, type = "directory")
-    file <- paste0(path, "/", object, ".rds")
-    file <- check_path(file, type = "file")
-    parent <- readRDS(file)
+    parent <- read_model(object, base = base, project = project)
     cbind(
       Parent = object,
-      extract(extractor = extractor, object = parent, path = NULL)
+      extract(
+        extractor = extractor,
+        object = parent,
+        base = base,
+        project = project
+      )
     )
   }
 )
@@ -55,7 +58,7 @@ setMethod(
 setMethod(
   f = "extract",
   signature = signature(object = "n2kInlaNbinomial"),
-  definition = function(extractor, object, path = NULL){
+  definition = function(extractor, object, base = NULL, project = NULL){
     assert_that(inherits(extractor, "function"))
     extractor(object@Model)
   }
