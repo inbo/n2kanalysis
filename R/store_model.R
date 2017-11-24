@@ -2,6 +2,7 @@
 #' @param x the n2kModel
 #' @param base the base location to store the model
 #' @param project will be a relative path within the base location
+#' @param overwrite should an existing object be overwritten? Defaults to TRUE
 #' @name store_model
 #' @rdname store_model
 #' @exportMethod store_model
@@ -9,24 +10,28 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "store_model",
-  def = function(x, base, project){
+  def = function(x, base, project, overwrite = TRUE){
     standardGeneric("store_model") # nocov
   }
 )
 
 #' @rdname store_model
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that is.string
+#' @importFrom assertthat assert_that is.string is.flag noNA
 setMethod(
   f = "store_model",
   signature = signature(base = "character"),
-  definition = function(x, base, project){
+  definition = function(x, base, project, overwrite = TRUE){
+    assert_that(is.flag(overwrite))
+    assert_that(noNA(overwrite))
     assert_that(inherits(x, "n2kModel"))
     assert_that(is.string(base))
     assert_that(file_test("-d", base))
     assert_that(is.string(project))
     validObject(x, complete = TRUE)
+
     status <- status(x)
+    fingerprint <- get_file_fingerprint(x)
 
     #create dir is it doesn't exist
     dir <- sprintf("%s/%s/%s", base, project, status) %>%
@@ -35,18 +40,6 @@ setMethod(
       dir.create(dir, recursive = TRUE)
     }
 
-    #test is file exists
-    fingerprint <- get_file_fingerprint(x)
-    filename <- list.files(
-        dir,
-        pattern = sprintf("%s.rds$", fingerprint),
-        full.names = TRUE
-      )
-    if (length(filename) > 0) {
-      return(filename)
-    }
-
-    # see if the file exists in other dirs
     current <- sprintf("%s/%s", base, project) %>%
       normalizePath(winslash = "/", mustWork = FALSE) %>%
       list.files(
@@ -56,10 +49,15 @@ setMethod(
       )
     filename <- sprintf("%s/%s.rds", dir, fingerprint) %>%
       normalizePath(winslash = "/", mustWork = FALSE)
-    # store the file in the current dir and remove it from other dirs
-    saveRDS(x, file = filename)
-    file.remove(current)
 
+    if (length(current) > 0) {
+      if (!overwrite) {
+        return(current)
+      }
+      file.remove(current)
+    }
+
+    saveRDS(x, file = filename)
     return(filename)
   }
 )
@@ -72,11 +70,10 @@ setMethod(
 setMethod(
   f = "store_model",
   signature = signature(base = "s3_bucket"),
-  definition = function(x, base, project){
+  definition = function(x, base, project, overwrite = TRUE){
     assert_that(inherits(x, "n2kModel"))
     assert_that(is.string(project))
     validObject(x, complete = TRUE)
-    status <- status(x)
 
     # try several times to connect to S3 bucket
     # avoids errors due to time out
@@ -103,24 +100,25 @@ setMethod(
       stop("Unable to connect to S3 bucket")
     }
 
-    # check if object with same fingerprint exists
+    status <- status(x)
+    fingerprint <- get_file_fingerprint(x)
+
     existing <- get_bucket(base, prefix = project, max = Inf)
     existing <- existing[names(existing) == "Contents"] %>%
       sapply("[[", "Key")
-    fingerprint <- get_file_fingerprint(x)
     current <- existing[grepl(sprintf("%s.rds$", fingerprint), existing)]
-    exists <- grepl(sprintf("%s/%s.rds$", status, fingerprint), current)
-    filename <- current[exists] %>%
-      unname()
-    if (length(filename) > 0) {
-      return(filename)
-    }
-
-    # create object if it doesn't exists
     filename <- sprintf("%s/%s/%s.rds", project, status, fingerprint) %>%
       normalizePath(winslash = "/", mustWork = FALSE) %>%
       gsub(pattern = "//", replacement = "/") %>%
       gsub(pattern = "^/", replacement = "")
+
+    if (length(current) > 0) {
+      if (!overwrite) {
+        return(current)
+      }
+      delete_object(object = current, bucket = base)
+    }
+
     # try several times to write to S3 bucket
     # avoids errors due to time out
     i <- 1
@@ -144,9 +142,6 @@ setMethod(
     }
     if (!bucket_ok) {
       stop("Unable to write to S3 bucket")
-    }
-    if (any(!exists)) {
-      delete_object(object = current[!exists], bucket = base)
     }
 
     return(filename)
