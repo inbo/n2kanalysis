@@ -25,7 +25,8 @@ setMethod(
       if (length(parent) > 1) {
         stop("Multiple parents")
       }
-      parent_status <- status(parent[[1]])
+      parent <- parent[[1]]
+      parent_status <- status(parent)
       if (parent_status %in% c("new", "waiting")) {
         status(x) <- "waiting"
         return(x)
