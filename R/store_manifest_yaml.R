@@ -94,9 +94,9 @@ setMethod(
     yaml <- sprintf("  - %s", dependencies) %>%
       paste(collapse = "\n") %>%
       sprintf(
-        fmt = "github:\n%s\ndocker: %s\nbucket: %s\nproject: %s\nhash: %s",
+        fmt = "github:\n%s\ndocker: %s\nbase: %s\nproject: %s\nhash: %s",
         docker,
-        attr(base, "Name"),
+        base,
         project,
         basename(stored)
       )
@@ -106,6 +106,9 @@ setMethod(
       return(filename)
     }
 
+    if (!dir.exists(dirname(filename))) {
+      dir.create(dirname(filename), recursive = TRUE)
+    }
     writeLines(yaml, filename, sep = "\t")
     return(filename)
   }
