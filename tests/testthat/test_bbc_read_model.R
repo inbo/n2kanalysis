@@ -37,5 +37,5 @@ test_that("read_model() works with S3 buckets", {
   )
   available <- get_bucket("n2kmonitoring", prefix = project) %>%
     sapply("[[", "Key")
-  expect_true(all(sapply(available, delete_object, bucket = bucket)))
+  expect_true(all(sapply(available, delete_object, bucket = base)))
 })
