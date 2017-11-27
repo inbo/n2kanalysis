@@ -42,6 +42,8 @@ test_that("store_model stores the model on a local file system", {
   expect_identical(filename, filename2)
   expect_identical(file_info, file_info2)
 
+  expect_identical(get_model(filename), NULL)
+
   fitted <- fit_model(filename, base, project)
   expect_identical(
     sprintf("%s/%s", base, project) %>%
