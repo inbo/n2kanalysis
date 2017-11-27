@@ -40,12 +40,14 @@ setMethod(
 #' @rdname get_model
 #' @aliases get_model,character-methods
 #' @importFrom methods setMethod new
-#' @importFrom n2khelper check_path read_object_environment
+#' @importFrom assertthat assert_that
+#' @importFrom utils file_test
+#' @importFrom n2khelper read_object_environment
 setMethod(
   f = "get_model",
   signature = signature(x = "character"),
   definition = function(x){
-    x <- check_path(x, type = "file")
+    assert_that(file_test("-f", x))
     return(get_model(readRDS(x)))
   }
 )

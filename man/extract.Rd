@@ -9,18 +9,21 @@
 \alias{extract,n2kInlaNbinomial-methods}
 \title{Extract the relevant coefficients}
 \usage{
-extract(extractor, object, path)
+extract(extractor, object, base, project)
 
-\S4method{extract}{ANY,character}(extractor, object, path)
+\S4method{extract}{ANY,character}(extractor, object, base, project)
 
-\S4method{extract}{ANY,n2kInlaNbinomial}(extractor, object, path = NULL)
+\S4method{extract}{ANY,n2kInlaNbinomial}(extractor, object, base = NULL,
+  project = NULL)
 }
 \arguments{
 \item{extractor}{the extractor function}
 
 \item{object}{the n2kModel object}
 
-\item{path}{the optional path}
+\item{base}{the optional base location of the object}
+
+\item{project}{the optional subdirectory}
 }
 \value{
 the relevant coefficients

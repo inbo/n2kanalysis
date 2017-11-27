@@ -1,8 +1,7 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that is.string is.flag noNA
+#' @importFrom assertthat assert_that is.string is.flag noNA is.dir
 #' @importFrom dplyr %>% transmute_ mutate_ left_join arrange_
-#' @importFrom n2khelper check_path
 #' @importFrom aws.s3 get_bucket
 #' @importFrom tibble rowid_to_column
 #' @include n2kManifest_class.R
@@ -30,7 +29,7 @@ setMethod(
         )
     }
     if (inherits(dots$base, "character")) {
-      dots$base <- check_path(dots$base, type = "directory")
+      assert_that(is.dir(dots$base), msg = "base is not a directory")
       assert_that(
         is.string(dots$project),
         msg = "project is not a string (single character vector)"

@@ -75,6 +75,7 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
     read_manifest(bucket, project, object@Fingerprint),
     object
   )
+  Sys.sleep(2)
   stored <- store_manifest(object2, bucket, project)
   expect_equal(
     read_manifest(bucket, hash = stored$Contents$Key),
@@ -85,9 +86,6 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
     object2
   )
   latest <- read_manifest(bucket, project)
-  cat(latest@Fingerprint, object2@Fingerprint, object@Fingerprint, sep = "\n")
-  str(latest)
-  str(object2)
   expect_equal(
     latest,
     object2

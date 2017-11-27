@@ -1,6 +1,7 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% select_ group_by_ summarise_ distinct_ filter_ anti_join arrange_ inner_join
+#' @importFrom dplyr %>% select select_ group_by_ summarise_ distinct_ filter_ anti_join arrange_ inner_join
+#' @importFrom rlang .data
 #' @importFrom utils file_test
 #' @importFrom stats qnorm
 #' @include n2kComposite_class.R
@@ -42,33 +43,24 @@ setMethod(
     }
 
     # status: "waiting"
-    if (is.null(dots$path)) {
-      dots$path <- "."
-    }
-    if (inherits(dots$path, "s3_object")) {
-      stop("path to S3 object not handled yet")
-    }
-    old.parent.status <- parent_status(x)
-    files.to.check <- normalizePath(
-      paste0(dots$path, "/", old.parent.status$ParentAnalysis, ".rds"),
-      winslash = "/",
-      mustWork = FALSE
-    )
-    if (!all(file_test("-f", files.to.check))) {
-      status(x) <- "error"
-      return(x)
-    }
-    old.parent.status <- old.parent.status %>%
+    old.parent.status <- parent_status(x) %>%
       rename_(
         OldStatusFingerprint = ~ParentStatusFingerprint,
         OldStatus = ~ParentStatus
       )
-    compare <- status(files.to.check) %>%
-      select_(
-        ParentAnalysis = ~FileFingerprint,
-        ParentStatusFingerprint = ~StatusFingerprint,
-        ParentStatus = ~Status
-      ) %>%
+    parents <- get_parents(child = x, base = dots$base, project = dots$project)
+    compare <- lapply(
+      parents,
+      function(z){
+        z@AnalysisMetadata %>%
+          select(
+            ParentAnalysis = .data$FileFingerprint,
+            ParentStatusFingerprint = .data$StatusFingerprint,
+            ParentStatus = .data$Status
+          )
+      }
+    ) %>%
+      bind_rows() %>%
       inner_join(old.parent.status, by = "ParentAnalysis") %>%
       arrange_(~ParentAnalysis)
 
@@ -91,7 +83,8 @@ setMethod(
       x@Parameter <- extract(
         extractor = x@Extractor,
         object = to.update$ParentAnalysis,
-        path = dots$path
+        base = dots$base,
+        project = dots$project
       ) %>%
         arrange_(~Parent, ~Value)
     }

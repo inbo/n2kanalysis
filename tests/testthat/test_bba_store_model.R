@@ -1,6 +1,7 @@
 context("store_model")
 test_that("store_model stores the model on a local file system", {
-  temp_dir <- tempdir()
+  base <- tempdir()
+  project <- "store_model"
   this.result.datasource.id <- sha1(sample(letters))
   this.scheme.id <- sha1(sample(letters))
   this.species.group.id <- sha1(sample(letters))
@@ -29,19 +30,44 @@ test_that("store_model stores the model on a local file system", {
     data = dataset
   )
   expect_is(
-    filename <- store_model(object, temp_dir, "store_model"),
+    filename <- store_model(object, base, project),
     "character"
   )
   file_info <- file.info(filename)
   expect_is(
-    filename2 <- store_model(object, temp_dir, "store_model"),
+    filename2 <- store_model(object, base, project, overwrite = FALSE),
     "character"
   )
   file_info2 <- file.info(filename2)
   expect_identical(filename, filename2)
   expect_identical(file_info, file_info2)
 
-  paste0(temp_dir, "/store_model") %>% # nolint
+  expect_identical(get_model(filename), NULL)
+
+  fitted <- fit_model(filename, base, project)
+  expect_identical(
+    sprintf("%s/%s", base, project) %>%
+      list.files(recursive = TRUE, full.names = TRUE),
+    gsub("new", "converged", filename)
+  )
+  expect_is(
+    filename2 <- store_model(object, base, project, overwrite = FALSE),
+    "character"
+  )
+  expect_identical(
+    filename2,
+    gsub("new", "converged", filename)
+  )
+  expect_is(
+    filename2 <- store_model(object, base, project),
+    "character"
+  )
+  expect_identical(
+    filename2,
+    filename
+  )
+
+  sprintf("%s/%s", base, project) %>%
     list.files(recursive = TRUE, full.names = TRUE) %>%
     file.remove()
 })
@@ -51,6 +77,7 @@ test_that("store_model stores the model on an S3 bucket", {
     return(NULL)
   }
   bucket <- get_bucket("n2kmonitoring")
+  project <- "unittest_store_model"
   this.result.datasource.id <- sha1(sample(letters))
   this.scheme.id <- sha1(sample(letters))
   this.species.group.id <- sha1(sample(letters))
@@ -82,22 +109,22 @@ test_that("store_model stores the model on an S3 bucket", {
     filename <- store_model(
       x = object,
       base = bucket,
-      project = "unittest_store_model"
+      project = project
     ),
     "character"
   )
-  available <- get_bucket("n2kmonitoring", prefix = "unittest_store_model") %>%
+  available <- get_bucket("n2kmonitoring", prefix = project) %>%
     sapply("[[", "Key")
   expect_true(filename %in% available)
   expect_is(
     filename2 <- store_model(
       x = object,
       base = bucket,
-      project = "unittest_store_model"
+      project = project
     ),
     "character"
   )
-  available <- get_bucket("n2kmonitoring", prefix = "unittest_store_model") %>%
+  available <- get_bucket("n2kmonitoring", prefix = project) %>%
     sapply("[[", "Key")
   expect_true(filename2 %in% available)
   expect_identical(filename, filename2)

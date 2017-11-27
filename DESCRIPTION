@@ -1,7 +1,7 @@
 Package: n2kanalysis
 Title: Generic Functions to Analyse Data from the Natura 2000 Monitoring
-Version: 0.2.3
-Date: 2017-09-21
+Version: 0.2.4
+Date: 2017-11-25
 Authors@R: c(person("Thierry", "Onkelinx", email = "thierry.onkelinx@inbo.be", role = c("aut", "cre")))
 Description: All generic functions for the analysis. The full analysis is
     defined in the analysis package of each monitoring scheme.
@@ -24,8 +24,9 @@ Imports:
     lme4,
     MASS,
     methods,
-    multimput (>= 0.2.5),
-    n2khelper (>= 0.4.1),
+    multimput (>= 0.2.7.9000),
+    n2khelper (>= 0.4.1.1),
+    rlang,
     RODBC,
     tibble,
     tidyr (>= 0.4.0)
@@ -85,7 +86,7 @@ Collate:
     'get_model_parameter_n2kLrtGlmer.R'
     'get_model_parameter_n2kModelImputed.R'
     'get_model_type.R'
-    'get_parent.R'
+    'get_parents.R'
     'get_result.R'
     'get_result_character.R'
     'get_result_n2kInlaNbinomial.R'
@@ -107,6 +108,7 @@ Collate:
     'n2k_model_imputed.R'
     'parent_status.R'
     'read_manifest.R'
+    'read_model.R'
     'select_factor_count_strictly_positive.R'
     'select_factor_treshold.R'
     'select_observed_range.R'

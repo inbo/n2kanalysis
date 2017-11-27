@@ -26,8 +26,9 @@ object <- n2k_inla_nbinomial(
   last.imported.year = this.last.imported.year,
   analysis.date = this.analysis.date,
   data = dataset
-)
-n2k_aggregate(
+) %>%
+  fit_model()
+child <- n2k_aggregate(
   result.datasource.id = this.result.datasource.id,
   scheme.id = this.scheme.id,
   species.group.id = this.species.group.id,
@@ -40,3 +41,10 @@ n2k_aggregate(
   parent = get_file_fingerprint(object),
   fun = sum
 )
+base <- tempdir()
+project <- "n2kaggregate"
+store_model(object, base = base, project = project)
+get_parents(child, base = base, project = project)
+
+# clean temp files
+file.remove(list.files(base, recursive = TRUE, full.names = TRUE))
