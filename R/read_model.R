@@ -36,7 +36,7 @@ setMethod(
     }
 
     if (length(filename) == 0) {
-      stop("no machting objects in directory")
+      stop("no matching objects in directory")
     }
     stop("multiple matching objects in directory")
   }
@@ -81,7 +81,7 @@ setMethod(
 
     # check if object with same fingerprint exists
     available <- get_bucket(base, prefix = project, max = Inf)
-    existing <- existing[names(available) == "Contents"] %>%
+    existing <- available[names(available) == "Contents"] %>%
       sapply("[[", "Key")
     matching <- sprintf("%s.rds", x) %>%
       grep(existing)
@@ -109,9 +109,9 @@ setMethod(
     assert_that(is.string(project))
 
     available <- get_bucket(base, prefix = project, max = Inf)
-    existing <- existing[names(available) == "Contents"] %>%
+    existing <- available[names(available) == "Contents"] %>%
       sapply("[[", "Key")
-    matching <- sprintf("%s.rds", x) %>%
+    matching <- sprintf("%s/.*%s[[:xdigit:]]{0,40}\\.rds", project, x) %>%
       grep(existing)
     if (length(matching) == 1) {
       return(s3readRDS(available[[matching]]))
