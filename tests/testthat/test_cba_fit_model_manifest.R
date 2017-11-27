@@ -100,13 +100,13 @@ describe("it handles a manifest", {
     ) %>%
       n2k_manifest()
     expect_identical(
-      fit_model(x, base = base, project = project),
+      fit_model(x, base = base, project = project, verbose = TRUE),
       NULL
     )
 
     x <- store_manifest(x, base = base, project = project)
     expect_identical(
-      fit_model(x$Contents, base = base, project = project),
+      fit_model(x$Contents),
       NULL
     )
 
