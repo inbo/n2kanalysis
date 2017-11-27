@@ -36,7 +36,7 @@ setMethod(
     }
 
     if (length(filename) == 0) {
-      stop("no matching objects in directory")
+      stop("no matching object in directory")
     }
     stop("multiple matching objects in directory")
   }
@@ -90,7 +90,7 @@ setMethod(
     }
 
     if (length(matching) == 0) {
-      stop("no matching objects in bucket")
+      stop("no matching object in bucket")
     }
     stop("multiple matching objects in bucket")
   }
@@ -118,7 +118,7 @@ setMethod(
     }
 
     if (length(matching) == 0) {
-      stop("no matching objects in bucket")
+      stop("no matching object in bucket")
     }
     stop("multiple matching objects in bucket")
   }

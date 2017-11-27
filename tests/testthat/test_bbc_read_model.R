@@ -2,6 +2,7 @@ context("read_model")
 test_that("read_model() handles exceptions on characters", {
   base <- tempdir()
   project <- "read_model"
+  dir.create(sprintf("%s/%s", base, project))
   writeLines("junk", sprintf("%s/%s/test1.rds", base, project))
   writeLines("junk", sprintf("%s/%s/test2.rds", base, project))
   expect_error(
@@ -28,7 +29,7 @@ test_that("read_model() works with S3 buckets", {
   )
   expect_error(
     read_model("junk", base, project),
-    "no matching objects in bucket"
+    "no matching object in bucket"
   )
   expect_error(
     read_model("test", base, project),
@@ -36,7 +37,5 @@ test_that("read_model() works with S3 buckets", {
   )
   available <- get_bucket("n2kmonitoring", prefix = project) %>%
     sapply("[[", "Key")
-  expect_true(filename2 %in% available)
-  expect_identical(filename, filename2)
   expect_true(all(sapply(available, delete_object, bucket = bucket)))
 })
