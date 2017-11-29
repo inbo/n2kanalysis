@@ -1,6 +1,7 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.flag noNA
+#' @importFrom aws.s3 get_bucket
 #' @details
 #' \describe{
 #'  \item{\code{status}}{A vector with status levels naming the levels which should be recalculated. Defaults to \code{"new"}}
@@ -22,11 +23,15 @@ setMethod(
       message(x)
     }
     if (is.null(dots$base)) {
-      dots$base <- gsub(
-        pattern = "(.*)/(.*)/.*/[[:xdigit:]]{40}\\.(rds|manifest)",
-        replacement = "\\1",
-        x = x
-      )
+      if (is.null(dots$bucket)) {
+        dots$base <- gsub(
+          pattern = "(.*)/(.*)/.*/[[:xdigit:]]{40}\\.(rds|manifest)",
+          replacement = "\\1",
+          x = x
+        )
+      } else {
+        dots$base <- get_bucket(dots$bucket)
+      }
     }
     if (is.null(dots$project)) {
       dots$project <- gsub(
