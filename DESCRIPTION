@@ -1,7 +1,7 @@
 Package: n2kanalysis
 Title: Generic Functions to Analyse Data from the Natura 2000 Monitoring
-Version: 0.2.4
-Date: 2017-11-25
+Version: 0.2.4.1
+Date: 2017-11-29
 Authors@R: c(person("Thierry", "Onkelinx", email = "thierry.onkelinx@inbo.be", role = c("aut", "cre")))
 Description: All generic functions for the analysis. The full analysis is
     defined in the analysis package of each monitoring scheme.
