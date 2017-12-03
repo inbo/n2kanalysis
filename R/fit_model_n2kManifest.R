@@ -50,7 +50,8 @@ setMethod(
     if (inherits(dots$base, "s3_bucket")) {
       available <- get_bucket(
         bucket = dots$base,
-        prefix = dots$project
+        prefix = dots$project,
+        max = Inf
       )
       manifest <- data.frame(
         Filename = sapply(available, "[[", "Key"),

@@ -1,7 +1,6 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
 #' @importFrom multimput model_impute
-#' @importFrom aws.s3 get_bucket s3readRDS
 #' @include n2kModelImputed_class.R
 setMethod(
   f = "fit_model",
