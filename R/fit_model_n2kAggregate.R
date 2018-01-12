@@ -17,7 +17,7 @@ setMethod(
     }
 
     # status: "waiting"
-    if (status(x) == "waiting") {
+    if (status(x) == "waiting" | is.null(x@RawImputed)) {
       parent <- get_parents(x, base = dots$base, project = dots$project)
       if (length(parent) == 0) {
         stop("Parent analysis not found")
