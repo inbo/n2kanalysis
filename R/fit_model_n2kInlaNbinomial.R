@@ -48,7 +48,10 @@ setMethod(
         }
       }
     }
-    model <- try(
+    model <- try({
+      if (!is.null(dots$timeout)) {
+        setTimeLimit(cpu = dots$timeout, elapsed = dots$timeout)
+      }
       INLA::inla(
         formula = model.formula,
         family = "nbinomial",
@@ -58,9 +61,13 @@ setMethod(
         control.predictor = list(compute = TRUE, link = link),
         control.fixed = list(prec.intercept = 1)
       )
-    )
-    if ("try-error" %in% class(model)) {
-      status(x) <- "error"
+    })
+    if (inherits(model, "try-error")) {
+      if (grepl("reached .* time limit", model)) {
+        status(x) <- "time-out"
+      } else {
+        status(x) <- "error"
+      }
       return(x)
     }
     if (x@ImputationSize == 0) {
