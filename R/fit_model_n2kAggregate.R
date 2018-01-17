@@ -1,7 +1,6 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
 #' @importFrom multimput aggregate_impute
-#' @importFrom aws.s3 get_bucket s3readRDS
 #' @include n2kAggregate_class.R
 setMethod(
   f = "fit_model",

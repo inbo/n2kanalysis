@@ -38,7 +38,7 @@ setMethod(
       )
     filename <- gsub("\\.manifest", ".yaml", stored$Contents$Key) %>%
       gsub(pattern = "(.*/)manifest(/.*)", replacement = "\\1yaml\\2")
-    available <- get_bucket(base, prefix = filename)
+    available <- get_bucket(base, prefix = filename, max = Inf)
     if (length(available)) {
       return(available)
     }
@@ -73,7 +73,7 @@ setMethod(
     if (!bucket_ok) {
       stop("Unable to write to S3 bucket")
     }
-    get_bucket(base, prefix = filename)
+    get_bucket(base, prefix = filename, max = Inf)
   }
 )
 
