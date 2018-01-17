@@ -200,6 +200,8 @@ describe("fit_model() on INLA nbinomial based objects", {
     imputation.size = 10,
     data = dataset
   )
+  timeout <- fit_model(object, timeout = 0.1)
+  expect_identical(status(timeout), "time-out")
   object.fit <- fit_model(object)
   object.lc.fit <- fit_model(object.lc)
   object.lc.list.fit <- fit_model(object.lc.list)

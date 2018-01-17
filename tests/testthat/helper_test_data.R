@@ -5,10 +5,10 @@
 #' @importFrom dplyr %>% mutate_ n row_number
 #' @importFrom stats model.matrix rnbinom rnorm runif
 test_data <- function(datasource.id = sha1(letters), missing = 0){
-  assert_that(is.string(datasource.id))
-  assert_that(is.number(missing))
-  assert_that(missing >= 0)
-  assert_that(missing <= 1)
+  assertthat::assert_that(assertthat::is.string(datasource.id))
+  assertthat::assert_that(assertthat::is.number(missing))
+  assertthat::assert_that(missing >= 0)
+  assertthat::assert_that(missing <= 1)
 
   set.seed(999)
   n.e <- 10
@@ -43,7 +43,7 @@ test_data <- function(datasource.id = sha1(letters), missing = 0){
     as.vector()
   eta <- mm.fixed %*% fixed + mm.random %*% random #nolint
   dataset <- dataset %>%
-    mutate_(
+    dplyr::mutate_(
       Count = ~ifelse(
         rbinom(n(), size = 1, prob = missing) == 1,
         NA,
