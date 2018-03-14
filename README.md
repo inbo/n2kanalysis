@@ -24,7 +24,7 @@ The main goal of `n2kanalysis` is to assist traceable analysis of monitoring dat
 
 ## Folder structure
 
-The folder structure is that of a typical R packages with the mandatory `R` folder (definition of the functions) and `man` (helpfiles in Rd format). `inst` is an optional folder in which some auxiliary scripts are stored. The optional `test` folder contains the unit tests using the infrastructure from the `testthat` package.
+The folder structure is that of a typical R package with the mandatory `R` folder (definition of the functions) and `man` (helpfiles in Rd format). `inst` is an optional folder in which some auxiliary scripts are stored. The optional `tests` folder contains the unit tests using the infrastructure from the `testthat` package.
 
 ```
 n2kanalysis
