@@ -59,6 +59,7 @@ setMethod(
       Parameter = character(0),
       DatasourceID = character(0),
       Datafield = character(0),
+      Observation = character(0),
       stringsAsFactors = FALSE
     )
 
@@ -120,6 +121,7 @@ setMethod(
         Parameter = selection$Fingerprint,
         DatasourceID = selection$DatasourceID,
         Datafield = "Observation",
+        Observation = selection$ObservationID,
         stringsAsFactors = FALSE
       )
       anomaly <- rbind(anomaly, extra.observation)
@@ -148,6 +150,7 @@ setMethod(
         Parameter = data.subset$Fingerprint,
         DatasourceID = data.subset$DatasourceID,
         Datafield = "Observation",
+        Observation = data.subset$ObservationID,
         stringsAsFactors = FALSE
       )
       anomaly <- rbind(anomaly, extra.observation)
