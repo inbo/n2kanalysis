@@ -200,7 +200,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     imputation.size = 10,
     data = dataset
   )
-  timeout <- fit_model(object, timeout = 0.1)
+  timeout <- fit_model(object, timeout = 0.001)
   expect_identical(status(timeout), "time-out")
   object.fit <- fit_model(object)
   object.lc.fit <- fit_model(object.lc)
@@ -369,7 +369,10 @@ test_that("fit_model() works on n2kInlaComparison", {
   fit_model(filename2, verbose = FALSE)
   fit_model(filename3, verbose = FALSE)
   filename3 <- gsub("waiting", "converged", filename3)
-  fit_model(filename3, verbose = FALSE)
+  expect_identical(
+    fit_model(filename3, verbose = FALSE),
+    NULL
+  )
 
   # clean temp files
   file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))
@@ -449,8 +452,10 @@ test_that("fit_model() works in n2kLrtGlmer objects", {
   project <- "lrtglmer"
   store_model(object.1, base = temp.dir, project = project)
   store_model(object.0, base = temp.dir, project = project)
-  fit_model(x, base = temp.dir, project = project)
-
+  expect_is(
+    fit_model(x, base = temp.dir, project = project),
+    "n2kLrtGlmer"
+  )
   # clean temp files
   file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))
 })
