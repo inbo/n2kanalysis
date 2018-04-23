@@ -71,8 +71,8 @@ setMethod(
       status(x) <- "error"
       return(x)
     }
-    if (any(x@AnalysisRelation$ParentStatus == "false convergence")) {
-      status(x) <- "false convergence"
+    if (any(x@AnalysisRelation$ParentStatus == "false_convergence")) {
+      status(x) <- "false_convergence"
       return(x)
     }
     if (nrow(to.update) == 0) {
