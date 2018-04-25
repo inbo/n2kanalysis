@@ -499,9 +499,9 @@ describe("get_result on n2kInlaNbinomial with replicated random effects", {
 })
 
 describe("get_result on n2kGlmerPoisson", {
-  this.model.type <- "inla nbinomial: period + herd"
+  this.model.type <- "glmer poisson: period + herd"
   this.formula <- "Count ~ A * (B + C) + C:D + (1|E) + (1|F)"
-  analysis <- n2k_inla_nbinomial(
+  analysis <- n2k_glmer_poisson(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,

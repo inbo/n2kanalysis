@@ -57,8 +57,6 @@ setMethod(
       AnomalyType = character(0),
       Analysis = character(0),
       Parameter = character(0),
-      DatasourceID = character(0),
-      Datafield = character(0),
       Observation = character(0),
       stringsAsFactors = FALSE
     )
@@ -120,7 +118,6 @@ setMethod(
         Analysis = get_file_fingerprint(analysis),
         Parameter = selection$Fingerprint,
         DatasourceID = selection$DatasourceID,
-        Datafield = "Observation",
         Observation = selection$ObservationID,
         stringsAsFactors = FALSE
       )
@@ -149,7 +146,6 @@ setMethod(
         Analysis = get_file_fingerprint(analysis),
         Parameter = data.subset$Fingerprint,
         DatasourceID = data.subset$DatasourceID,
-        Datafield = "Observation",
         Observation = data.subset$ObservationID,
         stringsAsFactors = FALSE
       )
@@ -164,8 +160,6 @@ setMethod(
     if (any(sapply(re, ncol) > 1)) {
       stop("get_anomaly cannot handle random slopes yet")
     }
-    data.field <- gsub("^f", "", names(re))
-    data.field <- gsub("ID$", "", data.field)
     main.sha <- parameter@Parameter$Fingerprint[
       parameter@Parameter$Description == "Random effect BLUP"
     ]
@@ -214,7 +208,6 @@ setMethod(
           Analysis = get_file_fingerprint(analysis),
           Parameter = selection$Fingerprint,
           DatasourceID = analysis@AnalysisMetadata$ResultDatasourceID,
-          Datafield = data.field[i],
           stringsAsFactors = FALSE
         )
         anomaly <- rbind(anomaly, extra.observation)

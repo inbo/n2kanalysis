@@ -93,7 +93,6 @@ anomaly <- expand.grid(
   Parameter = sample(parameter$Fingerprint, min(5, nrow(parameter))),
   DatasourceID = datasourceid,
   Observation = "1",
-  Datafield = "UnitTest",
   stringsAsFactors = FALSE
 ) %>%
   mutate_(Estimate = ~seq_along(Analysis))
