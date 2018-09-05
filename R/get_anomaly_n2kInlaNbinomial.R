@@ -14,14 +14,14 @@ setMethod(
     n = 20,
     log.expected.ratio = log(5),
     log.expected.absent = log(5),
-    random.treshold = log(1.05),
+    random.threshold = log(1.05),
     verbose = TRUE,
     ...
   ){
     assert_that(is.count(n))
     assert_that(is.number(log.expected.ratio))
     assert_that(is.number(log.expected.absent))
-    assert_that(is.number(random.treshold))
+    assert_that(is.number(random.threshold))
     assert_that(is.flag(verbose))
     assert_that(noNA(verbose))
 
@@ -157,7 +157,7 @@ setMethod(
       select_(~AnomalyType, Parameter = ~Fingerprint) %>%
       inner_join(
         parameter@ParameterEstimate %>%
-          filter_(~abs(Estimate) > random.treshold) %>%
+          filter_(~abs(Estimate) > random.threshold) %>%
           select_(~Analysis, ~Parameter, ~Estimate),
         by = "Parameter"
       )

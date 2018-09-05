@@ -15,11 +15,11 @@ get_anomaly(analysis, ...)
 
 \S4method{get_anomaly}{n2kGlmerPoisson}(analysis, n = 20,
   log.expected.ratio = log(5), log.expected.absent = log(5),
-  random.treshold = log(5), verbose = TRUE, ...)
+  random.threshold = log(5), verbose = TRUE, ...)
 
 \S4method{get_anomaly}{n2kInlaNbinomial}(analysis, n = 20,
   log.expected.ratio = log(5), log.expected.absent = log(5),
-  random.treshold = log(1.05), verbose = TRUE, ...)
+  random.threshold = log(1.05), verbose = TRUE, ...)
 
 \S4method{get_anomaly}{n2kModel}(analysis, verbose = TRUE, ...)
 }
@@ -32,9 +32,9 @@ get_anomaly(analysis, ...)
 
 \item{log.expected.ratio}{observations that have a abs(log(observed/fitted)) above this ratio are potential anomalies. Defaults to log(5), which implies that observed values that are 5 times higher of lower than the fitted values are potential anomalies.}
 
-\item{log.expected.absent}{Zero observations with log(fitted) larger than this treshold are potential anomalies.}
+\item{log.expected.absent}{Zero observations with log(fitted) larger than this threshold are potential anomalies.}
 
-\item{random.treshold}{random effects with a absolute value above this treshold are potential anomalies}
+\item{random.threshold}{random effects with a absolute value above this threshold are potential anomalies}
 
 \item{verbose}{Print extra information on the screen}
 }

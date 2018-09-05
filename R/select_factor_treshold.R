@@ -1,9 +1,9 @@
 #' Select the observations based on the average of a factor
 #'
-#' The negative binomial average of the \code{Count} variable is calculated for each level of \code{variable}. Only the levels which are equal or larger than \code{treshold} times the maximal average (in the original scale) are retained.
+#' The negative binomial average of the \code{Count} variable is calculated for each level of \code{variable}. Only the levels which are equal or larger than \code{threshold} times the maximal average (in the original scale) are retained.
 #' @param observation the \code{data.frame} with observations
 #' @param variable the name of the \code{factor}
-#' @param treshold the minimal treshold
+#' @param threshold the minimal threshold
 #' @export
 #' @importFrom MASS glm.nb
 #' @importFrom n2khelper check_single_probability check_dataframe_variable
@@ -14,10 +14,10 @@
 #'   Count = c(100, 101, 50, 51, 1, 0, 0, 0),
 #'   LocationID = factor(rep(1:4, each = 2))
 #' )
-#' select_factor_treshold(observation, "LocationID", treshold = 0.05)
-select_factor_treshold <- function(observation, variable, treshold){
+#' select_factor_threshold(observation, "LocationID", threshold = 0.05)
+select_factor_threshold <- function(observation, variable, threshold){
   assert_that(is.string(variable))
-  treshold <- check_single_probability(x = treshold, name = "treshold")
+  threshold <- check_single_probability(x = threshold, name = "threshold")
   assert_that(inherits(observation, "data.frame"))
   assert_that(has_name(observation, "Count"))
   assert_that(has_name(observation, variable))
@@ -34,8 +34,8 @@ variable
   }
 
   model <- glm.nb(observation$Count ~ 0 + variable_factor)
-  log_treshold <- max(coef(model)) + log(treshold)
-  selection <- levels(variable_factor)[coef(model) >= log_treshold]
+  log_threshold <- max(coef(model)) + log(threshold)
+  selection <- levels(variable_factor)[coef(model) >= log_threshold]
   observation <- observation[variable_factor %in% selection, ]
   return(observation)
 }

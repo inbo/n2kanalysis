@@ -1,9 +1,9 @@
 #' Select data based on the number of prescences per category
 #'
 #' Prescences have \eqn{Count > 0}.
-#' @inheritParams select_factor_treshold
+#' @inheritParams select_factor_threshold
 #' @param dimension indicates which element of \code{variable} is used for the final aggregation
-#' @param relative When FALSE the treshold is the number of non-zero observations. When TRUE the treshold is the proportion of non-zero observations. Defaults to FALSE.
+#' @param relative When FALSE the threshold is the number of non-zero observations. When TRUE the threshold is the proportion of non-zero observations. Defaults to FALSE.
 #' @export
 #' @importFrom n2khelper check_character check_dataframe_variable check_single_probability
 #' @importFrom assertthat assert_that is.count is.flag has_name noNA
@@ -15,19 +15,19 @@
 #'   Year = rep(c(1, 1, 1, 1, 2, 2), 2)
 #' )
 #' # Select the locations with at least 3 prescenses
-#' select_factor_count_strictly_positive(observation, variable = "LocationID", treshold = 3)
+#' select_factor_count_strictly_positive(observation, variable = "LocationID", threshold = 3)
 #' # Select those locations in which the species is present in at least 2 years
 #' select_factor_count_strictly_positive(
-#'   observation, variable = c("LocationID", "Year"), treshold = 2
+#'   observation, variable = c("LocationID", "Year"), threshold = 2
 #' )
 #' # Select those years in which the species is present in at least 2 locations
 #' select_factor_count_strictly_positive(
-#'   observation, variable = c("LocationID", "Year"), treshold = 2, dimension = 2
+#'   observation, variable = c("LocationID", "Year"), threshold = 2, dimension = 2
 #' )
 select_factor_count_strictly_positive <- function(
   observation,
   variable,
-  treshold,
+  threshold,
   relative = FALSE,
   dimension = 1
 ){
@@ -40,12 +40,12 @@ select_factor_count_strictly_positive <- function(
   assert_that(is.flag(relative))
   assert_that(noNA(relative))
   if (relative && dimension > 1) {
-    stop("relative treshold is only defined for 1 dimension")
+    stop("relative threshold is only defined for 1 dimension")
   }
   if (relative) {
-    treshold <- check_single_probability(x = treshold, name = "treshold")
+    threshold <- check_single_probability(x = threshold, name = "threshold")
   } else {
-    assert_that(is.count(treshold))
+    assert_that(is.count(threshold))
   }
   assert_that(inherits(observation, "data.frame"))
   assert_that(has_name(observation, "Count"))
@@ -60,9 +60,9 @@ select_factor_count_strictly_positive <- function(
     if (relative) {
       observed.combination <- observed.combination / sum(observed.combination)
     }
-    relevance <- observed.combination >= treshold
+    relevance <- observed.combination >= threshold
   } else {
-    relevance <- apply(observed.combination > 0, dimension, sum) >= treshold
+    relevance <- apply(observed.combination > 0, dimension, sum) >= threshold
   }
   selected.level <- names(relevance)[relevance]
 

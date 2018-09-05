@@ -10,8 +10,8 @@
 #' @include n2kAnomaly_class.R
 #' @param n the maximum number of anomalies per type of anomalies
 #' @param log.expected.ratio observations that have a abs(log(observed/fitted)) above this ratio are potential anomalies. Defaults to log(5), which implies that observed values that are 5 times higher of lower than the fitted values are potential anomalies.
-#' @param log.expected.absent Zero observations with log(fitted) larger than this treshold are potential anomalies.
-#' @param random.treshold random effects with a absolute value above this treshold are potential anomalies
+#' @param log.expected.absent Zero observations with log(fitted) larger than this threshold are potential anomalies.
+#' @param random.threshold random effects with a absolute value above this threshold are potential anomalies
 #' @param verbose Print extra information on the screen
 setMethod(
   f = "get_anomaly",
@@ -21,14 +21,14 @@ setMethod(
     n = 20,
     log.expected.ratio = log(5),
     log.expected.absent = log(5),
-    random.treshold = log(5),
+    random.threshold = log(5),
     verbose = TRUE,
     ...
   ){
     assert_that(is.count(n))
     assert_that(is.number(log.expected.ratio))
     assert_that(is.number(log.expected.absent))
-    assert_that(is.number(random.treshold))
+    assert_that(is.number(random.threshold))
     assert_that(is.flag(verbose))
     assert_that(noNA(verbose))
 
@@ -165,7 +165,7 @@ setMethod(
     ]
     for (i in seq_along(re)) {
       this.re <- re[[i]]
-      this.re <- this.re[this.re[, 1] > random.treshold, , drop = FALSE] #nolint
+      this.re <- this.re[this.re[, 1] > random.threshold, , drop = FALSE] #nolint
       if (nrow(this.re) == 0) {
         next
       }
