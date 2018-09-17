@@ -20,17 +20,15 @@ setClass(
 )
 
 #' @importFrom methods setValidity
-#' @importFrom n2khelper check_dataframe_variable
 #' @importFrom digest sha1
 #' @importFrom assertthat assert_that has_name
 setValidity(
   "n2kImport",
   function(object){
-    check_dataframe_variable(
-      df = object@Dataset[1, ],
-      variable = c("fingerprint", "filename", "import_date"),
-      error = TRUE
-    )
+    assert_that(has_name(object@Dataset, "fingerprint"))
+    assert_that(has_name(object@Dataset, "filename"))
+    assert_that(has_name(object@Dataset, "import_date"))
+
     file.fingerprint <- sha1(
       list(
         object@AnalysisMetadata$ResultDatasourceID,
@@ -45,7 +43,8 @@ setValidity(
         format(object@AnalysisMetadata$AnalysisDate, tz = "UTC"),
         object@AnalysisMetadata$Seed,
         object@AnalysisRelation$ParentAnalysis
-      )
+      ),
+      environment = FALSE
     )
 
     if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
