@@ -128,7 +128,7 @@ describe("n2kanalysis::validObject", {
   it("handles single non-rda, non-rds files", {
     bad.csv <- paste(temp.dir, "bad.csv", sep = "/")
     write.csv(cbpp, file = bad.csv)
-    expect_error(validObject(bad.csv))
+    expect_error(suppressWarning(validObject(bad.csv)))
   })
 
   #clean up temp files

@@ -11,10 +11,12 @@ describe("select_factor_threshold", {
 
   it("selects correctly", {
     expect_that(
-      select_factor_threshold(
-        observation = observation,
-        variable = variable,
-        threshold = threshold
+      suppressWarnings(
+        select_factor_threshold(
+          observation = observation,
+          variable = variable,
+          threshold = threshold
+        )
       ),
       is_identical_to(subset(observation, LocationID %in% 1:2))
     )
