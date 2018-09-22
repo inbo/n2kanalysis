@@ -1,9 +1,6 @@
 #' A function to generate a simple dataset for unit testing
 #' @param datasource.id the string id of the datasource
 #' @param missing the required proportion of missing data
-#' @importFrom assertthat assert_that is.string is.number
-#' @importFrom dplyr %>% mutate_ n row_number
-#' @importFrom stats model.matrix rnbinom rnorm runif
 test_data <- function(datasource.id = sha1(letters), missing = 0){
   assertthat::assert_that(assertthat::is.string(datasource.id))
   assertthat::assert_that(assertthat::is.number(missing))
@@ -23,34 +20,17 @@ test_data <- function(datasource.id = sha1(letters), missing = 0){
     E = seq_len(n.e),
     F = seq_len(3)
   )
-  mm.fixed <- model.matrix(
-    ~ A * (B + C) + C * D,
-    data = dataset
-  )
+  mm.fixed <- model.matrix(~ A * (B + C) + C * D, data = dataset)
   fixed <- runif(ncol(mm.fixed))
 
-  mm.random <- model.matrix(
-    ~ 0 + factor(E) : A,
-    data = dataset
-  )
-  random <- dataset$A %>%
-    levels() %>%
-    length() %>%
-    "*"(n.e) %>% #nolint
-    rnorm(sd = sd.random) %>%
-    matrix(nrow = n.e) %>%
-    apply(2, cumsum) %>%
-    as.vector()
+  mm.random <- model.matrix(~ 0 + factor(E) : A, data = dataset)
+  random <- rnorm(length(levels(dataset$A)) * n.e, sd = sd.random)
+  random <- apply(matrix(random, nrow = n.e), 2, cumsum)
+  random <- as.vector(random)
   eta <- mm.fixed %*% fixed + mm.random %*% random #nolint
-  dataset <- dataset %>%
-    dplyr::mutate_(
-      Count = ~ifelse(
-        rbinom(n(), size = 1, prob = missing) == 1,
-        NA,
-        rnbinom(n(), mu = exp(eta), size = theta)
-      ),
-      DatasourceID = ~datasource.id,
-      ObservationID = ~row_number(DatasourceID)
-    )
+  dataset$Count <- rnbinom(nrow(dataset), mu = exp(eta), size = theta)
+  dataset$Count[rbinom(nrow(dataset), size = 1, prob = missing) == 1] <- NA
+  dataset$DatasourceID <- datasource.id
+  dataset$ObservationID <- seq_along(dataset$Count)
   return(dataset)
 }
