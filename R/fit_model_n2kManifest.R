@@ -1,6 +1,6 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that is.string is.flag noNA is.dir
+#' @importFrom assertthat assert_that is.string is.flag noNA is.dir has_name
 #' @importFrom dplyr %>% transmute mutate left_join arrange
 #' @importFrom aws.s3 get_bucket
 #' @importFrom tibble rowid_to_column
@@ -49,7 +49,18 @@ setMethod(
         ) %>%
         left_join(x = manifest, by = "Fingerprint") %>%
         arrange(.data$Level, .data$Fingerprint)
-      sapply(manifest$Filename, fit_model, ...)
+      if (has_name(dots, "bash")) {
+        strings <- sapply(dots, is.string)
+        dots[strings] <- paste0("\"", dots[strings], "\"")
+        sprintf(
+          "r --package n2kanalysis -e 'fit_model(\"%s\", %s)'",
+          manifest$Filename,
+          paste(names(dots), dots, sep = " = ", collapse = ", ")
+        ) %>%
+          lapply(system)
+      } else {
+        sapply(manifest$Filename, fit_model, ...)
+      }
       return(invisible(NULL))
     }
     if (!inherits(dots$base, "s3_bucket")) {
@@ -83,7 +94,21 @@ setMethod(
       s3readRDS(manifest$Filename[i], bucket = dots$base) %>%
         saveRDS(targets[i])
     }
-    sapply(targets, fit_model, base = dots$local, project = dots$project, ...)
+    if (has_name(dots, "bash")) {
+      pass_dots <- dots
+      pass_dots$base <- pass_dots$local
+      pass_dots$local <- NULL
+      strings <- sapply(pass_dots, is.string)
+      pass_dots[strings] <- paste0("\"", pass_dots[strings], "\"")
+      sprintf(
+        "r --package n2kanalysis -e 'fit_model(\"%s\", %s)'",
+        targets,
+        paste(names(pass_dots), pass_dots, sep = " = ", collapse = ", ")
+      ) %>%
+        lapply(system)
+    } else {
+      sapply(targets, fit_model, base = dots$local, project = dots$project, ...)
+    }
     targets <- sapply(
       basename(targets),
       function(x) {
