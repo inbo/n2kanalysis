@@ -111,7 +111,7 @@ setMethod(
     available <- get_bucket(base, prefix = project, max = Inf)
     existing <- available[names(available) == "Contents"] %>%
       sapply("[[", "Key")
-    matching <- sprintf("%s/.*%s[[:xdigit:]]{0,40}\\.rds", project, x) %>%
+    matching <- sprintf("%s/.*%s", project, x) %>%
       grep(existing)
     if (length(matching) == 1) {
       return(s3readRDS(available[[matching]]))
