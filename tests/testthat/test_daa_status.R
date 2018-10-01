@@ -1,5 +1,7 @@
 context("status")
 temp.dir <- tempdir()
+# clean temp files
+file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))
 
 describe("n2kGlmerPoisson", {
   data(cbpp, package = "lme4")

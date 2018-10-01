@@ -48,7 +48,7 @@ setValidity(
     check_dataframe_variable(
       df = object@ContrastCoefficient,
       variable = c("Contrast", "Parameter", "Coefficient"),
-      name = "ContrastType"
+      name = "ContrastCoefficient"
     )
     check_dataframe_variable(
       df = object@ContrastEstimate,
