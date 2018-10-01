@@ -17,7 +17,6 @@ Depends:
 License: GPL-3
 LazyData: true
 Suggests:
-    INLA,
     Matrix,
     optimx,
     parallel,
