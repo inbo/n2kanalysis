@@ -60,7 +60,7 @@ setMethod(
       return(x)
     }
     if (length(model@optinfo$conv$lme4) > 0) {
-      status(x) <- "false convergence"
+      status(x) <- "false_convergence"
       return(x)
     }
     vc <- VarCorr(model)

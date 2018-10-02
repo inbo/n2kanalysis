@@ -12,7 +12,7 @@ fit_every_model <- function(path, status, verbose = TRUE, n.cluster = 1){
   } else {
     status <- check_character(status, name = "status")
     test.status <- status %in%
-      c("new", "waiting", "error", "converged", "false convergence", "unstable")
+      c("new", "waiting", "error", "converged", "false_convergence", "unstable")
     if (!all(test.status)) {
       warning(
         "Following status values are ignored: ",

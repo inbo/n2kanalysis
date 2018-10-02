@@ -4,7 +4,7 @@
 \alias{select_factor_count_strictly_positive}
 \title{Select data based on the number of prescences per category}
 \usage{
-select_factor_count_strictly_positive(observation, variable, treshold,
+select_factor_count_strictly_positive(observation, variable, threshold,
   relative = FALSE, dimension = 1)
 }
 \arguments{
@@ -12,9 +12,9 @@ select_factor_count_strictly_positive(observation, variable, treshold,
 
 \item{variable}{the name of the \code{factor}}
 
-\item{treshold}{the minimal treshold}
+\item{threshold}{the minimal threshold}
 
-\item{relative}{When FALSE the treshold is the number of non-zero observations. When TRUE the treshold is the proportion of non-zero observations. Defaults to FALSE.}
+\item{relative}{When FALSE the threshold is the number of non-zero observations. When TRUE the threshold is the proportion of non-zero observations. Defaults to FALSE.}
 
 \item{dimension}{indicates which element of \code{variable} is used for the final aggregation}
 }
@@ -28,13 +28,13 @@ observation <- data.frame(
   Year = rep(c(1, 1, 1, 1, 2, 2), 2)
 )
 # Select the locations with at least 3 prescenses
-select_factor_count_strictly_positive(observation, variable = "LocationID", treshold = 3)
+select_factor_count_strictly_positive(observation, variable = "LocationID", threshold = 3)
 # Select those locations in which the species is present in at least 2 years
 select_factor_count_strictly_positive(
-  observation, variable = c("LocationID", "Year"), treshold = 2
+  observation, variable = c("LocationID", "Year"), threshold = 2
 )
 # Select those years in which the species is present in at least 2 locations
 select_factor_count_strictly_positive(
-  observation, variable = c("LocationID", "Year"), treshold = 2, dimension = 2
+  observation, variable = c("LocationID", "Year"), threshold = 2, dimension = 2
 )
 }

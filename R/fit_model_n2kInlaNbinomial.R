@@ -2,6 +2,7 @@
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that
 #' @importMethodsFrom multimput impute
+#' @importFrom INLA inla
 #' @include n2kInlaNbinomial_class.R
 setMethod(
   f = "fit_model",
@@ -15,10 +16,6 @@ setMethod(
     }
     if (!(status(x) %in% dots$status)) {
       return(x)
-    }
-
-    if (!require("INLA")) {
-      stop("The INLA package is required but not installed.") #nocov
     }
 
     set.seed(get_seed(x))
@@ -52,7 +49,7 @@ setMethod(
       if (!is.null(dots$timeout)) {
         setTimeLimit(cpu = dots$timeout, elapsed = dots$timeout)
       }
-      INLA::inla(
+      inla(
         formula = model.formula,
         family = "nbinomial",
         data = data,

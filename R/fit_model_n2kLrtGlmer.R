@@ -62,8 +62,8 @@ setMethod(
       status(x) <- "error"
       return(x)
     }
-    if (any(current.parent.status == "false convergence")) {
-      status(x) <- "false convergence"
+    if (any(current.parent.status == "false_convergence")) {
+      status(x) <- "false_convergence"
       return(x)
     }
     if (any(current.parent.status == "unstable")) {

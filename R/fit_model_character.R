@@ -40,7 +40,7 @@ setMethod(
         x = x
       )
     }
-    hash <- gsub(".*/([[:xdigit:]]{40})\\.(rds|manifest)", "\\1", x)
+    hash <- gsub("(.*/)?([[:xdigit:]]{40})\\.(rds|manifest)", "\\2", x)
     if (grepl("\\.manifest$", x)) {
       read_manifest(hash, base = dots$base, project = dots$project) %>%
         fit_model(base = dots$base, project = dots$project, ...)
@@ -51,17 +51,19 @@ setMethod(
       message(status(analysis), " -> ", appendLF = FALSE)
       utils::flush.console()
     }
-    analysis.fitted <- fit_model(
+    analysis <- fit_model(
       x = analysis,
       status = dots$status,
       base = dots$base,
       project = dots$project
     )
     if (dots$verbose) {
-      message(status(analysis.fitted))
+      message(status(analysis))
       utils::flush.console()
     }
-    store_model(analysis.fitted, base = dots$base, project = dots$project)
+    store_model(analysis, base = dots$base, project = dots$project)
+    rm(analysis)
+    gc(verbose = FALSE)
     return(invisible(NULL))
   }
 )

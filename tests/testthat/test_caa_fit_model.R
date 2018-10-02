@@ -75,7 +75,7 @@ describe("fit_model() on GlmerPoisson based objects", {
   it("works with objects saved in rds files", {
     filename <- store_model(object, base = temp.dir, project = "fit_model")
     expect_identical(status(filename)$Status, "new")
-    fit_model(filename)
+    fit_model(filename, verbose = FALSE)
     filename <- gsub("new", "converged", filename)
     expect_identical(
       status(filename)$Status,
@@ -87,7 +87,7 @@ describe("fit_model() on GlmerPoisson based objects", {
       project = "fit_model"
     )
     expect_identical(status(filename)$Status, "new")
-    fit_model(filename)
+    fit_model(filename, verbose = FALSE)
     filename <- gsub("new", "converged", filename)
     expect_identical(
       status(filename)$Status,
@@ -115,7 +115,7 @@ describe("fit_model() on INLA nbinomial based objects", {
   this.last.analysed.year <- 2014L
   this.duration <- 1L
   lin.comb <- dataset %>%
-    distinct_(~A) %>%
+    distinct(.data$A) %>%
     model.matrix(object = ~A)
   rownames(lin.comb) <- seq_len(nrow(lin.comb))
   bad.lin.comb <- lin.comb[, -1]
@@ -200,7 +200,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     imputation.size = 10,
     data = dataset
   )
-  timeout <- fit_model(object, timeout = 0.1)
+  timeout <- fit_model(object, timeout = 0.001)
   expect_identical(status(timeout), "time-out")
   object.fit <- fit_model(object)
   object.lc.fit <- fit_model(object.lc)
@@ -217,11 +217,11 @@ describe("fit_model() on INLA nbinomial based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "c003f3ef708b55810e9645cb629724a1c6bed197"
-  object.lc.file <- "480013538a26ded79a2da5c1dc18bd42434a4830"
-  object.lc.list.file <- "8e1e94bdb5569a1aaadfe97d79a5edb322eeecb8"
-  object.lc.list2.file <- "e92be956a1d53b577267e4e2d8294cb79e79b590"
-  object.badlc.file <- "c3d7da408a78be3282b3677153357db26b5d6bca"
+  object.file <- "1b8703a7a9587f3bd30bfdac002cb6d05df7463c"
+  object.lc.file <- "88398e706abc9b7d7199e2ef88368f8447eed5e2"
+  object.lc.list.file <- "3933d2ec416967aa45300d5c664dbf45a8bd3899"
+  object.lc.list2.file <- "ac316dd13d50320f1bd70a71ce0f48774da60ede"
+  object.badlc.file <- "ba47e6ac58f74787eb450b20c19d5158f3052716"
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
     expect_identical(object.lc.file, get_file_fingerprint(object.lc))
@@ -369,7 +369,10 @@ test_that("fit_model() works on n2kInlaComparison", {
   fit_model(filename2, verbose = FALSE)
   fit_model(filename3, verbose = FALSE)
   filename3 <- gsub("waiting", "converged", filename3)
-  fit_model(filename3, verbose = FALSE)
+  expect_identical(
+    fit_model(filename3, verbose = FALSE),
+    NULL
+  )
 
   # clean temp files
   file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))
@@ -449,8 +452,10 @@ test_that("fit_model() works in n2kLrtGlmer objects", {
   project <- "lrtglmer"
   store_model(object.1, base = temp.dir, project = project)
   store_model(object.0, base = temp.dir, project = project)
-  fit_model(x, base = temp.dir, project = project)
-
+  expect_is(
+    fit_model(x, base = temp.dir, project = project),
+    "n2kLrtGlmer"
+  )
   # clean temp files
   file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))
 })

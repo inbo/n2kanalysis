@@ -5,14 +5,11 @@
 \alias{read_model}
 \alias{read_model,ANY,character-method}
 \alias{read_model,ANY,s3_bucket-method}
-\alias{read_model,ANY,s3_bucket-method}
 \title{Read a n2kModel object}
 \usage{
 read_model(x, base, project)
 
 \S4method{read_model}{ANY,character}(x, base, project)
-
-\S4method{read_model}{ANY,s3_bucket}(x, base, project)
 
 \S4method{read_model}{ANY,s3_bucket}(x, base, project)
 }

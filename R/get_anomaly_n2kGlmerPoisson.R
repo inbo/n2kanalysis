@@ -10,8 +10,8 @@
 #' @include n2kAnomaly_class.R
 #' @param n the maximum number of anomalies per type of anomalies
 #' @param log.expected.ratio observations that have a abs(log(observed/fitted)) above this ratio are potential anomalies. Defaults to log(5), which implies that observed values that are 5 times higher of lower than the fitted values are potential anomalies.
-#' @param log.expected.absent Zero observations with log(fitted) larger than this treshold are potential anomalies.
-#' @param random.treshold random effects with a absolute value above this treshold are potential anomalies
+#' @param log.expected.absent Zero observations with log(fitted) larger than this threshold are potential anomalies.
+#' @param random.threshold random effects with a absolute value above this threshold are potential anomalies
 #' @param verbose Print extra information on the screen
 setMethod(
   f = "get_anomaly",
@@ -21,14 +21,14 @@ setMethod(
     n = 20,
     log.expected.ratio = log(5),
     log.expected.absent = log(5),
-    random.treshold = log(5),
+    random.threshold = log(5),
     verbose = TRUE,
     ...
   ){
     assert_that(is.count(n))
     assert_that(is.number(log.expected.ratio))
     assert_that(is.number(log.expected.absent))
-    assert_that(is.number(random.treshold))
+    assert_that(is.number(random.threshold))
     assert_that(is.flag(verbose))
     assert_that(noNA(verbose))
 
@@ -57,8 +57,7 @@ setMethod(
       AnomalyType = character(0),
       Analysis = character(0),
       Parameter = character(0),
-      DatasourceID = character(0),
-      Datafield = character(0),
+      Observation = character(0),
       stringsAsFactors = FALSE
     )
 
@@ -119,7 +118,7 @@ setMethod(
         Analysis = get_file_fingerprint(analysis),
         Parameter = selection$Fingerprint,
         DatasourceID = selection$DatasourceID,
-        Datafield = "Observation",
+        Observation = selection$ObservationID,
         stringsAsFactors = FALSE
       )
       anomaly <- rbind(anomaly, extra.observation)
@@ -147,7 +146,7 @@ setMethod(
         Analysis = get_file_fingerprint(analysis),
         Parameter = data.subset$Fingerprint,
         DatasourceID = data.subset$DatasourceID,
-        Datafield = "Observation",
+        Observation = data.subset$ObservationID,
         stringsAsFactors = FALSE
       )
       anomaly <- rbind(anomaly, extra.observation)
@@ -161,14 +160,12 @@ setMethod(
     if (any(sapply(re, ncol) > 1)) {
       stop("get_anomaly cannot handle random slopes yet")
     }
-    data.field <- gsub("^f", "", names(re))
-    data.field <- gsub("ID$", "", data.field)
     main.sha <- parameter@Parameter$Fingerprint[
       parameter@Parameter$Description == "Random effect BLUP"
     ]
     for (i in seq_along(re)) {
       this.re <- re[[i]]
-      this.re <- this.re[this.re[, 1] > random.treshold, , drop = FALSE] #nolint
+      this.re <- this.re[this.re[, 1] > random.threshold, , drop = FALSE] #nolint
       if (nrow(this.re) == 0) {
         next
       }
@@ -211,7 +208,6 @@ setMethod(
           Analysis = get_file_fingerprint(analysis),
           Parameter = selection$Fingerprint,
           DatasourceID = analysis@AnalysisMetadata$ResultDatasourceID,
-          Datafield = data.field[i],
           stringsAsFactors = FALSE
         )
         anomaly <- rbind(anomaly, extra.observation)
