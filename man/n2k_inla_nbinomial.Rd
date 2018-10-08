@@ -6,7 +6,6 @@
 \alias{n2k_inla_nbinomial,data.frame,ANY-method}
 \alias{n2k_inla_nbinomial,n2kInlaNbinomial-methods}
 \alias{n2k_inla_nbinomial,n2kInlaNbinomial,inla-method}
-\alias{n2k_inla_nbinomial,n2kInlaNbinomial-methods}
 \title{Create a n2kInlaNbinomial object}
 \usage{
 n2k_inla_nbinomial(data, ..., model.fit)
@@ -23,8 +22,6 @@ n2k_inla_nbinomial(data, ..., model.fit)
 \item{model.fit}{The fitted model}
 }
 \description{
-Create a n2kInlaNbinomial object
-
 A new n2kInlaNbinomial model is created when \code{data} is a data.frame.
 
 In case \code{data} a n2kInlaNbinomial object is, then only the model and status are updated. All other slots are unaffected.

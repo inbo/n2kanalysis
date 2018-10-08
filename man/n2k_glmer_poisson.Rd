@@ -13,7 +13,8 @@ n2k_glmer_poisson(data, ..., model.fit)
 
 \S4method{n2k_glmer_poisson}{data.frame,ANY}(data, ..., model.fit)
 
-\S4method{n2k_glmer_poisson}{n2kGlmerPoisson,glmerMod}(data, ..., model.fit)
+\S4method{n2k_glmer_poisson}{n2kGlmerPoisson,glmerMod}(data, ...,
+  model.fit)
 }
 \arguments{
 \item{data}{a data.frame with the data to analyse}
@@ -23,8 +24,6 @@ n2k_glmer_poisson(data, ..., model.fit)
 \item{model.fit}{The fitted model}
 }
 \description{
-Create a n2kGlmerPoisson object
-
 A new n2kGlmerPoisson model is created when \code{data} is a data.frame.
 
 In case \code{data} a n2kGlmerPoisson object is, then only the model and status are updated. All other slots are unaffected.

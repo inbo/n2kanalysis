@@ -15,8 +15,6 @@ n2k_model_imputed(...)
 \item{...}{other arguments. See below}
 }
 \description{
-Create a n2kModelImputed object
-
 A new n2kModelImputed model.
 }
 \details{

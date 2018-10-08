@@ -15,7 +15,5 @@ n2k_manifest(manifest)
 \item{manifest}{a data.frame with the manifest content}
 }
 \description{
-Create a n2kManifest object
-
 A new n2kManifest object is created when \code{manifest} is a data.frame
 }

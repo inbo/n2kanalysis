@@ -17,8 +17,6 @@ n2k_composite(parent.status, ...)
 \item{...}{other arguments. See below}
 }
 \description{
-Create a n2kComposite object
-
 A new n2kComposite model is created when \code{parent} is a data.frame
 }
 \details{

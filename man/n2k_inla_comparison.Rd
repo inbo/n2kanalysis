@@ -17,8 +17,6 @@ n2k_inla_comparison(parent, ...)
 \item{...}{other arguments. See below}
 }
 \description{
-Create a n2kInlaComparison object
-
 A new n2kInlaComparison model is created when \code{parent} is a character
 }
 \details{

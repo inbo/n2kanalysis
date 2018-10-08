@@ -15,8 +15,6 @@ n2k_aggregate(...)
 \item{...}{other arguments. See below}
 }
 \description{
-Create a n2kAggregate object
-
 A new n2kAggregate model.
 }
 \details{

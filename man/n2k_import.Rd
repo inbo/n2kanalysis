@@ -14,8 +14,6 @@ n2k_import(...)
 \item{...}{other arguments. See below}
 }
 \description{
-Create a n2kImport object
-
 A new n2kImport model.
 }
 \details{

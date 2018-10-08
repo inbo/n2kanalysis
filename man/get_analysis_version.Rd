@@ -8,7 +8,6 @@
 \alias{get_analysis_version,n2kAnalysisMetadata-method}
 \alias{get_analysis_version,n2kAnalysisMetadata-methods}
 \alias{get_analysis_version,sessionInfo-method}
-\alias{get_analysis_version,sessionInfo-methods}
 \title{Get an analysis version}
 \usage{
 get_analysis_version(version)

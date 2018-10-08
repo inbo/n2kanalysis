@@ -17,8 +17,6 @@ n2k_lrt_glmer(parent, ...)
 \item{...}{other arguments. See below}
 }
 \description{
-Create a n2kLrtGlmer object
-
 A new n2kLrtGlmer model is created when \code{parent} is a character
 }
 \details{
