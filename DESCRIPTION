@@ -107,6 +107,7 @@ Collate:
     'inla_inverse.R'
     'mark_obsolete_dataset.R'
     'n2kImport_class.R'
+    'n2kInlaPoisson_class.R'
     'n2k_aggregated.R'
     'n2k_composite.R'
     'n2k_glmer_poisson.R'
