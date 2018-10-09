@@ -36,3 +36,16 @@ setMethod(
     return(x@Data)
   }
 )
+
+
+#' @rdname get_data
+#' @aliases get_data,n2kInlaPoisson-methods
+#' @importFrom methods setMethod new
+#' @include n2kInlaPoisson_class.R
+setMethod(
+  f = "get_data",
+  signature = signature(x = "n2kInlaPoisson"),
+  definition = function(x){
+    return(x@Data)
+  }
+)

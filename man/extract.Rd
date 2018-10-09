@@ -7,6 +7,8 @@
 \alias{extract,character-methods}
 \alias{extract,ANY,n2kInlaNbinomial-method}
 \alias{extract,n2kInlaNbinomial-methods}
+\alias{extract,ANY,n2kInlaPoisson-method}
+\alias{extract,n2kInlaPoisson-methods}
 \title{Extract the relevant coefficients}
 \usage{
 extract(extractor, object, base, project)
@@ -14,6 +16,9 @@ extract(extractor, object, base, project)
 \S4method{extract}{ANY,character}(extractor, object, base, project)
 
 \S4method{extract}{ANY,n2kInlaNbinomial}(extractor, object, base = NULL,
+  project = NULL)
+
+\S4method{extract}{ANY,n2kInlaPoisson}(extractor, object, base = NULL,
   project = NULL)
 }
 \arguments{

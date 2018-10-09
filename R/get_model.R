@@ -38,6 +38,18 @@ setMethod(
 )
 
 #' @rdname get_model
+#' @aliases get_model,n2kInlaPoisson-methods
+#' @importFrom methods setMethod new
+#' @include n2kInlaPoisson_class.R
+setMethod(
+  f = "get_model",
+  signature = signature(x = "n2kInlaPoisson"),
+  definition = function(x){
+    return(x@Model)
+  }
+)
+
+#' @rdname get_model
 #' @aliases get_model,character-methods
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that

@@ -7,6 +7,8 @@
 \alias{get_model,n2kGlmerPoisson-methods}
 \alias{get_model,n2kInlaNbinomial-method}
 \alias{get_model,n2kInlaNbinomial-methods}
+\alias{get_model,n2kInlaPoisson-method}
+\alias{get_model,n2kInlaPoisson-methods}
 \alias{get_model,character-method}
 \alias{get_model,character-methods}
 \title{Get the model of a n2kModel object}
@@ -16,6 +18,8 @@ get_model(x)
 \S4method{get_model}{n2kGlmerPoisson}(x)
 
 \S4method{get_model}{n2kInlaNbinomial}(x)
+
+\S4method{get_model}{n2kInlaPoisson}(x)
 
 \S4method{get_model}{character}(x)
 }

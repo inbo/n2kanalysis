@@ -63,3 +63,16 @@ setMethod(
     extractor(object@Model)
   }
 )
+
+#' @rdname extract
+#' @aliases extract,n2kInlaPoisson-methods
+#' @importFrom methods setMethod new
+#' @include n2kInlaPoisson_class.R
+setMethod(
+  f = "extract",
+  signature = signature(object = "n2kInlaPoisson"),
+  definition = function(extractor, object, base = NULL, project = NULL){
+    assert_that(inherits(extractor, "function"))
+    extractor(object@Model)
+  }
+)
