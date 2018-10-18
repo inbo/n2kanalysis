@@ -44,6 +44,10 @@ test_that("read_model() works with S3 buckets", {
     "multiple matching objects in bucket"
   )
   available <- get_bucket("n2kmonitoring", prefix = project) %>%
-    sapply("[[", "Key")
-  expect_true(all(sapply(available, delete_object, bucket = base)))
+    sapply("[[", "Key") %>%
+    basename() %>%
+    gsub(pattern = "\\.rds", replacement = "")
+  expect_true(
+    all(sapply(available, delete_model, base = base, project = project))
+  )
 })
