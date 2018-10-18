@@ -1,20 +1,22 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that
+#' @importFrom assertthat assert_that is.number
 #' @importMethodsFrom multimput impute
 #' @importFrom INLA inla
 #' @include n2kInlaPoisson_class.R
+#' @param timeout the optional number of second until the model will time out
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kInlaPoisson"),
-  definition = function(x, ...){
+  definition = function(x, status = "new", ..., timeout = NULL){
     validObject(x)
 
-    dots <- list(...)
-    if (is.null(dots$status)) {
-      dots$status <- c("new", "waiting")
-    }
-    if (!(status(x) %in% dots$status)) {
+    assert_that(
+      is.character(status),
+      length(status) >= 1
+    )
+
+    if (!(status(x) %in% status)) {
       return(x)
     }
 
@@ -46,8 +48,9 @@ setMethod(
       }
     }
     model <- try({
-      if (!is.null(dots$timeout)) {
-        setTimeLimit(cpu = dots$timeout, elapsed = dots$timeout)
+      if (!is.null(timeout)) {
+        assert_that(is.number(timeout), timeout > 0)
+        setTimeLimit(cpu = timeout, elapsed = timeout)
       }
       inla(
         formula = model.formula,

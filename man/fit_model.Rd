@@ -36,7 +36,8 @@ fit_model(x, ...)
 
 \S4method{fit_model}{n2kInlaNbinomial}(x, ...)
 
-\S4method{fit_model}{n2kInlaPoisson}(x, ...)
+\S4method{fit_model}{n2kInlaPoisson}(x, status = "new", ...,
+  timeout = NULL)
 
 \S4method{fit_model}{n2kLrtGlmer}(x, ...)
 
@@ -61,6 +62,8 @@ fit_model(x, ...)
 \item{verbose}{A logical indicating if the function should display the name of the file and the status. Defaults to \code{TRUE}.}
 
 \item{bucket}{the name of the AWS S3 bucket. Only used when \code{base} is missing.}
+
+\item{timeout}{the optional number of second until the model will time out}
 
 \item{local}{a local folder into which objects from an AWS S3 bucket are downloaded}
 
