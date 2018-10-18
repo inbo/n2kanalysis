@@ -28,19 +28,19 @@ In case \code{data} a n2kInlaNbinomial object is, then only the model and status
 }
 \details{
 \describe{
-   \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
-   \item{\code{species.group.id}}{a single integer identifing the species group}
-   \item{\code{location.group.id}}{a single integer identifing the location group}
-   \item{\code{model.type}}{a single character identifying the type of model to fit to the data}
-   \item{\code{formula}}{a single character holding the model formula}
-   \item{\code{first.imported.year}}{Oldest year considered in the data}
-   \item{\code{last.imported.year}}{Most recent year considered in the data}
-   \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
-   \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
-   \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
-   \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
-   \item{\code{lin.comb}}{A model matrix to calculate linear combinations}
-   \item{\code{replicate.name}}{A list with the names of replicates. Defaults to an empty list. Used in case of \code{f(X, ..., replicate = Z)}}. Should be a named list like e.g. \code{list(X = c("a", "b", "c")).}
-   \item{\code{imputation.size}}{The required number of imputations defaults to 0.}
-  }
+\item{\code{scheme.id}}{a single integer holding the id of the scheme.}
+\item{\code{species.group.id}}{a single integer identifing the species group}
+\item{\code{location.group.id}}{a single integer identifing the location group}
+\item{\code{model.type}}{a single character identifying the type of model to fit to the data}
+\item{\code{formula}}{a single character holding the model formula}
+\item{\code{first.imported.year}}{Oldest year considered in the data}
+\item{\code{last.imported.year}}{Most recent year considered in the data}
+\item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
+\item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
+\item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
+\item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
+\item{\code{lin.comb}}{A model matrix to calculate linear combinations}
+\item{\code{replicate.name}}{A list with the names of replicates. Defaults to an empty list. Used in case of \code{f(X, ..., replicate = Z)}}. Should be a named list like e.g. \code{list(X = c("a", "b", "c")).}
+\item{\code{imputation.size}}{The required number of imputations defaults to 0.}
+}
 }

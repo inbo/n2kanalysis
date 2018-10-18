@@ -9,9 +9,9 @@ Compare multiple models using the WAIC criterion
 }
 \section{Slots}{
 
-  \describe{
-   \item{\code{Models}}{a list of INLA models}
-   \item{\code{WAIC}}{a data.frame with WAIC values per model}
-  }
+\describe{
+\item{\code{Models}}{a list of INLA models}
+\item{\code{WAIC}}{a data.frame with WAIC values per model}
+}
 }
 

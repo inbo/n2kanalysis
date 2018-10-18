@@ -9,8 +9,8 @@ It hold the imported datasets
 }
 \section{Slots}{
 
-  \describe{
-   \item{\code{Dataset}}{a data.frame with the datasets}
-  }
+\describe{
+\item{\code{Dataset}}{a data.frame with the datasets}
+}
 }
 

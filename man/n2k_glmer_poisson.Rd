@@ -30,18 +30,18 @@ In case \code{data} a n2kGlmerPoisson object is, then only the model and status 
 }
 \details{
 \describe{
-   \item{\code{status}}{a single character indicating the status of the model. Defaults to 'new' when \code{data} is a data.frame.}
-   \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
-   \item{\code{species.group.id}}{a single integer identifing the species group}
-   \item{\code{location.group.id}}{a single integer identifing the location group}
-   \item{\code{model.type}}{a single character identifying the type of model to fit to the data}
-   \item{\code{covariate}}{a single character holding the right hand side of the model formula}
-   \item{\code{first.imported.year}}{Oldest year considered in the data}
-   \item{\code{last.imported.year}}{Most recent year considered in the data}
-   \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
-   \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
-   \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
-   \item{\code{parent}}{the file fingerprint of the import}
-   \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
-  }
+\item{\code{status}}{a single character indicating the status of the model. Defaults to 'new' when \code{data} is a data.frame.}
+\item{\code{scheme.id}}{a single integer holding the id of the scheme.}
+\item{\code{species.group.id}}{a single integer identifing the species group}
+\item{\code{location.group.id}}{a single integer identifing the location group}
+\item{\code{model.type}}{a single character identifying the type of model to fit to the data}
+\item{\code{covariate}}{a single character holding the right hand side of the model formula}
+\item{\code{first.imported.year}}{Oldest year considered in the data}
+\item{\code{last.imported.year}}{Most recent year considered in the data}
+\item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
+\item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
+\item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
+\item{\code{parent}}{the file fingerprint of the import}
+\item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
+}
 }
