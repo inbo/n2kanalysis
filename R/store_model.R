@@ -32,15 +32,16 @@ setMethod(
 
     status <- status(x)
     fingerprint <- get_file_fingerprint(x)
+    part <- substring(fingerprint, 1, 4)
 
     #create dir is it doesn't exist
-    dir <- sprintf("%s/%s/%s", base, project, status) %>%
+    dir <- file.path(base, project, part, status) %>%
       normalizePath(winslash = "/", mustWork = FALSE)
     if (!dir.exists(dir)) {
       dir.create(dir, recursive = TRUE)
     }
 
-    current <- sprintf("%s/%s", base, project) %>%
+    current <- file.path(base, project, part) %>%
       normalizePath(winslash = "/", mustWork = FALSE) %>%
       list.files(
         pattern = sprintf("%s.rds$", fingerprint),
@@ -102,12 +103,19 @@ setMethod(
 
     status <- status(x)
     fingerprint <- get_file_fingerprint(x)
+    part <- substring(fingerprint, 1, 4)
 
-    existing <- get_bucket(base, prefix = project, max = Inf)
+    existing <- get_bucket(
+      bucket = base,
+      prefix = paste(project, part, sep = "/"),
+      max = Inf
+    )
     existing <- existing[names(existing) == "Contents"] %>%
       sapply("[[", "Key")
     current <- existing[grepl(sprintf("%s.rds$", fingerprint), existing)]
-    filename <- sprintf("%s/%s/%s.rds", project, status, fingerprint) %>%
+    filename <- sprintf(
+      "%s/%s/%s/%s.rds", project, part, status, fingerprint
+    ) %>%
       normalizePath(winslash = "/", mustWork = FALSE) %>%
       gsub(pattern = "//", replacement = "/") %>%
       gsub(pattern = "^/", replacement = "")

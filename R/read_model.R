@@ -26,7 +26,7 @@ setMethod(
     assert_that(is.dir(base))
     assert_that(is.string(project))
 
-    filename <- sprintf("%s/%s", base, project) %>%
+    filename <- sprintf("%s/%s/%s", base, project, substring(x, 1, 4)) %>%
       normalizePath() %>%
       list.files(pattern = x, full.names = TRUE, recursive = TRUE)
     filename <- filename[grepl("\\.rds$", filename)]
@@ -54,7 +54,11 @@ setMethod(
     assert_that(is.string(x))
     assert_that(is.string(project))
 
-    available <- get_bucket(base, prefix = project, max = Inf)
+    available <- get_bucket(
+      base,
+      prefix = paste(project, substring(x, 1, 4), sep = "/"),
+      max = Inf
+    )
     existing <- available[names(available) == "Contents"] %>%
       sapply("[[", "Key")
     matching <- sprintf("%s/.*%s", project, x) %>%
