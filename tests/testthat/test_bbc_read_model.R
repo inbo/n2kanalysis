@@ -2,7 +2,7 @@ context("read_model")
 test_that("read_model() handles exceptions on characters", {
   base <- tempdir()
   project <- "read_model"
-  dir.create(sprintf("%s/%s/test", base, project))
+  dir.create(sprintf("%s/%s/test", base, project), recursive = TRUE)
   writeLines("junk", sprintf("%s/%s/test/test1.rds", base, project))
   writeLines("junk", sprintf("%s/%s/test/test2.rds", base, project))
   expect_error(

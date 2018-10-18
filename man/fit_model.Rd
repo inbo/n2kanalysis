@@ -23,7 +23,8 @@
 \usage{
 fit_model(x, ...)
 
-\S4method{fit_model}{character}(x, ...)
+\S4method{fit_model}{character}(x, base, project, status = "new",
+  verbose = TRUE, ..., bucket)
 
 \S4method{fit_model}{n2kAggregate}(x, ...)
 
@@ -39,7 +40,8 @@ fit_model(x, ...)
 
 \S4method{fit_model}{n2kLrtGlmer}(x, ...)
 
-\S4method{fit_model}{n2kManifest}(x, ...)
+\S4method{fit_model}{n2kManifest}(x, base, project, status = "new",
+  verbose = TRUE, ..., local, bash = FALSE)
 
 \S4method{fit_model}{n2kModelImputed}(x, ...)
 
@@ -49,18 +51,27 @@ fit_model(x, ...)
 \item{x}{the n2kModel}
 
 \item{...}{other arguments. See details}
+
+\item{base}{the root of a project. Can be either a directory on a file system or an AWS S3 bucket object. Extracted from \code{bucket} or \code{x} when missing.}
+
+\item{project}{the subdirectory of the project. Is relative the \code{base}. Extracted from \code{x} when missing.}
+
+\item{status}{A vector with status levels naming the levels which should be calculated. Defaults to \code{"new"}.}
+
+\item{verbose}{A logical indicating if the function should display the name of the file and the status. Defaults to \code{TRUE}.}
+
+\item{bucket}{the name of the AWS S3 bucket. Only used when \code{base} is missing.}
+
+\item{local}{a local folder into which objects from an AWS S3 bucket are downloaded}
+
+\item{bash}{use the \code{littler} package do run the models in separate sessions. This will release the memory.}
 }
 \description{
 Fit a n2kModel object
 }
 \details{
 \describe{
- \item{\code{status}}{A vector with status levels naming the levels which should be recalculated. Defaults to \code{"new"}}
- \item{\code{verbose}}{A logical indicating if the function should display the name of the file and the status. Defaults to \code{TRUE}}
-}
-
-\describe{
- \item{\code{status}}{A vector with status levels naming the levels which should be recalculated. Defaults to \code{"new"}}
- \item{\code{verbose}}{A logical indicating if the function should display the name of the file and the status. Defaults to \code{TRUE}}
+\item{\code{status}}{A vector with status levels naming the levels which should be recalculated. Defaults to \code{"new"}}
+\item{\code{verbose}}{A logical indicating if the function should display the name of the file and the status. Defaults to \code{TRUE}}
 }
 }
