@@ -34,7 +34,8 @@ fit_model(x, ...)
 
 \S4method{fit_model}{n2kInlaComparison}(x, ...)
 
-\S4method{fit_model}{n2kInlaNbinomial}(x, ...)
+\S4method{fit_model}{n2kInlaNbinomial}(x, status = "new", ...,
+  timeout = NULL)
 
 \S4method{fit_model}{n2kInlaPoisson}(x, status = "new", ...,
   timeout = NULL)
