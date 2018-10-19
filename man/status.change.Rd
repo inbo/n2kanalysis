@@ -4,8 +4,7 @@
 \name{status<-}
 \alias{status<-}
 \alias{status<-,n2kGlmerPoisson-method}
-\alias{status<-,n2kInlaNbinomial-method}
-\alias{status<-,n2kInlaPoisson-method}
+\alias{status<-,n2kInla-method}
 \alias{status<-,n2kLrtGlmer-method}
 \alias{status<-,n2kComposite-method}
 \alias{status<-,n2kInlaComparison-method}
@@ -17,9 +16,7 @@ status(x) <- value
 
 \S4method{status}{n2kGlmerPoisson}(x) <- value
 
-\S4method{status}{n2kInlaNbinomial}(x) <- value
-
-\S4method{status}{n2kInlaPoisson}(x) <- value
+\S4method{status}{n2kInla}(x) <- value
 
 \S4method{status}{n2kLrtGlmer}(x) <- value
 

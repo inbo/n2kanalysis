@@ -6,11 +6,11 @@
 #' @importFrom INLA inla.tmarginal inla.qmarginal
 #' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom stats terms
-#' @include n2kInlaNbinomial_class.R
+#' @include n2kInla_class.R
 #' @include n2kParameter_class.R
 setMethod(
   f = "get_model_parameter",
-  signature = signature(analysis = "n2kInlaNbinomial"),
+  signature = signature(analysis = "n2kInla"),
   definition = function(analysis, verbose = TRUE, ...){
     assert_that(is.flag(verbose))
     assert_that(noNA(verbose))

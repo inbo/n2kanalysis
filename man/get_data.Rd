@@ -5,19 +5,15 @@
 \alias{get_data}
 \alias{get_data,n2kGlmerPoisson-method}
 \alias{get_data,n2kGlmerPoisson-methods}
-\alias{get_data,n2kInlaNbinomial-method}
-\alias{get_data,n2kInlaNbinomial-methods}
-\alias{get_data,n2kInlaPoisson-method}
-\alias{get_data,n2kInlaPoisson-methods}
+\alias{get_data,n2kInla-method}
+\alias{get_data,n2kInla-methods}
 \title{Get the data of a n2kModel object}
 \usage{
 get_data(x)
 
 \S4method{get_data}{n2kGlmerPoisson}(x)
 
-\S4method{get_data}{n2kInlaNbinomial}(x)
-
-\S4method{get_data}{n2kInlaPoisson}(x)
+\S4method{get_data}{n2kInla}(x)
 }
 \arguments{
 \item{x}{the n2kModel object}

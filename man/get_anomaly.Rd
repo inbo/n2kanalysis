@@ -6,8 +6,8 @@
 \alias{get_anomaly}
 \alias{get_anomaly,n2kGlmerPoisson-method}
 \alias{get_anomaly,n2kGlmerPoisson-methods}
-\alias{get_anomaly,n2kInlaNbinomial-method}
-\alias{get_anomaly,n2kInlaNbinomial-methods}
+\alias{get_anomaly,n2kInla-method}
+\alias{get_anomaly,n2kInla-methods}
 \alias{get_anomaly,n2kModel-method}
 \title{Get the anomalies from a model}
 \usage{
@@ -17,7 +17,7 @@ get_anomaly(analysis, ...)
   log.expected.ratio = log(5), log.expected.absent = log(5),
   random.threshold = log(5), verbose = TRUE, ...)
 
-\S4method{get_anomaly}{n2kInlaNbinomial}(analysis, n = 20,
+\S4method{get_anomaly}{n2kInla}(analysis, n = 20,
   log.expected.ratio = log(5), log.expected.absent = log(5),
   random.threshold = log(1.05), verbose = TRUE, ...)
 

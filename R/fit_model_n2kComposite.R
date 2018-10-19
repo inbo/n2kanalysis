@@ -71,7 +71,7 @@ setMethod(
           mutate(Parent = parent) %>%
           bind_rows(
             x@Parameter %>%
-              filter(Parent != parent)
+              filter(.data$Parent != parent)
           ) %>%
           arrange(.data$Parent, .data$Value) -> x@Parameter
         if (all(parent.status$ParentStatus == "converged")) {

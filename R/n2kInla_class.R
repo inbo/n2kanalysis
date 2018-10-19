@@ -4,7 +4,7 @@ setClassUnion("maybeMatrix", c("matrix", "list", "NULL"))
 setClassUnion("maybeInla", c("inla", "NULL"))
 setClassUnion("maybeRawImputed", c("rawImputed", "aggregatedImputed", "NULL"))
 
-#' The n2kInlaPoisson class
+#' The n2kInla class
 #'
 #' It hold analysis data based on an INLA poisson model
 #' @section Slots:
@@ -14,24 +14,26 @@ setClassUnion("maybeRawImputed", c("rawImputed", "aggregatedImputed", "NULL"))
 #'        combinations}
 #'    \item{\code{ReplicateName}}{an optional list with names of replicates}
 #'    \item{\code{Model}}{Either NULL or the resulting INLA model.}
+#'    \item{\code{Family}}{The family of the INLA model}
 #'    \item{\code{ImputationSize}}{The number of multiple imputations. Defaults to 0, indication no multiple imputation.}
 #'    \item{\code{Minimum}}{an optional string containing the name of the variable in \code{Data} holding the minimal values for imputation}
 #'    \item{\code{RawImputed}}{A \code{rawImputed} object with multiple imputations.}
 #'   }
-#' @name n2kInlaPoisson-class
-#' @rdname n2kInlaPoisson-class
-#' @exportClass n2kInlaPoisson
-#' @aliases n2kInlaPoisson-class
+#' @name n2kInla-class
+#' @rdname n2kInla-class
+#' @exportClass n2kInla
+#' @aliases n2kInla-class
 #' @importFrom methods setClass
 #' @docType class
 #' @include n2kModel_class.R
 setClass(
-  "n2kInlaPoisson",
+  "n2kInla",
   representation = representation(
     Data = "data.frame",
     LinearCombination = "maybeMatrix",
     ReplicateName = "list",
     Model = "maybeInla",
+    Family = "character",
     ImputationSize = "integer",
     Minimum = "character",
     RawImputed = "maybeRawImputed"
@@ -43,8 +45,9 @@ setClass(
 #' @importFrom n2khelper check_dataframe_variable
 #' @importFrom digest sha1
 #' @importFrom assertthat assert_that has_name
+#' @importFrom INLA inla.models
 setValidity(
-  "n2kInlaPoisson",
+  "n2kInla",
   function(object){
     if (object@ImputationSize < 0) {
       stop("negative ImputationSize")
@@ -60,12 +63,16 @@ setValidity(
     if (any(is.na(object@Data$ObservationID))) {
       stop("ObservationID cannot be NA")
     }
-    if (!grepl("^inla Poisson", object@AnalysisMetadata$ModelType)) {
-      stop("ModelType should be 'inla Poisson'")
+    if (!all(object@Family %in% names(inla.models()$likelihood))) {
+      stop(object@Family, " is not an INLA likelihood")
     }
-    if (class(object@Model) == "inla") {
-      if (object@Model$all.hyper$family[[1]]$label != "poisson") {
-        stop("The model must be from the Poisson family")
+    rg <- paste("inla", paste(object@Family, collapse = "-"))
+    if (!grepl(paste0("^", rg), object@AnalysisMetadata$ModelType)) {
+      stop("ModelType should be '", rg, "'")
+    }
+    if (inherits(object@Model, "inla")) {
+      if (object@Model$.args$family != object@Family) {
+        stop("Model of the wrong family")
       }
     }
 
@@ -97,6 +104,7 @@ setValidity(
         object@AnalysisMetadata$SchemeID,
         object@AnalysisMetadata$SpeciesGroupID,
         object@AnalysisMetadata$LocationGroupID,
+        object@Family,
         object@AnalysisMetadata$ModelType, object@AnalysisMetadata$Formula,
         object@AnalysisMetadata$FirstImportedYear,
         object@AnalysisMetadata$LastImportedYear,

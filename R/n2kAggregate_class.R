@@ -1,6 +1,6 @@
 #' @importFrom methods setClassUnion
 #' @importClassesFrom multimput aggregatedImputed
-#' @include n2kInlaNbinomial_class.R
+#' @include n2kInla_class.R
 setClassUnion("maybeAggregatedImputed", c("aggregatedImputed", "NULL"))
 
 #' The n2kAggregate class

@@ -113,32 +113,10 @@ setReplaceMethod(
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kInlaNbinomial_class.R
+#' @include n2kInla_class.R
 setReplaceMethod(
   "status",
-  "n2kInlaNbinomial",
-  function(x, value){
-    x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- sha1(
-      list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Model,
-        x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
-        x@AnalysisVersionRPackage, x@AnalysisRelation, x@RawImputed
-      ),
-      digits = 6L
-    )
-    validObject(x)
-    return(x)
-  }
-)
-
-#' @rdname status.change
-#' @importFrom methods setReplaceMethod
-#' @importFrom digest sha1
-#' @include n2kInlaPoisson_class.R
-setReplaceMethod(
-  "status",
-  "n2kInlaPoisson",
+  "n2kInla",
   function(x, value){
     x@AnalysisMetadata$Status <- value
     x@AnalysisMetadata$StatusFingerprint <- sha1(

@@ -26,25 +26,12 @@ setMethod(
 )
 
 #' @rdname get_data
-#' @aliases get_data,n2kInlaNbinomial-methods
+#' @aliases get_data,n2kInla-methods
 #' @importFrom methods setMethod new
-#' @include n2kInlaNbinomial_class.R
+#' @include n2kInla_class.R
 setMethod(
   f = "get_data",
-  signature = signature(x = "n2kInlaNbinomial"),
-  definition = function(x){
-    return(x@Data)
-  }
-)
-
-
-#' @rdname get_data
-#' @aliases get_data,n2kInlaPoisson-methods
-#' @importFrom methods setMethod new
-#' @include n2kInlaPoisson_class.R
-setMethod(
-  f = "get_data",
-  signature = signature(x = "n2kInlaPoisson"),
+  signature = signature(x = "n2kInla"),
   definition = function(x){
     return(x@Data)
   }

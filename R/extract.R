@@ -52,25 +52,12 @@ setMethod(
 )
 
 #' @rdname extract
-#' @aliases extract,n2kInlaNbinomial-methods
+#' @aliases extract,n2kInla-methods
 #' @importFrom methods setMethod new
-#' @include n2kInlaNbinomial_class.R
+#' @include n2kInla_class.R
 setMethod(
   f = "extract",
-  signature = signature(object = "n2kInlaNbinomial"),
-  definition = function(extractor, object, base = NULL, project = NULL){
-    assert_that(inherits(extractor, "function"))
-    extractor(object@Model)
-  }
-)
-
-#' @rdname extract
-#' @aliases extract,n2kInlaPoisson-methods
-#' @importFrom methods setMethod new
-#' @include n2kInlaPoisson_class.R
-setMethod(
-  f = "extract",
-  signature = signature(object = "n2kInlaPoisson"),
+  signature = signature(object = "n2kInla"),
   definition = function(extractor, object, base = NULL, project = NULL){
     assert_that(inherits(extractor, "function"))
     extractor(object@Model)

@@ -1,14 +1,14 @@
 #' @rdname get_anomaly
-#' @aliases get_anomaly,n2kInlaNbinomial-methods
+#' @aliases get_anomaly,n2kInla-methods
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.count is.number is.flag noNA is.string
 #' @importFrom dplyr data_frame select_ filter_ mutate_ bind_cols arrange_ ungroup slice_ transmute_ group_by
 #' @importFrom digest sha1
 #' @importFrom n2khelper is.chartor
-#' @include n2kInlaNbinomial_class.R
+#' @include n2kInla_class.R
 setMethod(
   f = "get_anomaly",
-  signature = signature(analysis = "n2kInlaNbinomial"),
+  signature = signature(analysis = "n2kInla"),
   definition = function(
     analysis,
     n = 20,

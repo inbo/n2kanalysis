@@ -1,29 +1,30 @@
-#' Create a n2kInlaPoisson object
+#' Create a n2kInla object
 #' @inheritParams n2k_glmer_poisson
-#' @name n2k_inla_poisson
-#' @rdname n2k_inla_poisson
-#' @exportMethod n2k_inla_poisson
+#' @name n2k_inla
+#' @rdname n2k_inla
+#' @exportMethod n2k_inla
 #' @docType methods
 #' @importFrom methods setGeneric
 setGeneric(
-  name = "n2k_inla_poisson",
+  name = "n2k_inla",
   def = function(
     data, ..., model.fit
   ){
-    standardGeneric("n2k_inla_poisson") # nocov
+    standardGeneric("n2k_inla") # nocov
   }
 )
 
-#' @description A new n2kInlaPoisson model is created when \code{data} is a data.frame.
-#' @rdname n2k_inla_poisson
-#' @aliases n2k_inla_poisson,n2kInlaPoisson-methods
+#' @description A new n2kInla model is created when \code{data} is a data.frame.
+#' @rdname n2k_inla
+#' @aliases n2k_inla,n2kInla-methods
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.count is.string is.time
 #' @importFrom digest sha1
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
-#' @include n2kInlaPoisson_class.R
+#' @include n2kInla_class.R
 #' @inheritParams n2k_inla_comparison
+#' @param family the family to use in the INLA model
 #' @param lin.comb A model matrix to calculate linear combinations
 #' @param replicate.name A list with the names of replicates. Defaults to an empty list. Used in case of \code{f(X, ..., replicate = Z)}}. Should be a named list like e.g. \code{list(X = c("a", "b", "c")).
 #' @param imputation.size The required number of imputations defaults to 0.
@@ -32,10 +33,10 @@ setGeneric(
 #' @param parent.status the status of the parent analysis
 #' @param parent.statusfingerprint the statusfingerprint of the parent analysis
 setMethod(
-  f = "n2k_inla_poisson",
+  f = "n2k_inla",
   signature = signature(data = "data.frame"),
   definition = function(
-    data, status = "new", result.datasource.id, scheme.id,
+    data, status = "new", result.datasource.id, scheme.id, family = "poisson",
     formula, species.group.id, location.group.id, model.type,
     first.imported.year, last.imported.year, duration, last.analysed.year,
     analysis.date, lin.comb = NULL, minimum = "", imputation.size,
@@ -66,13 +67,13 @@ setMethod(
     first.imported.year <- as.integer(first.imported.year)
     assert_that(is.count(last.imported.year))
     last.imported.year <- as.integer(last.imported.year)
-    if (is.null(duration)) {
+    if (missing(duration)) {
       duration <- last.imported.year - first.imported.year + 1L
     } else {
       assert_that(is.count(duration))
       duration <- as.integer(duration)
     }
-    if (is.null(last.analysed.year)) {
+    if (missing(last.analysed.year)) {
       last.analysed.year <- last.imported.year
     } else {
       assert_that(is.count(last.analysed.year))
@@ -80,10 +81,11 @@ setMethod(
     }
     assert_that(is.time(analysis.date))
     if (!is.null(lin.comb)) {
-      assert_that(
-        inherits(lin.comb, "matrix") |
-          inherits(lin.comb, "list")
-      )
+      ok <- inherits(lin.comb, "list") ||
+        (inherits(lin.comb, "matrix") && length(dim(lin.comb) == 2))
+      if (!ok) {
+        stop("lin.comb must be either a list or a matrix")
+      }
     }
     assert_that(is.list(replicate.name))
     if (length(replicate.name) > 0) {
@@ -91,10 +93,14 @@ setMethod(
         stop("replicate.name must have names")
       }
     }
+    assert_that(
+      is.character(family),
+      length(family) >= 1
+    )
     file.fingerprint <- sha1(
       list(
         data, result.datasource.id, scheme.id, species.group.id,
-        location.group.id,
+        location.group.id, family,
         model.type, formula, first.imported.year,
         last.imported.year, duration, last.analysed.year,
         format(analysis.date, tz = "UTC"),
@@ -139,7 +145,7 @@ setMethod(
     )
 
     new(
-      "n2kInlaPoisson",
+      "n2kInla",
       AnalysisVersion = version@AnalysisVersion,
       RPackage = version@RPackage,
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
@@ -168,6 +174,7 @@ setMethod(
       ReplicateName = replicate.name,
       LinearCombination = lin.comb,
       Model = NULL,
+      Family = family,
       ImputationSize = imputation.size,
       Minimum = minimum,
       RawImputed = NULL
@@ -175,17 +182,17 @@ setMethod(
   }
 )
 
-#' @description In case \code{data} a n2kInlaPoisson object is, then only the model and status are updated. All other slots are unaffected.
-#' @rdname n2k_inla_poisson
-#' @aliases n2k_inla_poisson,n2kInlaPoisson-methods
+#' @description In case \code{data} a n2kInla object is, then only the model and status are updated. All other slots are unaffected.
+#' @rdname n2k_inla
+#' @aliases n2k_inla,n2kInla-methods
 #' @importFrom methods setMethod validObject new
 #' @importFrom digest sha1
 #' @importFrom utils sessionInfo
-#' @include n2kInlaPoisson_class.R
+#' @include n2kInla_class.R
 #' @param raw.imputed the optional RawImputed object
 setMethod(
-  f = "n2k_inla_poisson",
-  signature = signature(data = "n2kInlaPoisson", model.fit = "inla"),
+  f = "n2k_inla",
+  signature = signature(data = "n2kInla", model.fit = "inla"),
   definition = function(
     data, status, raw.imputed = NULL, ..., model.fit
   ){
