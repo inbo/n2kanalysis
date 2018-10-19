@@ -1,22 +1,5 @@
 #' Create a n2kInlaPoisson object
 #' @inheritParams n2k_glmer_poisson
-#' @details
-#'   \describe{
-#'    \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
-#'    \item{\code{species.group.id}}{a single integer identifing the species group}
-#'    \item{\code{location.group.id}}{a single integer identifing the location group}
-#'    \item{\code{model.type}}{a single character identifying the type of model to fit to the data}
-#'    \item{\code{formula}}{a single character holding the model formula}
-#'    \item{\code{first.imported.year}}{Oldest year considered in the data}
-#'    \item{\code{last.imported.year}}{Most recent year considered in the data}
-#'    \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
-#'    \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
-#'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
-#'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
-#'    \item{\code{lin.comb}}{A model matrix to calculate linear combinations}
-#'    \item{\code{replicate.name}}{A list with the names of replicates. Defaults to an empty list. Used in case of \code{f(X, ..., replicate = Z)}}. Should be a named list like e.g. \code{list(X = c("a", "b", "c")).}
-#'    \item{\code{imputation.size}}{The required number of imputations defaults to 0.}
-#'   }
 #' @name n2k_inla_poisson
 #' @rdname n2k_inla_poisson
 #' @exportMethod n2k_inla_poisson
@@ -40,94 +23,87 @@ setGeneric(
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
 #' @include n2kInlaPoisson_class.R
+#' @inheritParams n2k_inla_comparison
+#' @param lin.comb A model matrix to calculate linear combinations
+#' @param replicate.name A list with the names of replicates. Defaults to an empty list. Used in case of \code{f(X, ..., replicate = Z)}}. Should be a named list like e.g. \code{list(X = c("a", "b", "c")).
+#' @param imputation.size The required number of imputations defaults to 0.
+#' @param minimum the name of the variable which holds the minimum counts. Only relevant in case of multiple imputation
+#' @param parent the file fingerprint of the optional parent analysis
+#' @param parent.status the status of the parent analysis
+#' @param parent.statusfingerprint the statusfingerprint of the parent analysis
 setMethod(
   f = "n2k_inla_poisson",
   signature = signature(data = "data.frame"),
   definition = function(
-    data, ..., model.fit
+    data, status = "new", result.datasource.id, scheme.id,
+    formula, species.group.id, location.group.id, model.type,
+    first.imported.year, last.imported.year, duration, last.analysed.year,
+    analysis.date, lin.comb = NULL, minimum = "", imputation.size,
+    parent = character(0), seed, replicate.name = list(),
+    parent.status = "converged", parent.statusfingerprint, ..., model.fit
   ){
-    dots <- list(...)
-    #set the defaults for missing arguments in dots
-    if (is.null(dots$status)) {
-      dots$status <- "new"
-    }
-    if (is.null(dots$minimum)) {
-      dots$minimum <- ""
-    }
-    if (is.null(dots$seed)) {
-      dots$seed <- sample(.Machine$integer.max, 1)
+    assert_that(is.string(status))
+    assert_that(is.string(minimum))
+    if (missing(seed)) {
+      seed <- sample(.Machine$integer.max, 1)
     } else {
-      assert_that(is.count(dots$seed))
-      dots$seed <- as.integer(dots$seed)
+      assert_that(is.count(seed))
+      seed <- as.integer(seed)
     }
-    if (is.null(dots$imputation.size)) {
-      dots$imputation.size <- 0L
+    if (missing(imputation.size)) {
+      imputation.size <- 0L
     } else {
-      if (!is.integer(dots$imputation.size)) {
-        if (
-          abs(as.integer(dots$imputation.size) - dots$imputation.size) > 1e-8
-        ) {
-          "imputation.size must be integer"
-        } else {
-          dots$imputation.size <- as.integer(dots$imputation.size)
-        }
-      }
-      assert_that(dots$imputation.size >= 0)
+      assert_that(is.count(imputation.size))
+      imputation.size <- as.integer(imputation.size)
     }
-    assert_that(is.string(dots$result.datasource.id))
-    assert_that(is.string(dots$scheme.id))
-    assert_that(is.string(dots$species.group.id))
-    assert_that(is.string(dots$location.group.id))
-    assert_that(is.string(dots$model.type))
-    assert_that(is.string(dots$formula))
-    assert_that(is.count(dots$first.imported.year))
-    dots$first.imported.year <- as.integer(dots$first.imported.year)
-    assert_that(is.count(dots$last.imported.year))
-    dots$last.imported.year <- as.integer(dots$last.imported.year)
-    if (is.null(dots$duration)) {
-      dots$duration <- dots$last.imported.year - dots$first.imported.year + 1L
+    assert_that(is.string(result.datasource.id))
+    assert_that(is.string(scheme.id))
+    assert_that(is.string(species.group.id))
+    assert_that(is.string(location.group.id))
+    assert_that(is.string(model.type))
+    assert_that(is.string(formula))
+    assert_that(is.count(first.imported.year))
+    first.imported.year <- as.integer(first.imported.year)
+    assert_that(is.count(last.imported.year))
+    last.imported.year <- as.integer(last.imported.year)
+    if (is.null(duration)) {
+      duration <- last.imported.year - first.imported.year + 1L
     } else {
-      assert_that(is.count(dots$duration))
-      dots$duration <- as.integer(dots$duration)
+      assert_that(is.count(duration))
+      duration <- as.integer(duration)
     }
-    if (is.null(dots$last.analysed.year)) {
-      dots$last.analysed.year <- dots$last.imported.year
+    if (is.null(last.analysed.year)) {
+      last.analysed.year <- last.imported.year
     } else {
-      assert_that(is.count(dots$last.analysed.year))
-      dots$last.analysed.year <- as.integer(dots$last.analysed.year)
+      assert_that(is.count(last.analysed.year))
+      last.analysed.year <- as.integer(last.analysed.year)
     }
-    assert_that(is.time(dots$analysis.date))
-    if (is.null(dots$parent)) {
-      dots$parent <- character(0)
-    }
-    if (!is.null(dots$lin.comb)) {
+    assert_that(is.time(analysis.date))
+    if (!is.null(lin.comb)) {
       assert_that(
-        inherits(dots$lin.comb, "matrix") |
-          inherits(dots$lin.comb, "list")
+        inherits(lin.comb, "matrix") |
+          inherits(lin.comb, "list")
       )
     }
-    if (is.null(dots$replicate.name)) {
-      dots$replicate.name <- list()
-    }
-    assert_that(is.list(dots$replicate.name))
-    if (length(dots$replicate.name) > 0) {
-      if (is.null(names(dots$replicate.name))) {
+    assert_that(is.list(replicate.name))
+    if (length(replicate.name) > 0) {
+      if (is.null(names(replicate.name))) {
         stop("replicate.name must have names")
       }
     }
     file.fingerprint <- sha1(
       list(
-        data, dots$result.datasource.id, dots$scheme.id, dots$species.group.id,
-        dots$location.group.id,
-        dots$model.type, dots$formula, dots$first.imported.year,
-        dots$last.imported.year, dots$duration, dots$last.analysed.year,
-        format(dots$analysis.date, tz = "UTC"),
-        dots$seed, dots$parent, dots$replicate.name,
-        dots$lin.comb, dots$imputation.size, dots$minimum
+        data, result.datasource.id, scheme.id, species.group.id,
+        location.group.id,
+        model.type, formula, first.imported.year,
+        last.imported.year, duration, last.analysed.year,
+        format(analysis.date, tz = "UTC"),
+        seed, parent, replicate.name,
+        lin.comb, imputation.size, minimum
       )
     )
 
-    if (length(dots$parent) == 0) {
+    if (length(parent) == 0) {
       analysis.relation <- data.frame(
         Analysis = character(0),
         ParentAnalysis = character(0),
@@ -136,31 +112,25 @@ setMethod(
         stringsAsFactors = FALSE
       )
     } else {
-      assert_that(is.string(dots$parent))
-      if (is.null(dots$parent.status.fingerprint)) {
-        if (is.null(dots$parent.status)) {
-          dots$parent.status <- "converged"
-        }
-        dots$parent.statusfingerprint <- sha1(dots$parent.status)
+      assert_that(is.string(parent))
+      assert_that(is.string(parent.status))
+      if (missing(parent.statusfingerprint)) {
+        parent.statusfingerprint <- sha1(parent.status)
       } else {
-        if (is.null(dots[["parent.status"]])) {
-          stop(
-"'parent.status' is required when 'parent.status.fingerprint' is provided"
-          )
-        }
+        assert_that(is.string(parent.statusfingerprint))
       }
       analysis.relation <- data.frame(
         Analysis = file.fingerprint,
-        ParentAnalysis = dots$parent,
-        ParentStatusFingerprint = dots$parent.statusfingerprint,
-        ParentStatus = dots$parent.status,
+        ParentAnalysis = parent,
+        ParentStatusFingerprint = parent.statusfingerprint,
+        ParentStatus = parent.status,
         stringsAsFactors = FALSE
       )
     }
     version <- get_analysis_version(sessionInfo())
     status.fingerprint <- sha1(
       list(
-        file.fingerprint, dots$status, NULL,
+        file.fingerprint, status, NULL,
         version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
         version@RPackage,  version@AnalysisVersionRPackage, analysis.relation,
         NULL
@@ -174,32 +144,32 @@ setMethod(
       RPackage = version@RPackage,
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
       AnalysisMetadata = data.frame(
-        ResultDatasourceID = dots$result.datasource.id,
-        SchemeID = dots$scheme.id,
-        SpeciesGroupID = dots$species.group.id,
-        LocationGroupID = dots$location.group.id,
-        ModelType = dots$model.type,
-        Formula = dots$formula,
-        FirstImportedYear = dots$first.imported.year,
-        LastImportedYear = dots$last.imported.year,
-        Duration = dots$duration,
-        LastAnalysedYear = dots$last.analysed.year,
-        AnalysisDate = dots$analysis.date,
-        Seed = dots$seed,
-        Status = dots$status,
+        ResultDatasourceID = result.datasource.id,
+        SchemeID = scheme.id,
+        SpeciesGroupID = species.group.id,
+        LocationGroupID = location.group.id,
+        ModelType = model.type,
+        Formula = formula,
+        FirstImportedYear = first.imported.year,
+        LastImportedYear = last.imported.year,
+        Duration = duration,
+        LastAnalysedYear = last.analysed.year,
+        AnalysisDate = analysis.date,
+        Seed = seed,
+        Status = status,
         AnalysisVersion = version@AnalysisVersion$Fingerprint,
         FileFingerprint = file.fingerprint,
         StatusFingerprint = status.fingerprint,
         stringsAsFactors = FALSE
       ),
-      AnalysisFormula = list(as.formula(dots$formula)),
+      AnalysisFormula = list(as.formula(formula)),
       AnalysisRelation = analysis.relation,
       Data = data,
-      ReplicateName = dots$replicate.name,
-      LinearCombination = dots$lin.comb,
+      ReplicateName = replicate.name,
+      LinearCombination = lin.comb,
       Model = NULL,
-      ImputationSize = dots$imputation.size,
-      Minimum = dots$minimum,
+      ImputationSize = imputation.size,
+      Minimum = minimum,
       RawImputed = NULL
     )
   }
@@ -212,22 +182,23 @@ setMethod(
 #' @importFrom digest sha1
 #' @importFrom utils sessionInfo
 #' @include n2kInlaPoisson_class.R
+#' @param raw.imputed the optional RawImputed object
 setMethod(
   f = "n2k_inla_poisson",
   signature = signature(data = "n2kInlaPoisson", model.fit = "inla"),
   definition = function(
-    data, ..., model.fit
+    data, status, raw.imputed = NULL, ..., model.fit
   ){
-    dots <- list(...)
+    assert_that(is.string(status))
     data@Model <- model.fit
-    data@AnalysisMetadata$Status <- dots$status
+    data@AnalysisMetadata$Status <- status
     version <- get_analysis_version(sessionInfo())
     new.version <- union(data, version)
     data@AnalysisVersion <- new.version$Union@AnalysisVersion
     data@RPackage <- new.version$Union@RPackage
     data@AnalysisVersionRPackage <- new.version$Union@AnalysisVersionRPackage
     data@AnalysisMetadata$AnalysisVersion <- new.version$UnionFingerprint
-    data@RawImputed <- dots$raw.imputed
+    data@RawImputed <- raw.imputed
     data@AnalysisMetadata$StatusFingerprint <- sha1(
       list(
         data@AnalysisMetadata$FileFingerprint, data@AnalysisMetadata$Status,

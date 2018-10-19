@@ -2,7 +2,7 @@
 #' @aliases get_anomaly,n2kInlaNbinomial-methods
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.count is.number is.flag noNA is.string
-#' @importFrom dplyr data_frame select_ filter_ mutate_ bind_cols arrange_ ungroup slice_ transmute_
+#' @importFrom dplyr data_frame select_ filter_ mutate_ bind_cols arrange_ ungroup slice_ transmute_ group_by
 #' @importFrom digest sha1
 #' @importFrom n2khelper is.chartor
 #' @include n2kInlaNbinomial_class.R
@@ -165,7 +165,7 @@ setMethod(
       re.anomaly <- re.anomaly %>%
         mutate_(Sign = ~sign(Estimate)) %>%
         arrange_(~desc(abs(Estimate))) %>%
-        group_by_(~AnomalyType, ~Sign) %>%
+        group_by(.data$AnomalyType, .data$Sign) %>%
         slice_(~seq_len(n)) %>%
         ungroup() %>%
         select_(~-Sign, ~-Estimate)

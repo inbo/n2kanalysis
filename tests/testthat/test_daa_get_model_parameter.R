@@ -455,12 +455,12 @@ test_that(
   expect_false(any(is.na(random$Level)))
   expect_equal(
     random %>%
-      group_by_(~Main, ~Level) %>%
+      group_by(.data$Main, .data$Level) %>%
       summarise_(
         N = ~n(),
         Missing = ~mean(is.na(Level2))
       ) %>%
-      group_by_(~Main) %>%
+      group_by(.data$Main) %>%
       summarise_(
         N1 = ~n(),
         N2 = ~mean(N),
