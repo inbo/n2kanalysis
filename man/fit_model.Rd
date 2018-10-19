@@ -28,7 +28,7 @@ fit_model(x, ...)
 
 \S4method{fit_model}{n2kAggregate}(x, ...)
 
-\S4method{fit_model}{n2kComposite}(x, ...)
+\S4method{fit_model}{n2kComposite}(x, base, project, status = "new", ...)
 
 \S4method{fit_model}{n2kGlmerPoisson}(x, ...)
 

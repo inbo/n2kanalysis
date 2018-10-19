@@ -377,6 +377,99 @@ test_that("fit_model() works on n2kInlaComparison", {
   file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))
 })
 
+test_that("fit_model() works on n2kInlaComposite", {
+  this.result.datasource.id <- sha1(letters)
+  this.scheme.id <- sha1(letters)
+  this.species.group.id <- sha1(letters)
+  this.location.group.id <- sha1(letters)
+  this.analysis.date <- Sys.time()
+  this.model.type <- "inla nbinomial: A * (B + C) + C:D"
+  this.first.imported.year <- 1990L
+  this.last.imported.year <- 2015L
+  this.last.analysed.year <- 2014L
+  this.duration <- 1L
+  dataset <- test_data()
+  temp.dir <- tempdir()
+
+  analysis <- n2k_inla_nbinomial(
+    result.datasource.id = this.result.datasource.id,
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = "Count ~ A",
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = dataset
+  )
+  p1 <- get_file_fingerprint(analysis)
+  filename1 <- store_model(analysis, base = temp.dir, project = "fit_model")
+  analysis <- n2k_inla_nbinomial(
+    result.datasource.id = this.result.datasource.id,
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = "Count ~ A + B",
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = dataset
+  )
+  p2 <- get_file_fingerprint(analysis)
+  filename2 <- store_model(analysis, base = temp.dir, project = "fit_model")
+
+  analysis <- n2k_composite(
+    result.datasource.id = this.result.datasource.id,
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    formula = "~B", #nolint
+    model.type = "inla comparison: A*B",
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    parent.status = status(temp.dir) %>%
+      select(
+        ParentAnalysis = "FileFingerprint",
+        ParentStatus = "Status",
+        ParentStatusFingerprint = "StatusFingerprint"
+      ),
+    extractor = function(model) {
+      relevant <- grep("^A", rownames(model$summary.fixed))
+      model$summary.fixed[relevant, c("mean", "sd")] %>%
+        rownames_to_column("Value") %>%
+        transmute(
+          .data$Value,
+          Estimate = .data$mean,
+          Variance = .data$sd ^ 2)
+    }
+  )
+
+  filename3 <- store_model(analysis, base = temp.dir, project = "fit_model")
+  fit_model(
+    get_file_fingerprint(analysis),
+    base = temp.dir,
+    project = "fit_model",
+    verbose = FALSE
+  )
+
+  fit_model(filename1, verbose = FALSE)
+  fit_model(filename3, verbose = FALSE)
+
+  fit_model(filename2, verbose = FALSE)
+  fit_model(filename3, verbose = FALSE)
+  filename3 <- gsub("waiting", "converged", filename3)
+  expect_identical(
+    fit_model(filename3, verbose = FALSE),
+    NULL
+  )
+
+  # clean temp files
+  file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))
+})
+
 test_that("fit_model() works in n2kLrtGlmer objects", {
   this.seed <- 50L
   this.result.datasource.id <- sha1(sample(letters))

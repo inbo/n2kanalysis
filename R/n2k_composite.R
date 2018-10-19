@@ -1,21 +1,4 @@
 #' Create a n2kComposite object
-#' @param parent.status the file fingerprint of the parents
-#' @param ... other arguments. See below
-#' @details
-#'   \describe{
-#'    \item{\code{status}}{a single character indicating the status of the model. Defaults to 'waiting' when \code{parent} is a character.}
-#'    \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
-#'    \item{\code{species.group.id}}{a single integer identifing the species group}
-#'    \item{\code{location.group.id}}{a single integer identifing the location group}
-#'    \item{\code{formula}}{a single character identifying the comparison}
-#'    \item{\code{first.imported.year}}{Oldest year considered in the data}
-#'    \item{\code{last.imported.year}}{Most recent year considered in the data}
-#'    \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
-#'    \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
-#'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
-#'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
-#'    \item{\code{extractor}}{a function to extract the relevant parameters from the model}
-#'   }
 #' @name n2k_composite
 #' @rdname n2k_composite
 #' @exportMethod n2k_composite
@@ -39,77 +22,76 @@ setGeneric(
 #' @importFrom digest sha1
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
-#' @include n2kLrtGlmer_class.R
+#' @include n2kComposite_class.R
+#' @inheritParams n2k_inla_comparison
+#' @param extractor a function to extract the relevant parameters from the model
 setMethod(
   f = "n2k_composite",
   signature = signature(parent.status = "data.frame"),
   definition = function(
-    parent.status, ...
+    parent.status, status = "waiting", result.datasource.id, scheme.id,
+    formula, species.group.id, location.group.id, model.type,
+    first.imported.year, last.imported.year, duration, last.analysed.year,
+    analysis.date, extractor, ..., seed
   ){
-    check_dataframe_variable(
-      df = parent.status,
-      name = "parent.status",
-      variable = c("ParentAnalysis", "ParentStatusFingerprint", "ParentStatus")
+    assert_that(
+      has_name(parent.status, "ParentAnalysis"),
+      has_name(parent.status, "ParentStatusFingerprint"),
+      has_name(parent.status, "ParentStatus")
     )
-    parent.status <- parent.status[
-      order(parent.status$ParentAnalysis),
-    ]
-
-
-    dots <- list(...)
-    #set the defaults for missing arguments in dots
-    if (is.null(dots$status)) {
-      dots$status <- "waiting"
-    }
-    assert_that(is.count(dots$seed))
-    dots$seed <- as.integer(dots$seed)
-    assert_that(is.string(dots$result.datasource.id))
-    assert_that(is.string(dots$scheme.id))
-    assert_that(is.string(dots$species.group.id))
-    assert_that(is.string(dots$location.group.id))
-    assert_that(is.string(dots$model.type))
-    assert_that(is.string(dots$formula))
-    assert_that(is.count(dots$first.imported.year))
-    dots$first.imported.year <- as.integer(dots$first.imported.year)
-    assert_that(is.count(dots$last.imported.year))
-    dots$last.imported.year <- as.integer(dots$last.imported.year)
-    if (is.null(dots$duration)) {
-      dots$duration <- dots$last.imported.year - dots$first.imported.year + 1L
+    parent.status <- parent.status %>%
+      arrange(.data$ParentAnalysis)
+    assert_that(is.string(status))
+    if (missing(seed)) {
+      seed <- sample(.Machine$integer.max, 1)
     } else {
-      assert_that(is.count(dots$duration))
-      dots$duration <- as.integer(dots$duration)
+      assert_that(is.count(seed))
+      seed <- as.integer(seed)
     }
-    if (is.null(dots$last.analysed.year)) {
-      dots$last.analysed.year <- dots$last.imported.year
+    assert_that(is.string(result.datasource.id))
+    assert_that(is.string(scheme.id))
+    assert_that(is.string(species.group.id))
+    assert_that(is.string(location.group.id))
+    assert_that(is.string(model.type))
+    assert_that(is.string(formula))
+    assert_that(is.count(first.imported.year))
+    first.imported.year <- as.integer(first.imported.year)
+    assert_that(is.count(last.imported.year))
+    last.imported.year <- as.integer(last.imported.year)
+    if (missing(duration)) {
+      duration <- last.imported.year - first.imported.year + 1L
     } else {
-      assert_that(is.count(dots$last.analysed.year))
-      dots$last.analysed.year <- as.integer(dots$last.analysed.year)
+      assert_that(is.count(duration))
+      duration <- as.integer(duration)
     }
-    assert_that(is.time(dots$analysis.date))
-    assert_that(inherits(dots$extractor, "function"))
+    if (missing(last.analysed.year)) {
+      last.analysed.year <- last.imported.year
+    } else {
+      assert_that(is.count(last.analysed.year))
+      last.analysed.year <- as.integer(last.analysed.year)
+    }
+    assert_that(is.time(analysis.date))
+    assert_that(inherits(extractor, "function"))
     file.fingerprint <- sha1(
       list(
-        dots$result.datasource.id,
-        dots$scheme.id, dots$species.group.id, dots$location.group.id,
-        dots$model.type, dots$formula, dots$first.imported.year,
-        dots$last.imported.year, dots$duration, dots$last.analysed.year,
-        format(dots$analysis.date, tz = "UTC"),
-        dots$seed, parent.status$ParentAnalysis,
-        formals(dots$extractor),
-        as.character(body(dots$extractor))
+        result.datasource.id,
+        scheme.id, species.group.id, location.group.id,
+        model.type, formula, first.imported.year,
+        last.imported.year, duration, last.analysed.year,
+        format(analysis.date, tz = "UTC"),
+        seed, parent.status$ParentAnalysis,
+        formals(extractor),
+        as.character(body(extractor))
       )
     )
     parent.status$Analysis <- file.fingerprint
-    parent.status <- parent.status[
-      order(
-        parent.status$ParentAnalysis,
-        parent.status$ParentStatusFingerprint
-      ),
-      c("Analysis", "ParentAnalysis", "ParentStatusFingerprint", "ParentStatus")
-    ]
+    parent.status <- parent.status %>%
+      select(
+        "Analysis", "ParentAnalysis", "ParentStatusFingerprint", "ParentStatus"
+      )
     parameter <- data.frame(
       Parent = character(0),
-      Value = numeric(0),
+      Value = character(0),
       Estimate = numeric(0),
       Variance = numeric(0),
       stringsAsFactors = FALSE
@@ -125,7 +107,7 @@ setMethod(
     version <- get_analysis_version(sessionInfo())
     status.fingerprint <- sha1(
       list(
-        file.fingerprint, dots$status, parameter, index,
+        file.fingerprint, status, parameter, index,
         version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
         version@RPackage, version@AnalysisVersionRPackage, parent.status
       ),
@@ -138,27 +120,27 @@ setMethod(
       RPackage = version@RPackage,
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
       AnalysisMetadata = data.frame(
-        ResultDatasourceID = dots$result.datasource.id,
-        SchemeID = dots$scheme.id,
-        SpeciesGroupID = dots$species.group.id,
-        LocationGroupID = dots$location.group.id,
-        ModelType = dots$model.type,
-        Formula = dots$formula,
-        FirstImportedYear = dots$first.imported.year,
-        LastImportedYear = dots$last.imported.year,
-        Duration = dots$duration,
-        LastAnalysedYear = dots$last.analysed.year,
-        AnalysisDate = dots$analysis.date,
-        Seed = dots$seed,
-        Status = dots$status,
+        ResultDatasourceID = result.datasource.id,
+        SchemeID = scheme.id,
+        SpeciesGroupID = species.group.id,
+        LocationGroupID = location.group.id,
+        ModelType = model.type,
+        Formula = formula,
+        FirstImportedYear = first.imported.year,
+        LastImportedYear = last.imported.year,
+        Duration = duration,
+        LastAnalysedYear = last.analysed.year,
+        AnalysisDate = analysis.date,
+        Seed = seed,
+        Status = status,
         AnalysisVersion = version@AnalysisVersion$Fingerprint,
         FileFingerprint = file.fingerprint,
         StatusFingerprint = status.fingerprint,
         stringsAsFactors = FALSE
       ),
-      AnalysisFormula = list(as.formula(dots$formula)),
+      AnalysisFormula = list(as.formula(formula)),
       AnalysisRelation = parent.status,
-      Extractor = dots$extractor,
+      Extractor = extractor,
       Parameter = parameter,
       Index = index
     )

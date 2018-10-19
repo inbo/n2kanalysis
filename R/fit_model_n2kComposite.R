@@ -1,6 +1,6 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% select select_ group_by_ summarise_ distinct_ filter_ anti_join arrange_ inner_join rename
+#' @importFrom dplyr %>% filter group_by n summarise transmute
 #' @importFrom rlang .data
 #' @importFrom utils file_test
 #' @importFrom stats qnorm
@@ -8,94 +8,88 @@
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kComposite"),
-  definition = function(x, ...){
+  definition = function(x, base, project, status = "new", ...){
     validObject(x)
-    dots <- list(...)
-    if (is.null(dots$status)) {
-      dots$status <- c("new", "waiting")
-    }
-    if (!(status(x) %in% dots$status)) {
+    assert_that(
+      is.character(status),
+      length(status) >= 1
+    )
+    if (!(status(x) %in% status)) {
       return(x)
     }
+
     if (status(x) == "new") {
       parameter <- x@Parameter
       if (nrow(parameter) == 0) {
         status(x) <- "error"
         return(x)
       }
-      # ignore parents which are missing in one of more years
-      missing.parent <- parameter %>%
-        filter_(~Estimate < -10) %>%
-        select_(~Parent) %>%
-        distinct_()
-      x@Index <- anti_join(parameter, missing.parent, by = "Parent") %>%
-        group_by_(~Value) %>%
-        summarise_(
-          Estimate = ~mean(Estimate),
-          SE = ~ sqrt(sum(Variance) / n()),
-          LowerConfidenceLimit = ~qnorm(0.025, mean = Estimate, sd = SE),
-          UpperConfidenceLimit = ~qnorm(0.975, mean = Estimate, sd = SE)
+      x@Parameter %>%
+        filter(!is.na(.data$Estimate), !is.na(.data$Variance)) %>%
+        group_by(.data$Value) %>%
+        summarise(
+          Estimate = mean(.data$Estimate),
+          SE = sqrt(sum(.data$Variance)) / n()
         ) %>%
-        select_(~-SE) %>%
-        as.data.frame()
+        transmute(
+          .data$Value,
+          LowerConfidenceLimit =
+            qnorm(0.025, mean = .data$Estimate, sd = .data$SE),
+          UpperConfidenceLimit =
+            qnorm(0.975, mean = .data$Estimate, sd = .data$SE)
+        ) %>%
+        as.data.frame() -> x@Index
       status(x) <- "converged"
       return(x)
     }
 
-    # status: "waiting"
-    old.parent.status <- parent_status(x) %>%
-      rename(
-        OldStatusFingerprint = "ParentStatusFingerprint",
-        OldStatus = "ParentStatus"
-      )
-    parents <- get_parents(child = x, base = dots$base, project = dots$project)
-    compare <- lapply(
-      parents,
-      function(z){
-        z@AnalysisMetadata %>%
-          select(
-            ParentAnalysis = .data$FileFingerprint,
-            ParentStatusFingerprint = .data$StatusFingerprint,
-            ParentStatus = .data$Status
-          )
-      }
-    ) %>%
-      bind_rows() %>%
-      inner_join(old.parent.status, by = "ParentAnalysis") %>%
-      arrange_(~ParentAnalysis)
-
-    to.update <- compare %>%
-      filter_(~ParentStatus == "converged")
-    x@AnalysisRelation <- compare %>%
-      select_(
-        ~Analysis,
-        ~ParentAnalysis,
-        ~ParentStatusFingerprint,
-        ~ParentStatus
-      )
-
-    if (any(x@AnalysisRelation$ParentStatus == "error")) {
-      status(x) <- "error"
+    parent.status <- parent_status(x)
+    parent.status %>%
+      filter(.data$ParentStatus %in% c("new", "waiting", status)) %>%
+      pull("ParentAnalysis") -> todo
+    if (length(todo) == 0) {
       return(x)
     }
 
-    if (nrow(to.update) > 0) {
-      x@Parameter <- extract(
-        extractor = x@Extractor,
-        object = to.update$ParentAnalysis,
-        base = dots$base,
-        project = dots$project
-      ) %>%
-        arrange_(~Parent, ~Value)
+    for (parent in todo) {
+      model <- read_model(x = parent, base = base, project = project)
+      if (status(model) %in% c("new", "waiting")) {
+        return(x)
+      }
+      parent.status[parent.status$ParentAnalysis == parent, "ParentStatus"] <-
+        status(model)
+      parent.status[
+        parent.status$ParentAnalysis == parent,
+        "ParentStatusFingerprint"
+      ] <- get_status_fingerprint(model)
+      x@AnalysisRelation <- parent.status
+      if (status(model) == "converged") {
+        extract(
+          extractor = x@Extractor,
+          object = model
+        ) %>%
+          mutate(Parent = parent) %>%
+          bind_rows(
+            x@Parameter %>%
+              filter(Parent != parent)
+          ) %>%
+          arrange(.data$Parent, .data$Value) -> x@Parameter
+        if (all(parent.status$ParentStatus == "converged")) {
+          status(x) <- "new"
+        } else {
+          status(x) <- status(x)
+        }
+      } else {
+        status(x) <- "error"
+      }
+      if (status(x) == "error") {
+        return(x)
+      }
     }
 
-    if (all(
-      x@AnalysisRelation$ParentStatus %in% c("converged", "unstable")
-    )) {
-      status(x) <- "new"
-      return(fit_model(x, status = "new", ...))
+    if (status(x) != "new") {
+      return(x)
     }
-    status(x) <- "waiting"
-    return(x)
+    fit_model(x, status = "new", base = base, project = project, ...)
   }
 )

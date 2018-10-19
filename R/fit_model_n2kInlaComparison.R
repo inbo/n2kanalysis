@@ -23,7 +23,7 @@ setMethod(
     parent.status %>%
       filter(.data$ParentStatus %in% c("new", "waiting", status)) %>%
       pull("ParentAnalysis") -> todo
-    if (nrow(todo) == 0) {
+    if (length(todo) == 0) {
       return(x)
     }
 
