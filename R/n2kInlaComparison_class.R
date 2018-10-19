@@ -6,7 +6,6 @@ setClassUnion("maybeDataFrame", c("data.frame", "NULL"))
 #' Compare multiple models using the WAIC criterion
 #' @section Slots:
 #'   \describe{
-#'    \item{\code{Models}}{a list of INLA models}
 #'    \item{\code{WAIC}}{a data.frame with WAIC values per model}
 #'   }
 #' @name n2kInlaComparison-class
@@ -19,7 +18,6 @@ setClassUnion("maybeDataFrame", c("data.frame", "NULL"))
 setClass(
   "n2kInlaComparison",
   representation = representation(
-    Models = "list",
     WAIC = "maybeDataFrame"
   ),
   contains = "n2kModel"
@@ -32,7 +30,6 @@ setValidity(
   "n2kInlaComparison",
   function(object){
     assert_that(nrow(object@AnalysisRelation) > 1)
-    assert_that(length(object@Models) <= nrow(object@AnalysisRelation))
     assert_that(noNA(object@AnalysisRelation$ParentAnalysis))
 
     if (!grepl("^inla comparison: ", object@AnalysisMetadata$ModelType)) {
@@ -62,8 +59,7 @@ setValidity(
     status.fingerprint <- sha1(
       list(
         object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
-        object@Models, object@WAIC,
-        object@AnalysisMetadata$AnalysisVersion,
+        object@WAIC, object@AnalysisMetadata$AnalysisVersion,
         object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation
       ),

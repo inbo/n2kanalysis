@@ -32,7 +32,8 @@ fit_model(x, ...)
 
 \S4method{fit_model}{n2kGlmerPoisson}(x, ...)
 
-\S4method{fit_model}{n2kInlaComparison}(x, ...)
+\S4method{fit_model}{n2kInlaComparison}(x, base, project, status = "new",
+  verbose = TRUE, ...)
 
 \S4method{fit_model}{n2kInlaNbinomial}(x, status = "new", ...,
   timeout = NULL)

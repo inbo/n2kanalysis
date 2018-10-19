@@ -223,7 +223,7 @@ setReplaceMethod(
     x@AnalysisMetadata$StatusFingerprint <- sha1(
       list(
         x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        x@Models, x@WAIC, x@AnalysisMetadata$AnalysisVersion,
+        x@WAIC, x@AnalysisMetadata$AnalysisVersion,
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
       ),

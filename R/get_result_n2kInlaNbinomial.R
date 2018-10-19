@@ -1,6 +1,6 @@
 #' @rdname get_result
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% rowwise mutate_ inner_join select_ transmute_ arrange_ filter_ semi_join
+#' @importFrom dplyr %>% rowwise mutate_ inner_join select_ transmute_ arrange_ filter_ semi_join rename
 #' @importFrom digest sha1
 #' @importFrom tidyr gather_
 #' @importFrom assertthat assert_that is.flag noNA
@@ -207,7 +207,7 @@ setMethod(
                   anomaly@Parameter %>%
                     inner_join(
                       random.id %>%
-                        rename_(Main = ~Description),
+                        rename(Main = "Description"),
                       by = c("Parent" = "Parameter")
                     ) %>%
                     mutate_(

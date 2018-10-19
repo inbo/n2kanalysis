@@ -322,7 +322,7 @@ test_that(
     select_(~Fingerprint, Main = ~Description) %>%
     left_join(
       param@Parameter %>%
-        rename_(Finger = ~ Fingerprint, Level = ~Description),
+        rename(Finger = "Fingerprint", Level = "Description"),
       by = c("Fingerprint" = "Parent")
     ) %>%
     left_join(
@@ -444,7 +444,7 @@ test_that(
     select_(~Fingerprint, Main = ~Description) %>%
     left_join(
       param@Parameter %>%
-        rename_(Finger = ~ Fingerprint, Level = ~Description),
+        rename(Finger = "Fingerprint", Level = "Description"),
       by = c("Fingerprint" = "Parent")
     ) %>%
     left_join(

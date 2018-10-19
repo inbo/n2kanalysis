@@ -1,6 +1,6 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% select select_ group_by_ summarise_ distinct_ filter_ anti_join arrange_ inner_join
+#' @importFrom dplyr %>% select select_ group_by_ summarise_ distinct_ filter_ anti_join arrange_ inner_join rename
 #' @importFrom rlang .data
 #' @importFrom utils file_test
 #' @importFrom stats qnorm
@@ -44,9 +44,9 @@ setMethod(
 
     # status: "waiting"
     old.parent.status <- parent_status(x) %>%
-      rename_(
-        OldStatusFingerprint = ~ParentStatusFingerprint,
-        OldStatus = ~ParentStatus
+      rename(
+        OldStatusFingerprint = "ParentStatusFingerprint",
+        OldStatus = "ParentStatus"
       )
     parents <- get_parents(child = x, base = dots$base, project = dots$project)
     compare <- lapply(

@@ -347,12 +347,11 @@ test_that("fit_model() works on n2kInlaComparison", {
     first.imported.year = this.first.imported.year,
     last.imported.year = this.last.imported.year,
     analysis.date = this.analysis.date,
-    parent = c(p1, p2),
     parent.status = status(temp.dir) %>%
-      select_(
-        ParentAnalysis = ~FileFingerprint,
-        ParentStatus = ~Status,
-        ParentStatusFingerprint = ~StatusFingerprint
+      select(
+        ParentAnalysis = "FileFingerprint",
+        ParentStatus = "Status",
+        ParentStatusFingerprint = "StatusFingerprint"
       )
   )
   filename3 <- store_model(analysis, base = temp.dir, project = "fit_model")
