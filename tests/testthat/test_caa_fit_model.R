@@ -99,7 +99,7 @@ describe("fit_model() on GlmerPoisson based objects", {
   file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))
 })
 
-describe("fit_model() on INLA nbinomial based objects", {
+describe("fit_model() on INLA based objects", {
   temp.dir <- tempdir()
   dataset <- test_data(missing = 0.2)
   this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
@@ -107,7 +107,7 @@ describe("fit_model() on INLA nbinomial based objects", {
   this.scheme.id <- sha1(letters)
   this.species.group.id <- sha1(letters)
   this.location.group.id <- sha1(letters)
-  this.model.type <- "inla nbinomial: A + B + C + D"
+  this.model.type <- "inla poisson: A + B + C + D"
   this.formula <-
     "Count ~ A * (B + C) + C * D + f(E, model = 'iid')"
   this.first.imported.year <- 1990L
@@ -123,7 +123,7 @@ describe("fit_model() on INLA nbinomial based objects", {
   names(lin.comb.list[[1]]) <- seq_along(lin.comb.list[[1]])
   lin.comb.list2 <- list(E = diag(length(unique(dataset$E))))
   rownames(lin.comb.list2[[1]]) <- seq_along(unique(dataset$E))
-  object <- n2k_inla_nbinomial(
+  object <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -135,7 +135,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     analysis.date = this.analysis.date,
     data = dataset
   )
-  object.lc <- n2k_inla_nbinomial(
+  object.lc <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -148,7 +148,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     data = dataset,
     lin.comb = lin.comb
   )
-  object.lc.list <- n2k_inla_nbinomial(
+  object.lc.list <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -161,7 +161,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     data = dataset,
     lin.comb = lin.comb.list
   )
-  object.lc.list2 <- n2k_inla_nbinomial(
+  object.lc.list2 <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -174,7 +174,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     data = dataset,
     lin.comb = lin.comb.list2
   )
-  object.badlc <- n2k_inla_nbinomial(
+  object.badlc <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -187,7 +187,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     data = dataset,
     lin.comb = bad.lin.comb
   )
-  object.imp <- n2k_inla_nbinomial(
+  object.imp <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -217,11 +217,11 @@ describe("fit_model() on INLA nbinomial based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "1b8703a7a9587f3bd30bfdac002cb6d05df7463c"
-  object.lc.file <- "88398e706abc9b7d7199e2ef88368f8447eed5e2"
-  object.lc.list.file <- "3933d2ec416967aa45300d5c664dbf45a8bd3899"
-  object.lc.list2.file <- "ac316dd13d50320f1bd70a71ce0f48774da60ede"
-  object.badlc.file <- "ba47e6ac58f74787eb450b20c19d5158f3052716"
+  object.file <- "966ed360a8790d78f8a9c86685bfdecdb6331b43"
+  object.lc.file <- "43343952a3b0d3671ba6793c04ddd126f5e4b6d3"
+  object.lc.list.file <- "fbc35bf3aac8a6b92e5ba5dbb0909ad3af1d72b9"
+  object.lc.list2.file <- "0c2cd5d9104ac042a73e588598c34826bfd727cd"
+  object.badlc.file <- "562f2597b75618172ece5c9483932413ea85ba3e"
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
     expect_identical(object.lc.file, get_file_fingerprint(object.lc))
@@ -300,7 +300,7 @@ test_that("fit_model() works on n2kInlaComparison", {
   this.species.group.id <- sha1(letters)
   this.location.group.id <- sha1(letters)
   this.analysis.date <- Sys.time()
-  this.model.type <- "inla nbinomial: A * (B + C) + C:D"
+  this.model.type <- "inla poisson: A * (B + C) + C:D"
   this.first.imported.year <- 1990L
   this.last.imported.year <- 2015L
   this.last.analysed.year <- 2014L
@@ -308,7 +308,7 @@ test_that("fit_model() works on n2kInlaComparison", {
   dataset <- test_data()
   temp.dir <- tempdir()
 
-  analysis <- n2k_inla_nbinomial(
+  analysis <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -322,7 +322,7 @@ test_that("fit_model() works on n2kInlaComparison", {
   )
   p1 <- get_file_fingerprint(analysis)
   filename1 <- store_model(analysis, base = temp.dir, project = "fit_model")
-  analysis <- n2k_inla_nbinomial(
+  analysis <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -383,7 +383,7 @@ test_that("fit_model() works on n2kInlaComposite", {
   this.species.group.id <- sha1(letters)
   this.location.group.id <- sha1(letters)
   this.analysis.date <- Sys.time()
-  this.model.type <- "inla nbinomial: A * (B + C) + C:D"
+  this.model.type <- "inla poisson: A * (B + C) + C:D"
   this.first.imported.year <- 1990L
   this.last.imported.year <- 2015L
   this.last.analysed.year <- 2014L
@@ -391,7 +391,7 @@ test_that("fit_model() works on n2kInlaComposite", {
   dataset <- test_data()
   temp.dir <- tempdir()
 
-  analysis <- n2k_inla_nbinomial(
+  analysis <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -405,7 +405,7 @@ test_that("fit_model() works on n2kInlaComposite", {
   )
   p1 <- get_file_fingerprint(analysis)
   filename1 <- store_model(analysis, base = temp.dir, project = "fit_model")
-  analysis <- n2k_inla_nbinomial(
+  analysis <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,

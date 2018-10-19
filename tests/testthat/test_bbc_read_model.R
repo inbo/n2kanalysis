@@ -6,7 +6,7 @@ test_that("read_model() handles exceptions on characters", {
   writeLines("junk", sprintf("%s/%s/test/test1.rds", base, project))
   writeLines("junk", sprintf("%s/%s/test/test2.rds", base, project))
   expect_error(
-    read_model("junk", base, project),
+    suppressWarnings(read_model("junk", base, project)),
     "no matching object in directory"
   )
   expect_error(
@@ -48,6 +48,6 @@ test_that("read_model() works with S3 buckets", {
     basename() %>%
     gsub(pattern = "\\.rds", replacement = "")
   expect_true(
-    all(sapply(available, delete_model, base = base, project = project))
+    all(unlist(sapply(available, delete_model, base = base, project = project)))
   )
 })

@@ -1,15 +1,15 @@
-context("n2kInlaNbinomial validation")
+context("n2kInla validation")
 
 data("cbpp", package = "lme4")
 cbpp$DatasourceID <- sha1(letters)
 cbpp$ObservationID <- seq_len(nrow(cbpp))
 lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
-object <- n2k_inla_nbinomial(
+object <- n2k_inla(
   result.datasource.id = sha1(letters),
   scheme.id = sha1(letters),
   species.group.id = sha1(letters),
   location.group.id = sha1(letters),
-  model.type = "inla nbinomial: period + herd",
+  model.type = "inla poisson: period + herd",
   formula = "incidence ~ offset(log(size)) + period + f(herd, model = 'iid')",
   first.imported.year = 1990,
   last.imported.year = 2015,
@@ -67,7 +67,7 @@ describe("illegal changes in the file fingerprint", {
 
   it("detects changes in ModelType", {
     change.object <- object
-    change.object@AnalysisMetadata$ModelType <- "inla nbinomial: period"
+    change.object@AnalysisMetadata$ModelType <- "inla poisson: period"
     expect_that(
       validObject(change.object),
       throws_error("Corrupt FileFingerprint")
@@ -152,19 +152,18 @@ describe("illegal changes in the status fingerprint", {
 
 
   it("detects changes in Model", {
-    require(INLA)
-    model.object <- INLA::inla(
+    model.object <- inla(
       incidence ~ offset(log(size)) + period + f(herd, model = "iid"),
       data = object@Data,
-      family = "nbinomial"
+      family = "poisson"
     )
-    object.model <- n2k_inla_nbinomial(
+    object.model <- n2k_inla(
       data = object, model.fit = model.object, status = "converged"
     )
-    change.model <- INLA::inla(
+    change.model <- inla(
       incidence ~ period + f(herd, model = "iid"),
       data = object@Data,
-      family = "nbinomial"
+      family = "poisson"
     )
     object.model@Model <- change.model
     expect_that(
