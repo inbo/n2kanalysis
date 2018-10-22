@@ -55,6 +55,8 @@ setMethod(
         }
         if (all(parent.status$ParentStatus == "converged")) {
           status(x) <- "converged"
+        } else {
+          status(x) <- status(x)
         }
       } else {
         status(x) <- "error"
