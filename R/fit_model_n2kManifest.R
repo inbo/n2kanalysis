@@ -13,7 +13,8 @@ setMethod(
   f = "fit_model",
   signature = signature(x = "n2kManifest"),
   definition = function(
-    x, base, project, status = "new", verbose = TRUE, ..., local, bash = FALSE
+    x, base, project, status = c("new", "waiting"), verbose = TRUE, ...,
+    local, bash = FALSE
   ){
     assert_that(is.string(project))
     assert_that(is.flag(bash))

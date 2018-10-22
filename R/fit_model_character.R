@@ -11,7 +11,7 @@ setMethod(
   f = "fit_model",
   signature = signature(x = "character"),
   definition = function(
-    x, base, project, status = "new", verbose = TRUE, ..., bucket
+    x, base, project, status = c("new", "waiting"), verbose = TRUE, ..., bucket
   ){
     assert_that(is.string(x))
     assert_that(is.flag(verbose))
