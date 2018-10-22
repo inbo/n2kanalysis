@@ -79,7 +79,7 @@ Collate:
     'get_analysis_version.R'
     'get_anomaly.R'
     'get_anomaly_n2kGlmerPoisson.R'
-    'get_anomaly_n2kInlaNbinomial.R'
+    'get_anomaly_n2kInla.R'
     'get_anomaly_n2kModel.R'
     'get_data.R'
     'get_file_fingerprint.R'
