@@ -68,7 +68,10 @@ setMethod(
           lapply(system)
       } else {
         for (i in manifest$Filename) {
-          fit_model(i, base = base, project = project, verbose = verbose, ...)
+          fit_model(
+            i, base = base, project = project, status = status,
+            verbose = verbose, ...
+          )
         }
       }
       return(invisible(NULL))
@@ -161,7 +164,10 @@ setMethod(
         lapply(system)
     } else {
       for (i in manifest$Fingerprint[manifest$ToDo]) {
-        fit_model(i, base = local, project = project, verbose = verbose, ...)
+        fit_model(
+          i, base = local, project = project, status = status,
+          verbose = verbose, ...
+        )
       }
     }
     if (isTRUE(verbose)) {
