@@ -33,6 +33,7 @@ setMethod(
         ) %>%
         transmute(
           .data$Value,
+          .data$Estimate,
           LowerConfidenceLimit =
             qnorm(0.025, mean = .data$Estimate, sd = .data$SE),
           UpperConfidenceLimit =
