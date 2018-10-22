@@ -42,19 +42,20 @@ setMethod(
         description <- names(x@LinearCombination[[1]])
       }
     }
-    contrast <- data_frame(
+    contrast <- tibble(
         Description = description,
         Analysis = get_file_fingerprint(x)
       ) %>%
-      rowwise() %>%
-      mutate_(
-        Fingerprint = ~sha1(
-          c(Description = Description, Analysis = Analysis)
+      mutate(
+        Fingerprint = map2_chr(
+          .data$Description,
+          .data$Analysis,
+          ~sha1(c(Description = .x, Analysis = .y))
         )
       ) %>%
-      select_(~Fingerprint, ~Description, ~Analysis) %>%
+      select("Fingerprint", "Description", "Analysis") %>%
       as.data.frame()
-    if (is.null(x@Model)) {
+    if (is.null(get_model(x))) {
       return(
         new(
           "n2kResult",
