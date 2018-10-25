@@ -45,6 +45,7 @@ setMethod(
 #' @rdname read_model
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.string
+#' @importFrom purrr map_chr
 #' @importFrom aws.s3 bucket_exists get_bucket s3readRDS
 #' @include import_S3_classes.R
 setMethod(
@@ -54,15 +55,11 @@ setMethod(
     assert_that(is.string(x))
     assert_that(is.string(project))
 
-    available <- get_bucket(
-      base,
-      prefix = paste(project, substring(x, 1, 4), sep = "/"),
-      max = Inf
-    )
-    existing <- available[names(available) == "Contents"] %>%
-      sapply("[[", "Key")
-    matching <- sprintf("%s/.*%s", project, x) %>%
-      grep(existing)
+    prefix <- sprintf("%s/%s/", project, substring(x, 1, 4))
+    available <- get_bucket(base, prefix = prefix, max = Inf)
+    map_chr(available, "Key") %>%
+      basename() %>%
+      grep(pattern = x) -> matching
     if (length(matching) == 1) {
       return(s3readRDS(available[[matching]]))
     }

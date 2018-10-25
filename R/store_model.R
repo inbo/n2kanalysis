@@ -67,6 +67,7 @@ setMethod(
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.string is.flag
 #' @importFrom aws.s3 bucket_exists get_bucket s3saveRDS delete_object copy_object
+#' @importFrom purrr map_chr
 #' @include import_S3_classes.R
 setMethod(
   f = "store_model",

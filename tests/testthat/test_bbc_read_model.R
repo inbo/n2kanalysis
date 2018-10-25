@@ -19,7 +19,7 @@ test_that("read_model() handles exceptions on characters", {
 })
 
 test_that("read_model() works with S3 buckets", {
-  base <- get_bucket("n2kmonitoring")
+  base <- get_bucket("n2kmonitoring", max = 1)
   project <- "unittest_read_model"
   s3saveRDS(
     project,
@@ -43,10 +43,11 @@ test_that("read_model() works with S3 buckets", {
     read_model("test", base, project),
     "multiple matching objects in bucket"
   )
-  available <- get_bucket("n2kmonitoring", prefix = project) %>%
-    sapply("[[", "Key") %>%
+  get_bucket("n2kmonitoring", prefix = project) %>%
+    map_chr("Key") %>%
     basename() %>%
-    gsub(pattern = "\\.rds", replacement = "")
+    gsub(pattern = "\\.rds", replacement = "") %>%
+    unique() -> available
   expect_true(
     all(unlist(sapply(available, delete_model, base = base, project = project)))
   )
