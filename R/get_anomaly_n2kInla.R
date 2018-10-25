@@ -120,7 +120,7 @@ setMethod(
       message(": observed > 0 vs fit", appendLF = FALSE)
     }
     high.ratio <- data %>%
-      select(.data$Analysis, .data$Parameter, .data$Observation, .data$LogRatio) %>%
+      select("Analysis", "Parameter", "Observation", "LogRatio") %>%
       filter(is.finite(.data$LogRatio), .data$LogRatio > log.expected.ratio) %>%
       select(-"LogRatio") %>%
       head(n)
@@ -132,8 +132,11 @@ setMethod(
         bind_rows(anomaly)
     }
     low.ratio <- data %>%
-      select(.data$Analysis, .data$Parameter, .data$Observation, .data$LogRatio) %>%
-      filter(is.finite(.data$LogRatio), .data$LogRatio < -log.expected.ratio) %>%
+      select("Analysis", "Parameter", "Observation", "LogRatio") %>%
+      filter(
+        is.finite(.data$LogRatio),
+        .data$LogRatio < -log.expected.ratio
+      ) %>%
       select(-"LogRatio") %>%
       head(n)
     if (nrow(low.ratio) > 0) {
