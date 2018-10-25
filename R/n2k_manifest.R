@@ -18,7 +18,8 @@ setGeneric(
 #' @rdname n2k_manifest
 #' @aliases n2k_manifest,n2kManifest-methods
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% distinct_ arrange_
+#' @importFrom dplyr %>% distinct arrange
+#' @importFrom rlang .data
 #' @importFrom digest sha1
 #' @include n2kManifest_class.R
 setMethod(
@@ -33,9 +34,9 @@ setMethod(
     if (inherits(manifest, "tbl")) {
       manifest <- as.data.frame(manifest)
     }
-    manifest <- manifest %>%
-      distinct_(~Fingerprint, ~Parent) %>%
-      arrange_(~Fingerprint, ~Parent)
+    manifest %>%
+      distinct(.data$Fingerprint, .data$Parent) %>%
+      arrange(.data$Fingerprint, .data$Parent) -> manifest
     new(
       "n2kManifest",
       Manifest = manifest,
