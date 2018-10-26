@@ -17,9 +17,8 @@ get_anomaly(analysis, ...)
   log.expected.ratio = log(5), log.expected.absent = log(5),
   random.threshold = log(5), verbose = TRUE, ...)
 
-\S4method{get_anomaly}{n2kInla}(analysis, n = 20,
-  log.expected.ratio = log(5), log.expected.absent = log(5),
-  random.threshold = log(1.05), verbose = TRUE, ...)
+\S4method{get_anomaly}{n2kInla}(analysis, n = 20, expected.ratio = 5,
+  expected.absent = 5, random.threshold = 1.05, verbose = TRUE, ...)
 
 \S4method{get_anomaly}{n2kModel}(analysis, verbose = TRUE, ...)
 }
@@ -37,6 +36,10 @@ get_anomaly(analysis, ...)
 \item{random.threshold}{random effects with a absolute value above this threshold are potential anomalies}
 
 \item{verbose}{Print extra information on the screen}
+
+\item{expected.ratio}{observations that have \code{observed / fitted > expected.ratio} or \code{fitted / observed > expected.ratio} are potential anomalies. Defaults to 5, which implies that observed values that are 5 times higher of lower than the fitted values are potential anomalies.}
+
+\item{expected.absent}{Zero observations where \code{fitted > expected.absent} are potential anomalies.}
 }
 \description{
 Get the anomalies from a model

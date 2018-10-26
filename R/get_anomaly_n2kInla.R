@@ -3,18 +3,21 @@
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.count is.number is.flag noNA is.string
 #' @importFrom dplyr tibble select filter mutate bind_cols arrange ungroup slice transmute group_by
+#' @importFrom rlang !!
 #' @importFrom digest sha1
 #' @importFrom utils flush.console
 #' @include n2kInla_class.R
+#' @param expected.ratio observations that have `observed / fitted > expected.ratio` or `fitted / observed > expected.ratio` are potential anomalies. Defaults to 5, which implies that observed values that are 5 times higher of lower than the fitted values are potential anomalies.
+#' @param expected.absent Zero observations where `fitted > expected.absent` are potential anomalies.
 setMethod(
   f = "get_anomaly",
   signature = signature(analysis = "n2kInla"),
   definition = function(
     analysis,
     n = 20,
-    log.expected.ratio = log(5),
-    log.expected.absent = log(5),
-    random.threshold = log(1.05),
+    expected.ratio = 5,
+    expected.absent = 5,
+    random.threshold = 1.05,
     verbose = TRUE,
     ...
   ){
@@ -25,25 +28,26 @@ setMethod(
         msg = "multiple response not handled yet"
       )
       if (
-        analysis@Model$.args$family %in% c("poisson", "zipoisson", "nbinomial")
+        analysis@Model$.args$family %in% c(
+          "poisson", "zeroinflatedpoisson1",
+          "nbinomial", "zeroinflatednbinomial1"
+        )
       ) {
-        if (missing(log.expected.ratio)) {
-          log.expected.ratio <- log(5)
-          log.expected.absent <- log(5)
-          random.threshold <- log(1.05)
-        } else {
-          assert_that(is.number(log.expected.ratio))
-        }
-        if (missing(log.expected.absent)) {
-          log.expected.absent <- log(5)
-        } else {
-          assert_that(is.number(log.expected.absent))
-        }
-        if (missing(random.threshold)) {
-          random.threshold <- log(1.05)
-        } else {
-          assert_that(is.number(random.threshold))
-        }
+        assert_that(
+          is.number(expected.ratio),
+          expected.ratio > 1
+        )
+        log.expected.ratio <- log(log.expected.ratio)
+        assert_that(
+          is.number(expected.absent),
+          expected.absent > 1
+        )
+        log.expected.absent <- log(log.expected.absent)
+        assert_that(
+          is.number(random.threshold),
+          random.threshold > 1
+        )
+        random.threshold <- log(random.threshold)
       } else {
         stop(analysis@Model$.args$family, " not handled yet")
       }
@@ -89,7 +93,8 @@ setMethod(
       AnomalyType = character(0),
       Analysis = character(0),
       Parameter = character(0),
-      Observation = character(0)
+      Observation = character(0),
+      Datafield = character(0)
     )
 
     response <- as.character(get_model(analysis)$.args$formula[2])
@@ -97,9 +102,10 @@ setMethod(
       transmute(
         Response = !!as.name(response),
         Expected = get_model(analysis)$summary.fitted.values[, "mean"],
-        LogRatio = .data$Expected - log(.data$Response),
+        LogRatio = log(.data$Response / .data$Expected),
         Analysis = get_file_fingerprint(analysis),
-        Observation = as.character(.data$ObservationID)
+        Observation = as.character(.data$ObservationID),
+        Datafield = as.character(.data$DataFieldID)
       ) -> data
 
     parameter.id <- parameter@Parameter %>%
@@ -120,7 +126,9 @@ setMethod(
       message(": observed > 0 vs fit", appendLF = FALSE)
     }
     high.ratio <- data %>%
-      select("Analysis", "Parameter", "Observation", "LogRatio") %>%
+      select(
+        "Analysis", "Parameter", "Observation", "Datafield", "LogRatio"
+      ) %>%
       filter(is.finite(.data$LogRatio), .data$LogRatio > log.expected.ratio) %>%
       select(-"LogRatio") %>%
       head(n)
@@ -132,7 +140,9 @@ setMethod(
         bind_rows(anomaly)
     }
     low.ratio <- data %>%
-      select("Analysis", "Parameter", "Observation", "LogRatio") %>%
+      select(
+        "Analysis", "Parameter", "Observation", "Datafield", "LogRatio"
+      ) %>%
       filter(
         is.finite(.data$LogRatio),
         .data$LogRatio < -log.expected.ratio
@@ -152,10 +162,7 @@ setMethod(
     }
     high.absent <- data %>%
       select(
-        "Analysis",
-        "Parameter",
-        "Observation",
-        "Expected",
+        "Analysis", "Parameter", "Observation", "Datafield", "Expected",
         "Response"
       ) %>%
       filter(.data$Response == 0, .data$Expected > log.expected.absent) %>%
