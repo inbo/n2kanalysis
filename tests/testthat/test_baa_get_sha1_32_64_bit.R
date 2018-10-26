@@ -3,7 +3,7 @@ describe("file fingerprint for n2k_glmer_poisson", {
 
   data(cbpp, package = "lme4")
   cbpp$Weight <- cbpp$size
-  cbpp$DatasourceID <- sha1(letters)
+  cbpp$DataFieldID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
   this.result.datasource.id <- sha1(letters[1:5])
@@ -58,7 +58,7 @@ describe("file fingerprint for n2k_glmer_poisson", {
   cat(")\n")
   # 32-bit windows 7
   correct <- c(
-    "15a3dfe9aab0afff4b2a44dc3008fbf472f3ab43",
+    "67858bf99d6c945cf88a2cc7aa1183cc2d7ca114",
     "70095252e47ccdbabc7bcd32ea13c5057a9776dc",
     "49c22e6e1d9b2f48a4478975f0b14f9911c8499a",
     "b17832f39416892d8b44d09e4b14994fa603b5dd",

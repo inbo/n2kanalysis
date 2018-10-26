@@ -3,7 +3,7 @@ describe("status fingerprint for n2k_glmer_poisson", {
 
   data(cbpp, package = "lme4")
   cbpp$Weight <- cbpp$size
-  cbpp$DatasourceID <- sha1(letters)
+  cbpp$DataFieldID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
   this.result.datasource.id <- sha1(sample(letters))

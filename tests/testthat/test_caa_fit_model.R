@@ -3,7 +3,7 @@ describe("fit_model() on GlmerPoisson based objects", {
   temp.dir <- tempdir()
   data(cbpp, package = "lme4")
   cbpp$Weight <- cbpp$size
-  cbpp$DatasourceID <- sha1(letters)
+  cbpp$DataFieldID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
   this.seed <- 1L
@@ -42,8 +42,8 @@ describe("fit_model() on GlmerPoisson based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "fc1c87efe0011e8d306fd9c5d4c1b8fecc67c94c"
-  weighted.object.file <- "af640ba204e5f9268a26d0e8570ebeb0e1048506"
+  object.file <- "3fa9cc3cca37814c22e4ea1623139d9bf2104874"
+  weighted.object.file <- "6dd0cf56ddaa15b0cfb8d345928e6357c00285e0"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
@@ -217,11 +217,11 @@ describe("fit_model() on INLA based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "966ed360a8790d78f8a9c86685bfdecdb6331b43"
-  object.lc.file <- "43343952a3b0d3671ba6793c04ddd126f5e4b6d3"
-  object.lc.list.file <- "fbc35bf3aac8a6b92e5ba5dbb0909ad3af1d72b9"
-  object.lc.list2.file <- "0c2cd5d9104ac042a73e588598c34826bfd727cd"
-  object.badlc.file <- "562f2597b75618172ece5c9483932413ea85ba3e"
+  object.file <- "4792d424a7e3db1a9b8e93c603026eb24c7ab17a"
+  object.lc.file <- "11ffb3e74bd394e98580cb85cd3312d10ed30b50"
+  object.lc.list.file <- "c2849e245e571e218830a17b3b832304dc84a66d"
+  object.lc.list2.file <- "0fa814b4eb665e3acd264da00d86a403b6080f81"
+  object.badlc.file <- "70deebba83492b5f9b4d1054f17ea288c731efa0"
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
     expect_identical(object.lc.file, get_file_fingerprint(object.lc))
@@ -487,7 +487,7 @@ test_that("fit_model() works in n2kLrtGlmer objects", {
   this.last.analysed.year <- 2014L
   this.duration <- 1L
   data("cbpp", package = "lme4")
-  cbpp$DatasourceID <- sha1(letters)
+  cbpp$DataFieldID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   object.1 <- n2k_glmer_poisson(
     result.datasource.id = this.result.datasource.id,

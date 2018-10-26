@@ -3,7 +3,7 @@ test_that(
   "get_model_parameter works with n2kGlmerPoisson", {
   data(cbpp, package = "lme4")
   cbpp$Weight <- cbpp$size
-  cbpp$DatasourceID <- sha1(letters)
+  cbpp$DataFieldID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
   this.result.datasource.id <- sha1(sample(letters))

@@ -1,7 +1,7 @@
 context("n2kGlmerPoisson validation")
 data("cbpp", package = "lme4")
 cbpp$Weight <- cbpp$size
-cbpp$DatasourceID <- sha1(letters)
+cbpp$DataFieldID <- sha1(letters)
 cbpp$ObservationID <- seq_len(nrow(cbpp))
 object <- n2k_glmer_poisson(
   result.datasource.id = sha1(letters),

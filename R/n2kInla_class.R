@@ -45,6 +45,7 @@ setClass(
 #' @importFrom n2khelper check_dataframe_variable
 #' @importFrom digest sha1
 #' @importFrom assertthat assert_that has_name
+#' @importFrom purrr walk
 #' @importFrom INLA inla.models
 setValidity(
   "n2kInla",
@@ -52,17 +53,23 @@ setValidity(
     if (object@ImputationSize < 0) {
       stop("negative ImputationSize")
     }
-    check_dataframe_variable(
-      df = object@Data[1, ],
-      variable = c(
-        all.vars(object@AnalysisFormula[[1]]),
-        "ObservationID"
-      ),
-      error = TRUE
+    c(
+      all.vars(object@AnalysisFormula[[1]]),
+      "ObservationID", "DataFieldID"
+    ) %>%
+      walk(~assert_that(has_name(object@Data, .x)))
+    assert_that(
+      noNA(object@Data$ObservationID),
+      msg = "ObservationID cannot be NA"
     )
-    if (any(is.na(object@Data$ObservationID))) {
-      stop("ObservationID cannot be NA")
+    assert_that(
+      noNA(object@Data$DataFieldID),
+      msg = "DataFieldID cannot be NA"
+    )
+    if (anyDuplicated(object@Data[, c("ObservationID", "DataFieldID")])) {
+      stop("Duplicated ObservationID")
     }
+
     if (!all(object@Family %in% names(inla.models()$likelihood))) {
       stop(object@Family, " is not an INLA likelihood")
     }

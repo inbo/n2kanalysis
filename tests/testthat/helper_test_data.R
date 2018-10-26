@@ -1,8 +1,8 @@
 #' A function to generate a simple dataset for unit testing
 #' @param datasource.id the string id of the datasource
 #' @param missing the required proportion of missing data
-test_data <- function(datasource.id = sha1(letters), missing = 0){
-  assertthat::assert_that(assertthat::is.string(datasource.id))
+test_data <- function(datafield.id = sha1(letters), missing = 0){
+  assertthat::assert_that(assertthat::is.string(datafield.id))
   assertthat::assert_that(assertthat::is.number(missing))
   assertthat::assert_that(missing >= 0)
   assertthat::assert_that(missing <= 1)
@@ -30,7 +30,7 @@ test_data <- function(datasource.id = sha1(letters), missing = 0){
   eta <- mm.fixed %*% fixed + mm.random %*% random #nolint
   dataset$Count <- rnbinom(nrow(dataset), mu = exp(eta), size = theta)
   dataset$Count[rbinom(nrow(dataset), size = 1, prob = missing) == 1] <- NA
-  dataset$DatasourceID <- datasource.id
+  dataset$DataFieldID <- datafield.id
   dataset$ObservationID <- seq_along(dataset$Count)
   return(dataset)
 }

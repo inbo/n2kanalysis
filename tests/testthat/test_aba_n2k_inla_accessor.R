@@ -1,7 +1,7 @@
 context("get_model() handles n2kInla objects")
 describe("get_model", {
   data("cbpp", package = "lme4")
-  cbpp$DatasourceID <- sha1(letters)
+  cbpp$DataFieldID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   object <- n2k_inla(
     result.datasource.id = sha1(letters),

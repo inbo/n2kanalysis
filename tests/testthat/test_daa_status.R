@@ -6,7 +6,7 @@ file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))
 describe("n2kGlmerPoisson", {
   data(cbpp, package = "lme4")
   cbpp$Weight <- cbpp$size
-  cbpp$DatasourceID <- sha1(letters)
+  cbpp$DataFieldID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01")
   this.result.datasource.id <- sha1(sample(letters))

@@ -2,7 +2,7 @@ context("fit_model on n2kManifest")
 describe("it handles a manifest", {
   project <- "unit_test_fit_model"
   data("cbpp", package = "lme4")
-  cbpp$DatasourceID <- sha1(letters)
+  cbpp$DataFieldID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   object <- n2k_glmer_poisson(
     result.datasource.id = sha1(sample(letters)),

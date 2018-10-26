@@ -1,7 +1,7 @@
 context("n2kInla validation")
 
 data("cbpp", package = "lme4")
-cbpp$DatasourceID <- sha1(letters)
+cbpp$DataFieldID <- sha1(letters)
 cbpp$ObservationID <- seq_len(nrow(cbpp))
 lin.comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
 object <- n2k_inla(

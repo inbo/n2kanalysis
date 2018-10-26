@@ -37,12 +37,12 @@ setMethod(
           is.number(expected.ratio),
           expected.ratio > 1
         )
-        log.expected.ratio <- log(log.expected.ratio)
+        log.expected.ratio <- log(expected.ratio)
         assert_that(
           is.number(expected.absent),
           expected.absent > 1
         )
-        log.expected.absent <- log(log.expected.absent)
+        log.expected.absent <- log(expected.absent)
         assert_that(
           is.number(random.threshold),
           random.threshold > 1

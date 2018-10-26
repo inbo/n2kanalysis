@@ -427,7 +427,7 @@ expect_is(
 
 data("cake", package = "lme4")
 cake$ObservationID <- seq_len(nrow(cake))
-cake$DatasourceID <- this.datasource
+cake$DataFieldID <- this.datasource
 describe("get_result on n2kInla with replicated random effects", {
   this.model.type <- "inla nbinomial: recipe + replicate + temperature"
   this.formula <-
