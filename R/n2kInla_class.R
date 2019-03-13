@@ -66,7 +66,8 @@ setValidity(
       noNA(object@Data$DataFieldID),
       msg = "DataFieldID cannot be NA"
     )
-    if (anyDuplicated(object@Data[, c("ObservationID", "DataFieldID")])) {
+
+    if (any(table(object@Data$ObservationID, object@Data$DataFieldID) > 1)) {
       stop("Duplicated ObservationID")
     }
 
