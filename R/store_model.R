@@ -3,6 +3,7 @@
 #' @param base the base location to store the model
 #' @param project will be a relative path within the base location
 #' @param overwrite should an existing object be overwritten? Defaults to TRUE
+#' @param validate check that the object is valid before storing it. Defaults to TRUE
 #' @name store_model
 #' @rdname store_model
 #' @exportMethod store_model
@@ -10,7 +11,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "store_model",
-  def = function(x, base, project, overwrite = TRUE){
+  def = function(x, base, project, overwrite = TRUE, validate = TRUE){
     standardGeneric("store_model") # nocov
   }
 )
@@ -21,14 +22,17 @@ setGeneric(
 setMethod(
   f = "store_model",
   signature = signature(base = "character"),
-  definition = function(x, base, project, overwrite = TRUE){
+  definition = function(x, base, project, overwrite = TRUE, validate = TRUE){
     assert_that(is.flag(overwrite))
     assert_that(noNA(overwrite))
     assert_that(inherits(x, "n2kModel"))
     assert_that(is.string(base))
     assert_that(file_test("-d", base))
     assert_that(is.string(project))
-    validObject(x, complete = TRUE)
+    assert_that(is.flag(validate))
+    if (isTRUE(validate)) {
+      validObject(x, complete = TRUE)
+    }
 
     status <- status(x)
     fingerprint <- get_file_fingerprint(x)
@@ -72,11 +76,14 @@ setMethod(
 setMethod(
   f = "store_model",
   signature = signature(base = "s3_bucket"),
-  definition = function(x, base, project, overwrite = TRUE){
+  definition = function(x, base, project, overwrite = TRUE, validate = TRUE){
     assert_that(inherits(x, "n2kModel"))
     assert_that(is.string(project))
     assert_that(is.flag(overwrite))
-    validObject(x, complete = TRUE)
+    assert_that(is.flag(validate))
+    if (isTRUE(validate)) {
+      validObject(x, complete = TRUE)
+    }
 
     status <- status(x)
     fingerprint <- get_file_fingerprint(x)
