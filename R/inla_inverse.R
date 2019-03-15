@@ -11,15 +11,14 @@ inla_inverse <- function(marginal){
     },
     marginal
   )
-  result <- c(
-    inla.emarginal(
+  tibble(
+    Estimate = inla.emarginal(
       function(x){
         x
       },
       inverse
     ),
-    inla.qmarginal(c(0.025, 0.975), inverse)
+    LowerConfidenceLimit = inla.qmarginal(0.025, inverse),
+    UpperConfidenceLimit = inla.qmarginal(0.975, inverse)
   )
-  names(result) <- c("Estimate", "LowerConfidenceLimit", "UpperConfidenceLimit")
-  return(result)
 }

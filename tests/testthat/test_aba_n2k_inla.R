@@ -1,11 +1,10 @@
-context("prepare a n2kInlaNbinomial object")
-require(INLA)
+context("prepare a n2kInla object")
 this.result.datasource.id <- sha1(sample(letters))
 this.scheme.id <- sha1(sample(letters))
 this.species.group.id <- sha1(sample(letters))
 this.location.group.id <- sha1(sample(letters))
 this.analysis.date <- Sys.time()
-this.model.type <- "inla nbinomial: A * (B + C) + C:D"
+this.model.type <- "inla poisson: A * (B + C) + C:D"
 this.formula <-
   "Count ~ A * (B + C) + C:D +
     f(E, model = \"rw1\", replicate = as.integer(A)) +
@@ -15,12 +14,12 @@ this.last.imported.year <- 2015L
 this.last.analysed.year <- 2014L
 this.duration <- 1L
 dataset <- test_data()
-lin.comb <- dataset %>%
+this.lc <- dataset %>%
   select_(~A, ~B, ~C, ~D) %>%
   filter_(~C == max(C), ~D == max(D)) %>%
   distinct_() %>%
   model.matrix(object = ~A * (B + C) + C:D)
-object <- n2k_inla_nbinomial(
+object <- n2k_inla(
   result.datasource.id = this.result.datasource.id,
   scheme.id = this.scheme.id,
   species.group.id = this.species.group.id,
@@ -32,34 +31,35 @@ object <- n2k_inla_nbinomial(
   analysis.date = this.analysis.date,
   data = dataset
 )
-model.object <- INLA::inla(
+model.object <- inla(
   Count ~ A * (B + C) + C:D +
     f(E, model = "rw1", replicate = as.integer(A)) +
     f(F, model = "iid"),
   data = object@Data,
-  family = "nbinomial"
+  family = "poisson"
 )
-model.truth <- INLA::inla(
+model.truth <- inla(
   Count ~ A * (B + C) + C:D +
     f(E, model = "rw1", replicate = as.integer(A)) +
     f(F, model = "iid"),
   data = dataset,
-  family = "nbinomial"
+  family = "poisson"
 )
-describe("n2k_inla_nbinomial", {
-
+describe("n2k_inla", {
   it("adds the data as a data.frame", {
     expect_that(
       object@Data,
       is_identical_to(dataset)
     )
-    expect_that(
+    expect_equal(
       model.object$summary.fixed,
-      is_identical_to(model.truth$summary.fixed)
+      model.truth$summary.fixed,
+      tolerance = 1e-5
     )
-    expect_that(
+    expect_equal(
       model.object$summary.random,
-      is_identical_to(model.truth$summary.random)
+      model.truth$summary.random,
+      tolerance = 1e-3
     )
   })
   it("uses 'new' as default status", {
@@ -70,7 +70,7 @@ describe("n2k_inla_nbinomial", {
   })
   it("requires a correct status", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
@@ -86,7 +86,7 @@ describe("n2k_inla_nbinomial", {
       throws_error("Status must be one of the following")
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
@@ -104,7 +104,7 @@ describe("n2k_inla_nbinomial", {
   })
   it("checks the model type", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
@@ -116,13 +116,13 @@ describe("n2k_inla_nbinomial", {
         last.imported.year = this.last.imported.year,
         analysis.date = this.analysis.date
       ),
-      throws_error("ModelType should be 'inla nbinomial'")
+      throws_error("ModelType should be 'inla poisson'")
     )
   })
   it("sets the correct seed", {
     this.seed <- 12345L
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
@@ -141,7 +141,7 @@ describe("n2k_inla_nbinomial", {
   it("converts numeric seed, when possible", {
     this.seed <- 12345
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
@@ -157,7 +157,7 @@ describe("n2k_inla_nbinomial", {
       is_identical_to(as.integer(this.seed))
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         scheme.id = this.scheme.id,
@@ -181,7 +181,7 @@ describe("n2k_inla_nbinomial", {
 
   it("sets the correct SchemeID", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -199,7 +199,7 @@ describe("n2k_inla_nbinomial", {
 
   it("sets the correct SpeciesGroupID", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -217,7 +217,7 @@ describe("n2k_inla_nbinomial", {
 
   it("sets the correct LocationGroupID", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -235,7 +235,7 @@ describe("n2k_inla_nbinomial", {
 
   it("sets the correct FirstImportedYear", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -252,7 +252,7 @@ describe("n2k_inla_nbinomial", {
   })
   it("checks that FirstImportedYear is from the past", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -267,7 +267,7 @@ describe("n2k_inla_nbinomial", {
       throws_error("FirstImportedYear cannot exceed LastImportedYear")
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -279,13 +279,13 @@ describe("n2k_inla_nbinomial", {
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      is_a("n2kInlaNbinomial")
+      is_a("n2kInla")
     )
   })
 
   it("sets the correct LastImportedYear", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -302,7 +302,7 @@ describe("n2k_inla_nbinomial", {
   })
   it("converts numeric last.imported.year, when possible", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -317,7 +317,7 @@ describe("n2k_inla_nbinomial", {
       is_identical_to(this.last.imported.year)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -336,7 +336,7 @@ describe("n2k_inla_nbinomial", {
   })
   it("checks that LastImportedYear is from the past", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -353,7 +353,7 @@ describe("n2k_inla_nbinomial", {
   })
   it("checks that LastImportedYear is not earlier that FirstImportedYear", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -371,7 +371,7 @@ describe("n2k_inla_nbinomial", {
 
   it("sets the correct Duration", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -387,7 +387,7 @@ describe("n2k_inla_nbinomial", {
       is_identical_to(this.duration)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -404,7 +404,7 @@ describe("n2k_inla_nbinomial", {
   })
   it("converts numeric duration, when possible", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -421,7 +421,7 @@ describe("n2k_inla_nbinomial", {
       is_identical_to(this.duration)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -442,7 +442,7 @@ describe("n2k_inla_nbinomial", {
 ranges"
   , {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -460,7 +460,7 @@ ranges"
       )
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -474,14 +474,14 @@ ranges"
         scheme.id = this.scheme.id
       ),
       throws_error(
-        "dots\\$duration is not a count \\(a single positive integer\\)"
+        "duration is not a count \\(a single positive integer\\)"
       )
     )
   })
 
   it("sets the correct LastAnalysedYear", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -498,7 +498,7 @@ ranges"
       is_identical_to(this.last.analysed.year)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -515,7 +515,7 @@ ranges"
   })
   it("converts numeric last.analysed.year, when possible", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -532,7 +532,7 @@ ranges"
       is_identical_to(this.last.analysed.year)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -553,7 +553,7 @@ ranges"
   })
   it("checks that LastAnalysedYear is within the range", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -570,7 +570,7 @@ ranges"
       throws_error("LastAnalysedYear cannot exceed LastImportedYear")
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -579,7 +579,6 @@ ranges"
         formula = this.formula,
         first.imported.year = this.first.imported.year,
         last.imported.year = this.last.imported.year,
-        duration = 1,
         last.analysed.year = this.first.imported.year + this.duration - 2,
         duration = this.duration,
         analysis.date = this.analysis.date,
@@ -594,7 +593,7 @@ outside imported range\\."
 
   it("checks if analysis date is from the past", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset,
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -611,7 +610,7 @@ outside imported range\\."
   })
   it("checks if all variable in formula are available in the data", {
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset[, c("A", "B", "C", "D", "E", "F")],
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -623,10 +622,10 @@ outside imported range\\."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Variables missing in df: Count")
+      throws_error("object@Data does not have name Count")
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset[, c("Count", "B", "C", "D", "E", "F")],
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -638,10 +637,10 @@ outside imported range\\."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Variables missing in df: A")
+      throws_error("object@Data does not have name A")
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset[, c("Count", "A", "B", "C", "D", "E")],
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -653,10 +652,10 @@ outside imported range\\."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Variables missing in df: F")
+      throws_error("object@Data does not have name F")
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = dataset[, c("A", "B", "C", "Count", "E", "F")],
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -668,7 +667,7 @@ outside imported range\\."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Variables missing in df: D")
+      throws_error("object@Data does not have name D")
     )
   })
 })
@@ -684,8 +683,8 @@ outside imported range\\."
 
 
 
-describe("add a model to a n2kInlaNbinomial object", {
-  object.model <- n2k_inla_nbinomial(
+describe("add a model to a n2kInla object", {
+  object.model <- n2k_inla(
     data = object, model.fit = model.object, status = "converged"
   )
   it("keeps the objects", {
@@ -693,13 +692,15 @@ describe("add a model to a n2kInlaNbinomial object", {
       object.model@Data,
       is_identical_to(dataset)
     )
-    expect_that(
+    expect_equal(
       object.model@Model$summary.fixed,
-      is_identical_to(model.truth$summary.fixed)
+      model.truth$summary.fixed,
+      tolerance = 1e-5
     )
-    expect_that(
+    expect_equal(
       object.model@Model$summary.random,
-      is_identical_to(model.truth$summary.random)
+      model.truth$summary.random,
+      tolerance = 1e-3
     )
     expect_that(
       object.model@Model,
@@ -710,7 +711,7 @@ describe("add a model to a n2kInlaNbinomial object", {
       is_identical_to(object@AnalysisMetadata$Seed)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = object, model.fit = model.object, status = "converged", seed = 1
       )@AnalysisMetadata$Seed,
       is_identical_to(object@AnalysisMetadata$Seed)
@@ -720,7 +721,7 @@ describe("add a model to a n2kInlaNbinomial object", {
       is_identical_to(object@AnalysisMetadata$SchemeID)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = object,
         model.fit = model.object,
         status = "converged",
@@ -733,7 +734,7 @@ describe("add a model to a n2kInlaNbinomial object", {
       is_identical_to(object@AnalysisMetadata$SpeciesGroupID)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = object,
         model.fit = model.object,
         status = "converged",
@@ -746,7 +747,7 @@ describe("add a model to a n2kInlaNbinomial object", {
       is_identical_to(object@AnalysisMetadata$LocationGroupID)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = object,
         model.fit = model.object,
         status = "converged",
@@ -759,7 +760,7 @@ describe("add a model to a n2kInlaNbinomial object", {
       is_identical_to(object@AnalysisMetadata$ModelType)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = object,
         model.fit = model.object,
         status = "converged",
@@ -772,7 +773,7 @@ describe("add a model to a n2kInlaNbinomial object", {
       is_identical_to(object@AnalysisMetadata$Covariate)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = object,
         model.fit = model.object,
         status = "converged",
@@ -789,7 +790,7 @@ describe("add a model to a n2kInlaNbinomial object", {
       is_identical_to(object@AnalysisMetadata$Duration)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = object,
         model.fit = model.object,
         status = "converged",
@@ -798,7 +799,7 @@ describe("add a model to a n2kInlaNbinomial object", {
       is_identical_to(object@AnalysisMetadata$Duration)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = object,
         model.fit = model.object,
         status = "converged",
@@ -811,7 +812,7 @@ describe("add a model to a n2kInlaNbinomial object", {
       is_identical_to(object@AnalysisMetadata$LastImportedYear)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = object,
         model.fit = model.object,
         status = "converged",
@@ -824,7 +825,7 @@ describe("add a model to a n2kInlaNbinomial object", {
       is_identical_to(object@AnalysisMetadata$LastAnalysedYear)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = object,
         model.fit = model.object,
         status = "converged",
@@ -837,7 +838,7 @@ describe("add a model to a n2kInlaNbinomial object", {
       is_identical_to(object@AnalysisMetadata$AnalysisDate)
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = object,
         model.fit = model.object,
         status = "converged",
@@ -852,31 +853,31 @@ describe("add a model to a n2kInlaNbinomial object", {
       is_identical_to("converged")
     )
     expect_that(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = object, model.fit = model.object, status = "junk"
       ),
       throws_error("Status must be one of the following")
     )
   })
-  model.poisson <- INLA::inla(
+  model.other <- inla(
     Count ~ A * (B + C) + C:D +
       f(E, model = "rw1", replicate = as.integer(A)) +
       f(F, model = "iid"),
     data = object@Data,
-    family = "poisson"
+    family = "nbinomial"
   )
-  it("checks if the model is a nbinomial model", {
+  it("checks if the family matches", {
     expect_that(
-      n2k_inla_nbinomial(
-        data = object, model.fit = model.poisson, status = "converged"
+      n2k_inla(
+        data = object, model.fit = model.other, status = "converged"
       ),
-      throws_error("The model must be from the nbinomial family")
+      throws_error("Model of the wrong family")
     )
   })
 })
-describe("n2kInlaNbinomial handles linear combinations", {
+describe("n2kInla handles linear combinations", {
   expect_error(
-    n2k_inla_nbinomial(
+    n2k_inla(
       result.datasource.id = this.result.datasource.id,
       scheme.id = this.scheme.id,
       species.group.id = this.species.group.id,
@@ -887,12 +888,12 @@ describe("n2kInlaNbinomial handles linear combinations", {
       last.imported.year = this.last.imported.year,
       analysis.date = this.analysis.date,
       data = dataset,
-      lin.comb = "lin.comb"
+      lin.comb = "junk"
     ),
-    "inherits\\(dots\\$lin.comb, \"matrix\"\\) \\| inherits\\(dots\\$lin.comb, \"list\"\\) is not TRUE" #nolint
+    "lin.comb must be either a list or a matrix"
   )
   expect_is(
-    object <- n2k_inla_nbinomial(
+    object <- n2k_inla(
       result.datasource.id = this.result.datasource.id,
       scheme.id = this.scheme.id,
       species.group.id = this.species.group.id,
@@ -903,19 +904,19 @@ describe("n2kInlaNbinomial handles linear combinations", {
       last.imported.year = this.last.imported.year,
       analysis.date = this.analysis.date,
       data = dataset,
-      lin.comb = lin.comb
+      lin.comb = this.lc
     ),
-    "n2kInlaNbinomial"
+    "n2kInla"
   )
   it("adds them to the object", {
     expect_identical(
       object@LinearCombination,
-      lin.comb
+      this.lc
     )
   })
 
   expect_error(
-    n2k_inla_nbinomial(
+    n2k_inla(
       result.datasource.id = this.result.datasource.id,
       scheme.id = this.scheme.id,
       species.group.id = this.species.group.id,
@@ -926,31 +927,13 @@ describe("n2kInlaNbinomial handles linear combinations", {
       last.imported.year = this.last.imported.year,
       analysis.date = this.analysis.date,
       data = dataset,
-      parent = "abcd",
-      parent.status.fingerprint = "abcd"
-    ),
-    "'parent.status' is required when 'parent.status.fingerprint' is provided"
-  )
-
-  expect_error(
-    n2k_inla_nbinomial(
-      result.datasource.id = this.result.datasource.id,
-      scheme.id = this.scheme.id,
-      species.group.id = this.species.group.id,
-      location.group.id = this.location.group.id,
-      model.type = this.model.type,
-      formula = this.formula,
-      first.imported.year = this.first.imported.year,
-      last.imported.year = this.last.imported.year,
-      analysis.date = this.analysis.date,
-      data = dataset,
-      lin.comb = lin.comb,
+      lin.comb = this.lc,
       replicate.name = "junk"
     ),
-    "dots\\$replicate\\.name is not a list"
+    "replicate\\.name is not a list"
   )
   expect_error(
-    n2k_inla_nbinomial(
+    n2k_inla(
       result.datasource.id = this.result.datasource.id,
       scheme.id = this.scheme.id,
       species.group.id = this.species.group.id,
@@ -961,7 +944,7 @@ describe("n2kInlaNbinomial handles linear combinations", {
       last.imported.year = this.last.imported.year,
       analysis.date = this.analysis.date,
       data = dataset,
-      lin.comb = lin.comb,
+      lin.comb = this.lc,
       replicate.name = list("junk")
     ),
     "replicate\\.name must have names"

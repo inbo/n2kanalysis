@@ -3,7 +3,7 @@ test_that(
   "get_model_parameter works with n2kGlmerPoisson", {
   data(cbpp, package = "lme4")
   cbpp$Weight <- cbpp$size
-  cbpp$DatasourceID <- sha1(letters)
+  cbpp$DataFieldID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
   this.result.datasource.id <- sha1(sample(letters))
@@ -133,7 +133,7 @@ test_that(
 })
 
 test_that(
-  "n2kInlaNbinomial with categorical and numeric fixed effect without random
+  "n2kInla with categorical and numeric fixed effect without random
     effect", {
   dataset <- test_data()
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
@@ -148,21 +148,22 @@ test_that(
   this.last.analysed.year <- 2015L
   this.parent <- "abcdef"
   this.duration <- this.last.imported.year - this.first.imported.year + 1
-  analysis <- n2k_inla_nbinomial(
+  analysis <- n2k_inla(
+    data = dataset,
     formula = "Count ~ A + C",
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
+    family = "nbinomial",
     model.type = this.model.type,
     first.imported.year = this.first.imported.year,
     last.imported.year = this.last.imported.year,
     last.analysed.year = this.last.analysed.year,
     analysis.date = this.analysis.date,
     seed = this.seed,
-    data = dataset,
     parent = this.parent,
-    this.duration
+    duration = this.duration
   )
   expect_is(
     param <- get_model_parameter(analysis),
@@ -229,7 +230,7 @@ test_that(
 })
 
 test_that(
-  "n2kInlaNbinomial with single random effect, categorical-categorical
+  "n2kInla with single random effect, categorical-categorical
       interaction and categorical numeric interaction", {
   dataset <- test_data()
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
@@ -244,12 +245,13 @@ test_that(
   this.last.analysed.year <- 2015L
   this.parent <- "abcdef"
   this.duration <- this.last.imported.year - this.first.imported.year + 1
-  analysis <- n2k_inla_nbinomial(
+  analysis <- n2k_inla(
     formula = "Count ~ 0 + A * C + A * B + f(E, model = \"iid\")",
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
+    family = "nbinomial",
     model.type = this.model.type,
     first.imported.year = this.first.imported.year,
     last.imported.year = this.last.imported.year,
@@ -258,7 +260,7 @@ test_that(
     seed = this.seed,
     data = dataset,
     parent = this.parent,
-    this.duration
+    duration = this.duration
   )
   analysis <- fit_model(analysis)
   expect_message(
@@ -312,17 +314,17 @@ test_that(
   )
   random <- param@Parameter %>%
     semi_join(
-    param@Parameter %>%
-      semi_join(
-        data_frame(Description = "Random effect BLUP"),
-        by = "Description"
-      ),
+      param@Parameter %>%
+        semi_join(
+          data_frame(Description = "Random effect BLUP"),
+          by = "Description"
+        ),
     by = c("Parent" = "Fingerprint")
   ) %>%
     select_(~Fingerprint, Main = ~Description) %>%
     left_join(
       param@Parameter %>%
-        rename_(Finger = ~ Fingerprint, Level = ~Description),
+        rename(Finger = "Fingerprint", Level = "Description"),
       by = c("Fingerprint" = "Parent")
     ) %>%
     left_join(
@@ -351,7 +353,7 @@ test_that(
 })
 
 test_that(
-  "n2kInlaNbinomial with numeric-numeric interaction and two random effects of
+  "n2kInla with numeric-numeric interaction and two random effects of
     which on replicated", {
   dataset <- test_data()
   this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
@@ -366,7 +368,7 @@ test_that(
   this.last.analysed.year <- 2015L
   this.parent <- "abcdef"
   this.duration <- this.last.imported.year - this.first.imported.year + 1
-  analysis <- n2k_inla_nbinomial(
+  analysis <- n2k_inla(
     formula = "Count ~ C * D +
     f(E, model = \"rw1\", replicate = as.integer(A)) +
     f(F, model = \"iid\")",
@@ -374,6 +376,7 @@ test_that(
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
+    family = "nbinomial",
     model.type = this.model.type,
     first.imported.year = this.first.imported.year,
     last.imported.year = this.last.imported.year,
@@ -382,7 +385,7 @@ test_that(
     seed = this.seed,
     data = dataset,
     parent = this.parent,
-    this.duration
+    duration = this.duration
   )
   analysis <- fit_model(analysis)
   expect_message(
@@ -444,7 +447,7 @@ test_that(
     select_(~Fingerprint, Main = ~Description) %>%
     left_join(
       param@Parameter %>%
-        rename_(Finger = ~ Fingerprint, Level = ~Description),
+        rename(Finger = "Fingerprint", Level = "Description"),
       by = c("Fingerprint" = "Parent")
     ) %>%
     left_join(
@@ -455,16 +458,15 @@ test_that(
   expect_false(any(is.na(random$Level)))
   expect_equal(
     random %>%
-      group_by_(~Main, ~Level) %>%
-      summarise_(
-        N = ~n(),
-        Missing = ~mean(is.na(Level2))
+      group_by(.data$Main, .data$Level) %>%
+      summarise(
+        N = n(),
+        Missing = mean(is.na(.data$Level2))
       ) %>%
-      group_by_(~Main) %>%
-      summarise_(
-        N1 = ~n(),
-        N2 = ~mean(N),
-        Missing = ~mean(Missing)
+      summarise(
+        N1 = n(),
+        N2 = mean(.data$N),
+        Missing = mean(.data$Missing)
       ),
     data_frame(
       Main = c("E", "F"),

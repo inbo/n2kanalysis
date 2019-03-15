@@ -9,9 +9,9 @@ It hold analysis data based on a glmer poisson model
 }
 \section{Slots}{
 
-  \describe{
-   \item{\code{Data}}{a data.frame with the data}
-   \item{\code{Model}}{Either NULL or the resulting glmer model.}
-  }
+\describe{
+\item{\code{Data}}{a data.frame with the data}
+\item{\code{Model}}{Either NULL or the resulting glmer model.}
+}
 }
 

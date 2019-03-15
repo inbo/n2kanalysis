@@ -3,7 +3,7 @@ describe("fit_model() on GlmerPoisson based objects", {
   temp.dir <- tempdir()
   data(cbpp, package = "lme4")
   cbpp$Weight <- cbpp$size
-  cbpp$DatasourceID <- sha1(letters)
+  cbpp$DataFieldID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
   this.seed <- 1L
@@ -42,8 +42,8 @@ describe("fit_model() on GlmerPoisson based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "fc1c87efe0011e8d306fd9c5d4c1b8fecc67c94c"
-  weighted.object.file <- "af640ba204e5f9268a26d0e8570ebeb0e1048506"
+  object.file <- "3fa9cc3cca37814c22e4ea1623139d9bf2104874"
+  weighted.object.file <- "6dd0cf56ddaa15b0cfb8d345928e6357c00285e0"
 
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
@@ -99,7 +99,7 @@ describe("fit_model() on GlmerPoisson based objects", {
   file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))
 })
 
-describe("fit_model() on INLA nbinomial based objects", {
+describe("fit_model() on INLA based objects", {
   temp.dir <- tempdir()
   dataset <- test_data(missing = 0.2)
   this.analysis.date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
@@ -107,7 +107,7 @@ describe("fit_model() on INLA nbinomial based objects", {
   this.scheme.id <- sha1(letters)
   this.species.group.id <- sha1(letters)
   this.location.group.id <- sha1(letters)
-  this.model.type <- "inla nbinomial: A + B + C + D"
+  this.model.type <- "inla poisson: A + B + C + D"
   this.formula <-
     "Count ~ A * (B + C) + C * D + f(E, model = 'iid')"
   this.first.imported.year <- 1990L
@@ -123,7 +123,7 @@ describe("fit_model() on INLA nbinomial based objects", {
   names(lin.comb.list[[1]]) <- seq_along(lin.comb.list[[1]])
   lin.comb.list2 <- list(E = diag(length(unique(dataset$E))))
   rownames(lin.comb.list2[[1]]) <- seq_along(unique(dataset$E))
-  object <- n2k_inla_nbinomial(
+  object <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -135,7 +135,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     analysis.date = this.analysis.date,
     data = dataset
   )
-  object.lc <- n2k_inla_nbinomial(
+  object.lc <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -148,7 +148,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     data = dataset,
     lin.comb = lin.comb
   )
-  object.lc.list <- n2k_inla_nbinomial(
+  object.lc.list <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -161,7 +161,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     data = dataset,
     lin.comb = lin.comb.list
   )
-  object.lc.list2 <- n2k_inla_nbinomial(
+  object.lc.list2 <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -174,7 +174,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     data = dataset,
     lin.comb = lin.comb.list2
   )
-  object.badlc <- n2k_inla_nbinomial(
+  object.badlc <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -187,7 +187,7 @@ describe("fit_model() on INLA nbinomial based objects", {
     data = dataset,
     lin.comb = bad.lin.comb
   )
-  object.imp <- n2k_inla_nbinomial(
+  object.imp <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -217,11 +217,11 @@ describe("fit_model() on INLA nbinomial based objects", {
     sep = ""
   )
   # 32-bit windows
-  object.file <- "1b8703a7a9587f3bd30bfdac002cb6d05df7463c"
-  object.lc.file <- "88398e706abc9b7d7199e2ef88368f8447eed5e2"
-  object.lc.list.file <- "3933d2ec416967aa45300d5c664dbf45a8bd3899"
-  object.lc.list2.file <- "ac316dd13d50320f1bd70a71ce0f48774da60ede"
-  object.badlc.file <- "ba47e6ac58f74787eb450b20c19d5158f3052716"
+  object.file <- "4792d424a7e3db1a9b8e93c603026eb24c7ab17a"
+  object.lc.file <- "11ffb3e74bd394e98580cb85cd3312d10ed30b50"
+  object.lc.list.file <- "c2849e245e571e218830a17b3b832304dc84a66d"
+  object.lc.list2.file <- "0fa814b4eb665e3acd264da00d86a403b6080f81"
+  object.badlc.file <- "70deebba83492b5f9b4d1054f17ea288c731efa0"
   it("returns the same file fingerprints on 32-bit and 64-bit", {
     expect_identical(object.file, get_file_fingerprint(object))
     expect_identical(object.lc.file, get_file_fingerprint(object.lc))
@@ -300,7 +300,7 @@ test_that("fit_model() works on n2kInlaComparison", {
   this.species.group.id <- sha1(letters)
   this.location.group.id <- sha1(letters)
   this.analysis.date <- Sys.time()
-  this.model.type <- "inla nbinomial: A * (B + C) + C:D"
+  this.model.type <- "inla poisson: A * (B + C) + C:D"
   this.first.imported.year <- 1990L
   this.last.imported.year <- 2015L
   this.last.analysed.year <- 2014L
@@ -308,7 +308,7 @@ test_that("fit_model() works on n2kInlaComparison", {
   dataset <- test_data()
   temp.dir <- tempdir()
 
-  analysis <- n2k_inla_nbinomial(
+  analysis <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -322,7 +322,7 @@ test_that("fit_model() works on n2kInlaComparison", {
   )
   p1 <- get_file_fingerprint(analysis)
   filename1 <- store_model(analysis, base = temp.dir, project = "fit_model")
-  analysis <- n2k_inla_nbinomial(
+  analysis <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -347,14 +347,106 @@ test_that("fit_model() works on n2kInlaComparison", {
     first.imported.year = this.first.imported.year,
     last.imported.year = this.last.imported.year,
     analysis.date = this.analysis.date,
-    parent = c(p1, p2),
     parent.status = status(temp.dir) %>%
-      select_(
-        ParentAnalysis = ~FileFingerprint,
-        ParentStatus = ~Status,
-        ParentStatusFingerprint = ~StatusFingerprint
+      select(
+        ParentAnalysis = "FileFingerprint",
+        ParentStatus = "Status",
+        ParentStatusFingerprint = "StatusFingerprint"
       )
   )
+  filename3 <- store_model(analysis, base = temp.dir, project = "fit_model")
+  fit_model(
+    get_file_fingerprint(analysis),
+    base = temp.dir,
+    project = "fit_model",
+    verbose = FALSE
+  )
+
+  fit_model(filename1, verbose = FALSE)
+  fit_model(filename3, verbose = FALSE)
+
+  fit_model(filename2, verbose = FALSE)
+  fit_model(filename3, verbose = FALSE)
+  filename3 <- gsub("waiting", "converged", filename3)
+  expect_identical(
+    fit_model(filename3, verbose = FALSE),
+    NULL
+  )
+
+  # clean temp files
+  file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))
+})
+
+test_that("fit_model() works on n2kInlaComposite", {
+  this.result.datasource.id <- sha1(letters)
+  this.scheme.id <- sha1(letters)
+  this.species.group.id <- sha1(letters)
+  this.location.group.id <- sha1(letters)
+  this.analysis.date <- Sys.time()
+  this.model.type <- "inla poisson: A * (B + C) + C:D"
+  this.first.imported.year <- 1990L
+  this.last.imported.year <- 2015L
+  this.last.analysed.year <- 2014L
+  this.duration <- 1L
+  dataset <- test_data()
+  temp.dir <- tempdir()
+
+  analysis <- n2k_inla(
+    result.datasource.id = this.result.datasource.id,
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = "Count ~ A",
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = dataset
+  )
+  p1 <- get_file_fingerprint(analysis)
+  filename1 <- store_model(analysis, base = temp.dir, project = "fit_model")
+  analysis <- n2k_inla(
+    result.datasource.id = this.result.datasource.id,
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    model.type = this.model.type,
+    formula = "Count ~ A + B",
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    data = dataset
+  )
+  p2 <- get_file_fingerprint(analysis)
+  filename2 <- store_model(analysis, base = temp.dir, project = "fit_model")
+
+  analysis <- n2k_composite(
+    result.datasource.id = this.result.datasource.id,
+    scheme.id = this.scheme.id,
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id,
+    formula = "~B", #nolint
+    model.type = "inla comparison: A*B",
+    first.imported.year = this.first.imported.year,
+    last.imported.year = this.last.imported.year,
+    analysis.date = this.analysis.date,
+    parent.status = status(temp.dir) %>%
+      select(
+        ParentAnalysis = "FileFingerprint",
+        ParentStatus = "Status",
+        ParentStatusFingerprint = "StatusFingerprint"
+      ),
+    extractor = function(model) {
+      relevant <- grep("^A", rownames(model$summary.fixed))
+      model$summary.fixed[relevant, c("mean", "sd")] %>%
+        rownames_to_column("Value") %>%
+        transmute(
+          .data$Value,
+          Estimate = .data$mean,
+          Variance = .data$sd ^ 2)
+    }
+  )
+
   filename3 <- store_model(analysis, base = temp.dir, project = "fit_model")
   fit_model(
     get_file_fingerprint(analysis),
@@ -395,7 +487,7 @@ test_that("fit_model() works in n2kLrtGlmer objects", {
   this.last.analysed.year <- 2014L
   this.duration <- 1L
   data("cbpp", package = "lme4")
-  cbpp$DatasourceID <- sha1(letters)
+  cbpp$DataFieldID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
   object.1 <- n2k_glmer_poisson(
     result.datasource.id = this.result.datasource.id,

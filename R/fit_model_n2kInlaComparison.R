@@ -1,103 +1,71 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom dplyr select rename_ select_ inner_join arrange_ filter_ mutate_ bind_rows
+#' @importFrom assertthat assert_that
+#' @importFrom dplyr %>% filter pull bind_rows
 #' @importFrom rlang .data
 #' @importFrom utils file_test
 #' @include n2kInlaComparison_class.R
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kInlaComparison"),
-  definition = function(x, ...){
+  definition = function(x, base, project, status = "new", verbose = TRUE, ...){
     validObject(x)
-    dots <- list(...)
-    if (is.null(dots$status)) {
-      dots$status <- c("new", "waiting")
-    }
-    if (!(status(x) %in% dots$status)) {
+
+    assert_that(
+      is.character(status),
+      length(status) >= 1
+    )
+    if (!(status(x) %in% status)) {
       return(x)
     }
 
-    # status: "new"
-    if (status(x) == "new") {
-      x@WAIC <- lapply(
-          names(x@Models),
-          function(parent){
-            data.frame(
-              Parent = parent,
-              WAIC = x@Models[[parent]]$waic$waic,
-              Peff = x@Models[[parent]]$waic$p.eff,
-              stringsAsFactors = FALSE
-            )
-          }
-        ) %>%
-        bind_rows() %>%
-        as.data.frame()
-      status(x) <- "converged"
+    parent.status <- parent_status(x)
+    parent.status %>%
+      filter(.data$ParentStatus %in% c("new", "waiting", status)) %>%
+      pull("ParentAnalysis") -> todo
+    if (length(todo) == 0) {
       return(x)
     }
 
-    # status: "waiting"
-    old.parent.status <- parent_status(x) %>%
-      rename_(
-        OldStatusFingerprint = ~ParentStatusFingerprint,
-        OldStatus = ~ParentStatus
-      )
-    parents <- get_parents(child = x, base = dots$base, project = dots$project)
-    compare <- lapply(
-      parents,
-      function(z){
-        z@AnalysisMetadata %>%
-          select(
-            ParentAnalysis = .data$FileFingerprint,
-            ParentStatusFingerprint = .data$StatusFingerprint,
-            ParentStatus = .data$Status
-          )
+    for (parent in todo) {
+      model <- read_model(x = parent, base = base, project = project)
+      if (status(model) %in% c("new", "waiting")) {
+        next
       }
-    ) %>%
-      bind_rows() %>%
-      inner_join(old.parent.status, by = "ParentAnalysis") %>%
-      arrange_(~ParentAnalysis)
-
-    to.update <- compare %>% filter_(~ParentStatus == "converged")
-    x@AnalysisRelation <- compare %>%
-      select_(
-        ~Analysis,
-        ~ParentAnalysis,
-        ~ParentStatusFingerprint,
-        ~ParentStatus
-      )
-
-    if (any(x@AnalysisRelation$ParentStatus == "error")) {
-      status(x) <- "error"
-      return(x)
-    }
-    if (any(x@AnalysisRelation$ParentStatus == "false_convergence")) {
-      status(x) <- "false_convergence"
-      return(x)
-    }
-    if (nrow(to.update) == 0) {
-      if (all(x@AnalysisRelation$ParentStatus == "unstable")) {
-        status(x) <- "unstable"
+      parent.status[parent.status$ParentAnalysis == parent, "ParentStatus"] <-
+        status(model)
+      parent.status[
+        parent.status$ParentAnalysis == parent,
+        "ParentStatusFingerprint"
+      ] <- get_status_fingerprint(model)
+      x@AnalysisRelation <- parent.status
+      if (status(model) == "converged") {
+        update_waic <- data.frame(
+          Parent = parent,
+          WAIC = model@Model$waic$waic,
+          Peff = model@Model$waic$p.eff,
+          stringsAsFactors = FALSE
+        )
+        if (is.null(x@WAIC)) {
+          x@WAIC <- update_waic
+        } else {
+          x@WAIC %>%
+            filter(.data$Parent != parent) %>%
+            bind_rows(update_waic) -> x@WAIC
+        }
+        if (all(parent.status$ParentStatus == "converged")) {
+          status(x) <- "converged"
+        } else {
+          status(x) <- status(x)
+        }
+      } else {
+        status(x) <- "error"
       }
-      return(x)
+      if (status(x) == "error") {
+        return(x)
+      }
     }
 
-    to.update <- to.update %>%
-      mutate_(Filename = ~ paste0("/", status(x), "$") %>%
-          gsub("/", dots$path) %>%
-          paste0(ParentStatus, "/", ParentAnalysis, ".rds")
-      ) %>%
-      select_(~ParentAnalysis, ~Filename)
-    models <- lapply(parents[to.update$ParentAnalysis], get_model)
-    x@Models <- models
-
-    if (all(
-      x@AnalysisRelation$ParentStatus %in% c("converged", "unstable")
-    )) {
-      status(x) <- "new"
-      return(fit_model(x, status = "new", ...))
-    }
-    status(x) <- "waiting"
     return(x)
   }
 )

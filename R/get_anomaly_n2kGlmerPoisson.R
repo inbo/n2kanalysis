@@ -117,7 +117,7 @@ setMethod(
         AnomalyType = extra$Fingerprint,
         Analysis = get_file_fingerprint(analysis),
         Parameter = selection$Fingerprint,
-        DatasourceID = selection$DatasourceID,
+        DataFieldID = selection$DataFieldID,
         Observation = selection$ObservationID,
         stringsAsFactors = FALSE
       )
@@ -145,7 +145,7 @@ setMethod(
         AnomalyType = extra$Fingerprint,
         Analysis = get_file_fingerprint(analysis),
         Parameter = data.subset$Fingerprint,
-        DatasourceID = data.subset$DatasourceID,
+        DataFieldID = data.subset$DataFieldID,
         Observation = data.subset$ObservationID,
         stringsAsFactors = FALSE
       )

@@ -13,7 +13,7 @@ this.last.imported.year <- 2015L
 this.last.analysed.year <- 2014L
 this.duration <- 1L
 data("cbpp", package = "lme4")
-cbpp$DatasourceID <- sha1(letters)
+cbpp$DataFieldID <- sha1(letters)
 cbpp$ObservationID <- seq_len(nrow(cbpp))
 object <- n2k_glmer_poisson(
   result.datasource.id = this.result.datasource.id,
@@ -732,12 +732,12 @@ outside imported range."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Variables missing in df: incidence")
+      throws_error("object@Data does not have name incidence")
     )
     expect_that(
       n2k_glmer_poisson(
         data = cbpp[,
-          c("herd", "period", "incidence", "DatasourceID", "ObservationID")
+          c("herd", "period", "incidence", "DataFieldID", "ObservationID")
         ],
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -749,12 +749,12 @@ outside imported range."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Variables missing in df: size")
+      throws_error("object@Data does not have name size")
     )
     expect_that(
       n2k_glmer_poisson(
         data = cbpp[,
-          c("herd", "size", "incidence", "DatasourceID", "ObservationID")
+          c("herd", "size", "incidence", "DataFieldID", "ObservationID")
         ],
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -766,12 +766,12 @@ outside imported range."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Variables missing in df: period")
+      throws_error("object@Data does not have name period")
     )
     expect_that(
       n2k_glmer_poisson(
         data = cbpp[,
-          c("size", "period", "incidence", "DatasourceID", "ObservationID")
+          c("size", "period", "incidence", "DataFieldID", "ObservationID")
         ],
         result.datasource.id = this.result.datasource.id,
         species.group.id = this.species.group.id,
@@ -783,7 +783,7 @@ outside imported range."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("Variables missing in df: herd")
+      throws_error("object@Data does not have name herd")
     )
   })
 })

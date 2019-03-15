@@ -33,7 +33,7 @@ metadata$StatusFingerprint <- metadata %>%
   select_(~FileFingerprint, ~Status) %>%
   apply(1, sha1)
 
-datasourceid <- sha1(letters)
+datafieldid <- sha1(letters)
 
 parameter <- data.frame(
   Description = c("Unit test", "Unit test letters"),
@@ -91,7 +91,7 @@ anomaly <- expand.grid(
   AnomalyType = anomalytype$Fingerprint,
   Analysis = metadata$FileFingerprint,
   Parameter = sample(parameter$Fingerprint, min(5, nrow(parameter))),
-  DatasourceID = datasourceid,
+  DataFieldID = datafieldid,
   Observation = "1",
   stringsAsFactors = FALSE
 ) %>%

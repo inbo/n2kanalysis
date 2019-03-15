@@ -11,18 +11,19 @@ this.last.analysed.year <- 2014L
 this.duration <- 1L
 this.datasource <- sha1(letters)
 dataset <- test_data(this.datasource)
-describe("get_result on n2kInlaNbinomial", {
+describe("get_result on n2kInla", {
   this.model.type <- "inla nbinomial: period + herd"
   this.formula <-
     "Count ~
       A * (B + C) + C:D +
       f(E, model = 'rw1', replicate = as.integer(A)) +
       f(F, model = 'iid')"
-  analysis <- n2k_inla_nbinomial(
+  analysis <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
+    family = "nbinomial",
     model.type = this.model.type,
     formula = this.formula,
     first.imported.year = this.first.imported.year,
@@ -97,11 +98,12 @@ describe("get_result on n2kInlaNbinomial", {
     model.matrix(object = ~A * (B + C) + C:D)
   rownames(lin.comb) <- seq_len(nrow(lin.comb))
   this.parent <- "abcd"
-  analysis <- n2k_inla_nbinomial(
+  analysis <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
+    family = "nbinomial",
     model.type = this.model.type,
     formula = this.formula,
     first.imported.year = this.first.imported.year,
@@ -186,11 +188,12 @@ describe("get_result on n2kInlaNbinomial", {
   # with linear combination as list of vectors
   lin.comb <- as.list(as.data.frame(lin.comb))
   names(lin.comb[[1]]) <- seq_along(lin.comb[[1]])
-  analysis <- n2k_inla_nbinomial(
+  analysis <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
+    family = "nbinomial",
     model.type = this.model.type,
     formula = this.formula,
     first.imported.year = this.first.imported.year,
@@ -292,12 +295,13 @@ describe("get_result on n2kInlaNbinomial", {
     E = lc.E,
     F = matrix(c(1, 0, 0), byrow = TRUE, ncol = 3, nrow = nrow(lc.E))
   )
-  analysis <- n2k_inla_nbinomial(
+  analysis <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
     model.type = this.model.type,
+    family = "nbinomial",
     formula = this.formula,
     first.imported.year = this.first.imported.year,
     last.imported.year = this.last.imported.year,
@@ -423,17 +427,18 @@ expect_is(
 
 data("cake", package = "lme4")
 cake$ObservationID <- seq_len(nrow(cake))
-cake$DatasourceID <- this.datasource
-describe("get_result on n2kInlaNbinomial with replicated random effects", {
+cake$DataFieldID <- this.datasource
+describe("get_result on n2kInla with replicated random effects", {
   this.model.type <- "inla nbinomial: recipe + replicate + temperature"
   this.formula <-
 "angle ~ recipe + f(replicate, model = \"iid\") +
   f(as.integer(temperature), model = \"rw1\", replicate = as.integer(recipe))"
-  analysis <- n2k_inla_nbinomial(
+  analysis <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
     location.group.id = this.location.group.id,
+    family = "nbinomial",
     model.type = this.model.type,
     formula = this.formula,
     first.imported.year = this.first.imported.year,

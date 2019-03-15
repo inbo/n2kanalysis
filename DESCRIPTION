@@ -1,7 +1,7 @@
 Package: n2kanalysis
 Title: Generic Functions to Analyse Data from the Natura 2000 Monitoring
-Version: 0.2.4.4
-Date: 2018-09-23
+Version: 0.2.6
+Date: 2019-03-13
 Authors@R: c(
   person(
     "Thierry", "Onkelinx", role = c("aut", "cre"), 
@@ -17,6 +17,7 @@ Depends:
 License: GPL-3
 LazyData: true
 Suggests:
+    littler,
     Matrix,
     optimx,
     parallel,
@@ -53,7 +54,7 @@ Collate:
     'import_S3_classes.R'
     'delete_model.R'
     'n2kModel_class.R'
-    'n2kInlaNbinomial_class.R'
+    'n2kInla_class.R'
     'extract.R'
     'fit_every_model.R'
     'fit_model.R'
@@ -64,9 +65,9 @@ Collate:
     'fit_model_n2kComposite.R'
     'n2kGlmerPoisson_class.R'
     'fit_model_n2kGlmerPoisson.R'
+    'fit_model_n2kInla.R'
     'n2kInlaComparison_class.R'
     'fit_model_n2kInlaComparison.R'
-    'fit_model_n2kInlaNbinomial.R'
     'n2kLrtGlmer_class.R'
     'fit_model_n2kLrtGlmer.R'
     'n2kManifest_class.R'
@@ -78,7 +79,7 @@ Collate:
     'get_analysis_version.R'
     'get_anomaly.R'
     'get_anomaly_n2kGlmerPoisson.R'
-    'get_anomaly_n2kInlaNbinomial.R'
+    'get_anomaly_n2kInla.R'
     'get_anomaly_n2kModel.R'
     'get_data.R'
     'get_file_fingerprint.R'
@@ -89,15 +90,15 @@ Collate:
     'get_model_parameter_n2kAggregated.R'
     'get_model_parameter_n2kComposite.R'
     'get_model_parameter_n2kGlmerPoisson.R'
+    'get_model_parameter_n2kInla.R'
     'get_model_parameter_n2kInlaComparison.R'
-    'get_model_parameter_n2kInlaNbinomial.R'
     'get_model_parameter_n2kLrtGlmer.R'
     'get_model_parameter_n2kModelImputed.R'
     'get_model_type.R'
     'get_parents.R'
     'get_result.R'
     'get_result_character.R'
-    'get_result_n2kInlaNbinomial.R'
+    'get_result_n2kInla.R'
     'get_result_n2kModel.R'
     'get_result_s3_object.R'
     'get_scheme_id.R'
@@ -111,8 +112,8 @@ Collate:
     'n2k_composite.R'
     'n2k_glmer_poisson.R'
     'n2k_import.R'
+    'n2k_inla.R'
     'n2k_inla_comparison.R'
-    'n2k_inla_nbinomial.R'
     'n2k_lrt_glmer.R'
     'n2k_manifest.R'
     'n2k_model_imputed.R'
@@ -130,4 +131,6 @@ Collate:
     'store_model.R'
     'union.R'
     'validOject.R'
-RoxygenNote: 6.0.1
+Encoding: UTF-8
+RoxygenNote: 6.1.0
+Roxygen: list(markdown = TRUE)

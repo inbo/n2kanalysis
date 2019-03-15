@@ -3,36 +3,49 @@
 \docType{methods}
 \name{n2k_inla_comparison}
 \alias{n2k_inla_comparison}
-\alias{n2k_inla_comparison,character-method}
+\alias{n2k_inla_comparison,data.frame-method}
 \alias{n2k_inla_comparison,n2kInlaComparison-methods}
 \title{Create a n2kInlaComparison object}
 \usage{
-n2k_inla_comparison(parent, ...)
+n2k_inla_comparison(parent.status, ...)
 
-\S4method{n2k_inla_comparison}{character}(parent, ...)
+\S4method{n2k_inla_comparison}{data.frame}(parent.status,
+  status = "waiting", result.datasource.id, scheme.id, formula,
+  species.group.id, location.group.id, model.type, first.imported.year,
+  last.imported.year, duration, last.analysed.year, analysis.date, ...,
+  seed)
 }
 \arguments{
-\item{parent}{the file fingerprint of the paretnt}
+\item{parent.status}{a \code{data.frame} with columns \code{ParentAnalysis} (the file fingerprint of the parent), \code{ParentStatusFingerprint} (the status fingerprint of the parent), and \code{ParentStatus} (the status of the parent)}
 
-\item{...}{other arguments. See below}
+\item{...}{other arguments}
+
+\item{status}{a single character indicating the status of the model. Defaults to \code{"waiting"}.}
+
+\item{result.datasource.id}{the id of the results datasource}
+
+\item{scheme.id}{a single integer holding the id of the scheme.}
+
+\item{formula}{a single character identifying the comparison}
+
+\item{species.group.id}{a single integer identifing the species group}
+
+\item{location.group.id}{a single integer identifing the location group}
+
+\item{model.type}{the type of the models. Must start with \code{"inla comparison:"}}
+
+\item{first.imported.year}{Oldest year considered in the data}
+
+\item{last.imported.year}{Most recent year considered in the data}
+
+\item{duration}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
+
+\item{last.analysed.year}{Most recent year in the window. Defaults to \code{last.imported.year}}
+
+\item{analysis.date}{A POSIXct date indicating the date that the dataset was imported}
+
+\item{seed}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
 }
 \description{
-Create a n2kInlaComparison object
-
 A new n2kInlaComparison model is created when \code{parent} is a character
-}
-\details{
-\describe{
-   \item{\code{status}}{a single character indicating the status of the model. Defaults to 'waiting' when \code{parent} is a character.}
-   \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
-   \item{\code{species.group.id}}{a single integer identifing the species group}
-   \item{\code{location.group.id}}{a single integer identifing the location group}
-   \item{\code{formula}}{a single character identifying the comparison}
-   \item{\code{first.imported.year}}{Oldest year considered in the data}
-   \item{\code{last.imported.year}}{Most recent year considered in the data}
-   \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
-   \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
-   \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
-   \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
-  }
 }

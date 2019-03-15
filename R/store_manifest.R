@@ -65,45 +65,13 @@ setMethod(
     assert_that(is.string(project))
     validObject(x, complete = TRUE)
 
-    # try several times to connect to S3 bucket
-    # avoids errors due to time out
-    i <- 1
-    repeat {
-      bucket_ok <- tryCatch(
-        bucket_exists(base),
-        error = function(err) {
-          err
-        }
-      )
-      if (is.logical(bucket_ok)) {
-        break
-      }
-      if (i > 10) {
-        stop("Unable to connect to S3 bucket")
-      }
-      message("attempt ", i, " to connect to S3 bucket failed. Trying again...")
-      i <- i + 1
-      # waiting time between tries increases with the number of tries
-      Sys.sleep(i)
-    }
-    if (!bucket_ok) {
-      stop("Unable to connect to S3 bucket")
-    }
-
     filename <- sprintf(
       "%s/manifest/%s.manifest",
       project,
       get_file_fingerprint(x)
-    ) %>%
-      normalizePath(winslash = "/", mustWork = FALSE) %>%
-      gsub(pattern = "//", replacement = "/") %>%
-      gsub(pattern = "^/", replacement = "")
-    # check if object with same fingerprint exists
-    existing <- get_bucket(
-      base,
-      prefix = filename,
-      max = Inf
     )
+    # check if object with same fingerprint exists
+    existing <- get_bucket(base, prefix = filename)
     if (length(existing) > 0) {
       return(existing)
     }
@@ -140,10 +108,6 @@ setMethod(
     if (!bucket_ok) {
       stop("Unable to write to S3 bucket")
     }
-    get_bucket(
-      base,
-      prefix = filename,
-      max = Inf
-    )
+    get_bucket(base, prefix = filename)
   }
 )

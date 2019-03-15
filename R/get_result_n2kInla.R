@@ -1,15 +1,15 @@
 #' @rdname get_result
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% rowwise mutate_ inner_join select_ transmute_ arrange_ filter_ semi_join
+#' @importFrom dplyr %>% data_frame rowwise mutate_ inner_join select_ transmute_ arrange_ filter_ semi_join rename
 #' @importFrom digest sha1
 #' @importFrom tidyr gather_
 #' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom stats as.formula
 #' @include n2kResult_class.R
-#' @include n2kInlaNbinomial_class.R
+#' @include n2kInla_class.R
 setMethod(
   f = "get_result",
-  signature = signature(x = "n2kInlaNbinomial"),
+  signature = signature(x = "n2kInla"),
   definition = function(x, verbose = TRUE, ...){
     assert_that(is.flag(verbose))
     assert_that(noNA(verbose))
@@ -42,19 +42,20 @@ setMethod(
         description <- names(x@LinearCombination[[1]])
       }
     }
-    contrast <- data_frame(
+    contrast <- tibble(
         Description = description,
         Analysis = get_file_fingerprint(x)
       ) %>%
-      rowwise() %>%
-      mutate_(
-        Fingerprint = ~sha1(
-          c(Description = Description, Analysis = Analysis)
+      mutate(
+        Fingerprint = map2_chr(
+          .data$Description,
+          .data$Analysis,
+          ~sha1(c(Description = .x, Analysis = .y))
         )
       ) %>%
-      select_(~Fingerprint, ~Description, ~Analysis) %>%
+      select("Fingerprint", "Description", "Analysis") %>%
       as.data.frame()
-    if (is.null(x@Model)) {
+    if (is.null(get_model(x))) {
       return(
         new(
           "n2kResult",
@@ -207,7 +208,7 @@ setMethod(
                   anomaly@Parameter %>%
                     inner_join(
                       random.id %>%
-                        rename_(Main = ~Description),
+                        rename(Main = "Description"),
                       by = c("Parent" = "Parameter")
                     ) %>%
                     mutate_(

@@ -7,11 +7,13 @@
 \alias{store_model,ANY,s3_bucket-method}
 \title{Store a n2kModel object}
 \usage{
-store_model(x, base, project, overwrite = TRUE)
+store_model(x, base, project, overwrite = TRUE, validate = TRUE)
 
-\S4method{store_model}{ANY,character}(x, base, project, overwrite = TRUE)
+\S4method{store_model}{ANY,character}(x, base, project, overwrite = TRUE,
+  validate = TRUE)
 
-\S4method{store_model}{ANY,s3_bucket}(x, base, project, overwrite = TRUE)
+\S4method{store_model}{ANY,s3_bucket}(x, base, project, overwrite = TRUE,
+  validate = TRUE)
 }
 \arguments{
 \item{x}{the n2kModel}
@@ -21,6 +23,8 @@ store_model(x, base, project, overwrite = TRUE)
 \item{project}{will be a relative path within the base location}
 
 \item{overwrite}{should an existing object be overwritten? Defaults to TRUE}
+
+\item{validate}{check that the object is valid before storing it. Defaults to TRUE}
 }
 \description{
 Store a n2kModel object

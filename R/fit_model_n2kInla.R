@@ -1,20 +1,22 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that
+#' @importFrom assertthat assert_that is.number
 #' @importMethodsFrom multimput impute
-#' @importFrom INLA inla
-#' @include n2kInlaNbinomial_class.R
+#' @importFrom INLA inla inla.make.lincombs
+#' @include n2kInla_class.R
+#' @param timeout the optional number of second until the model will time out
 setMethod(
   f = "fit_model",
-  signature = signature(x = "n2kInlaNbinomial"),
-  definition = function(x, ...){
+  signature = signature(x = "n2kInla"),
+  definition = function(x, status = "new", ..., timeout = NULL){
     validObject(x)
 
-    dots <- list(...)
-    if (is.null(dots$status)) {
-      dots$status <- c("new", "waiting")
-    }
-    if (!(status(x) %in% dots$status)) {
+    assert_that(
+      is.character(status),
+      length(status) >= 1
+    )
+
+    if (!(status(x) %in% status)) {
       return(x)
     }
 
@@ -34,10 +36,10 @@ setMethod(
         lc <- lincomb %>%
           as.data.frame() %>%
           as.list() %>%
-          INLA::inla.make.lincombs()
+          inla.make.lincombs()
         names(lc) <- rownames(lincomb)
       } else {
-        lc <- INLA::inla.make.lincombs(lincomb)
+        lc <- inla.make.lincombs(lincomb)
         if (is.matrix(lincomb[[1]])) {
           names(lc) <- rownames(lincomb[[1]])
         } else {
@@ -46,12 +48,13 @@ setMethod(
       }
     }
     model <- try({
-      if (!is.null(dots$timeout)) {
-        setTimeLimit(cpu = dots$timeout, elapsed = dots$timeout)
+      if (!is.null(timeout)) {
+        assert_that(is.number(timeout), timeout > 0)
+        setTimeLimit(cpu = timeout, elapsed = timeout)
       }
       inla(
         formula = model.formula,
-        family = "nbinomial",
+        family = x@Family,
         data = data,
         lincomb = lc,
         control.compute = list(
@@ -71,11 +74,11 @@ setMethod(
     }
     if (x@ImputationSize == 0) {
       return(
-        n2k_inla_nbinomial(data = x, model.fit = model, status = "converged")
+        n2k_inla(data = x, model.fit = model, status = "converged")
       )
     }
     return(
-      n2k_inla_nbinomial(
+      n2k_inla(
         data = x,
         model.fit = model,
         raw.imputed = impute(

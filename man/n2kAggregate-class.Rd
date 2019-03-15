@@ -9,12 +9,12 @@ It holds analysis data based on an aggregated imputation
 }
 \section{Slots}{
 
-  \describe{
-   \item{\code{RawImputed}}{A \code{rawImputed} object with multiple imputations.}
-   \item{\code{Function}}{The function to apply on each group.}
-   \item{\code{Filter}}{The object to pass to the \code{filter} argument of \code{\link[multimput]{aggregate_impute}}}
-   \item{\code{Join}}{The object to pass to the \code{join} argument of \code{\link[multimput]{aggregate_impute}}}
-   \item{\code{AggregatedImputed}}{An \code{aggregatedImputed} object with multiple imputations.}
-  }
+\describe{
+\item{\code{RawImputed}}{A \code{rawImputed} object with multiple imputations.}
+\item{\code{Function}}{The function to apply on each group.}
+\item{\code{Filter}}{The object to pass to the \code{filter} argument of \code{\link[multimput]{aggregate_impute}}}
+\item{\code{Join}}{The object to pass to the \code{join} argument of \code{\link[multimput]{aggregate_impute}}}
+\item{\code{AggregatedImputed}}{An \code{aggregatedImputed} object with multiple imputations.}
+}
 }
 

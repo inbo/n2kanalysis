@@ -32,14 +32,20 @@ setClass(
 setValidity(
   "n2kGlmerPoisson",
   function(object){
-    check_dataframe_variable(
-      df = object@Data[1, ],
-      variable = c(
-        all.vars(object@AnalysisFormula[[1]]), "ObservationID", "DatasourceID"
-      ),
-      error = TRUE
+    c(
+      all.vars(object@AnalysisFormula[[1]]),
+      "ObservationID", "DataFieldID"
+    ) %>%
+      walk(~assert_that(has_name(object@Data, .x)))
+    assert_that(
+      noNA(object@Data$ObservationID),
+      msg = "ObservationID cannot be NA"
     )
-    if (anyDuplicated(object@Data$ObservationID)) {
+    assert_that(
+      noNA(object@Data$DataFieldID),
+      msg = "DataFieldID cannot be NA"
+    )
+    if (anyDuplicated(object@Data[, c("ObservationID", "DataFieldID")])) {
       stop("Duplicated ObservationID")
     }
 

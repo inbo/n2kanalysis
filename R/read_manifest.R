@@ -87,36 +87,13 @@ setMethod(
 #' @importFrom assertthat assert_that is.string
 #' @importFrom aws.s3 bucket_exists get_bucket s3read_using
 #' @importFrom dplyr %>%
+#' @importFrom purrr map_chr
 #' @importFrom utils read.table
 #' @include import_S3_classes.R
 setMethod(
   f = "read_manifest",
   signature = signature(base = "s3_bucket"),
   definition = function(base, project, hash){
-    # try several times to connect to S3 bucket
-    # avoids errors due to time out
-    i <- 1
-    repeat {
-      bucket_ok <- tryCatch(
-        bucket_exists(base),
-        error = function(err) {
-          err
-        }
-      )
-      if (is.logical(bucket_ok)) {
-        break
-      }
-      if (i > 10) {
-        stop("Unable to connect to S3 bucket")
-      }
-      message("attempt ", i, " to connect to S3 bucket failed. Trying again...")
-      i <- i + 1
-      # waiting time between tries increases with the number of tries
-      Sys.sleep(i)
-    }
-    if (!bucket_ok) {
-      stop("Unable to connect to S3 bucket")
-    }
 
     if (missing(hash)) {
       assert_that(is.string(project))
@@ -128,9 +105,10 @@ setMethod(
       if (length(available) == 0) {
         stop("No manifest files in this project")
       }
-      latest <- sapply(available, "[[", "LastModified") %>%
-        order() %>%
-        which.max()
+      map_chr(available, "LastModified") %>%
+        gsub(pattern = "T", replacement = " ") %>%
+        as.POSIXct("%Y-%m-%d %H:%M:%S") %>%
+        which.max() -> latest
       manifest <- s3read_using(
         read.table,
         header = TRUE,
@@ -145,12 +123,11 @@ setMethod(
 
     assert_that(is.string(hash))
     if (missing(project)) {
-      available <- get_bucket(base, prefix = hash, max = Inf)
+      available <- get_bucket(base, prefix = hash)
     } else {
       available <- get_bucket(
         base,
-        prefix = paste(project, "manifest", hash, sep = "/"),
-        max = Inf
+        prefix = paste(project, "manifest", hash, sep = "/")
       )
     }
     if (length(available) == 0) {

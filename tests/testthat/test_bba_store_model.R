@@ -7,7 +7,7 @@ test_that("store_model stores the model on a local file system", {
   this.species.group.id <- sha1(sample(letters))
   this.location.group.id <- sha1(sample(letters))
   this.analysis.date <- Sys.time()
-  this.model.type <- "inla nbinomial: A * (B + C) + C:D"
+  this.model.type <- "inla poisson: A * (B + C) + C:D"
   this.formula <-
     "Count ~ A * (B + C) + C:D +
       f(E, model = \"rw1\", replicate = as.integer(A)) +
@@ -17,7 +17,7 @@ test_that("store_model stores the model on a local file system", {
   this.last.analysed.year <- 2014L
   this.duration <- 1L
   dataset <- test_data()
-  object <- n2k_inla_nbinomial(
+  object <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,
@@ -83,7 +83,7 @@ test_that("store_model stores the model on an S3 bucket", {
   this.species.group.id <- sha1(sample(letters))
   this.location.group.id <- sha1(sample(letters))
   this.analysis.date <- Sys.time()
-  this.model.type <- "inla nbinomial: A * (B + C) + C:D"
+  this.model.type <- "inla poisson: A * (B + C) + C:D"
   this.formula <-
     "Count ~ A * (B + C) + C:D +
       f(E, model = \"rw1\", replicate = as.integer(A)) +
@@ -93,7 +93,7 @@ test_that("store_model stores the model on an S3 bucket", {
   this.last.analysed.year <- 2014L
   this.duration <- 1L
   dataset <- test_data()
-  object <- n2k_inla_nbinomial(
+  object <- n2k_inla(
     result.datasource.id = this.result.datasource.id,
     scheme.id = this.scheme.id,
     species.group.id = this.species.group.id,

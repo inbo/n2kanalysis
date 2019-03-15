@@ -30,23 +30,28 @@ setClass(
 )
 
 #' @importFrom methods setValidity
-#' @importFrom n2khelper check_dataframe_variable
+#' @importFrom dplyr %>% summarise
+#' @importFrom rlang .data
+#' @importFrom assertthat assert_that has_name
 setValidity(
   "n2kParameter",
   function(object){
-    check_dataframe_variable(
-      df = object@Parameter,
-      variable = c("Description", "Parent", "Fingerprint"),
-      name = "Parameter"
+    Parameter <- object@Parameter
+    assert_that(
+      has_name(Parameter, "Description"),
+      has_name(Parameter, "Parent"),
+      has_name(Parameter, "Fingerprint")
     )
-    check_dataframe_variable(
-      df = object@ParameterEstimate,
-      variable = c(
-        "Analysis", "Parameter", "Estimate", "LowerConfidenceLimit",
-        "UpperConfidenceLimit"
-      ),
-      name = "ParameterEstimate"
+
+    ParameterEstimate <- object@ParameterEstimate
+    assert_that(
+      has_name(ParameterEstimate, "Analysis"),
+      has_name(ParameterEstimate, "Parameter"),
+      has_name(ParameterEstimate, "Estimate"),
+      has_name(ParameterEstimate, "LowerConfidenceLimit"),
+      has_name(ParameterEstimate, "UpperConfidenceLimit")
     )
+
     if (!all(
       na.omit(object@Parameter$Parent) %in% object@Parameter$Fingerprint
     )) {
@@ -72,13 +77,15 @@ setValidity(
 
     if (nrow(object@ParameterEstimate) > 0) {
       test <- object@ParameterEstimate %>%
-        summarise_(
-          TestLCL = ~any(
-            Estimate - LowerConfidenceLimit < -.Machine$double.neg.eps,
+        summarise(
+          TestLCL = any(
+            .data$Estimate - .data$LowerConfidenceLimit <
+              -.Machine$double.neg.eps,
             na.rm = TRUE
           ),
-          TestUCL = ~any(
-            Estimate - UpperConfidenceLimit > .Machine$double.neg.eps,
+          TestUCL = any(
+            .data$Estimate - .data$UpperConfidenceLimit >
+              .Machine$double.neg.eps,
             na.rm = TRUE
           )
         )

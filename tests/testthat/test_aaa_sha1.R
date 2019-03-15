@@ -1,7 +1,7 @@
 context("sha1")
 describe("sha1() on models", {
   data(cbpp, package = "lme4")
-  cbpp$DatasourceID <- sha1(letters)
+  cbpp$DataFieldID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
 
   it("returns the correct sha1", {

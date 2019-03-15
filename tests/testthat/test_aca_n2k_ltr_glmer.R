@@ -15,7 +15,7 @@ this.last.imported.year <- 2015L
 this.last.analysed.year <- 2014L
 this.duration <- 1L
 data("cbpp", package = "lme4")
-cbpp$DatasourceID <- sha1(letters)
+cbpp$DataFieldID <- sha1(letters)
 cbpp$ObservationID <- seq_len(nrow(cbpp))
 object.1 <- n2k_glmer_poisson(
   result.datasource.id = this.result.datasource.id,
