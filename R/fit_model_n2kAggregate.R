@@ -34,7 +34,19 @@ setMethod(
         status(x) <- "error"
         return(x)
       }
-      x@RawImputed <- parent@RawImputed
+      if (inherits(parent, "n2kInla")) {
+        x@RawImputed <- parent@RawImputed
+      } else if (inherits(parent, "n2kAggregate")) {
+        x@RawImputed <- new(
+          "rawImputed",
+          Data = cbind(parent@AggregatedImputed@Covariate, Count = NA),
+          Response = "Count",
+          Minimum = "",
+          Imputation = parent@AggregatedImputed@Imputation
+        )
+      } else {
+        stop("cannot handle a parent of class ", class(parent))
+      }
       x@AnalysisRelation$ParentStatus <- parent@AnalysisMetadata$Status
       x@AnalysisRelation$ParentStatusFingerprint <-
         parent@AnalysisMetadata$StatusFingerprint
