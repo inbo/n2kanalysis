@@ -137,15 +137,15 @@ describe("n2k_manifest", {
   it("checks the content of manifest", {
     expect_error(
       n2k_manifest(data.frame(junk = 1)),
-      "manifest does not have name Fingerprint"
+      "manifest does not have .*name.*Fingerprint"
     )
     expect_error(
       n2k_manifest(data.frame(Parent = 1)),
-      "manifest does not have name Fingerprint"
+      "manifest does not have .*name.*Fingerprint"
     )
     expect_error(
       n2k_manifest(data.frame(Fingerprint = 1)),
-      "manifest does not have name Parent"
+      "manifest does not have .*name.*Parent"
     )
   })
 

@@ -622,7 +622,7 @@ outside imported range\\."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("object@Data does not have name Count")
+      throws_error("object@Data does not have .*name.*Count")
     )
     expect_that(
       n2k_inla(
@@ -637,7 +637,7 @@ outside imported range\\."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("object@Data does not have name A")
+      throws_error("object@Data does not have .*name.*A")
     )
     expect_that(
       n2k_inla(
@@ -652,7 +652,7 @@ outside imported range\\."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("object@Data does not have name F")
+      throws_error("object@Data does not have .*name.*F")
     )
     expect_that(
       n2k_inla(
@@ -667,7 +667,7 @@ outside imported range\\."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("object@Data does not have name D")
+      throws_error("object@Data does not have .*name.*D")
     )
   })
 })
