@@ -40,12 +40,17 @@ setMethod(
       status(x) <- "new"
     }
     sapply(x@Package, require, quietly = TRUE, character.only = TRUE)
+    if (length(x@PrepareModelArgs)) {
+      model_args <- c(x@ModelArgs, x@PrepareModelArgs[[1]](x))
+    } else {
+      model_args <- x@ModelArgs
+    }
     model <- try(
       model_impute(
         object = x@AggregatedImputed,
         model.fun = x@Function,
         rhs = gsub("~", "", x@AnalysisMetadata$Formula),
-        model.args = x@ModelArgs,
+        model.args = model_args,
         extractor = x@Extractor,
         extractor.args = x@ExtractorArgs,
         filter = x@Filter,
