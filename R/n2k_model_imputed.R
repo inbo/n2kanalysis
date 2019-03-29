@@ -97,9 +97,18 @@ setMethod(
     assert_that(is.function(dots$model.fun))
     assert_that(is.function(dots$extractor))
     if (is.null(dots$model.args)) {
-      dots$models.args <- list()
+      dots$model.args <- list()
     } else {
       assert_that(is.list(dots$model.args))
+    }
+    if (is.null(dots$prepare.model.args)) {
+      dots$prepare.model.args <- list()
+    } else {
+      assert_that(is.list(dots$prepare.model.args),
+                  length(dots$prepare.model.args) <= 1)
+      if (length(dots$prepare.model.args)) {
+        assert_that(is.function(dots$prepare.model.args[[1]]))
+      }
     }
     if (is.null(dots$extractor.args)) {
       dots$extractor.args <- list()
@@ -121,8 +130,8 @@ setMethod(
         dots$last.imported.year, dots$duration, dots$last.analysed.year,
         format(dots$analysis.date, tz = "UTC"),
         dots$seed, dots$parent, dots$model.fun, dots$filter,
-        dots$mutate, dots$model.args, dots$extractor, dots$extractor.args,
-        dots$package
+        dots$mutate, dots$model.args, dots$prepare.model.args, dots$extractor,
+        dots$extractor.args, dots$package
       ),
       environment = FALSE
     )
@@ -187,6 +196,7 @@ setMethod(
       Filter = dots$filter,
       Mutate = dots$mutate,
       ModelArgs = dots$model.args,
+      PrepareModelArgs = dots$prepare.model.args,
       Extractor = dots$extractor,
       ExtractorArgs = dots$extractor.args,
       AggregatedImputed = NULL,

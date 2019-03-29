@@ -13,6 +13,7 @@ It holds the model of aggregated imputed data
 \item{\code{Function}}{The object to pass to the \code{model.fun} argument of \code{\link[multimput]{model_impute}}}
 \item{\code{Package}}{A vector of package names which must be loaded to run the function.}
 \item{\code{ModelArgs}}{The object to pass to the \code{model.args} argument of \code{\link[multimput]{model_impute}}}
+\item{\code{PrepareModelArgs}}{An optional list containing a single function that will be applied to the object. The result of the function will be appended to the \code{ModelsArgs}}
 \item{\code{Extractor}}{The object to pass to the \code{extractor} argument of \code{\link[multimput]{model_impute}}}
 \item{\code{ExtractorArgs}}{The object to pass to the \code{extractor.args} argument of \code{\link[multimput]{model_impute}}}
 \item{\code{Filter}}{The object to pass to the \code{filter} argument of \code{\link[multimput]{model_impute}}}

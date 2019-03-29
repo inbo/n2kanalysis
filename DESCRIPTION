@@ -1,7 +1,7 @@
 Package: n2kanalysis
 Title: Generic Functions to Analyse Data from the Natura 2000 Monitoring
-Version: 0.2.6
-Date: 2019-03-13
+Version: 0.2.7
+Date: 2019-03-29
 Authors@R: c(
   person(
     "Thierry", "Onkelinx", role = c("aut", "cre"), 
@@ -23,7 +23,7 @@ Suggests:
     parallel,
     testthat
 Imports:
-    assertthat,
+    assertthat (>= 0.2.1),
     aws.s3,
     digest (>= 0.6.14),
     dplyr,
@@ -132,5 +132,5 @@ Collate:
     'union.R'
     'validOject.R'
 Encoding: UTF-8
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)

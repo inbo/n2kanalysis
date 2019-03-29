@@ -732,7 +732,7 @@ outside imported range."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("object@Data does not have name incidence")
+      throws_error("object@Data does not have .*name.*incidence")
     )
     expect_that(
       n2k_glmer_poisson(
@@ -749,7 +749,7 @@ outside imported range."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("object@Data does not have name size")
+      throws_error("object@Data does not have .*name.*size")
     )
     expect_that(
       n2k_glmer_poisson(
@@ -766,7 +766,7 @@ outside imported range."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("object@Data does not have name period")
+      throws_error("object@Data does not have .*name.*period")
     )
     expect_that(
       n2k_glmer_poisson(
@@ -783,7 +783,7 @@ outside imported range."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("object@Data does not have name herd")
+      throws_error("object@Data does not have .*name.*herd")
     )
   })
 })
