@@ -97,17 +97,17 @@ setMethod(
     assert_that(is.function(dots$model.fun))
     assert_that(is.function(dots$extractor))
     if (is.null(dots$model.args)) {
-      dots$models.args <- list()
+      dots$model.args <- list()
     } else {
       assert_that(is.list(dots$model.args))
     }
     if (is.null(dots$prepare.model.args)) {
-      dots$models.args <- list()
+      dots$prepare.model.args <- list()
     } else {
       assert_that(is.list(dots$prepare.model.args),
                   length(dots$prepare.model.args) <= 1)
       if (length(dots$prepare.model.args)) {
-        assert_that(is.function(dots$prepare.model.args))
+        assert_that(is.function(dots$prepare.model.args[[1]]))
       }
     }
     if (is.null(dots$extractor.args)) {

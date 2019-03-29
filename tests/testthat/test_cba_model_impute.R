@@ -35,6 +35,16 @@ test_that("model imputation works", {
     last.analyses.year = this.last.analysed.year, duration = this.duration,
     parent = get_file_fingerprint(imputation)
   )
+  aggregation2 <- n2k_aggregate(
+    scheme.id = this.scheme.id,
+    result.datasource.id = this.result.datasource.id, formula = "~ A",
+    species.group.id = this.species.group.id,
+    location.group.id = this.location.group.id, model.type = this.model.type,
+    first.imported.year = this.first.imported.year, analysis.date = Sys.time(),
+    last.imported.year = this.last.imported.year, fun = sum,
+    last.analyses.year = this.last.analysed.year, duration = this.duration,
+    parent = get_file_fingerprint(aggregation)
+  )
   extractor <- function(model) {
     model$summary.fixed[, c("mean", "sd")]
   }
@@ -46,12 +56,29 @@ test_that("model imputation works", {
     first.imported.year = this.first.imported.year, analysis.date = Sys.time(),
     last.imported.year = this.last.imported.year, formula = "~ A",
     last.analyses.year = this.last.analysed.year, duration = this.duration,
-    parent = get_file_fingerprint(aggregation), prepare.model.args = list()
+    parent = get_file_fingerprint(aggregation)
+  )
+  pma <- list( function(x) {
+    return(list(family = "poisson"))
+  } )
+  mi2 <- n2k_model_imputed(
+    scheme.id = this.scheme.id, model.args = list(),
+    result.datasource.id = this.result.datasource.id, model.fun = INLA::inla,
+    species.group.id = this.species.group.id, extractor = extractor,
+    location.group.id = this.location.group.id, model.type = this.model.type,
+    first.imported.year = this.first.imported.year, analysis.date = Sys.time(),
+    last.imported.year = this.last.imported.year, formula = "~ A",
+    last.analyses.year = this.last.analysed.year, duration = this.duration,
+    parent = get_file_fingerprint(aggregation), prepare.model.args = pma
   )
   store_model(imputation, base, project)
   store_model(aggregation, base, project)
   store_model(mi, base, project)
+  store_model(aggregation2, base, project)
+  store_model(mi2, base, project)
   fit_model(get_file_fingerprint(imputation), base, project)
   fit_model(get_file_fingerprint(aggregation), base, project)
   fit_model(get_file_fingerprint(mi), base, project)
+  fit_model(get_file_fingerprint(aggregation2), base, project)
+  fit_model(get_file_fingerprint(mi2), base, project)
 })
