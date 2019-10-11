@@ -37,7 +37,8 @@ Imports:
     rlang,
     RODBC,
     tibble,
-    tidyr (>= 0.4.0)
+    tidyr (>= 0.4.0),
+    yaml
 Remotes:
   inbo/multimput,
   inbo/n2khelper,
