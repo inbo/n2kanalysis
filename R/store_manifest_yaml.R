@@ -19,6 +19,7 @@ setGeneric(
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.string
 #' @importFrom dplyr %>%
+#' @importFrom yaml write_yaml
 setMethod(
   f = "store_manifest_yaml",
   signature = signature(base = "s3_bucket"),
@@ -27,15 +28,8 @@ setMethod(
     assert_that(is.character(dependencies))
 
     stored <- store_manifest(x = x, base = base, project = project)
-    yaml <- sprintf("  - %s", dependencies) %>%
-      paste(collapse = "\n") %>%
-      sprintf(
-        fmt = "github:\n%s\ndocker: %s\nbucket: %s\nproject: %s\nhash: %s",
-        docker,
-        attr(base, "Name"),
-        project,
-        basename(stored$Contents$Key)
-      )
+    list(github = dependencies, docker = docker, bucket = attr(base, "Name"),
+         project = project, hash = basename(stored$Contents$Key)) -> yaml
     filename <- gsub("\\.manifest", ".yaml", stored$Contents$Key) %>%
       gsub(pattern = "(.*/)manifest(/.*)", replacement = "\\1yaml\\2")
     available <- get_bucket(base, prefix = filename, max = Inf)
@@ -50,8 +44,7 @@ setMethod(
       bucket_ok <- tryCatch(
         s3write_using(
           yaml,
-          writeLines,
-          sep = "\t",
+          write_yaml,
           bucket = base,
           object = filename
         ),
@@ -82,6 +75,7 @@ setMethod(
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.string is.dir
 #' @importFrom dplyr %>%
+#' @importFrom yaml write_yaml
 setMethod(
   f = "store_manifest_yaml",
   signature = signature(base = "character"),
@@ -91,15 +85,8 @@ setMethod(
     assert_that(is.character(dependencies))
 
     stored <- store_manifest(x = x, base = base, project = project)
-    yaml <- sprintf("  - %s", dependencies) %>%
-      paste(collapse = "\n") %>%
-      sprintf(
-        fmt = "github:\n%s\ndocker: %s\nbase: %s\nproject: %s\nhash: %s",
-        docker,
-        base,
-        project,
-        basename(stored)
-      )
+    list(github = dependencies, docker = docker, bucket = base,
+         project = project, hash = basename(stored)) -> yaml
     filename <- gsub("\\.manifest", ".yaml", stored) %>%
       gsub(pattern = "(.*/)manifest(/.*)", replacement = "\\1yaml\\2")
     if (file.exists(filename)) {
@@ -109,7 +96,7 @@ setMethod(
     if (!dir.exists(dirname(filename))) {
       dir.create(dirname(filename), recursive = TRUE)
     }
-    writeLines(yaml, filename, sep = "\t")
+    write_yaml(yaml, filename)
     return(filename)
   }
 )
