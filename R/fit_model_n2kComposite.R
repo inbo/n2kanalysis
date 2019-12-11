@@ -77,13 +77,9 @@ setMethod(
           arrange(.data$Parent, .data$Value) -> x@Parameter
         if (all(parent.status$ParentStatus == "converged")) {
           status(x) <- "new"
-        } else {
-          status(x) <- status(x)
         }
       } else {
         status(x) <- "error"
-      }
-      if (status(x) == "error") {
         return(x)
       }
     }
