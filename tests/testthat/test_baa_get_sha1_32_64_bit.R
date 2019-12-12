@@ -58,7 +58,7 @@ describe("file fingerprint for n2k_glmer_poisson", {
   cat(")\n")
   # 32-bit windows 7
   correct <- c(
-    "67858bf99d6c945cf88a2cc7aa1183cc2d7ca114",
+    "42565a7b3b094faf40915c0af0011f7f6f6010b5",
     "70095252e47ccdbabc7bcd32ea13c5057a9776dc",
     "49c22e6e1d9b2f48a4478975f0b14f9911c8499a",
     "b17832f39416892d8b44d09e4b14994fa603b5dd",
@@ -69,10 +69,10 @@ describe("file fingerprint for n2k_glmer_poisson", {
     "0dd2f2e8108df7072f22c65c7319b43a9839ac5c",
     "0393bba20a2d8fafc02b7d42c0dfdc038ab5fe45",
     "0dd2f2e8108df7072f22c65c7319b43a9839ac5c",
-    "81433e7fcb79752888dfd4900fa9c38a78170ec4",
+    "5b07e8722eec5f09726a2296099583bf0a98058b",
     "80eb128686c6c7a105b76a869e3d1542bc9cb375",
     "0bb8190d1ec01e38b077c7c728a6a631735b3e24",
-    "9f00651e112f3ac9cbe715e6ef890c4da15b0cac",
+    "235e988f007589eec2c692039821330fcce81792",
     "6b4b2c93a3c40ebb82d66150a136e2c6bed60733"
   )
   it("return the same SHA1 on both 32-bit and 64-bit OS", {

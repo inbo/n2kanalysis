@@ -3,14 +3,14 @@ test_that("read_manifest reads the manifest on a local file system", {
   temp_dir <- tempdir()
   object <- n2k_manifest(
     data.frame(
-      Fingerprint = "10",
+      Fingerprint = "4",
       Parent = NA_character_,
       stringsAsFactors = FALSE
     )
   )
   object2 <- n2k_manifest(
     data.frame(
-      Fingerprint = "2",
+      Fingerprint = "5",
       Parent = NA_character_,
       stringsAsFactors = FALSE
     )
@@ -45,8 +45,8 @@ test_that("read_manifest reads the manifest on a local file system", {
     "No manifest found starting with 'junk'"
   )
   expect_error(
-    read_manifest(temp_dir, "read_manifest", "1"),
-    "Multiple manifests found starting with '1'"
+    read_manifest(temp_dir, "read_manifest", "3"),
+    "Multiple manifests found starting with '3'"
   )
   sprintf("%s/read_manifest", temp_dir) %>%
     list.files(recursive = TRUE, full.names = TRUE) %>%
@@ -58,14 +58,14 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
   project <- "unittest_read_manifest"
   object <- n2k_manifest(
     data.frame(
-      Fingerprint = "10",
+      Fingerprint = "4",
       Parent = NA_character_,
       stringsAsFactors = FALSE
     )
   )
   object2 <- n2k_manifest(
     data.frame(
-      Fingerprint = "2",
+      Fingerprint = "5",
       Parent = NA_character_,
       stringsAsFactors = FALSE
     )
@@ -98,8 +98,8 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
     "No manifest found starting with 'junk'"
   )
   expect_error(
-    read_manifest(bucket, project, "1"),
-    "Multiple manifests found starting with '1'"
+    read_manifest(bucket, project, "3"),
+    "Multiple manifests found starting with '3'"
   )
 
   available <- get_bucket("n2kmonitoring", prefix = project) %>%
