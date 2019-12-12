@@ -63,14 +63,8 @@ describe("fit_model() on GlmerPoisson based objects", {
     )
   })
   it("returns valid objects", {
-    expect_that(
-      validObject(object.fit),
-      is_true()
-    )
-    expect_that(
-      validObject(weighted.object.fit),
-      is_true()
-    )
+    expect_true(validObject(object.fit))
+    expect_true(validObject(weighted.object.fit))
   })
   it("works with objects saved in rds files", {
     filename <- store_model(object, base = temp.dir, project = "fit_model")
@@ -243,14 +237,8 @@ describe("fit_model() on INLA based objects", {
     )
   })
   it("returns valid objects", {
-    expect_that(
-      validObject(object.fit),
-      is_true()
-    )
-    expect_that(
-      validObject(object.lc.fit),
-      is_true()
-    )
+    expect_true(validObject(object.fit))
+    expect_true(validObject(object.lc.fit))
   })
   it("works with objects saved in rds files", {
     analysis <- object
