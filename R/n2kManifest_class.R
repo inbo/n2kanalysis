@@ -31,7 +31,8 @@ setClass(
 #' @importFrom methods setValidity
 #' @importFrom n2khelper check_dataframe_variable
 #' @importFrom assertthat assert_that noNA
-#' @importFrom dplyr filter_ anti_join left_join select_
+#' @importFrom dplyr filter anti_join left_join select_
+#' @importFrom rlang .data
 setValidity(
   "n2kManifest",
   function(object){
@@ -55,7 +56,7 @@ setValidity(
     }
 
     self_link <- object@Manifest %>%
-      filter_(~Fingerprint == Parent) %>%
+      filter(.data$Fingerprint == Parent) %>%
       nrow()
     if (self_link > 0) {
       stop("Self references between Parent and Fingerprint")
@@ -63,7 +64,7 @@ setValidity(
 
     if (!all(is.na(object@Manifest$Parent))) {
       missing_link <- object@Manifest %>%
-        filter_(~!is.na(Parent)) %>%
+        filter(!is.na(.data$Parent)) %>%
         anti_join(object@Manifest, by = c("Parent" = "Fingerprint")) %>%
         nrow()
       if (missing_link  > 0) {
