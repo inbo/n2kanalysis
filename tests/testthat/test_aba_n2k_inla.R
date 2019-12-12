@@ -16,7 +16,7 @@ this.duration <- 1L
 dataset <- test_data()
 this.lc <- dataset %>%
   select_(~A, ~B, ~C, ~D) %>%
-  filter_(~C == max(C), ~D == max(D)) %>%
+  filter(.data$C == max(.data$C), .data$D == max(.data$D)) %>%
   distinct_() %>%
   model.matrix(object = ~A * (B + C) + C:D)
 object <- n2k_inla(

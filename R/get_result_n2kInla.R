@@ -1,6 +1,7 @@
 #' @rdname get_result
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% data_frame rowwise mutate_ inner_join select_ transmute_ arrange_ filter_ semi_join rename
+#' @importFrom dplyr %>% data_frame rowwise mutate_ inner_join select_ transmute_ arrange_ filter semi_join rename
+#' @importFrom rlang .data
 #' @importFrom digest sha1
 #' @importFrom tidyr gather_
 #' @importFrom assertthat assert_that is.flag noNA
@@ -103,7 +104,7 @@ setMethod(
     fixed.parameterid <- anomaly@Parameter %>%
       semi_join(
         anomaly@Parameter %>%
-          filter_(~Description == "Fixed effect"),
+          filter(.data$Description == "Fixed effect"),
         by = c("Parent" = "Fingerprint")
       ) %>%
       select_(ParentDescription = ~Description, Parent = ~Fingerprint) %>%
@@ -149,7 +150,7 @@ setMethod(
               Coefficient = x@LinearCombination[[y]],
               stringsAsFactors = FALSE
             ) %>%
-              filter_(~abs(Coefficient) >= 1e-8) %>%
+              filter(abs(.data$Coefficient) >= 1e-8) %>%
               inner_join(fixed.parameterid, by = "ParameterID") %>%
               select_(~Contrast, ~Parameter, ~Coefficient)
           } else {

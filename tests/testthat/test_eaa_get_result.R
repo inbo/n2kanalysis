@@ -89,9 +89,9 @@ describe("get_result on n2kInla", {
 
   # with linear combination
   lin.comb <- dataset %>%
-    filter_(
-      ~C == max(C),
-      ~D == max(D)
+    filter(
+      .data$C == max(.data$C),
+      .data$D == max(.data$D)
     ) %>%
     select_(~A, ~B, ~C, ~D) %>%
     distinct_() %>%
