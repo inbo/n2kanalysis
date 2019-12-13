@@ -1,7 +1,7 @@
 #' @rdname combine
 #' @aliases combine,n2kResult-methods
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% arrange_ distinct_
+#' @importFrom dplyr %>% arrange_ distinct
 #' @importFrom stats as.formula
 #' @include n2kResult_class.R
 setMethod(
@@ -42,7 +42,7 @@ setMethod(
         }
       )
     ) %>%
-      distinct_() %>%
+      distinct() %>%
       arrange_(~Fingerprint)
 
     r.package <- do.call(
@@ -54,7 +54,7 @@ setMethod(
         }
       )
     ) %>%
-      distinct_() %>%
+      distinct() %>%
       arrange_(~Fingerprint)
 
     analysis.version.r.package <- do.call(
@@ -66,7 +66,7 @@ setMethod(
         }
       )
     ) %>%
-      distinct_() %>%
+      distinct() %>%
       arrange_(~AnalysisVersion, ~RPackage)
 
     parameter <- do.call(
@@ -78,7 +78,7 @@ setMethod(
         }
       )
     ) %>%
-      distinct_() %>%
+      distinct() %>%
       arrange_(~Fingerprint)
 
     parameter.estimate <- do.call(
@@ -90,7 +90,7 @@ setMethod(
         }
       )
     ) %>%
-      distinct_() %>%
+      distinct() %>%
       arrange_(~Analysis, ~Parameter)
 
     anomaly.type <- do.call(
@@ -102,7 +102,7 @@ setMethod(
         }
       )
     ) %>%
-      distinct_() %>%
+      distinct() %>%
       arrange_(~Fingerprint)
 
     anomaly <- do.call(
@@ -114,7 +114,7 @@ setMethod(
         }
       )
     ) %>%
-      distinct_() %>%
+      distinct() %>%
       arrange_(~Analysis, ~AnomalyType, ~Parameter)
 
     contrast <- do.call(
@@ -126,7 +126,7 @@ setMethod(
         }
       )
     ) %>%
-      distinct_() %>%
+      distinct() %>%
       arrange_(~Fingerprint)
     contrast.coefficient <- do.call(
       rbind,
@@ -137,7 +137,7 @@ setMethod(
         }
       )
     ) %>%
-      distinct_() %>%
+      distinct() %>%
       arrange_(~Contrast, ~Parameter)
     contrast.estimate <- do.call(
       rbind,
@@ -148,7 +148,7 @@ setMethod(
         }
       )
     ) %>%
-      distinct_() %>%
+      distinct() %>%
       arrange_(~Contrast)
 
     new(

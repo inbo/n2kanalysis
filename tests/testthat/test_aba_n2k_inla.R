@@ -17,7 +17,7 @@ dataset <- test_data()
 this.lc <- dataset %>%
   select(.data$A, .data$B, .data$C, .data$D) %>%
   filter(.data$C == max(.data$C), .data$D == max(.data$D)) %>%
-  distinct_() %>%
+  distinct() %>%
   model.matrix(object = ~A * (B + C) + C:D)
 object <- n2k_inla(
   result.datasource.id = this.result.datasource.id,
