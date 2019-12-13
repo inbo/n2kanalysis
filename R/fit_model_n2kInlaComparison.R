@@ -19,6 +19,7 @@ setMethod(
       return(x)
     }
 
+    status(x) <- "waiting"
     parent.status <- parent_status(x)
     parent.status %>%
       filter(.data$ParentStatus %in% c("new", "waiting", status)) %>%
