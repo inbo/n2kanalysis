@@ -53,9 +53,7 @@ setClass(
 setValidity(
   "n2kInla",
   function(object) {
-    if (object@ImputationSize < 0) {
-      stop("negative ImputationSize")
-    }
+    assert_that(object@ImputationSize >= 0, msg = "negative ImputationSize")
     c(
       all.vars(object@AnalysisFormula[[1]]),
       "ObservationID", "DataFieldID"
@@ -65,38 +63,37 @@ setValidity(
       noNA(object@Data$ObservationID),
       msg = "ObservationID cannot be NA"
     )
+    assert_that(noNA(object@Data$DataFieldID), msg = "DataFieldID cannot be NA")
+
     assert_that(
-      noNA(object@Data$DataFieldID),
-      msg = "DataFieldID cannot be NA"
+      all(table(object@Data$ObservationID, object@Data$DataFieldID) == 1),
+      msg = "Duplicated ObservationID"
     )
 
-    if (any(table(object@Data$ObservationID, object@Data$DataFieldID) > 1)) {
-      stop("Duplicated ObservationID")
-    }
-
-    if (!all(object@Family %in% names(inla.models()$likelihood))) {
-      stop(object@Family, " is not an INLA likelihood")
-    }
+    assert_that(
+      all(object@Family %in% names(inla.models()$likelihood)),
+      msg = paste(object@Family, "is not an INLA likelihood")
+    )
     rg <- paste("inla", paste(object@Family, collapse = "-"))
     if (!grepl(paste0("^", rg), object@AnalysisMetadata$ModelType)) {
       stop("ModelType should be '", rg, "'")
     }
-    if (inherits(object@Model, "inla")) {
-      if (object@Model$.args$family != object@Family) {
-        stop("Model of the wrong family")
-      }
-    }
+    assert_that(
+      !inherits(object@Model, "inla") ||
+        object@Model$.args$family == object@Family,
+      msg = "Model of the wrong family"
+    )
 
     assert_that(length(object@Minimum) == 1)
     if (!is.na(object@Minimum) && object@Minimum != "") {
       assert_that(has_name(object@Data, object@Minimum))
     }
 
-    if (is.matrix(object@LinearCombination)) {
-      if (is.null(rownames(object@LinearCombination))) {
-        stop("A matrix of linear combination must have rownames")
-      }
-    }
+    assert_that(
+      !is.matrix(object@LinearCombination) ||
+        !is.null(rownames(object@LinearCombination)),
+      msg = "A matrix of linear combination must have rownames"
+    )
     if (is.list(object@LinearCombination)) {
       if (is.matrix(object@LinearCombination[[1]])) {
         if (is.null(rownames(object@LinearCombination[[1]]))) {
@@ -128,9 +125,10 @@ setValidity(
         object@Minimum
       )
     )
-    if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
-      stop("Corrupt FileFingerprint")
-    }
+    assert_that(
+      object@AnalysisMetadata$FileFingerprint == file.fingerprint,
+      msg = "Corrupt FileFingerprint"
+    )
 
     status.fingerprint <- sha1(
       list(
@@ -142,9 +140,10 @@ setValidity(
       digits = 6L
     )
 
-    if (object@AnalysisMetadata$StatusFingerprint != status.fingerprint) {
-      stop("Corrupt StatusFingerprint")
-    }
+    assert_that(
+      object@AnalysisMetadata$StatusFingerprint == status.fingerprint,
+      msg = "Corrupt StatusFingerprint"
+    )
 
     return(TRUE)
   }
