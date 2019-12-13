@@ -181,7 +181,7 @@ test_that(
   expect_identical(
     param@Parameter %>%
       semi_join(
-        data_frame(Description = "Random effect BLUP"),
+        tibble(Description = "Random effect BLUP"),
         by = "Description"
       ) %>%
       inner_join(
@@ -194,7 +194,7 @@ test_that(
   expect_identical(
     param@Parameter %>%
       semi_join(
-        data_frame(Description = "Random effect variance"),
+        tibble(Description = "Random effect variance"),
         by = "Description"
       ) %>%
       inner_join(
@@ -208,7 +208,7 @@ test_that(
     semi_join(
     param@Parameter %>%
       semi_join(
-        data_frame(Description = "Fixed effect"),
+        tibble(Description = "Fixed effect"),
         by = "Description"
       ),
     by = c("Parent" = "Fingerprint")
@@ -271,7 +271,7 @@ test_that(
   expect_identical(
     param@Parameter %>%
       semi_join(
-        data_frame(Description = "Random effect variance"),
+        tibble(Description = "Random effect variance"),
         by = "Description"
       ) %>%
       inner_join(
@@ -285,7 +285,7 @@ test_that(
     semi_join(
     param@Parameter %>%
       semi_join(
-        data_frame(Description = "Fixed effect"),
+        tibble(Description = "Fixed effect"),
         by = "Description"
       ),
     by = c("Parent" = "Fingerprint")
@@ -316,7 +316,7 @@ test_that(
     semi_join(
       param@Parameter %>%
         semi_join(
-          data_frame(Description = "Random effect BLUP"),
+          tibble(Description = "Random effect BLUP"),
           by = "Description"
         ),
     by = c("Parent" = "Fingerprint")
@@ -396,7 +396,7 @@ test_that(
   expect_identical(
     param@Parameter %>%
       semi_join(
-        data_frame(Description = "Random effect variance"),
+        tibble(Description = "Random effect variance"),
         by = "Description"
       ) %>%
       inner_join(
@@ -410,7 +410,7 @@ test_that(
     semi_join(
     param@Parameter %>%
       semi_join(
-        data_frame(Description = "Fixed effect"),
+        tibble(Description = "Fixed effect"),
         by = "Description"
       ),
     by = c("Parent" = "Fingerprint")
@@ -439,7 +439,7 @@ test_that(
     semi_join(
     param@Parameter %>%
       semi_join(
-        data_frame(Description = "Random effect BLUP"),
+        tibble(Description = "Random effect BLUP"),
         by = "Description"
       ),
     by = c("Parent" = "Fingerprint")
@@ -468,7 +468,7 @@ test_that(
         N2 = mean(.data$N),
         Missing = mean(.data$Missing)
       ),
-    data_frame(
+    tibble(
       Main = c("E", "F"),
       N1 = 3L,
       N2 = c(10, 1),
