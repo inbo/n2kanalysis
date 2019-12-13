@@ -1,6 +1,6 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom lme4 glmer glmerControl
+#' @importFrom lme4 glmerControl
 #' @importFrom stats poisson qnorm
 #' @importFrom utils sessionInfo
 #' @include n2kGlmerPoisson_class.R
@@ -27,34 +27,12 @@ setMethod(
       glmerControl(optimizer = "bobyqa"),
       glmerControl(optimizer = "optimx", optCtrl = list(method = "nlminb"))
     )
-    for (control in controls) {
-      if ("optimx" %in% control$optimizer) {
-        requireNamespace("optimx", quietly = TRUE)
-      }
-
-      if (grepl("^weighted", get_model_type(x))) {
-        model <- try(glmer(
-          formula = model.formula,
-          data = data,
-          family = poisson,
-          weights = data$Weight,
-          control = control
-        ))
-      } else {
-        model <- try(glmer(
-          formula = model.formula,
-          data = data,
-          family = poisson,
-          control = control
-        ))
-      }
-      if ("try-error" %in% class(model)) {
-        next
-      }
-      if (length(model@optinfo$conv$lme4) == 0) {
-        break
-      }
-    }
+    model <- try_controls(
+      controls = controls,
+      model.formula = model.formula,
+      data = data,
+      model_type = get_model_type(x)
+    )
     if ("try-error" %in% class(model)) {
       status(x) <- "error"
       return(x)
@@ -93,3 +71,36 @@ setMethod(
     return(x)
   }
 )
+
+#' @importFrom lme4 glmer glmerControl
+try_controls <- function(controls, model.formula, data, model_type) {
+  for (control in controls) {
+    if ("optimx" %in% control$optimizer) {
+      requireNamespace("optimx", quietly = TRUE)
+    }
+
+    if (grepl("^weighted", model_type)) {
+      model <- try(glmer(
+        formula = model.formula,
+        data = data,
+        family = poisson,
+        weights = data$Weight,
+        control = control
+      ))
+    } else {
+      model <- try(glmer(
+        formula = model.formula,
+        data = data,
+        family = poisson,
+        control = control
+      ))
+    }
+    if ("try-error" %in% class(model)) {
+      next
+    }
+    if (length(model@optinfo$conv$lme4) == 0) {
+      break
+    }
+  }
+  return(model)
+}
