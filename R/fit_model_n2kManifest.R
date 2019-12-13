@@ -100,9 +100,7 @@ setMethod(
     if (!any(manifest$ToDo)) {
       return(invisible(NULL))
     }
-    if (isTRUE(verbose)) {
-      message("Downloading objects")
-    }
+    display(verbose, "Downloading objects")
     if (missing(local)) {
       local <- tempdir()
     }
@@ -128,9 +126,7 @@ setMethod(
         )
       ) -> manifest
     for (i in which(!manifest$Local)) {
-      if (isTRUE(verbose)) {
-        message(manifest$LocalFilename[i])
-      }
+      display(verbose, manifest$LocalFilename[i])
       if (!dir.exists(dirname(manifest$LocalFilename[i]))) {
         dir.create(dirname(manifest$LocalFilename[i]), recursive = TRUE)
       }
@@ -173,15 +169,11 @@ setMethod(
         )
       }
     }
-    if (isTRUE(verbose)) {
-      message("Uploading objects")
-    }
+    display(verbose, "Uploading objects")
     sapply(
       basename(manifest$LocalFilename[manifest$ToDo]),
       function(x) {
-        if (isTRUE(verbose)) {
-          message(x)
-        }
+        display(verbose, x)
         object <- try(read_model(x, base = local, project = project))
         if (!inherits(object, "try-error")) {
           store_model(x = object, base = base, project = project)

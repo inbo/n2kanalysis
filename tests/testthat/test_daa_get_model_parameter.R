@@ -34,14 +34,6 @@ test_that(
     parent = this.parent,
     this.duration
   )
-  expect_error(
-    get_model_parameter(object, verbose = NA),
-    "verbose contains 1 missing values"
-  )
-  expect_error(
-    get_model_parameter(object, verbose = ""),
-    "verbose is not a flag"
-  )
   expect_message(
     get_model_parameter(object, verbose = TRUE),
     NA

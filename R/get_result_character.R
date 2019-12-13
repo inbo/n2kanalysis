@@ -1,6 +1,6 @@
 #' @rdname get_result
 #' @importFrom methods setMethod validObject new
-#' @importFrom assertthat assert_that is.string is.flag is.count noNA
+#' @importFrom assertthat assert_that is.string is.count
 #' @importFrom utils file_test
 #' @param n.cluster The number of clusters to run this function in parallel.
 #' Defaults to `1` (= no parallel computing).
@@ -16,14 +16,10 @@ setMethod(
     # check arguments
     assert_that(is.string(x))
     assert_that(is.count(n.cluster))
-    assert_that(is.flag(verbose))
-    assert_that(noNA(verbose))
 
     # x is an existing file
     if (file_test("-f", x)) {
-      if (verbose) {
-        message(x)
-      }
+      display(verbose, x)
       return(get_result(x = readRDS(x), verbose = verbose, ...))
     }
 
@@ -42,46 +38,26 @@ setMethod(
     if (length(files) == 0) {
       return(new("n2kResult"))
     }
-    if (n.cluster == 1) {
+    if (n.cluster == 1 || !requireNamespace("parallel", quietly = TRUE)) {
       result <- lapply(files, get_result, verbose = verbose, ...)
     } else {
-      # nocov start
-      if (requireNamespace("parallel", quietly = TRUE)) {
-        available.cluster <- parallel::detectCores()
-        if (n.cluster > available.cluster) {
-          message(
-            "Requesting ", n.cluster, " clusters but only ", available.cluster,
-            " available."
-          )
-          n.cluster <- available.cluster
-        }
-        if (verbose) {
-          message("Reading results in parallel on ", n.cluster, " clusters")
-        }
-        utils::flush.console()
-        cl <- parallel::makeCluster(n.cluster)
-        result <- parallel::clusterApplyLB(
-          cl = cl,
-          x = files,
-          fun = get_result,
-          verbose = verbose,
-          ...
-        )
-        parallel::stopCluster(cl)
-      } else {
-        message(
-"Cannot load the parallel package. Falling back to non-parallel computing."
-        )
-        utils::flush.console()
-        result <- lapply(files, get_result, verbose = verbose, ...)
-      }
-      # nocov end
+      n.cluster <- min(n.cluster, parallel::detectCores())
+      display(
+        verbose,
+        paste("Reading results in parallel on", n.cluster, "clusters")
+      )
+      cl <- parallel::makeCluster(n.cluster)
+      result <- parallel::clusterApplyLB(
+        cl = cl,
+        x = files,
+        fun = get_result,
+        verbose = verbose,
+        ...
+      )
+      parallel::stopCluster(cl)
     }
 
-    if (verbose) {
-      message("Combining results")
-    }
-    utils::flush.console()
+    display(verbose, "Combining results")
     result <- do.call(combine, result)
 
     return(result)

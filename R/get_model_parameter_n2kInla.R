@@ -7,18 +7,13 @@
 #' @importFrom purrr map_chr map2_chr map_df
 #' @importFrom digest sha1
 #' @importFrom INLA inla.tmarginal inla.qmarginal
-#' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom stats terms
-#' @importFrom utils flush.console
 #' @include n2kInla_class.R
 #' @include n2kParameter_class.R
 setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kInla"),
   definition = function(analysis, verbose = TRUE, ...) {
-    assert_that(is.flag(verbose))
-    assert_that(noNA(verbose))
-
     if (analysis@AnalysisMetadata$Status != "converged") {
       return(new("n2kParameter"))
     }
@@ -37,10 +32,7 @@ setMethod(
       )
 
     # add fixed effect parameters
-    if (verbose) {
-      message("    reading model parameters: fixed effects", appendLF = FALSE)
-    }
-    flush.console()
+    display(verbose, "    reading model parameters: fixed effects", FALSE)
 
     variable <- c(
       "Intercept",
@@ -191,10 +183,7 @@ setMethod(
     }
 
     # add random effect variance
-    if (verbose) {
-      message(", random effect variance", appendLF = FALSE)
-    }
-    flush.console()
+    display(verbose, ", random effect variance", FALSE)
 
     re.names <- names(get_model(analysis)$marginals.hyperpar)
     re.names <- re.names[grepl("^Precision for ", re.names)]
@@ -233,10 +222,7 @@ setMethod(
 
     # add overdispersion
     if (get_model(analysis)$.args$family == "nbinomial") {
-      if (verbose) {
-        message(", overdispersion", appendLF = FALSE)
-      }
-      flush.console()
+      display(verbose, ", overdispersion", FALSE)
       overdispersion <- get_model(analysis)$summary.hyperpar
       overdispersion <- overdispersion[
         grep("size for the nbinomial observations", rownames(overdispersion)),
@@ -256,10 +242,7 @@ setMethod(
     }
 
     # add WAIC
-    if (verbose) {
-      message(", WAIC", appendLF = FALSE)
-    }
-    flush.console()
+    display(verbose, ", WAIC", FALSE)
     parent <- parameter %>%
       filter(is.na(.data$Parent), .data$Description == "WAIC")
     parameter.estimate <- parameter.estimate %>%
@@ -274,10 +257,7 @@ setMethod(
       )
 
     # add random effect BLUP's
-    if (verbose) {
-      message(", random effect BLUP's", appendLF = FALSE)
-    }
-    flush.console()
+    display(verbose, ", random effect BLUP's", FALSE)
 
     if (length(re.names) > 0) {
       lapply(
@@ -397,10 +377,7 @@ setMethod(
     }
 
     # add fitted values
-    if (verbose) {
-      message(", fitted values")
-    }
-    flush.console()
+    display(verbose, ", fitted values")
 
     fitted.parent <- parameter %>%
       filter(is.na(.data$Parent), .data$Description == "Fitted") %>%

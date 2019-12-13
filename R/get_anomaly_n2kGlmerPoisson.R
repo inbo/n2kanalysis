@@ -1,7 +1,7 @@
 #' @rdname get_anomaly
 #' @aliases get_anomaly,n2kGlmerPoisson-methods
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that is.count is.number is.flag noNA is.string
+#' @importFrom assertthat assert_that is.count is.number is.string
 #' @importFrom lme4 ranef
 #' @importFrom digest sha1
 #' @importFrom stats fitted
@@ -34,8 +34,6 @@ setMethod(
     assert_that(is.number(log.expected.ratio))
     assert_that(is.number(log.expected.absent))
     assert_that(is.number(random.threshold))
-    assert_that(is.flag(verbose))
-    assert_that(noNA(verbose))
 
     parameter <- get_model_parameter(analysis = analysis, verbose = verbose)
     if (status(analysis) != "converged") {
@@ -48,10 +46,7 @@ setMethod(
       )
     }
 
-    if (verbose) {
-      message("    reading anomaly", appendLF = FALSE)
-    }
-    utils::flush.console()
+    display(verbose, "    reading anomaly", FALSE)
 
     anomaly.type <- data.frame(
       Description = character(0),
@@ -89,9 +84,7 @@ setMethod(
     )
 
     # check observed counts versus expected counts
-    if (verbose) {
-      message(": observed > 0 vs fit", appendLF = FALSE)
-    }
+    display(verbose, ": observed > 0 vs fit", FALSE)
     data.subset <- data[data[, response] > 0, ]
     data.subset$LogRatio <- log(data.subset[, response]) - data.subset$Expected
     data.subset <- data.subset[abs(data.subset$LogRatio) > log.expected.ratio, ]
@@ -129,9 +122,7 @@ setMethod(
       anomaly <- rbind(anomaly, extra.observation)
     }
 
-    if (verbose) {
-      message(", observed == 0 vs fit", appendLF = FALSE)
-    }
+    display(verbose, ", observed == 0 vs fit", FALSE)
     data.subset <- data[
       data[, response] == 0 & data$Expected > log.expected.absent,
     ]
@@ -158,9 +149,7 @@ setMethod(
     }
 
     # select anomalies on random effects
-    if (verbose) {
-      message(", random effect")
-    }
+    display(verbose, ", random effect")
     re <- ranef(get_model(analysis))
     if (any(sapply(re, ncol) > 1)) {
       stop("get_anomaly cannot handle random slopes yet")
