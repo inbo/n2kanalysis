@@ -49,15 +49,9 @@ setMethod(
     parent.status %>%
       filter(.data$ParentStatus %in% c("new", "waiting", status)) %>%
       pull("ParentAnalysis") -> todo
-    if (length(todo) == 0) {
-      return(x)
-    }
 
     for (parent in todo) {
       model <- read_model(x = parent, base = base, project = project)
-      if (status(model) %in% c("new", "waiting")) {
-        return(x)
-      }
       parent.status[parent.status$ParentAnalysis == parent, "ParentStatus"] <-
         status(model)
       parent.status[
@@ -76,20 +70,16 @@ setMethod(
               filter(.data$Parent != parent)
           ) %>%
           arrange(.data$Parent, .data$Value) -> x@Parameter
-        if (all(parent.status$ParentStatus == "converged")) {
-          status(x) <- "new"
-        } else {
-          status(x) <- status(x)
-        }
-      } else {
-        status(x) <- "error"
-        return(x)
       }
     }
-
-    if (status(x) != "new") {
-      return(x)
+    if (all(parent.status$ParentStatus == "converged")) {
+      status(x) <- "new"
+    } else if (any(parent.status$ParentStatus == "error")) {
+      status(x) <- "error"
+    } else {
+      status(x) <- "waiting"
     }
+
     fit_model(x, status = "new", base = base, project = project, ...)
   }
 )
