@@ -1,6 +1,6 @@
 #' @rdname get_result
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% data_frame rowwise mutate_ inner_join select_ transmute_ arrange_ filter semi_join rename
+#' @importFrom dplyr %>% data_frame rowwise mutate_ inner_join select transmute_ arrange_ filter semi_join rename
 #' @importFrom rlang .data
 #' @importFrom digest sha1
 #' @importFrom tidyr gather_
@@ -107,7 +107,7 @@ setMethod(
           filter(.data$Description == "Fixed effect"),
         by = c("Parent" = "Fingerprint")
       ) %>%
-      select_(ParentDescription = ~Description, Parent = ~Fingerprint) %>%
+      select(ParentDescription = .data$Description, Parent = .data$Fingerprint) %>%
       left_join(anomaly@Parameter, by = "Parent") %>%
       transmute_(
         Parameter = ~ifelse(is.na(Fingerprint), Parent, Fingerprint),
@@ -130,13 +130,13 @@ setMethod(
         ) %>%
         inner_join(
           contrast %>%
-            select_(~-Analysis),
+            select(-"Analysis"),
           by = "Description"
         ) %>%
-        select_(~-Description, Contrast = ~Fingerprint) %>%
+        select(-"Description", Contrast = .data$Fingerprint) %>%
         mutate_(ParameterID = ~gsub("[\\(|\\)]", "", ParameterID)) %>%
         inner_join(fixed.parameterid, by = "ParameterID") %>%
-        select_(~Contrast, ~Parameter, ~Coefficient) %>%
+        select(.data$Contrast, .data$Parameter, .data$Coefficient) %>%
         arrange_(~Contrast, ~Parameter) %>%
         as.data.frame()
     } else {
@@ -152,7 +152,7 @@ setMethod(
             ) %>%
               filter(abs(.data$Coefficient) >= 1e-8) %>%
               inner_join(fixed.parameterid, by = "ParameterID") %>%
-              select_(~Contrast, ~Parameter, ~Coefficient)
+              select(.data$Contrast, .data$Parameter, .data$Coefficient)
           } else {
             random.id <- anomaly@Parameter %>%
               semi_join(
@@ -171,7 +171,7 @@ setMethod(
                 ),
                 by = c("Parent" = "Fingerprint")
               ) %>%
-              select_(~-Parent, Parameter = ~Fingerprint)
+              select(-"Parent", Parameter = .data$Fingerprint)
             lc <- x@LinearCombination[[y]] %>%
               as.data.frame()
             lc[abs(lc) < 1e-8] <- NA
@@ -193,7 +193,7 @@ setMethod(
                   )
                 ) %>%
                 inner_join(random.id, by = "Description") %>%
-                select_(~-Description)
+                select(-"Description")
             } else {
               lc %>%
                 mutate_(Contrast = ~contrast$Fingerprint) %>%
@@ -215,10 +215,10 @@ setMethod(
                     mutate_(
                       Description = ~ paste(Main, Description, sep = ":")
                     ) %>%
-                    select_(Parameter = ~Fingerprint, ~Description),
+                    select(Parameter = .data$Fingerprint, .data$Description),
                   by = "Description"
                 ) %>%
-                select_(~-Description)
+                select(-"Description")
             }
           }
         }
@@ -240,14 +240,14 @@ setMethod(
     ) %>%
       inner_join(
         contrast %>%
-          select_(~-Analysis),
+          select(-"Analysis"),
         by = "Description"
       ) %>%
-      select_(
-        Contrast = ~Fingerprint,
-        ~Estimate,
-        ~LowerConfidenceLimit,
-        ~UpperConfidenceLimit
+      select(
+        Contrast = .data$Fingerprint,
+        .data$Estimate,
+        .data$LowerConfidenceLimit,
+        .data$UpperConfidenceLimit
       ) %>%
       arrange_(~Contrast) %>%
       as.data.frame()

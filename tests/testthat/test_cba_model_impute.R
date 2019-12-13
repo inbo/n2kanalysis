@@ -1,5 +1,6 @@
 context("model imputed")
 test_that("model imputation works", {
+  set.seed(20191213)
   this.result.datasource.id <- sha1(letters)
   this.scheme.id <- sha1(letters)
   this.species.group.id <- sha1(letters)

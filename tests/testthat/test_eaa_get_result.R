@@ -93,7 +93,7 @@ describe("get_result on n2kInla", {
       .data$C == max(.data$C),
       .data$D == max(.data$D)
     ) %>%
-    select_(~A, ~B, ~C, ~D) %>%
+    select("A", "B", "C", "D") %>%
     distinct_() %>%
     model.matrix(object = ~A * (B + C) + C:D)
   rownames(lin.comb) <- seq_len(nrow(lin.comb))
@@ -284,7 +284,7 @@ describe("get_result on n2kInla", {
     do.call(what = cbind) %>%
     "/"(length(levels(dataset$A))) #nolint
   colnames(lc.E) <- dataset %>%
-    select_(~A, ~E) %>%
+    select("A", "E") %>%
     distinct_() %>%
     arrange_(~A, ~E) %>%
     transmute_(~paste(A, E, sep = ":")) %>%

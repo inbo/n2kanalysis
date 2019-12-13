@@ -27,10 +27,10 @@ metadata <- data.frame(
   stringsAsFactors = FALSE
 )
 metadata$FileFingerprint <- metadata %>%
-  select_(~-Status) %>%
+  select(-"Status") %>%
   apply(1, sha1)
 metadata$StatusFingerprint <- metadata %>%
-  select_(~FileFingerprint, ~Status) %>%
+  select("FileFingerprint", "Status") %>%
   apply(1, sha1)
 
 datafieldid <- sha1(letters)
@@ -58,7 +58,7 @@ parameter <- expand.grid(
     Description = ~paste("Unit test", Description)
   ) %>%
   inner_join(parameter, by = c("Parent" = "Description")) %>%
-  select_(~Description, Parent = ~Fingerprint) %>%
+  select("Description", Parent = "Fingerprint") %>%
   rowwise() %>%
   mutate_(
     Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
@@ -76,7 +76,7 @@ parameterestimate <- expand.grid(
     LowerConfidenceLimit = ~Estimate - SE,
     UpperConfidenceLimit = ~Estimate + SE
   ) %>%
-  select_(~-SE)
+  select(-"SE")
 
 anomalytype <- data.frame(
   Description = c("Unit test", "Unit test 2"),
