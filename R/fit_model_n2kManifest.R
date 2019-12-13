@@ -5,7 +5,7 @@
 #' @importFrom aws.s3 get_bucket
 #' @importFrom tibble rowid_to_column
 #' @importFrom rlang .data
-#' @importFrom purrr map_lgl pmap_chr map map2_chr
+#' @importFrom purrr map map_lgl map2_chr pmap_chr walk
 #' @include n2kManifest_class.R
 #' @param local A local folder into which objects from an AWS S3 bucket are
 #' downloaded.
@@ -52,17 +52,12 @@ setMethod(
         ) %>%
         left_join(x = manifest, by = "Fingerprint") %>%
         arrange(.data$Level, .data$Fingerprint)
-      if (isTRUE(bash)) {
-        assert_that(requireNamespace("littler", quietly = TRUE))
+      if (isTRUE(bash) && requireNamespace("littler", quietly = TRUE)) {
         dots <- c(list(...), status = status)
-        if (length(dots)) {
-          strings <- sapply(dots, is.string)
-          dots[strings] <- paste0("\"", dots[strings], "\"")
-          dots <- paste(names(dots), dots, sep = " = ", collapse = ", ")
-          dots <- paste(",", dots)
-        } else {
-          dots <- ""
-        }
+        strings <- sapply(dots, is.string)
+        dots[strings] <- paste0("\"", dots[strings], "\"")
+        dots <- paste(names(dots), dots, sep = " = ", collapse = ", ")
+        dots <- paste(",", dots)
         sprintf(
           "r --package n2kanalysis -e 'fit_model(
 \"%s\", base = \"%s\", project = \"%s\", verbose = %s)'",
@@ -70,18 +65,20 @@ setMethod(
         ) %>%
           lapply(system)
       } else {
-        for (i in manifest$Filename) {
-          fit_model(
-            i, base = base, project = project, status = status,
-            verbose = verbose, ...
-          )
-        }
+        walk(
+          manifest$Filename,
+          fit_model,
+          base = base, project = project, status = status,
+          verbose = verbose, ...
+        )
       }
       return(invisible(NULL))
     }
-    if (!inherits(base, "s3_bucket")) {
-      stop("base should be either a local directory or an S3 bucket")
-    }
+    assert_that(
+      inherits(base, "s3_bucket"),
+      msg = "base should be either a local directory or an S3 bucket"
+    )
+
     manifest %>%
       mutate(
         Prefix = sprintf("%s/%s", project, substring(.data$Fingerprint, 1, 4)),
@@ -125,36 +122,35 @@ setMethod(
           }
         )
       ) -> manifest
-    for (i in which(!manifest$Local)) {
-      display(verbose, manifest$LocalFilename[i])
-      if (!dir.exists(dirname(manifest$LocalFilename[i]))) {
-        dir.create(dirname(manifest$LocalFilename[i]), recursive = TRUE)
-      }
-      m <- read_model(
-        manifest$Fingerprint[i], base = base, project = project
-      )
-      if (inherits(m, "try-error")) {
-        stop(
-          sprintf(
+    walk(
+      which(!manifest$Local),
+      function(i) {
+        display(verbose, manifest$LocalFilename[i])
+        dir.create(
+          dirname(manifest$LocalFilename[i]),
+          recursive = TRUE,
+          showWarnings = FALSE
+        )
+        m <- read_model(
+          manifest$Fingerprint[i], base = base, project = project
+        )
+        assert_that(
+          !inherits(m, "try-error"),
+          msg = sprintf(
             "Object '%s' is missing for manifest '%s'",
             manifest$Fingerprint[i],
             x@Fingerprint
           )
         )
+        store_model(m, base = local, project = project)
       }
-      store_model(m, base = local, project = project)
-    }
-    if (isTRUE(bash)) {
-      assert_that(requireNamespace("littler", quietly = TRUE))
+    )
+    if (isTRUE(bash) && requireNamespace("littler", quietly = TRUE)) {
       dots <- c(list(...), status = status)
-      if (length(dots)) {
-        strings <- sapply(dots, is.string)
-        dots[strings] <- paste0("\"", dots[strings], "\"")
-        dots <- paste(names(dots), dots, sep = " = ", collapse = ", ")
-        dots <- paste(",", dots)
-      } else {
-        dots <- ""
-      }
+      strings <- sapply(dots, is.string)
+      dots[strings] <- paste0("\"", dots[strings], "\"")
+      dots <- paste(names(dots), dots, sep = " = ", collapse = ", ")
+      dots <- paste(",", dots)
       sprintf(
         "r --package n2kanalysis -e 'fit_model(
 \"%s\", base = \"%s\", project = \"%s\", verbose = %s)'",
@@ -162,12 +158,12 @@ setMethod(
       ) %>%
         lapply(system)
     } else {
-      for (i in manifest$Fingerprint[manifest$ToDo]) {
-        fit_model(
-          i, base = local, project = project, status = status,
-          verbose = verbose, ...
-        )
-      }
+      walk(
+        manifest$Fingerprint[manifest$ToDo],
+        fit_model,
+        base = local, project = project, status = status,
+        verbose = verbose, ...
+      )
     }
     display(verbose, "Uploading objects")
     sapply(
