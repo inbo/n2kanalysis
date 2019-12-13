@@ -1,6 +1,6 @@
 #' @rdname get_result
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% data_frame rowwise mutate_ inner_join select transmute arrange_ filter semi_join rename
+#' @importFrom dplyr %>% data_frame rowwise mutate inner_join select transmute arrange_ filter semi_join rename
 #' @importFrom rlang .data
 #' @importFrom digest sha1
 #' @importFrom tidyr gather_
@@ -141,7 +141,7 @@ setMethod(
           by = "Description"
         ) %>%
         select(-"Description", Contrast = .data$Fingerprint) %>%
-        mutate_(ParameterID = ~gsub("[\\(|\\)]", "", ParameterID)) %>%
+        mutate(ParameterID = gsub("[\\(|\\)]", "", .data$ParameterID)) %>%
         inner_join(fixed.parameterid, by = "ParameterID") %>%
         select(.data$Contrast, .data$Parameter, .data$Coefficient) %>%
         arrange_(~Contrast, ~Parameter) %>%
@@ -173,7 +173,7 @@ setMethod(
                       ),
                       by = "Description"
                     ) %>%
-                    mutate_(Description = ~y),
+                    mutate(Description = y),
                   by = c("Parent" = "Fingerprint", "Description")
                 ),
                 by = c("Parent" = "Fingerprint")
@@ -184,7 +184,7 @@ setMethod(
             lc[abs(lc) < 1e-8] <- NA
             if (anyDuplicated(x@Model$summary.random[[y]]$ID) == 0) {
               lc %>%
-                mutate_(Contrast = ~contrast$Fingerprint) %>%
+                mutate(Contrast = contrast$Fingerprint) %>%
                 gather_(
                   "Description",
                   "Coefficient",
@@ -194,16 +194,16 @@ setMethod(
                   na.rm = TRUE,
                   factor_key = TRUE
                 ) %>%
-                mutate_(
-                  Description = ~ as.character(
-                    x@Model$summary.random[[y]]$ID[Description]
+                mutate(
+                  Description = as.character(
+                    x@Model$summary.random[[y]]$ID[.data$Description]
                   )
                 ) %>%
                 inner_join(random.id, by = "Description") %>%
                 select(-"Description")
             } else {
               lc %>%
-                mutate_(Contrast = ~contrast$Fingerprint) %>%
+                mutate(Contrast = contrast$Fingerprint) %>%
                 gather_(
                   "Description",
                   "Coefficient",
@@ -219,8 +219,10 @@ setMethod(
                         rename(Main = "Description"),
                       by = c("Parent" = "Parameter")
                     ) %>%
-                    mutate_(
-                      Description = ~ paste(Main, Description, sep = ":")
+                    mutate(
+                      Description = sprintf(
+                        "%s:%s", .data$Main, .data$Description
+                      )
                     ) %>%
                     select(Parameter = .data$Fingerprint, .data$Description),
                   by = "Description"

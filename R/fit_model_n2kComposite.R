@@ -1,6 +1,6 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% filter group_by n summarise transmute
+#' @importFrom dplyr %>% filter group_by n summarise transmute mutate
 #' @importFrom rlang .data
 #' @importFrom utils file_test
 #' @importFrom stats qnorm
