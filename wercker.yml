@@ -4,7 +4,7 @@ build:
     - script:
         name: "Install dependencies"
         code: |
-          Rscript -e 'devtools::install_github("inbo/n2khelper", upgrade = FALSE)'
+          Rscript -e 'remotes::install_github("inbo/n2khelper", upgrade = FALSE, dependencies = FALSE)'
           apt-get install r-cran-littler
     - inbobmk/r-check
     - inbobmk/r-coverage
