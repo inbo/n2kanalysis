@@ -1,5 +1,4 @@
 context("n2kAnomaly")
-require(dplyr)
 schemeid <- 1L
 speciesid <- 2:4
 locationgroupid <- 5L
@@ -40,28 +39,34 @@ parameter <- data.frame(
   Parent = NA,
   stringsAsFactors = FALSE
 ) %>%
-  rowwise() %>%
-  mutate_(
-    Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
+  mutate(
+    Fingerprint = map2_chr(
+      .data$Description,
+      .data$Parent,
+      ~sha1(c(Description = .x, Parent = .y))
+    )
   )
 parameter <- expand.grid(
     Description = seq_len(10),
     Parent = parameter$Description,
     stringsAsFactors = FALSE
   ) %>%
-  mutate_(
-    Description = ~ifelse(
-      grepl("letters", Parent),
-      LETTERS[Description],
-      Description
+  mutate(
+    Description = ifelse(
+      grepl("letters", .data$Parent),
+      LETTERS[.data$Description],
+      .data$Description
     ),
-    Description = ~paste("Unit test", Description)
+    Description = paste("Unit test", .data$Description)
   ) %>%
   inner_join(parameter, by = c("Parent" = "Description")) %>%
   select("Description", Parent = "Fingerprint") %>%
-  rowwise() %>%
-  mutate_(
-    Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
+  mutate(
+    Fingerprint = map2_chr(
+      .data$Description,
+      .data$Parent,
+      ~sha1(c(Description = .x, Parent = .y))
+    )
   ) %>%
   bind_rows(parameter) %>%
   as.data.frame()
@@ -70,11 +75,11 @@ parameterestimate <- expand.grid(
   Parameter = parameter$Fingerprint,
   stringsAsFactors = FALSE
 ) %>%
-  mutate_(
-    Estimate = ~rnorm(n()),
-    SE = ~runif(n()),
-    LowerConfidenceLimit = ~Estimate - SE,
-    UpperConfidenceLimit = ~Estimate + SE
+  mutate(
+    Estimate = rnorm(n()),
+    SE = runif(n()),
+    LowerConfidenceLimit = .data$Estimate - .data$SE,
+    UpperConfidenceLimit = .data$Estimate + .data$SE
   ) %>%
   select(-"SE")
 
@@ -82,9 +87,11 @@ anomalytype <- data.frame(
   Description = c("Unit test", "Unit test 2"),
   stringsAsFactors = FALSE
 ) %>%
-  rowwise() %>%
-  mutate_(
-    Fingerprint = ~sha1(c(Description = Description))
+  mutate(
+    Fingerprint = map_chr(
+      .data$Description,
+      ~sha1(c(Description = .x))
+    )
   ) %>%
   as.data.frame()
 anomaly <- expand.grid(
@@ -95,7 +102,7 @@ anomaly <- expand.grid(
   Observation = "1",
   stringsAsFactors = FALSE
 ) %>%
-  mutate_(Estimate = ~seq_along(Analysis))
+  mutate(Estimate = seq_along(.data$Analysis))
 expect_is(
   new(
     "n2kAnomaly",

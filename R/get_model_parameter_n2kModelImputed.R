@@ -1,6 +1,7 @@
 #' @rdname get_model_parameter
 #' @importFrom methods setMethod new
-#' @importFrom dplyr transmute
+#' @importFrom dplyr transmute mutate
+#' @importFrom purrr map2_chr
 #' @include n2kModelImputed_class.R
 #' @include n2kParameter_class.R
 setMethod(
@@ -18,8 +19,11 @@ setMethod(
       Parent = parent$Fingerprint,
       stringsAsFactors = FALSE
     ) %>%
-      rowwise() %>%
-      mutate_(Fingerprint = ~sha1(c(Description, Parent)))
+      mutate(Fingerprint = map2_chr(
+        .data$Description,
+        .data$Parent,
+        ~sha1(c(Description, Parent)))
+      )
     new(
       "n2kParameter",
       Parameter = bind_rows(
@@ -29,7 +33,7 @@ setMethod(
       ParameterEstimate = parameter %>%
         inner_join(
           analysis@Results %>%
-            mutate_(Parameter = ~as.character(Parameter)),
+            mutate(Parameter = as.character(.data$Parameter)),
           by = c("Description" = "Parameter")
         ) %>%
         transmute(

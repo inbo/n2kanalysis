@@ -1,6 +1,7 @@
 #' @rdname get_model_parameter
 #' @importFrom methods setMethod new
-#' @importFrom dplyr mutate_all funs select transmute
+#' @importFrom dplyr mutate_all funs select transmute mutate rename
+#' @importFrom purrr map2_chr
 #' @importFrom stats quantile
 #' @include n2kAggregate_class.R
 #' @include n2kParameter_class.R
@@ -20,14 +21,17 @@ setMethod(
     )
     observations <- analysis@AggregatedImputed@Covariate %>%
       mutate_all(funs("as.character")) %>%
-      mutate_(Parent = ~parameter$Fingerprint)
+      mutate(Parent = .data$parameter$Fingerprint)
     for (i in colnames(analysis@AggregatedImputed@Covariate)) {
       extra <- observations %>%
         distinct_(~Parent) %>%
-        mutate_(Description = ~i) %>%
-        rowwise() %>%
-        mutate_(
-          Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
+        mutate(Description = i) %>%
+        mutate(
+          Fingerprint = map2_chr(
+            .data$Description,
+            .data$Parent,
+            ~sha1(c(Description = .x, Parent = .y))
+          )
         )
       observations <- observations %>%
         inner_join(
@@ -35,8 +39,7 @@ setMethod(
             select(.data$Parent, .data$Fingerprint),
           by = "Parent"
         ) %>%
-        mutate_(Parent = ~Fingerprint) %>%
-        select(-"Fingerprint")
+        rename(Parent = "Fingerprint")
       parameter <- bind_rows(parameter, extra)
       extra <- observations %>%
         distinct_(~Parent, i) %>%
@@ -44,16 +47,18 @@ setMethod(
           .data$Parent,
           Description = i
         ) %>%
-        rowwise() %>%
-        mutate_(
-          Fingerprint = ~sha1(c(Description = Description, Parent = Parent))
+        mutate(
+          Fingerprint = map2(
+            .data$Description,
+            .data$Parent,
+            ~sha1(c(Description = .x, Parent = .y))
+          )
         )
       link <- c("Parent", "Description")
       names(link) <- c("Parent", i)
       observations <- observations %>%
         inner_join(extra, by = link) %>%
-        mutate_(Parent = ~Fingerprint) %>%
-        select(-"Fingerprint")
+        rename(Parent = "Fingerprint")
       parameter <- bind_rows(parameter, extra)
     }
     new(
@@ -68,9 +73,9 @@ setMethod(
           LowerConfidenceLimit = 2,
           UpperConfidenceLimit = 3
         ) %>%
-        mutate_(
-          Analysis = ~get_file_fingerprint(analysis),
-          Parameter = ~extra$Fingerprint
+        mutate(
+          Analysis = get_file_fingerprint(analysis),
+          Parameter = extra$Fingerprint
         )
     )
   }

@@ -479,8 +479,8 @@ test_that(
     param@ParameterEstimate %>%
       inner_join(
         random %>%
-          mutate_(
-            Finger2 = ~ifelse(is.na(Finger2), Finger, Finger2)
+          mutate(
+            Finger2 = ifelse(is.na(.data$Finger2), .data$Finger, .data$Finger2)
           ),
         by = c("Parameter" = "Finger2")
       ) %>%
