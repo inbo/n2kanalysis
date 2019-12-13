@@ -1,9 +1,10 @@
 #' @rdname fit_model
-#' @importFrom methods setMethod new
+#' @importFrom methods setMethod new slot
 #' @importFrom utils file_test
 #' @importFrom stats anova
-#' @importFrom dplyr %>% select
+#' @importFrom dplyr %>% arrange transmute
 #' @importFrom rlang .data
+#' @importFrom purrr map_df
 #' @include n2kLrtGlmer_class.R
 setMethod(
   f = "fit_model",
@@ -21,84 +22,39 @@ setMethod(
     }
 
     # do calculation when all parents are available
-    if (status(x) == "new") {
-      #check for incorrect "new" status
-      if (any(is.null(x@Model), is.null(x@Model0))) {
-        x@AnalysisRelation$ParentStatusFingerprint <- "zzz"
-        status(x) <- "waiting"
-        return(fit_model(x, status = "waiting", ...))
-      }
+    if (status(x) == "new" && !is.null(x@Model) && !is.null(x@Model0)) {
       x@Anova <- anova(x@Model, x@Model0)
       status(x) <- "converged"
       return(x)
     }
 
-    # check if parents are available
-    old.parent.status <- parent_status(x)
-    colnames(old.parent.status)[3:4] <- c("OldStatusFingerprint", "OldStatus")
     parents <- get_parents(child = x, base = dots$base, project = dots$project)
-    current.parent.status <- lapply(
-      parents,
-      function(z) {
-        z@AnalysisMetadata %>%
-          select(
-            ParentAnalysis = .data$FileFingerprint,
-            .data$StatusFingerprint,
-            .data$Status
-          )
-      }
-    ) %>%
-      bind_rows()
-
-    #check if parents have changed
-    compare <- merge(old.parent.status, current.parent.status)
-    changes <- which(compare$OldStatusFingerprint != compare$StatusFingerprint)
-    colnames(compare)[5:6] <- c("ParentStatusFingerprint", "ParentStatus")
-    x@AnalysisRelation <- compare[
-      order(compare$ParentAnalysis),
-      c("Analysis", "ParentAnalysis", "ParentStatusFingerprint", "ParentStatus")
-    ]
-    if (any(current.parent.status == "error")) {
+    parents %>%
+      map_df(slot, name = "AnalysisMetadata") %>%
+      transmute(
+        Analysis = get_file_fingerprint(x),
+        ParentAnalysis = .data$FileFingerprint,
+        ParentStatusFingerprint = .data$StatusFingerprint,
+        ParentStatus = .data$Status
+      ) %>%
+      arrange(.data$ParentAnalysis) -> x@AnalysisRelation
+    parents[[x@Parent0]] %>%
+      get_model() -> x@Model0
+    parents[names(parents) != x@Parent0] %>%
+      `[[`(1) %>%
+      get_model() -> x@Model
+    if (any(x@AnalysisRelation$ParentStatus == "error")) {
       status(x) <- "error"
-      return(x)
-    }
-    if (any(current.parent.status == "false_convergence")) {
+    } else if (any(x@AnalysisRelation$ParentStatus == "false_convergence")) {
       status(x) <- "false_convergence"
-      return(x)
-    }
-    if (any(current.parent.status == "unstable")) {
+    } else if (any(x@AnalysisRelation$ParentStatus == "unstable")) {
       status(x) <- "unstable"
-      return(x)
-    }
-    if (length(changes) == 0) {
-      if (all(current.parent.status$Status == "converged")) {
-        status(x) <- "new"
-      }
-      return(x)
-    }
-
-    if (length(changes) == 2) {
-      file <- paste0(dots$path, "/", x@Parent0, ".rds")
-      x@Model0 <- get_model(file)
-      parent.1 <- compare$ParentAnalysis[compare$ParentAnalysis != x@Parent0]
-      file <- paste0(dots$path, "/", parent.1, ".rds")
-      x@Model <- get_model(file)
-    } else {
-      file <- paste0(dots$path, "/", compare$ParentAnalysis[changes], ".rds")
-      if (x@Parent0 == compare$ParentAnalysis[changes]) {
-        x@Model0 <- get_model(file)
-      } else {
-        x@Model <- get_model(file)
-      }
-    }
-    if (all(current.parent.status$Status == "converged")) {
+    } else if (all(x@AnalysisRelation$ParentStatus == "converged"))  {
       status(x) <- "new"
     } else {
       status(x) <- "waiting"
     }
-    if (status(x) == "new") {
-      return(fit_model(x, status = "new", ...))
-    }
-    return(x)
+
+    return(fit_model(x, status = "new", ...))
   }
 )
