@@ -1,6 +1,6 @@
 #' @rdname get_result
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% data_frame rowwise mutate_ inner_join select transmute_ arrange_ filter semi_join rename
+#' @importFrom dplyr %>% data_frame rowwise mutate_ inner_join select transmute arrange_ filter semi_join rename
 #' @importFrom rlang .data
 #' @importFrom digest sha1
 #' @importFrom tidyr gather_
@@ -109,9 +109,16 @@ setMethod(
       ) %>%
       select(ParentDescription = .data$Description, Parent = .data$Fingerprint) %>%
       left_join(anomaly@Parameter, by = "Parent") %>%
-      transmute_(
-        Parameter = ~ifelse(is.na(Fingerprint), Parent, Fingerprint),
-        ParameterID = ~concat(child = Description, parent = ParentDescription)
+      transmute(
+        Parameter = ifelse(
+          is.na(.data$Fingerprint),
+          .data$Parent,
+          .data$Fingerprint
+        ),
+        ParameterID = concat(
+          child = .data$Description,
+          parent = .data$ParentDescription
+        )
       )
 
     if (is.matrix(x@LinearCombination)) {

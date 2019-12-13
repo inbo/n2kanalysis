@@ -1,6 +1,6 @@
 #' @rdname get_model_parameter
 #' @importFrom methods setMethod new
-#' @importFrom dplyr mutate_all funs select
+#' @importFrom dplyr mutate_all funs select transmute
 #' @importFrom stats quantile
 #' @include n2kAggregate_class.R
 #' @include n2kParameter_class.R
@@ -40,8 +40,8 @@ setMethod(
       parameter <- bind_rows(parameter, extra)
       extra <- observations %>%
         distinct_(~Parent, i) %>%
-        transmute_(
-          ~Parent,
+        transmute(
+          .data$Parent,
           Description = i
         ) %>%
         rowwise() %>%

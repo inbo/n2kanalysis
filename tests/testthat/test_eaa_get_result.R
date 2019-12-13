@@ -287,7 +287,7 @@ describe("get_result on n2kInla", {
     select("A", "E") %>%
     distinct_() %>%
     arrange_(~A, ~E) %>%
-    transmute_(~paste(A, E, sep = ":")) %>%
+    transmute(paste(.data$A, .data$E, sep = ":")) %>%
     unlist() %>%
     unname()
   rownames(lc.E) <- seq_len(nrow(lc.E))
