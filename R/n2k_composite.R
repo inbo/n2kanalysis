@@ -19,6 +19,8 @@ setGeneric(
 #' @importFrom methods setMethod new
 #' @importFrom n2khelper check_dataframe_variable
 #' @importFrom assertthat assert_that is.count is.string is.time
+#' @importFrom dplyr %>% arrange
+#' @importFrom rlang .data
 #' @importFrom digest sha1
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo

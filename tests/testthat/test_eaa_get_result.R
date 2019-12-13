@@ -286,7 +286,7 @@ describe("get_result on n2kInla", {
   colnames(lc.E) <- dataset %>%
     select("A", "E") %>%
     distinct() %>%
-    arrange_(~A, ~E) %>%
+    arrange(.data$A, .data$E) %>%
     transmute(paste(.data$A, .data$E, sep = ":")) %>%
     unlist() %>%
     unname()

@@ -1,6 +1,6 @@
 #' @rdname get_result
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% data_frame rowwise mutate inner_join select transmute arrange_ filter semi_join rename
+#' @importFrom dplyr %>% data_frame rowwise mutate inner_join select transmute arrange filter semi_join rename
 #' @importFrom rlang .data
 #' @importFrom digest sha1
 #' @importFrom tidyr gather_
@@ -144,7 +144,7 @@ setMethod(
         mutate(ParameterID = gsub("[\\(|\\)]", "", .data$ParameterID)) %>%
         inner_join(fixed.parameterid, by = "ParameterID") %>%
         select(.data$Contrast, .data$Parameter, .data$Coefficient) %>%
-        arrange_(~Contrast, ~Parameter) %>%
+        arrange(.data$Contrast, .data$Parameter) %>%
         as.data.frame()
     } else {
       contrast.coefficient <- lapply(
@@ -233,7 +233,7 @@ setMethod(
         }
       ) %>%
         bind_rows() %>%
-        arrange_(~Contrast, ~Parameter) %>%
+        arrange(.data$Contrast, .data$Parameter) %>%
         as.data.frame()
     }
     if (nrow(x@Model$summary.lincomb) == 0) {
@@ -258,7 +258,7 @@ setMethod(
         .data$LowerConfidenceLimit,
         .data$UpperConfidenceLimit
       ) %>%
-      arrange_(~Contrast) %>%
+      arrange(.data$Contrast) %>%
       as.data.frame()
     new(
       "n2kResult",
