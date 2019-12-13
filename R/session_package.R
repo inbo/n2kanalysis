@@ -8,13 +8,13 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "session_package",
-  def = function(session){
+  def = function(session) {
     standardGeneric("session_package") # nocov
   }
 )
 
 #' @importFrom assertthat has_name
-package_version <- function(x){
+package_version <- function(x) {
   if (has_name(x, "Repository")) {
     return(
       data.frame(
@@ -56,7 +56,7 @@ package_version <- function(x){
 setMethod(
   f = "session_package",
   signature = signature(session = "sessionInfo"),
-  definition = function(session){
+  definition = function(session) {
     package <- data.frame(
       Description = c(session$running, "R"),
       Version = c(

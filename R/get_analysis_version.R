@@ -7,7 +7,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "get_analysis_version",
-  def = function(version){
+  def = function(version) {
     standardGeneric("get_analysis_version")
   }
 )
@@ -20,7 +20,7 @@ setGeneric(
 setMethod(
   f = "get_analysis_version",
   signature = signature(version = "data.frame"),
-  definition = function(version){
+  definition = function(version) {
     check_dataframe_variable(
       df = version,
       variable = c("Description", "Version", "Origin", "Fingerprint"),
@@ -54,7 +54,7 @@ setMethod(
 setMethod(
   f = "get_analysis_version",
   signature = signature(version = "n2kAnalysisMetadata"),
-  definition = function(version){
+  definition = function(version) {
     new(
       "n2kAnalysisVersion",
       AnalysisVersion = version@AnalysisVersion,
@@ -72,7 +72,7 @@ setMethod(
 setMethod(
   f = "get_analysis_version",
   signature = signature(version = "sessionInfo"),
-  definition = function(version){
+  definition = function(version) {
     get_analysis_version(version = session_package(version))
   }
 )

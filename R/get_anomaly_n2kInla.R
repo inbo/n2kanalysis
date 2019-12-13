@@ -2,13 +2,19 @@
 #' @aliases get_anomaly,n2kInla-methods
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.count is.number is.flag noNA is.string
-#' @importFrom dplyr tibble select filter mutate bind_cols arrange ungroup slice transmute group_by distinct
+#' @importFrom dplyr arrange bind_cols distinct filter group_by mutate select
+#' slice tibble transmute ungroup
 #' @importFrom rlang !!
 #' @importFrom digest sha1
 #' @importFrom utils flush.console
 #' @include n2kInla_class.R
-#' @param expected.ratio observations that have `observed / fitted > expected.ratio` or `fitted / observed > expected.ratio` are potential anomalies. Defaults to 5, which implies that observed values that are 5 times higher of lower than the fitted values are potential anomalies.
-#' @param expected.absent Zero observations where `fitted > expected.absent` are potential anomalies.
+#' @param expected.ratio Observations that have
+#' `observed / fitted > expected.ratio` or `fitted / observed > expected.ratio`
+#' are potential anomalies.
+#' Defaults to `5`, which implies that observed values that are 5 times higher
+#' or lower than the fitted values are potential anomalies.
+#' @param expected.absent Zero observations where `fitted > expected.absent` are
+#' potential anomalies.
 setMethod(
   f = "get_anomaly",
   signature = signature(analysis = "n2kInla"),
@@ -20,7 +26,7 @@ setMethod(
     random.threshold = 1.05,
     verbose = TRUE,
     ...
-  ){
+  ) {
     assert_that(is.count(n))
     if (!is.null(analysis@Model)) {
       assert_that(

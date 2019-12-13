@@ -8,7 +8,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "status",
-  def = function(x){
+  def = function(x) {
     # nocov start
     standardGeneric("status") # nocov
     # nocov end
@@ -22,7 +22,7 @@ setGeneric(
 setMethod(
   f = "status",
   signature = signature(x = "n2kAnalysisMetadata"),
-  definition = function(x){
+  definition = function(x) {
     return(x@AnalysisMetadata$Status)
   }
 )
@@ -35,7 +35,7 @@ setMethod(
 setMethod(
   f = "status",
   signature = signature(x = "character"),
-  definition = function(x){
+  definition = function(x) {
     if (length(x) == 0) {
       stop("no filename provided")
     }
@@ -82,7 +82,7 @@ setMethod(
 #' @include n2kAnalysisMetadata_class.R
 setGeneric(
   name = "status<-",
-  def = function(x, value){
+  def = function(x, value) {
     standardGeneric("status<-") # nocov
   }
 )
@@ -94,7 +94,7 @@ setGeneric(
 setReplaceMethod(
   "status",
   "n2kGlmerPoisson",
-  function(x, value){
+  function(x, value) {
     x@AnalysisMetadata$Status <- value
     x@AnalysisMetadata$StatusFingerprint <- sha1(
       list(
@@ -117,7 +117,7 @@ setReplaceMethod(
 setReplaceMethod(
   "status",
   "n2kInla",
-  function(x, value){
+  function(x, value) {
     x@AnalysisMetadata$Status <- value
     x@AnalysisMetadata$StatusFingerprint <- sha1(
       list(
@@ -139,7 +139,7 @@ setReplaceMethod(
 setReplaceMethod(
   "status",
   "n2kLrtGlmer",
-  function(x, value){
+  function(x, value) {
     x@AnalysisMetadata$Status <- value
     if (is.null(x@Model)) {
       model <- NULL
@@ -173,7 +173,7 @@ setReplaceMethod(
 setReplaceMethod(
   "status",
   "n2kComposite",
-  function(x, value){
+  function(x, value) {
     x@AnalysisMetadata$Status <- value
     x@AnalysisMetadata$StatusFingerprint <- sha1(
       list(
@@ -196,7 +196,7 @@ setReplaceMethod(
 setReplaceMethod(
   "status",
   "n2kInlaComparison",
-  function(x, value){
+  function(x, value) {
     x@AnalysisMetadata$Status <- value
     x@AnalysisMetadata$StatusFingerprint <- sha1(
       list(
@@ -219,7 +219,7 @@ setReplaceMethod(
 setReplaceMethod(
   "status",
   "n2kAggregate",
-  function(x, value){
+  function(x, value) {
     x@AnalysisMetadata$Status <- value
     x@AnalysisMetadata$StatusFingerprint <- sha1(
       list(
@@ -242,7 +242,7 @@ setReplaceMethod(
 setReplaceMethod(
   "status",
   "n2kModelImputed",
-  function(x, value){
+  function(x, value) {
     x@AnalysisMetadata$Status <- value
     x@AnalysisMetadata$StatusFingerprint <- sha1(
       list(

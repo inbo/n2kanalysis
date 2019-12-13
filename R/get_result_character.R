@@ -2,7 +2,8 @@
 #' @importFrom methods setMethod validObject new
 #' @importFrom assertthat assert_that is.string is.flag is.count noNA
 #' @importFrom utils file_test
-#' @param n.cluster the number of clusters to run this function in parallel. Defaults to 1 (= no parallel computing).
+#' @param n.cluster The number of clusters to run this function in parallel.
+#' Defaults to `1` (= no parallel computing).
 setMethod(
   f = "get_result",
   signature = signature(x = "character"),
@@ -11,7 +12,7 @@ setMethod(
     n.cluster = 1,
     verbose = TRUE,
     ...
-  ){
+  ) {
     # check arguments
     assert_that(is.string(x))
     assert_that(is.count(n.cluster))

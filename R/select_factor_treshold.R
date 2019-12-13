@@ -1,6 +1,9 @@
 #' Select the observations based on the average of a factor
 #'
-#' The negative binomial average of the \code{Count} variable is calculated for each level of \code{variable}. Only the levels which are equal or larger than \code{threshold} times the maximal average (in the original scale) are retained.
+#' The negative binomial average of the \code{Count} variable is calculated for
+#' each level of \code{variable}.
+#' Only the levels which are equal or larger than \code{threshold} times the
+#' maximal average (in the original scale) are retained.
 #' @param observation the \code{data.frame} with observations
 #' @param variable the name of the \code{factor}
 #' @param threshold the minimal threshold
@@ -15,7 +18,7 @@
 #'   LocationID = factor(rep(1:4, each = 2))
 #' )
 #' select_factor_threshold(observation, "LocationID", threshold = 0.05)
-select_factor_threshold <- function(observation, variable, threshold){
+select_factor_threshold <- function(observation, variable, threshold) {
   assert_that(is.string(variable))
   threshold <- check_single_probability(x = threshold, name = "threshold")
   assert_that(inherits(observation, "data.frame"))

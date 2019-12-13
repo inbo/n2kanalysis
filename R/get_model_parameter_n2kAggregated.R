@@ -8,7 +8,7 @@
 setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kAggregate"),
-  definition = function(analysis, ...){
+  definition = function(analysis, ...) {
     if (status(analysis) != "converged") {
       return(new("n2kParameter"))
     }

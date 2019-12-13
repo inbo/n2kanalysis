@@ -35,7 +35,7 @@ setClass(
 #' @importFrom rlang .data
 setValidity(
   "n2kManifest",
-  function(object){
+  function(object) {
     assert_that(
       is.string(object@Fingerprint),
       msg = "Fingerprint is not a string (a length one character vector)."

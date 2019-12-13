@@ -3,15 +3,17 @@
 #' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom aws.s3 s3readRDS
 #' @details
-#' \describe{
-#'  \item{\code{status}}{A vector with status levels naming the levels which should be recalculated. Defaults to \code{"new"}}
-#'  \item{\code{verbose}}{A logical indicating if the function should display the name of the file and the status. Defaults to \code{TRUE}}
-#' }
+#' - `status`: A vector with status levels naming the levels which should be
+#' recalculated.
+#' Defaults to `"new"`.
+#' - `verbose`: A logical indicating if the function should display the name of
+#' the file and the status.
+#' Defaults to `TRUE`.
 #' @include import_S3_classes.R
 setMethod(
   f = "fit_model",
   signature = signature(x = "s3_object"),
-  definition = function(x, ...){
+  definition = function(x, ...) {
     dots <- list(...)
     if (is.null(dots$verbose)) {
       dots$verbose <- TRUE

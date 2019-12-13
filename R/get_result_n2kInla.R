@@ -1,6 +1,7 @@
 #' @rdname get_result
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% tibble rowwise mutate inner_join select transmute arrange filter semi_join rename
+#' @importFrom dplyr %>% arrange filter inner_join mutate rename select
+#' semi_join tibble transmute
 #' @importFrom rlang .data
 #' @importFrom digest sha1
 #' @importFrom tidyr gather_
@@ -11,7 +12,7 @@
 setMethod(
   f = "get_result",
   signature = signature(x = "n2kInla"),
-  definition = function(x, verbose = TRUE, ...){
+  definition = function(x, verbose = TRUE, ...) {
     assert_that(is.flag(verbose))
     assert_that(noNA(verbose))
 
@@ -75,7 +76,7 @@ setMethod(
       )
     }
 
-    concat <- function(parent, child){
+    concat <- function(parent, child) {
       child[is.na(child)] <- ""
       parent.split <- strsplit(parent, ":")
       child.split <- strsplit(child, ":")
@@ -83,16 +84,16 @@ setMethod(
       child.split[too.short] <- lapply(child.split[too.short], c, "")
       sapply(
         seq_along(parent.split),
-        function(i){
+        function(i) {
           rbind(parent.split[[i]], child.split[[i]])
         }
       )
       apply(
         cbind(parent.split, child.split),
         1,
-        function(z){
+        function(z) {
           do.call(
-            function(...){
+            function(...) {
               paste0(..., collapse = ":")
             },
             z
@@ -107,7 +108,10 @@ setMethod(
           filter(.data$Description == "Fixed effect"),
         by = c("Parent" = "Fingerprint")
       ) %>%
-      select(ParentDescription = .data$Description, Parent = .data$Fingerprint) %>%
+      select(
+        ParentDescription = .data$Description,
+        Parent = .data$Fingerprint
+      ) %>%
       left_join(anomaly@Parameter, by = "Parent") %>%
       transmute(
         Parameter = ifelse(
@@ -149,7 +153,7 @@ setMethod(
     } else {
       contrast.coefficient <- lapply(
         names(x@LinearCombination),
-        function(y){
+        function(y) {
           if (is.vector(x@LinearCombination[[y]])) {
             data.frame(
               Contrast = contrast$Fingerprint,

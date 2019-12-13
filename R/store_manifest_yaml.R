@@ -9,7 +9,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "store_manifest_yaml",
-  def = function(x, base, project, docker, dependencies){
+  def = function(x, base, project, docker, dependencies) {
     standardGeneric("store_manifest_yaml") # nocov
   }
 )
@@ -23,7 +23,7 @@ setGeneric(
 setMethod(
   f = "store_manifest_yaml",
   signature = signature(base = "s3_bucket"),
-  definition = function(x, base, project, docker, dependencies){
+  definition = function(x, base, project, docker, dependencies) {
     assert_that(is.string(docker))
     assert_that(is.character(dependencies))
 
@@ -79,7 +79,7 @@ setMethod(
 setMethod(
   f = "store_manifest_yaml",
   signature = signature(base = "character"),
-  definition = function(x, base, project, docker, dependencies){
+  definition = function(x, base, project, docker, dependencies) {
     assert_that(is.dir(base))
     assert_that(is.string(docker))
     assert_that(is.character(dependencies))

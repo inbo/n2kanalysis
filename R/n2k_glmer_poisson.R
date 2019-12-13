@@ -2,22 +2,13 @@
 #' @param data a data.frame with the data to analyse
 #' @param model.fit The fitted model
 #' @param ... other arguments. See below
+#' @template analysis-metadata
 #' @details
-#'   \describe{
-#'    \item{\code{status}}{a single character indicating the status of the model. Defaults to 'new' when \code{data} is a data.frame.}
-#'    \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
-#'    \item{\code{species.group.id}}{a single integer identifing the species group}
-#'    \item{\code{location.group.id}}{a single integer identifing the location group}
-#'    \item{\code{model.type}}{a single character identifying the type of model to fit to the data}
-#'    \item{\code{covariate}}{a single character holding the right hand side of the model formula}
-#'    \item{\code{first.imported.year}}{Oldest year considered in the data}
-#'    \item{\code{last.imported.year}}{Most recent year considered in the data}
-#'    \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
-#'    \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
-#'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
-#'    \item{\code{parent}}{the file fingerprint of the import}
-#'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
-#'   }
+#' - `status`: a single character indicating the status of the model.
+#' Defaults to 'new' when `data` is a `data.frame`.
+#' - `covariate`: a single character holding the right hand side of the model
+#' formula.
+#' - `parent`: the file fingerprint of the import.
 #' @name n2k_glmer_poisson
 #' @rdname n2k_glmer_poisson
 #' @exportMethod n2k_glmer_poisson
@@ -27,12 +18,13 @@ setGeneric(
   name = "n2k_glmer_poisson",
   def = function(
     data, ..., model.fit
-  ){
+  ) {
     standardGeneric("n2k_glmer_poisson") # nocov
   }
 )
 
-#' @description A new n2kGlmerPoisson model is created when \code{data} is a data.frame.
+#' @description A new `n2kGlmerPoisson` model is created when `data` is a
+#' `data.frame`.
 #' @rdname n2k_glmer_poisson
 #' @aliases n2k_glmer_poisson,n2kGlmerPoisson-methods
 #' @importFrom methods setMethod new
@@ -47,7 +39,7 @@ setMethod(
   signature = signature(data = "data.frame"),
   definition = function(
     data, ..., model.fit
-  ){
+  ) {
     dots <- list(...)
     #set the defaults for missing arguments in dots
     if (is.null(dots$status)) {
@@ -171,7 +163,9 @@ setMethod(
   }
 )
 
-#' @description In case \code{data} a n2kGlmerPoisson object is, then only the model and status are updated. All other slots are unaffected.
+#' @description In case `data` is an `n2kGlmerPoisson` object, only the model
+#' and status are updated.
+#' All other slots are unaffected.
 #' @rdname n2k_glmer_poisson
 #' @aliases n2k_glmer_poisson,my_lmer-methods
 #' @importFrom methods setMethod validObject new
@@ -182,7 +176,7 @@ setMethod(
   signature = signature(data = "n2kGlmerPoisson", model.fit = "glmerMod"),
   definition = function(
     data, ..., model.fit
-  ){
+  ) {
     dots <- list(...)
 
     data@Model <- model.fit

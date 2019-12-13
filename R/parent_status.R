@@ -8,7 +8,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "parent_status",
-  def = function(x){
+  def = function(x) {
     standardGeneric("parent_status") # nocov
   }
 )
@@ -20,7 +20,7 @@ setGeneric(
 setMethod(
   f = "parent_status",
   signature = signature(x = "n2kAnalysisMetadata"),
-  definition = function(x){
+  definition = function(x) {
     return(x@AnalysisRelation)
   }
 )
@@ -35,7 +35,7 @@ setMethod(
 #' @importFrom methods setGeneric
 setGeneric(
   name = "parent_status<-",
-  def = function(x, value){
+  def = function(x, value) {
     standardGeneric("parent_status<-") # nocov
   }
 )
@@ -47,7 +47,7 @@ setGeneric(
 setReplaceMethod(
   "parent_status",
   "n2kLrtGlmer",
-  function(x, value){
+  function(x, value) {
     x@AnalysisRelation <- value
     x@StatusFingerprint <- sha1(
       list(
@@ -68,7 +68,7 @@ setReplaceMethod(
 setReplaceMethod(
   "parent_status",
   "n2kComposite",
-  function(x, value){
+  function(x, value) {
     x@ParentStatus <- value
     x@StatusFingerprint <- sha1(
       list(

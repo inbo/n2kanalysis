@@ -17,20 +17,29 @@ n2k_lrt_glmer(parent, ...)
 \item{...}{other arguments. See below}
 }
 \description{
-A new n2kLrtGlmer model is created when \code{parent} is a character
+A new n2kLrtGlmer model is created when \code{parent} is a
+\code{character}.
 }
 \details{
-\describe{
-\item{\code{status}}{a single character indicating the status of the model. Defaults to 'waiting' when \code{parent} is a character.}
-\item{\code{scheme.id}}{a single integer holding the id of the scheme.}
-\item{\code{species.group.id}}{a single integer identifing the species group}
-\item{\code{location.group.id}}{a single integer identifing the location group}
-\item{\code{formula}}{a single character identifying the comparison}
-\item{\code{first.imported.year}}{Oldest year considered in the data}
-\item{\code{last.imported.year}}{Most recent year considered in the data}
-\item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
-\item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
-\item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
-\item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
+\itemize{
+\item \code{scheme.id}: a string holding the id of the scheme.
+\item \code{species.group.id}: a string identifing the species group.
+\item \code{location.group.id}: a string identifing the location group.
+\item \code{model.type}: a string identifying the type of model to fit to the data.
+\item \code{first.imported.year}: Oldest year considered in the data.
+\item \code{last.imported.year}: Most recent year considered in the data.
+\item \code{duration}: The width of the moving window.
+Defaults to the \code{last.imported.year - first.imported.year + 1}.
+\item \code{last.analysed.year}: Most recent year in the window.
+Defaults to \code{last.imported.year}.
+\item \code{analysis.date}: A POSIXct date indicating the date that the dataset was
+imported.
+\item \code{seed}: A single integer used as a seed for all calculations.
+A random seed will be inserted when missing.
+}
+
+\itemize{
+\item \code{status}: A single character indicating the status of the model.
+Defaults to \code{"waiting"} when \code{parent} is a character.
 }
 }

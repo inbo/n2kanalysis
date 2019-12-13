@@ -35,7 +35,7 @@ setClass(
 #' @importFrom assertthat assert_that has_name
 setValidity(
   "n2kParameter",
-  function(object){
+  function(object) {
     Parameter <- object@Parameter
     assert_that(
       has_name(Parameter, "Description"),

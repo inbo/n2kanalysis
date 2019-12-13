@@ -9,7 +9,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "read_model",
-  def = function(x, base, project){
+  def = function(x, base, project) {
     standardGeneric("read_model") # nocov
   }
 )
@@ -21,7 +21,7 @@ setGeneric(
 setMethod(
   f = "read_model",
   signature = signature(base = "character"),
-  definition = function(x, base, project){
+  definition = function(x, base, project) {
     assert_that(is.string(x))
     assert_that(is.dir(base))
     assert_that(is.string(project))
@@ -51,7 +51,7 @@ setMethod(
 setMethod(
   f = "read_model",
   signature = signature(base = "s3_bucket"),
-  definition = function(x, base, project){
+  definition = function(x, base, project) {
     assert_that(is.string(x))
     assert_that(is.string(project))
 

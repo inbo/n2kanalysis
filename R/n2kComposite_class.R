@@ -3,8 +3,10 @@
 #' Calculate composite indices from multiple analysis
 #' @section Slots:
 #'   \describe{
-#'    \item{\code{Extractor}}{A function to extract the relevant parameters from the model}
-#'    \item{\code{Parameter}}{A data.frame with the relevant parameter estimates of each parent analysis}
+#'    \item{\code{Extractor}}{A function to extract the relevant parameters from
+#'    the model.}
+#'    \item{\code{Parameter}}{A data.frame with the relevant parameter estimates
+#'    of each parent analysis.}
 #'    \item{\code{Index}}{The composite index based on the parameters}
 #'   }
 #' @name n2kComposite-class
@@ -29,7 +31,7 @@ setClass(
 #' @importFrom digest sha1
 setValidity(
   "n2kComposite",
-  function(object){
+  function(object) {
     if (nrow(object@AnalysisRelation) == 0) {
       stop("'AnalysisRelation' not defined")
     }

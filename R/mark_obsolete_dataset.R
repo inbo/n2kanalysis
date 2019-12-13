@@ -5,7 +5,7 @@
 #' @param channel An open ODBC channl
 #' @importFrom RODBC sqlQuery
 #' @importFrom n2khelper check_dbtable_variable
-mark_obsolete_dataset <- function(channel){
+mark_obsolete_dataset <- function(channel) {
   check_dbtable_variable(
     table = "Dataset",
     variable = c("Obsolete", "FileName", "PathName", "ImportDate"),

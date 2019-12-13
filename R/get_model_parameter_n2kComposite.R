@@ -4,7 +4,7 @@
 setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kComposite"),
-  definition = function(analysis, ...){
+  definition = function(analysis, ...) {
     if (analysis@AnalysisMetadata$Status != "converged") {
       return(new("n2kParameter"))
     }

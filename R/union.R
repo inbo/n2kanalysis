@@ -2,13 +2,13 @@
 #' @param ... the n2kAnalysisVersions to union
 #' @importFrom digest sha1
 #' @export
-union <- function(...){
+union <- function(...) {
   dots <- list(...)
   r.package <- do.call(
     rbind,
     lapply(
       dots,
-      function(x){
+      function(x) {
         x@RPackage
       }
     )

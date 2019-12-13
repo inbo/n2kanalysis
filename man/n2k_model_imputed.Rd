@@ -18,24 +18,37 @@ n2k_model_imputed(...)
 A new n2kModelImputed model.
 }
 \details{
-\describe{
-\item{\code{scheme.id}}{a single integer holding the id of the scheme.}
-\item{\code{species.group.id}}{a single integer identifing the species group}
-\item{\code{location.group.id}}{a single integer identifing the location group}
-\item{\code{model.type}}{a single character identifying the type of model to fit to the data}
-\item{\code{formula}}{a single character holding the model formula}
-\item{\code{first.imported.year}}{Oldest year considered in the data}
-\item{\code{last.imported.year}}{Most recent year considered in the data}
-\item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
-\item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
-\item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
-\item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
-\item{\code{model.fun}}{the \code{model.fun} argument of \code{\link[multimput]{model_impute}}}
-\item{\code{package}}{a character vector of package names which must be loaded for \code{model.fun}}
-\item{\code{model.args}}{an option list for the \code{model.args} argument of \code{\link[multimput]{model_impute}}}
-\item{\code{extractor}}{an option list for the \code{extractor} argument of \code{\link[multimput]{model_impute}}}
-\item{\code{extractor.args}}{an option list for the \code{extractor.args} argument of \code{\link[multimput]{model_impute}}}
-\item{\code{filter}}{an option list for the \code{filter} argument of \code{\link[multimput]{model_impute}}}
-\item{\code{mutate}}{an option list for the \code{mutate} argument of \code{\link[multimput]{model_impute}}}
+\itemize{
+\item \code{scheme.id}: a string holding the id of the scheme.
+\item \code{species.group.id}: a string identifing the species group.
+\item \code{location.group.id}: a string identifing the location group.
+\item \code{model.type}: a string identifying the type of model to fit to the data.
+\item \code{first.imported.year}: Oldest year considered in the data.
+\item \code{last.imported.year}: Most recent year considered in the data.
+\item \code{duration}: The width of the moving window.
+Defaults to the \code{last.imported.year - first.imported.year + 1}.
+\item \code{last.analysed.year}: Most recent year in the window.
+Defaults to \code{last.imported.year}.
+\item \code{analysis.date}: A POSIXct date indicating the date that the dataset was
+imported.
+\item \code{seed}: A single integer used as a seed for all calculations.
+A random seed will be inserted when missing.
+}
+
+\itemize{
+\item \code{model.fun}: The \code{model.fun} argument of
+\code{\link[multimput]{model_impute}}.
+\item \code{package}: A character vector of package names which must be loaded for
+\code{model.fun}.
+\item \code{model.args}: An optional list for the \code{model.args} argument of
+\code{\link[multimput]{model_impute}}.
+\item \code{extractor}: An optional list for the \code{extractor} argument of
+\code{\link[multimput]{model_impute}}.
+\item \code{extractor.args}: An optional list for the \code{extractor.args} argument of
+\code{\link[multimput]{model_impute}}.
+\item \code{filter}: An optional list for the \code{filter} argument of
+\code{\link[multimput]{model_impute}}.
+\item \code{mutate}: An optional list for the `mutate`` argument of
+\code{\link[multimput]{model_impute}}.
 }
 }

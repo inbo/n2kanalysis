@@ -8,7 +8,7 @@
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kComposite"),
-  definition = function(x, base, project, status = "new", ...){
+  definition = function(x, base, project, status = "new", ...) {
     validObject(x)
     assert_that(
       is.character(status),

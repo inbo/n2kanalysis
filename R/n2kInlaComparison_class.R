@@ -6,7 +6,7 @@ setClassUnion("maybeDataFrame", c("data.frame", "NULL"))
 #' Compare multiple models using the WAIC criterion
 #' @section Slots:
 #'   \describe{
-#'    \item{\code{WAIC}}{a data.frame with WAIC values per model}
+#'    \item{\code{WAIC}}{A \code{data.frame} with WAIC values per model.}
 #'   }
 #' @name n2kInlaComparison-class
 #' @rdname n2kInlaComparison-class
@@ -28,7 +28,7 @@ setClass(
 #' @importFrom digest sha1
 setValidity(
   "n2kInlaComparison",
-  function(object){
+  function(object) {
     assert_that(nrow(object@AnalysisRelation) > 1)
     assert_that(noNA(object@AnalysisRelation$ParentAnalysis))
 

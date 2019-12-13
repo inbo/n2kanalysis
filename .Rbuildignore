@@ -3,3 +3,4 @@
 ^\.git$
 ^\.lintr$
 ^wercker\.yml$
+^man-roxygen$

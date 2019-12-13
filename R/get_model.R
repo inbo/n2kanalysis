@@ -8,7 +8,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "get_model",
-  def = function(x){
+  def = function(x) {
     standardGeneric("get_model") # nocov
   }
 )
@@ -20,7 +20,7 @@ setGeneric(
 setMethod(
   f = "get_model",
   signature = signature(x = "n2kGlmerPoisson"),
-  definition = function(x){
+  definition = function(x) {
     return(x@Model)
   }
 )
@@ -32,7 +32,7 @@ setMethod(
 setMethod(
   f = "get_model",
   signature = signature(x = "n2kInla"),
-  definition = function(x){
+  definition = function(x) {
     return(x@Model)
   }
 )
@@ -46,7 +46,7 @@ setMethod(
 setMethod(
   f = "get_model",
   signature = signature(x = "character"),
-  definition = function(x){
+  definition = function(x) {
     assert_that(file_test("-f", x))
     return(get_model(readRDS(x)))
   }

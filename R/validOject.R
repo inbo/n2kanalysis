@@ -11,7 +11,7 @@
 setMethod(
   f = "validObject",
   signature = signature(object = "character"),
-  definition = function(object, test = FALSE, complete = FALSE){
+  definition = function(object, test = FALSE, complete = FALSE) {
     if (length(object) > 1) {
       # assume x are files when length(x) > 1
       files <- object[file_test("-f", object)]
@@ -72,7 +72,7 @@ setMethod(
         }
         invalid <- sapply(
           objects,
-          function(x){
+          function(x) {
             try(validObject(x, test = test, complete = complete)) %>%
               inherits("try-error")
           }

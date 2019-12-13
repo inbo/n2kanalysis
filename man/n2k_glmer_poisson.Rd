@@ -24,24 +24,36 @@ n2k_glmer_poisson(data, ..., model.fit)
 \item{model.fit}{The fitted model}
 }
 \description{
-A new n2kGlmerPoisson model is created when \code{data} is a data.frame.
+A new \code{n2kGlmerPoisson} model is created when \code{data} is a
+\code{data.frame}.
 
-In case \code{data} a n2kGlmerPoisson object is, then only the model and status are updated. All other slots are unaffected.
+In case \code{data} is an \code{n2kGlmerPoisson} object, only the model
+and status are updated.
+All other slots are unaffected.
 }
 \details{
-\describe{
-\item{\code{status}}{a single character indicating the status of the model. Defaults to 'new' when \code{data} is a data.frame.}
-\item{\code{scheme.id}}{a single integer holding the id of the scheme.}
-\item{\code{species.group.id}}{a single integer identifing the species group}
-\item{\code{location.group.id}}{a single integer identifing the location group}
-\item{\code{model.type}}{a single character identifying the type of model to fit to the data}
-\item{\code{covariate}}{a single character holding the right hand side of the model formula}
-\item{\code{first.imported.year}}{Oldest year considered in the data}
-\item{\code{last.imported.year}}{Most recent year considered in the data}
-\item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
-\item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
-\item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
-\item{\code{parent}}{the file fingerprint of the import}
-\item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
+\itemize{
+\item \code{scheme.id}: a string holding the id of the scheme.
+\item \code{species.group.id}: a string identifing the species group.
+\item \code{location.group.id}: a string identifing the location group.
+\item \code{model.type}: a string identifying the type of model to fit to the data.
+\item \code{first.imported.year}: Oldest year considered in the data.
+\item \code{last.imported.year}: Most recent year considered in the data.
+\item \code{duration}: The width of the moving window.
+Defaults to the \code{last.imported.year - first.imported.year + 1}.
+\item \code{last.analysed.year}: Most recent year in the window.
+Defaults to \code{last.imported.year}.
+\item \code{analysis.date}: A POSIXct date indicating the date that the dataset was
+imported.
+\item \code{seed}: A single integer used as a seed for all calculations.
+A random seed will be inserted when missing.
+}
+
+\itemize{
+\item \code{status}: a single character indicating the status of the model.
+Defaults to 'new' when \code{data} is a \code{data.frame}.
+\item \code{covariate}: a single character holding the right hand side of the model
+formula.
+\item \code{parent}: the file fingerprint of the import.
 }
 }

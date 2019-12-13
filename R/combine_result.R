@@ -7,14 +7,14 @@
 setMethod(
   f = "combine",
   signature = "n2kResult",
-  definition = function(...){
+  definition = function(...) {
     dots <- list(...)
 
     analysis.metadata <- do.call(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@AnalysisMetadata
         }
       )
@@ -27,7 +27,7 @@ setMethod(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@AnalysisRelation
         }
     )) %>%
@@ -37,7 +37,7 @@ setMethod(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@AnalysisVersion
         }
       )
@@ -49,7 +49,7 @@ setMethod(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@RPackage
         }
       )
@@ -61,7 +61,7 @@ setMethod(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@AnalysisVersionRPackage
         }
       )
@@ -73,7 +73,7 @@ setMethod(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@Parameter
         }
       )
@@ -85,7 +85,7 @@ setMethod(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@ParameterEstimate
         }
       )
@@ -97,7 +97,7 @@ setMethod(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@AnomalyType
         }
       )
@@ -109,7 +109,7 @@ setMethod(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@Anomaly
         }
       )
@@ -121,7 +121,7 @@ setMethod(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@Contrast
         }
       )
@@ -132,7 +132,7 @@ setMethod(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@ContrastCoefficient
         }
       )
@@ -143,7 +143,7 @@ setMethod(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@ContrastEstimate
         }
       )

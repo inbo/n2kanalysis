@@ -11,7 +11,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "extract",
-  def = function(extractor, object, base, project){
+  def = function(extractor, object, base, project) {
     # nocov start
     standardGeneric("extract")
     # nocov end
@@ -26,7 +26,7 @@ setGeneric(
 setMethod(
   f = "extract",
   signature = signature(object = "character"),
-  definition = function(extractor, object, base, project){
+  definition = function(extractor, object, base, project) {
     if (length(object) > 1) {
       output <- lapply(
         object,
@@ -58,7 +58,7 @@ setMethod(
 setMethod(
   f = "extract",
   signature = signature(object = "n2kInla"),
-  definition = function(extractor, object, base = NULL, project = NULL){
+  definition = function(extractor, object, base = NULL, project = NULL) {
     assert_that(inherits(extractor, "function"))
     extractor(object@Model)
   }

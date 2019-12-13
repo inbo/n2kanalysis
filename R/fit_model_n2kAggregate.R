@@ -5,7 +5,7 @@
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kAggregate"),
-  definition = function(x, ...){
+  definition = function(x, ...) {
     validObject(x)
     dots <- list(...)
     if (is.null(dots$status)) {

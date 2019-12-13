@@ -2,7 +2,8 @@
 % Please edit documentation in R/inla_inverse.R
 \name{inla_inverse}
 \alias{inla_inverse}
-\title{Calculate the mean and 95\% confidence interval from the inverse of a marginal}
+\title{Calculate the mean and 95\% confidence interval from the inverse of a
+marginal}
 \usage{
 inla_inverse(marginal)
 }
@@ -10,5 +11,6 @@ inla_inverse(marginal)
 \item{marginal}{The INLA marginal}
 }
 \description{
-This is useful for calculating the variance of a random effect when the marginal gives the precision of the random effect
+This is useful for calculating the variance of a random effect when the
+marginal gives the precision of the random effect.
 }

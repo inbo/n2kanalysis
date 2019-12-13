@@ -9,12 +9,13 @@ setGeneric(
   name = "n2k_manifest",
   def = function(
     manifest
-  ){
+  ) {
     standardGeneric("n2k_manifest") # nocov
   }
 )
 
-#' @description A new n2kManifest object is created when \code{manifest} is a data.frame
+#' @description A new n2kManifest object is created when `manifest` is a
+#' `data.frame`.
 #' @rdname n2k_manifest
 #' @aliases n2k_manifest,n2kManifest-methods
 #' @importFrom methods setMethod new
@@ -27,7 +28,7 @@ setMethod(
   signature = signature(manifest = "data.frame"),
   definition = function(
     manifest
-  ){
+  ) {
     assert_that(has_name(manifest, "Fingerprint"))
     assert_that(has_name(manifest, "Parent"))
 

@@ -31,7 +31,7 @@ setClass(
 #' @importFrom n2khelper check_dataframe_variable
 setValidity(
   "n2kGlmerPoisson",
-  function(object){
+  function(object) {
     c(
       all.vars(object@AnalysisFormula[[1]]),
       "ObservationID", "DataFieldID"

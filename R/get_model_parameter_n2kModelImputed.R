@@ -7,7 +7,7 @@
 setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kModelImputed"),
-  definition = function(analysis, ...){
+  definition = function(analysis, ...) {
     parent <- data.frame(
       Description = "ModelImputed",
       Parent = NA_character_,

@@ -8,7 +8,7 @@
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kLrtGlmer"),
-  definition = function(x, ...){
+  definition = function(x, ...) {
     validObject(x)
     dots <- list(...)
     if (is.null(dots$status)) {
@@ -39,7 +39,7 @@ setMethod(
     parents <- get_parents(child = x, base = dots$base, project = dots$project)
     current.parent.status <- lapply(
       parents,
-      function(z){
+      function(z) {
         z@AnalysisMetadata %>%
           select(
             ParentAnalysis = .data$FileFingerprint,

@@ -1,20 +1,10 @@
 #' Create a n2kLrtGlmer object
 #' @param parent the file fingerprint of the paretnt
 #' @param ... other arguments. See below
+#' @template analysis-metadata
 #' @details
-#'   \describe{
-#'    \item{\code{status}}{a single character indicating the status of the model. Defaults to 'waiting' when \code{parent} is a character.}
-#'    \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
-#'    \item{\code{species.group.id}}{a single integer identifing the species group}
-#'    \item{\code{location.group.id}}{a single integer identifing the location group}
-#'    \item{\code{formula}}{a single character identifying the comparison}
-#'    \item{\code{first.imported.year}}{Oldest year considered in the data}
-#'    \item{\code{last.imported.year}}{Most recent year considered in the data}
-#'    \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
-#'    \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
-#'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
-#'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
-#'   }
+#' - `status`: A single character indicating the status of the model.
+#' Defaults to `"waiting"` when `parent` is a character.
 #' @name n2k_lrt_glmer
 #' @rdname n2k_lrt_glmer
 #' @exportMethod n2k_lrt_glmer
@@ -24,12 +14,13 @@ setGeneric(
   name = "n2k_lrt_glmer",
   def = function(
     parent, ...
-  ){
+  ) {
     standardGeneric("n2k_lrt_glmer") # nocov
   }
 )
 
-#' @description A new n2kLrtGlmer model is created when \code{parent} is a character
+#' @description A new n2kLrtGlmer model is created when `parent` is a
+#' `character`.
 #' @rdname n2k_lrt_glmer
 #' @aliases n2k_lrt_glmer,n2kLrtGlmer-methods
 #' @importFrom methods setMethod new
@@ -44,7 +35,7 @@ setMethod(
   signature = signature(parent = "character"),
   definition = function(
     parent, ...
-  ){
+  ) {
     dots <- list(...)
     assert_that(is.string(parent))
     assert_that(is.string(dots$parent.0))

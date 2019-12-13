@@ -50,28 +50,42 @@ fit_model(x, ...)
 
 \item{...}{other arguments. See details}
 
-\item{base}{the root of a project. Can be either a directory on a file system or an AWS S3 bucket object. Extracted from \code{bucket} or \code{x} when missing.}
+\item{base}{The root of a project. Can be either a directory on a file system
+or an AWS S3 bucket object.
+Extracted from \code{bucket} or \code{x} when missing.}
 
-\item{project}{the subdirectory of the project. Is relative the \code{base}. Extracted from \code{x} when missing.}
+\item{project}{The subdirectory of the project. Is relative the \code{base}.
+Extracted from \code{x} when missing.}
 
-\item{status}{A vector with status levels naming the levels which should be calculated. Defaults to \code{"new"}.}
+\item{status}{A vector with status levels naming the levels which should be
+calculated.
+Defaults to \code{"new"}.}
 
-\item{verbose}{A logical indicating if the function should display the name of the file and the status. Defaults to \code{TRUE}.}
+\item{verbose}{A logical indicating if the function should display the name
+of the file and the status.
+Defaults to \code{TRUE}.}
 
-\item{bucket}{the name of the AWS S3 bucket. Only used when \code{base} is missing.}
+\item{bucket}{The name of the AWS S3 bucket.
+Only used when \code{base} is missing.}
 
 \item{timeout}{the optional number of second until the model will time out}
 
-\item{local}{a local folder into which objects from an AWS S3 bucket are downloaded}
+\item{local}{A local folder into which objects from an AWS S3 bucket are
+downloaded.}
 
-\item{bash}{use the \code{littler} package do run the models in separate sessions. This will release the memory.}
+\item{bash}{Use the \code{littler} package do run the models in separate sessions.
+This will release the memory.}
 }
 \description{
 Fit a n2kModel object
 }
 \details{
-\describe{
-\item{\code{status}}{A vector with status levels naming the levels which should be recalculated. Defaults to \code{"new"}}
-\item{\code{verbose}}{A logical indicating if the function should display the name of the file and the status. Defaults to \code{TRUE}}
+\itemize{
+\item \code{status}: A vector with status levels naming the levels which should be
+recalculated.
+Defaults to \code{"new"}.
+\item \code{verbose}: A logical indicating if the function should display the name of
+the file and the status.
+Defaults to \code{TRUE}.
 }
 }

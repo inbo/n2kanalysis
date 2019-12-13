@@ -2,17 +2,25 @@
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom aws.s3 get_bucket
-#' @param base the root of a project. Can be either a directory on a file system or an AWS S3 bucket object. Extracted from `bucket` or `x` when missing.
-#' @param project the subdirectory of the project. Is relative the `base`. Extracted from `x` when missing.
-#' @param status A vector with status levels naming the levels which should be calculated. Defaults to `"new"`.
-#' @param verbose A logical indicating if the function should display the name of the file and the status. Defaults to `TRUE`.
-#' @param bucket the name of the AWS S3 bucket. Only used when `base` is missing.
+#' @param base The root of a project. Can be either a directory on a file system
+#' or an AWS S3 bucket object.
+#' Extracted from `bucket` or `x` when missing.
+#' @param project The subdirectory of the project. Is relative the `base`.
+#' Extracted from `x` when missing.
+#' @param status A vector with status levels naming the levels which should be
+#' calculated.
+#' Defaults to `"new"`.
+#' @param verbose A logical indicating if the function should display the name
+#' of the file and the status.
+#' Defaults to `TRUE`.
+#' @param bucket The name of the AWS S3 bucket.
+#' Only used when `base` is missing.
 setMethod(
   f = "fit_model",
   signature = signature(x = "character"),
   definition = function(
     x, base, project, status = c("new", "waiting"), verbose = TRUE, ..., bucket
-  ){
+  ) {
     assert_that(is.string(x))
     assert_that(is.flag(verbose))
     if (isTRUE(verbose)) {

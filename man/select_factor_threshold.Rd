@@ -14,7 +14,10 @@ select_factor_threshold(observation, variable, threshold)
 \item{threshold}{the minimal threshold}
 }
 \description{
-The negative binomial average of the \code{Count} variable is calculated for each level of \code{variable}. Only the levels which are equal or larger than \code{threshold} times the maximal average (in the original scale) are retained.
+The negative binomial average of the \code{Count} variable is calculated for
+each level of \code{variable}.
+Only the levels which are equal or larger than \code{threshold} times the
+maximal average (in the original scale) are retained.
 }
 \examples{
 observation <- data.frame(

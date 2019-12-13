@@ -1,7 +1,10 @@
 #' Read a n2kManifest object
-#' @param base the base location to read the manifest
-#' @param project will be a relative path within the base location
-#' @param hash optinaly the sha1 of the manifest. This can be abbreviated to to first unique characters. The function will return an error in case of multiple matches. If missing, then most recent manifest will be returned.
+#' @param base The base location to read the manifest.
+#' @param project Will be a relative path within the base location.
+#' @param hash Optinaly the sha1 of the manifest.
+#' This can be abbreviated to to first unique characters.
+#' The function will return an error in case of multiple matches.
+#' If missing, then most recent manifest will be returned.
 #' @name read_manifest
 #' @rdname read_manifest
 #' @exportMethod read_manifest
@@ -9,7 +12,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "read_manifest",
-  def = function(base, project, hash){
+  def = function(base, project, hash) {
     standardGeneric("read_manifest") # nocov
   }
 )
@@ -23,7 +26,7 @@ setGeneric(
 setMethod(
   f = "read_manifest",
   signature = signature(base = "character"),
-  definition = function(base, project, hash){
+  definition = function(base, project, hash) {
     assert_that(is.string(base))
     assert_that(file_test("-d", base))
     assert_that(is.string(project))
@@ -93,7 +96,7 @@ setMethod(
 setMethod(
   f = "read_manifest",
   signature = signature(base = "s3_bucket"),
-  definition = function(base, project, hash){
+  definition = function(base, project, hash) {
 
     if (missing(hash)) {
       assert_that(is.string(project))

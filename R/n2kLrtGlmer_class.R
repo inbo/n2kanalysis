@@ -7,10 +7,10 @@ setClassUnion("maybeAnova", c("anova", "NULL"))
 #' Calculate composite indices from multiple analysis
 #' @section Slots:
 #'   \describe{
-#'    \item{\code{Parent0}}{the file fingerprint of the NULL model}
-#'    \item{\code{Model}}{the alternative model}
-#'    \item{\code{Model0}}{the NULL model}
-#'    \item{\code{Anova}}{the anova table}
+#'    \item{\code{Parent0}}{The file fingerprint of the NULL model.}
+#'    \item{\code{Model}}{The alternative model.}
+#'    \item{\code{Model0}}{The NULL model.}
+#'    \item{\code{Anova}}{The anova table.}
 #'   }
 #' @name n2kLrtGlmer-class
 #' @rdname n2kLrtGlmer-class
@@ -35,7 +35,7 @@ setClass(
 #' @importFrom digest sha1
 setValidity(
   "n2kLrtGlmer",
-  function(object){
+  function(object) {
     assert_that(is.string(object@Parent0))
 
     if (nrow(object@AnalysisRelation) != 2) {
