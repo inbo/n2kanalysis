@@ -1,5 +1,6 @@
 #' @rdname get_model_parameter
 #' @importFrom methods setMethod new
+#' @importFrom dplyr transmute
 #' @include n2kModelImputed_class.R
 #' @include n2kParameter_class.R
 setMethod(
@@ -31,12 +32,12 @@ setMethod(
             mutate_(Parameter = ~as.character(Parameter)),
           by = c("Description" = "Parameter")
         ) %>%
-        transmute_(
-          Analysis = ~get_file_fingerprint(analysis),
-          Parameter = ~Fingerprint,
-          ~Estimate,
-          LowerConfidenceLimit = ~LCL,
-          UpperConfidenceLimit = ~UCL
+        transmute(
+          Analysis = get_file_fingerprint(analysis),
+          Parameter = .data$Fingerprint,
+          .data$Estimate,
+          LowerConfidenceLimit = .data$LCL,
+          UpperConfidenceLimit = .data$UCL
         ) %>%
         as.data.frame()
     )
