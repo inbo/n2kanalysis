@@ -1,6 +1,6 @@
 #' @rdname get_model_parameter
 #' @importFrom methods setMethod new
-#' @importFrom dplyr mutate_all funs select transmute mutate rename
+#' @importFrom dplyr mutate_all funs select transmute mutate rename distinct
 #' @importFrom purrr map2_chr
 #' @importFrom stats quantile
 #' @include n2kAggregate_class.R
@@ -24,7 +24,7 @@ setMethod(
       mutate(Parent = .data$parameter$Fingerprint)
     for (i in colnames(analysis@AggregatedImputed@Covariate)) {
       extra <- observations %>%
-        distinct_(~Parent) %>%
+        distinct(.data$Parent) %>%
         mutate(Description = i) %>%
         mutate(
           Fingerprint = map2_chr(
@@ -42,7 +42,7 @@ setMethod(
         rename(Parent = "Fingerprint")
       parameter <- bind_rows(parameter, extra)
       extra <- observations %>%
-        distinct_(~Parent, i) %>%
+        distinct(.data$Parent, i) %>%
         transmute(
           .data$Parent,
           Description = i

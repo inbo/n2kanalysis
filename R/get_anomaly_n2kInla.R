@@ -2,7 +2,7 @@
 #' @aliases get_anomaly,n2kInla-methods
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.count is.number is.flag noNA is.string
-#' @importFrom dplyr tibble select filter mutate bind_cols arrange ungroup slice transmute group_by
+#' @importFrom dplyr tibble select filter mutate bind_cols arrange ungroup slice transmute group_by distinct
 #' @importFrom rlang !!
 #' @importFrom digest sha1
 #' @importFrom utils flush.console
