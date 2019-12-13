@@ -36,7 +36,7 @@ setClass(
 #' @importFrom rlang .data
 setValidity(
   "n2kAnomaly",
-  function(object){
+  function(object) {
     assert_that(has_name(object@AnomalyType, "Description"))
     assert_that(has_name(object@AnomalyType, "Fingerprint"))
 

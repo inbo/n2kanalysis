@@ -8,7 +8,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "fit_model",
-  def = function(x, ...){
+  def = function(x, ...) {
     standardGeneric("fit_model") # nocov
   }
 )

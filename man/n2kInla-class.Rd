@@ -10,15 +10,18 @@ It hold analysis data based on an INLA poisson model
 \section{Slots}{
 
 \describe{
-\item{\code{Data}}{a data.frame with the data}
-\item{\code{LinearCombination}}{an optional matrix with the linear
-combinations}
-\item{\code{ReplicateName}}{an optional list with names of replicates}
+\item{\code{Data}}{A \code{data.frame} with the data.}
+\item{\code{LinearCombination}}{An optional matrix with the linear
+combinations.}
+\item{\code{ReplicateName}}{An optional list with names of replicates.}
 \item{\code{Model}}{Either NULL or the resulting INLA model.}
 \item{\code{Family}}{The family of the INLA model}
-\item{\code{ImputationSize}}{The number of multiple imputations. Defaults to 0, indication no multiple imputation.}
-\item{\code{Minimum}}{an optional string containing the name of the variable in \code{Data} holding the minimal values for imputation}
-\item{\code{RawImputed}}{A \code{rawImputed} object with multiple imputations.}
+\item{\code{ImputationSize}}{The number of multiple imputations.
+Defaults to \code{0}, indication no multiple imputation.}
+\item{\code{Minimum}}{An optional string containing the name of the
+variable in \code{Data} holding the minimal values for imputation.}
+\item{\code{RawImputed}}{A \code{rawImputed} object with multiple
+imputations.}
 }
 }
 

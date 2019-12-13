@@ -277,23 +277,23 @@ describe("get_result on n2kInla", {
 
 
   # with linear combination as list of matrices
-  lc.E <- max(dataset$E) %>%
+  lc_e <- max(dataset$E) %>%
     diag() %>%
     list() %>%
     rep(length(levels(dataset$A))) %>%
     do.call(what = cbind) %>%
     "/"(length(levels(dataset$A))) #nolint
-  colnames(lc.E) <- dataset %>%
+  colnames(lc_e) <- dataset %>%
     select("A", "E") %>%
     distinct() %>%
     arrange(.data$A, .data$E) %>%
     transmute(paste(.data$A, .data$E, sep = ":")) %>%
     unlist() %>%
     unname()
-  rownames(lc.E) <- seq_len(nrow(lc.E))
+  rownames(lc_e) <- seq_len(nrow(lc_e))
   lin.comb <- list(
-    E = lc.E,
-    F = matrix(c(1, 0, 0), byrow = TRUE, ncol = 3, nrow = nrow(lc.E))
+    E = lc_e,
+    F = matrix(c(1, 0, 0), byrow = TRUE, ncol = 3, nrow = nrow(lc_e))
   )
   analysis <- n2k_inla(
     result.datasource.id = this.result.datasource.id,

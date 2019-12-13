@@ -25,7 +25,8 @@ get_result(x, ...)
 
 \item{...}{further arguments (see Details)}
 
-\item{n.cluster}{the number of clusters to run this function in parallel. Defaults to 1 (= no parallel computing).}
+\item{n.cluster}{The number of clusters to run this function in parallel.
+Defaults to \code{1} (= no parallel computing).}
 
 \item{verbose}{Print extra information on the screen}
 }

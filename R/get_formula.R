@@ -8,7 +8,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "get_formula",
-  def = function(x){
+  def = function(x) {
     standardGeneric("get_formula") # nocov
   }
 )
@@ -20,7 +20,7 @@ setGeneric(
 setMethod(
   f = "get_formula",
   signature = signature(x = "n2kAnalysisMetadata"),
-  definition = function(x){
+  definition = function(x) {
     return(x@AnalysisFormula)
   }
 )

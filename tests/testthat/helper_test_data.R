@@ -1,7 +1,7 @@
 #' A function to generate a simple dataset for unit testing
 #' @param datasource.id the string id of the datasource
 #' @param missing the required proportion of missing data
-test_data <- function(datafield.id = sha1(letters), missing = 0){
+test_data <- function(datafield.id = sha1(letters), missing = 0) {
   assertthat::assert_that(assertthat::is.string(datafield.id))
   assertthat::assert_that(assertthat::is.number(missing))
   assertthat::assert_that(missing >= 0)

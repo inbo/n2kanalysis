@@ -1,5 +1,8 @@
 #' Create a n2kInlaComparison object
-#' @param parent.status a `data.frame` with columns `ParentAnalysis` (the file fingerprint of the parent), `ParentStatusFingerprint` (the status fingerprint of the parent), and `ParentStatus` (the status of the parent)
+#' @param parent.status A `data.frame` with columns
+#' `ParentAnalysis` (the file fingerprint of the parent),
+#' `ParentStatusFingerprint` (the status fingerprint of the parent),
+#' and `ParentStatus` (the status of the parent).
 #' @param ... other arguments
 #' @name n2k_inla_comparison
 #' @rdname n2k_inla_comparison
@@ -10,12 +13,13 @@ setGeneric(
   name = "n2k_inla_comparison",
   def = function(
     parent.status, ...
-  ){
+  ) {
     standardGeneric("n2k_inla_comparison") # nocov
   }
 )
 
-#' @description A new n2kInlaComparison model is created when \code{parent} is a character
+#' @description A new `n2kInlaComparison` model is created when `parent` is a
+#' `character`.
 #' @rdname n2k_inla_comparison
 #' @aliases n2k_inla_comparison,n2kInlaComparison-methods
 #' @importFrom methods setMethod new
@@ -26,19 +30,25 @@ setGeneric(
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
 #' @include n2kInlaComparison_class.R
-#' @param result.datasource.id the id of the results datasource
-#' @param status a single character indicating the status of the model. Defaults to `"waiting"`.
-#' @param scheme.id a single integer holding the id of the scheme.
-#' @param species.group.id a single integer identifing the species group
-#' @param location.group.id a single integer identifing the location group
-#' @param model.type the type of the models. Must start with `"inla comparison:"`
-#' @param formula a single character identifying the comparison
-#' @param first.imported.year Oldest year considered in the data
-#' @param last.imported.year Most recent year considered in the data
-#' @param duration The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1
-#' @param last.analysed.year Most recent year in the window. Defaults to `last.imported.year`
-#' @param analysis.date A POSIXct date indicating the date that the dataset was imported
-#' @param seed a single integer used as a seed for all calculations. A random seed will be inserted when missing.
+#' @param result.datasource.id The id of the results datasource.
+#' @param status A single character indicating the status of the model.
+#' Defaults to `"waiting"`.
+#' @param scheme.id A single integer holding the id of the scheme.
+#' @param species.group.id A single integer identifing the species group.
+#' @param location.group.id A single integer identifing the location group.
+#' @param model.type The type of the models.
+#' Must start with `"inla comparison:"`.
+#' @param formula A single character identifying the comparison.
+#' @param first.imported.year Oldest year considered in the data.
+#' @param last.imported.year Most recent year considered in the data.
+#' @param duration The width of the moving window.
+#' Defaults to the `last.imported.year - first.imported.year + 1`.
+#' @param last.analysed.year Most recent year in the window.
+#' Defaults to `last.imported.year`.
+#' @param analysis.date A POSIXct date indicating the date that the dataset was
+#' imported.
+#' @param seed A single integer used as a seed for all calculations.
+#' A random seed will be inserted when missing.
 setMethod(
   f = "n2k_inla_comparison",
   signature = signature(parent.status = "data.frame"),
@@ -47,7 +57,7 @@ setMethod(
     formula, species.group.id, location.group.id, model.type,
     first.imported.year, last.imported.year, duration, last.analysed.year,
     analysis.date, ..., seed
-  ){
+  ) {
     assert_that(is.string(status))
     if (missing(seed)) {
       seed <- sample(.Machine$integer.max, 1)

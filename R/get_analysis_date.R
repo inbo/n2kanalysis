@@ -8,7 +8,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "get_analysis_date",
-  def = function(x){
+  def = function(x) {
     standardGeneric("get_analysis_date") # nocov
   }
 )
@@ -20,7 +20,7 @@ setGeneric(
 setMethod(
   f = "get_analysis_date",
   signature = signature(x = "n2kAnalysisMetadata"),
-  definition = function(x){
+  definition = function(x) {
     return(x@AnalysisMetadata$AnalysisDate)
   }
 )

@@ -36,7 +36,7 @@ setClass(
 #' @importFrom methods setValidity
 setValidity(
   "n2kAnalysisVersion",
-  function(object){
+  function(object) {
     check_dataframe_variable(
       df = object@AnalysisVersion,
       variable = "Fingerprint",

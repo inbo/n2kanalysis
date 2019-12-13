@@ -34,7 +34,7 @@ get_model_parameter(analysis, ...)
 \S4method{get_model_parameter}{n2kModelImputed}(analysis, ...)
 }
 \arguments{
-\item{analysis}{The model to add}
+\item{analysis}{The model to add.}
 
 \item{...}{extra options}
 

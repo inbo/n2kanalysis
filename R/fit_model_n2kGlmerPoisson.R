@@ -7,7 +7,7 @@
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kGlmerPoisson"),
-  definition = function(x, ...){
+  definition = function(x, ...) {
     validObject(x)
 
     dots <- list(...)

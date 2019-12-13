@@ -16,7 +16,7 @@ describe("n2kanalysis::validObject", {
   setClass("track", representation(x = "numeric", y = "numeric"))
   t1 <- new("track", x = 1:10, y = sort(stats::rnorm(10)))
   ## A valid "track" object has the same number of x, y values
-  validTrackObject <- function(object) {
+  valid_track_object <- function(object) {
     if (length(object@x) == length(object@y)) {
       TRUE
     } else {
@@ -27,7 +27,7 @@ describe("n2kanalysis::validObject", {
     }
   }
   ## assign the function as the validity method for the class
-  setValidity("track", validTrackObject)
+  setValidity("track", valid_track_object)
   ## t1 should be a valid "track" object
   expect_true(validObject(t1))
 

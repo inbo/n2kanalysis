@@ -8,11 +8,15 @@ setClassUnion("maybeAggregatedImputed", c("aggregatedImputed", "NULL"))
 #' It holds analysis data based on an aggregated imputation
 #' @section Slots:
 #'   \describe{
-#'    \item{\code{RawImputed}}{A \code{rawImputed} object with multiple imputations.}
+#'    \item{\code{RawImputed}}{A \code{rawImputed} object with multiple
+#'    imputations.}
 #'    \item{\code{Function}}{The function to apply on each group.}
-#'    \item{\code{Filter}}{The object to pass to the \code{filter} argument of \code{\link[multimput]{aggregate_impute}}}
-#'    \item{\code{Join}}{The object to pass to the \code{join} argument of \code{\link[multimput]{aggregate_impute}}}
-#'    \item{\code{AggregatedImputed}}{An \code{aggregatedImputed} object with multiple imputations.}
+#'    \item{\code{Filter}}{The object to pass to the \code{filter} argument of
+#'    \code{\link[multimput]{aggregate_impute}}.}
+#'    \item{\code{Join}}{The object to pass to the \code{join} argument of
+#'    \code{\link[multimput]{aggregate_impute}}.}
+#'    \item{\code{AggregatedImputed}}{An \code{aggregatedImputed} object with
+#'    multiple imputations.}
 #'   }
 #' @name n2kAggregate-class
 #' @rdname n2kAggregate-class
@@ -38,7 +42,7 @@ setClass(
 #' @importFrom assertthat assert_that has_name
 setValidity(
   "n2kAggregate",
-  function(object){
+  function(object) {
     file.fingerprint <- sha1(
       list(
         object@AnalysisMetadata$ResultDatasourceID,

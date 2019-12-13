@@ -7,15 +7,17 @@
 #' @importFrom rlang .data
 #' @importFrom purrr map_lgl pmap_chr map map2_chr
 #' @include n2kManifest_class.R
-#' @param local a local folder into which objects from an AWS S3 bucket are downloaded
-#' @param bash use the `littler` package do run the models in separate sessions. This will release the memory.
+#' @param local A local folder into which objects from an AWS S3 bucket are
+#' downloaded.
+#' @param bash Use the `littler` package do run the models in separate sessions.
+#' This will release the memory.
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kManifest"),
   definition = function(
     x, base, project, status = c("new", "waiting"), verbose = TRUE, ...,
     local, bash = FALSE
-  ){
+  ) {
     assert_that(is.string(project))
     assert_that(is.flag(bash))
     assert_that(is.character(status))

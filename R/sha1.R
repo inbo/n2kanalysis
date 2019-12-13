@@ -6,7 +6,7 @@ digest::sha1
 #' @importFrom lme4 fixef ranef
 #' @export
 #' @method sha1 glmerMod
-sha1.glmerMod <- function(x, digits = 6L, zapsmall = 7L, ...) {
+sha1.glmerMod <- function(x, digits = 6L, zapsmall = 7L, ...) {# nolint
   signif.coef <- vapply(
     ranef(x),
     sha1,
@@ -51,7 +51,7 @@ sha1.inla <- function(x, digits = 14L, zapsmall = 7L, ...) {
 #' @importClassesFrom multimput rawImputed
 #' @export
 #' @method sha1 rawImputed
-sha1.rawImputed <- function(x, digits = 14L, zapsmall = 7L, ...) {
+sha1.rawImputed <- function(x, digits = 14L, zapsmall = 7L, ...) {# nolint
   parameter <- list(
     Data = x@Data,
     Response = x@Response,
@@ -70,7 +70,7 @@ sha1.rawImputed <- function(x, digits = 14L, zapsmall = 7L, ...) {
 #' @importClassesFrom multimput aggregatedImputed
 #' @export
 #' @method sha1 aggregatedImputed
-sha1.aggregatedImputed <- function(x, digits = 14L, zapsmall = 7L, ...) {
+sha1.aggregatedImputed <- function(x, digits = 14L, zapsmall = 7L, ...) {# nolint
   parameter <- list(
     Covariate = x@Covariate,
     Imputation = x@Imputation

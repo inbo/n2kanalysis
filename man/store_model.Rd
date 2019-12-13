@@ -16,15 +16,17 @@ store_model(x, base, project, overwrite = TRUE, validate = TRUE)
   validate = TRUE)
 }
 \arguments{
-\item{x}{the n2kModel}
+\item{x}{The n2kModel.}
 
-\item{base}{the base location to store the model}
+\item{base}{The base location to store the model.}
 
-\item{project}{will be a relative path within the base location}
+\item{project}{Will be a relative path within the base location.}
 
-\item{overwrite}{should an existing object be overwritten? Defaults to TRUE}
+\item{overwrite}{Should an existing object be overwritten?
+Defaults to TRUE.}
 
-\item{validate}{check that the object is valid before storing it. Defaults to TRUE}
+\item{validate}{Check that the object is valid before storing it.
+Defaults to TRUE.}
 }
 \description{
 Store a n2kModel object

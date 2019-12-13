@@ -8,12 +8,13 @@ setGeneric(
   name = "n2k_composite",
   def = function(
     parent.status, ...
-  ){
+  ) {
     standardGeneric("n2k_composite") # nocov
   }
 )
 
-#' @description A new n2kComposite model is created when \code{parent} is a data.frame
+#' @description A new `n2kComposite` model is created when `parent` is a
+#' `data.frame`.
 #' @rdname n2k_composite
 #' @aliases n2k_composite,n2kComposite-methods
 #' @importFrom methods setMethod new
@@ -35,7 +36,7 @@ setMethod(
     formula, species.group.id, location.group.id, model.type,
     first.imported.year, last.imported.year, duration, last.analysed.year,
     analysis.date, extractor, ..., seed
-  ){
+  ) {
     assert_that(
       has_name(parent.status, "ParentAnalysis"),
       has_name(parent.status, "ParentStatusFingerprint"),

@@ -8,7 +8,7 @@
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kInla"),
-  definition = function(x, status = "new", ..., timeout = NULL){
+  definition = function(x, status = "new", ..., timeout = NULL) {
     validObject(x)
 
     assert_that(

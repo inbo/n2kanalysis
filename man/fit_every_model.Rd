@@ -7,13 +7,15 @@
 fit_every_model(path, status, verbose = TRUE, n.cluster = 1)
 }
 \arguments{
-\item{path}{the path containing the analysis files}
+\item{path}{The path containing the analysis files.}
 
-\item{status}{a vector with status levels to (re-)fit the model. Defaults to c("new", "waiting") when missing.}
+\item{status}{A vector with status levels to (re-)fit the model.
+Defaults to \code{c("new", "waiting")} when missing.}
 
-\item{verbose}{Show the name of the current analysis file on screen. Defaults to TRUE}
+\item{verbose}{Show the name of the current analysis file on screen.
+Defaults to \code{TRUE}}
 
-\item{n.cluster}{the number of clusters to use}
+\item{n.cluster}{The number of clusters to use.}
 }
 \description{
 Fit the model to the analysis files

@@ -8,7 +8,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "get_seed",
-  def = function(x){
+  def = function(x) {
     standardGeneric("get_seed") # nocov
   }
 )
@@ -20,7 +20,7 @@ setGeneric(
 setMethod(
   f = "get_seed",
   signature = signature(x = "n2kAnalysisMetadata"),
-  definition = function(x){
+  definition = function(x) {
     return(x@AnalysisMetadata$Seed)
   }
 )

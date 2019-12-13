@@ -19,7 +19,7 @@ setClass(
 #' @importFrom methods setValidity
 setValidity(
   "n2kModel",
-  function(object){
+  function(object) {
     if (nrow(object@AnalysisMetadata) != 1) {
       stop("The 'AnalysisMetadata' slot must contain exactly one row")
     }

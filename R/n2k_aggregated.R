@@ -1,22 +1,12 @@
 #' Create a n2kAggregate object
 #' @inheritParams n2k_glmer_poisson
+#' @template analysis-metadata
 #' @details
-#'   \describe{
-#'    \item{\code{scheme.id}}{a single integer holding the id of the scheme.}
-#'    \item{\code{species.group.id}}{a single integer identifing the species group}
-#'    \item{\code{location.group.id}}{a single integer identifing the location group}
-#'    \item{\code{model.type}}{a single character identifying the type of model to fit to the data}
-#'    \item{\code{formula}}{a single character holding the model formula}
-#'    \item{\code{first.imported.year}}{Oldest year considered in the data}
-#'    \item{\code{last.imported.year}}{Most recent year considered in the data}
-#'    \item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
-#'    \item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
-#'    \item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
-#'    \item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
-#'    \item{\code{fun}}{the function to apply when aggregating}
-#'    \item{\code{filter}}{an option list for the \code{filter} argument of \code{\link[multimput]{aggregate_impute}}}
-#'    \item{\code{join}}{an option list for the \code{join} argument of \code{\link[multimput]{aggregate_impute}}}
-#'   }
+#' - `fun`: The function to apply when aggregating.
+#' - `filter`: An optional list for the \code{filter} argument of
+#' \code{\link[multimput]{aggregate_impute}}.
+#' - `join`: An optional list for the \code{join} argument of
+#' \code{\link[multimput]{aggregate_impute}}.
 #' @name n2k_aggregate
 #' @rdname n2k_aggregate
 #' @exportMethod n2k_aggregate
@@ -26,7 +16,7 @@ setGeneric(
   name = "n2k_aggregate",
   def = function(
     ...
-  ){
+  ) {
     standardGeneric("n2k_aggregate") # nocov
   }
 )
@@ -45,7 +35,7 @@ setMethod(
   signature = signature("ANY"),
   definition = function(
     ...
-  ){
+  ) {
     dots <- list(...)
     #set the defaults for missing arguments in dots
     if (is.null(dots$status)) {

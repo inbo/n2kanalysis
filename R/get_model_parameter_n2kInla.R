@@ -1,7 +1,8 @@
 #' @rdname get_model_parameter
 #' @importFrom methods setMethod new
 #' @importFrom tibble tibble rownames_to_column
-#' @importFrom dplyr %>% mutate filter select left_join bind_rows transmute semi_join pull n n_distinct distinct
+#' @importFrom dplyr %>% bind_rows distinct filter left_join mutate n n_distinct
+#' pull select semi_join transmute
 #' @importFrom rlang .data
 #' @importFrom purrr map_chr map2_chr map_df
 #' @importFrom digest sha1
@@ -14,7 +15,7 @@
 setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kInla"),
-  definition = function(analysis, verbose = TRUE, ...){
+  definition = function(analysis, verbose = TRUE, ...) {
     assert_that(is.flag(verbose))
     assert_that(noNA(verbose))
 
@@ -281,7 +282,7 @@ setMethod(
     if (length(re.names) > 0) {
       lapply(
         names(get_model(analysis)$summary.random),
-        function(i){
+        function(i) {
           get_model(analysis)$summary.random[[i]] %>%
             transmute(
               Analysis = analysis@AnalysisMetadata$FileFingerprint,

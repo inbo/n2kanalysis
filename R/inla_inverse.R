@@ -1,19 +1,21 @@
-#' Calculate the mean and 95\% confidence interval from the inverse of a marginal
+#' Calculate the mean and 95\% confidence interval from the inverse of a
+#' marginal
 #'
-#' This is useful for calculating the variance of a random effect when the marginal gives the precision of the random effect
+#' This is useful for calculating the variance of a random effect when the
+#' marginal gives the precision of the random effect.
 #' @param marginal The INLA marginal
 #' @importFrom INLA inla.tmarginal inla.emarginal inla.qmarginal
 #' @export
-inla_inverse <- function(marginal){
+inla_inverse <- function(marginal) {
   inverse <- inla.tmarginal(
-    fun = function(x){
+    fun = function(x) {
       1 / x
     },
     marginal
   )
   tibble(
     Estimate = inla.emarginal(
-      function(x){
+      function(x) {
         x
       },
       inverse

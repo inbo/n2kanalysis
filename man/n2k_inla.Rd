@@ -28,52 +28,64 @@ n2k_inla(data, ..., model.fit)
 
 \item{model.fit}{The fitted model}
 
-\item{status}{a single character indicating the status of the model. Defaults to \code{"waiting"}.}
+\item{status}{A single character indicating the status of the model.
+Defaults to \code{"waiting"}.}
 
-\item{result.datasource.id}{the id of the results datasource}
+\item{result.datasource.id}{The id of the results datasource.}
 
-\item{scheme.id}{a single integer holding the id of the scheme.}
+\item{scheme.id}{A single integer holding the id of the scheme.}
 
-\item{family}{the family to use in the INLA model}
+\item{family}{the family to use in the INLA model.}
 
-\item{formula}{a single character identifying the comparison}
+\item{formula}{A single character identifying the comparison.}
 
-\item{species.group.id}{a single integer identifing the species group}
+\item{species.group.id}{A single integer identifing the species group.}
 
-\item{location.group.id}{a single integer identifing the location group}
+\item{location.group.id}{A single integer identifing the location group.}
 
-\item{model.type}{the type of the models. Must start with \code{"inla comparison:"}}
+\item{model.type}{The type of the models.
+Must start with \code{"inla comparison:"}.}
 
-\item{first.imported.year}{Oldest year considered in the data}
+\item{first.imported.year}{Oldest year considered in the data.}
 
-\item{last.imported.year}{Most recent year considered in the data}
+\item{last.imported.year}{Most recent year considered in the data.}
 
-\item{duration}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
+\item{duration}{The width of the moving window.
+Defaults to the \code{last.imported.year - first.imported.year + 1}.}
 
-\item{last.analysed.year}{Most recent year in the window. Defaults to \code{last.imported.year}}
+\item{last.analysed.year}{Most recent year in the window.
+Defaults to \code{last.imported.year}.}
 
-\item{analysis.date}{A POSIXct date indicating the date that the dataset was imported}
+\item{analysis.date}{A POSIXct date indicating the date that the dataset was
+imported.}
 
-\item{lin.comb}{A model matrix to calculate linear combinations}
+\item{lin.comb}{A model matrix to calculate linear combinations.}
 
-\item{minimum}{the name of the variable which holds the minimum counts. Only relevant in case of multiple imputation}
+\item{minimum}{The name of the variable which holds the minimum counts.
+Only relevant in case of multiple imputation.}
 
 \item{imputation.size}{The required number of imputations defaults to 0.}
 
-\item{parent}{the file fingerprint of the optional parent analysis}
+\item{parent}{The file fingerprint of the optional parent analysis.}
 
-\item{seed}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
+\item{seed}{A single integer used as a seed for all calculations.
+A random seed will be inserted when missing.}
 
-\item{replicate.name}{A list with the names of replicates. Defaults to an empty list. Used in case of \code{f(X, ..., replicate = Z)}}. Should be a named list like e.g. \code{list(X = c("a", "b", "c")).}
+\item{replicate.name}{A list with the names of replicates.
+Defaults to an empty list.
+Used in case of \code{f(X, ..., replicate = Z)}.
+Should be a named list like e.g. \code{list(X = c("a", "b", "c"))}.}
 
-\item{parent.status}{the status of the parent analysis}
+\item{parent.status}{The status of the parent analysis.}
 
-\item{parent.statusfingerprint}{the statusfingerprint of the parent analysis}
+\item{parent.statusfingerprint}{The statusfingerprint of the parent analysis.}
 
 \item{raw.imputed}{the optional RawImputed object}
 }
 \description{
 A new n2kInla model is created when \code{data} is a data.frame.
 
-In case \code{data} a n2kInla object is, then only the model and status are updated. All other slots are unaffected.
+In case \code{data} is an \code{n2kInla} object, then only the model and
+status are updated.
+All other slots are unaffected.
 }

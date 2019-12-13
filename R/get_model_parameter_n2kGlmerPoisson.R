@@ -10,7 +10,7 @@
 setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kGlmerPoisson"),
-  definition = function(analysis, verbose = TRUE, ...){
+  definition = function(analysis, verbose = TRUE, ...) {
     assert_that(is.flag(verbose))
     assert_that(noNA(verbose))
 

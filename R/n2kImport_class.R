@@ -3,7 +3,7 @@
 #' It hold the imported datasets
 #' @section Slots:
 #'   \describe{
-#'    \item{\code{Dataset}}{a data.frame with the datasets}
+#'    \item{\code{Dataset}}{A \code{data.frame} with the datasets.}
 #'   }
 #' @name n2kImport-class
 #' @rdname n2kImport-class
@@ -24,7 +24,7 @@ setClass(
 #' @importFrom assertthat assert_that has_name
 setValidity(
   "n2kImport",
-  function(object){
+  function(object) {
     assert_that(has_name(object@Dataset, "fingerprint"))
     assert_that(has_name(object@Dataset, "filename"))
     assert_that(has_name(object@Dataset, "import_date"))

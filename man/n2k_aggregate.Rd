@@ -18,20 +18,28 @@ n2k_aggregate(...)
 A new n2kAggregate model.
 }
 \details{
-\describe{
-\item{\code{scheme.id}}{a single integer holding the id of the scheme.}
-\item{\code{species.group.id}}{a single integer identifing the species group}
-\item{\code{location.group.id}}{a single integer identifing the location group}
-\item{\code{model.type}}{a single character identifying the type of model to fit to the data}
-\item{\code{formula}}{a single character holding the model formula}
-\item{\code{first.imported.year}}{Oldest year considered in the data}
-\item{\code{last.imported.year}}{Most recent year considered in the data}
-\item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
-\item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
-\item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
-\item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
-\item{\code{fun}}{the function to apply when aggregating}
-\item{\code{filter}}{an option list for the \code{filter} argument of \code{\link[multimput]{aggregate_impute}}}
-\item{\code{join}}{an option list for the \code{join} argument of \code{\link[multimput]{aggregate_impute}}}
+\itemize{
+\item \code{scheme.id}: a string holding the id of the scheme.
+\item \code{species.group.id}: a string identifing the species group.
+\item \code{location.group.id}: a string identifing the location group.
+\item \code{model.type}: a string identifying the type of model to fit to the data.
+\item \code{first.imported.year}: Oldest year considered in the data.
+\item \code{last.imported.year}: Most recent year considered in the data.
+\item \code{duration}: The width of the moving window.
+Defaults to the \code{last.imported.year - first.imported.year + 1}.
+\item \code{last.analysed.year}: Most recent year in the window.
+Defaults to \code{last.imported.year}.
+\item \code{analysis.date}: A POSIXct date indicating the date that the dataset was
+imported.
+\item \code{seed}: A single integer used as a seed for all calculations.
+A random seed will be inserted when missing.
+}
+
+\itemize{
+\item \code{fun}: The function to apply when aggregating.
+\item \code{filter}: An optional list for the \code{filter} argument of
+\code{\link[multimput]{aggregate_impute}}.
+\item \code{join}: An optional list for the \code{join} argument of
+\code{\link[multimput]{aggregate_impute}}.
 }
 }

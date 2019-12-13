@@ -31,7 +31,7 @@ setClass(
 #' @importFrom stats as.formula
 setValidity(
   "n2kAnalysisMetadata",
-  function(object){
+  function(object) {
     assert_that(has_name(object@AnalysisMetadata, "ResultDatasourceID"))
     assert_that(has_name(object@AnalysisMetadata, "SchemeID"))
     assert_that(has_name(object@AnalysisMetadata, "SpeciesGroupID"))

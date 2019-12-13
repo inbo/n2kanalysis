@@ -5,7 +5,7 @@
 setMethod(
   f = "get_anomaly",
   signature = signature(analysis = "n2kModel"),
-  definition = function(analysis, verbose = TRUE, ...){
+  definition = function(analysis, verbose = TRUE, ...) {
     assert_that(is.flag(verbose))
     assert_that(noNA(verbose))
 

@@ -59,9 +59,11 @@ test_that("model imputation works", {
     last.analyses.year = this.last.analysed.year, duration = this.duration,
     parent = get_file_fingerprint(aggregation)
   )
-  pma <- list( function(x) {
-    return(list(family = "poisson"))
-  } )
+  pma <- list(
+    function(x) {
+      return(list(family = "poisson"))
+    }
+  )
   mi2 <- n2k_model_imputed(
     scheme.id = this.scheme.id, model.args = list(),
     result.datasource.id = this.result.datasource.id, model.fun = INLA::inla,

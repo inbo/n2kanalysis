@@ -7,7 +7,7 @@
 setMethod(
   f = "get_result",
   signature = signature(x = "n2kModel"),
-  definition = function(x, verbose = TRUE, ...){
+  definition = function(x, verbose = TRUE, ...) {
     assert_that(is.flag(verbose))
     assert_that(noNA(verbose))
 

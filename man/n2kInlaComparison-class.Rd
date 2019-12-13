@@ -10,7 +10,7 @@ Compare multiple models using the WAIC criterion
 \section{Slots}{
 
 \describe{
-\item{\code{WAIC}}{a data.frame with WAIC values per model}
+\item{\code{WAIC}}{A \code{data.frame} with WAIC values per model.}
 }
 }
 

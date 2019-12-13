@@ -10,10 +10,10 @@ Calculate composite indices from multiple analysis
 \section{Slots}{
 
 \describe{
-\item{\code{Parent0}}{the file fingerprint of the NULL model}
-\item{\code{Model}}{the alternative model}
-\item{\code{Model0}}{the NULL model}
-\item{\code{Anova}}{the anova table}
+\item{\code{Parent0}}{The file fingerprint of the NULL model.}
+\item{\code{Model}}{The alternative model.}
+\item{\code{Model0}}{The NULL model.}
+\item{\code{Anova}}{The anova table.}
 }
 }
 

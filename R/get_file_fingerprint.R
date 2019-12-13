@@ -8,7 +8,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "get_file_fingerprint",
-  def = function(x){
+  def = function(x) {
     standardGeneric("get_file_fingerprint") # nocov
   }
 )
@@ -20,7 +20,7 @@ setGeneric(
 setMethod(
   f = "get_file_fingerprint",
   signature = signature(x = "n2kAnalysisMetadata"),
-  definition = function(x){
+  definition = function(x) {
     return(x@AnalysisMetadata$FileFingerprint)
   }
 )
@@ -32,7 +32,7 @@ setMethod(
 setMethod(
   f = "get_file_fingerprint",
   signature = signature(x = "n2kManifest"),
-  definition = function(x){
+  definition = function(x) {
     return(x@Fingerprint)
   }
 )

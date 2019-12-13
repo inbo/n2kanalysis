@@ -15,38 +15,48 @@ n2k_composite(parent.status, ...)
   duration, last.analysed.year, analysis.date, extractor, ..., seed)
 }
 \arguments{
-\item{parent.status}{a \code{data.frame} with columns \code{ParentAnalysis} (the file fingerprint of the parent), \code{ParentStatusFingerprint} (the status fingerprint of the parent), and \code{ParentStatus} (the status of the parent)}
+\item{parent.status}{A \code{data.frame} with columns
+\code{ParentAnalysis} (the file fingerprint of the parent),
+\code{ParentStatusFingerprint} (the status fingerprint of the parent),
+and \code{ParentStatus} (the status of the parent).}
 
 \item{...}{other arguments}
 
-\item{status}{a single character indicating the status of the model. Defaults to \code{"waiting"}.}
+\item{status}{A single character indicating the status of the model.
+Defaults to \code{"waiting"}.}
 
-\item{result.datasource.id}{the id of the results datasource}
+\item{result.datasource.id}{The id of the results datasource.}
 
-\item{scheme.id}{a single integer holding the id of the scheme.}
+\item{scheme.id}{A single integer holding the id of the scheme.}
 
-\item{formula}{a single character identifying the comparison}
+\item{formula}{A single character identifying the comparison.}
 
-\item{species.group.id}{a single integer identifing the species group}
+\item{species.group.id}{A single integer identifing the species group.}
 
-\item{location.group.id}{a single integer identifing the location group}
+\item{location.group.id}{A single integer identifing the location group.}
 
-\item{model.type}{the type of the models. Must start with \code{"inla comparison:"}}
+\item{model.type}{The type of the models.
+Must start with \code{"inla comparison:"}.}
 
-\item{first.imported.year}{Oldest year considered in the data}
+\item{first.imported.year}{Oldest year considered in the data.}
 
-\item{last.imported.year}{Most recent year considered in the data}
+\item{last.imported.year}{Most recent year considered in the data.}
 
-\item{duration}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
+\item{duration}{The width of the moving window.
+Defaults to the \code{last.imported.year - first.imported.year + 1}.}
 
-\item{last.analysed.year}{Most recent year in the window. Defaults to \code{last.imported.year}}
+\item{last.analysed.year}{Most recent year in the window.
+Defaults to \code{last.imported.year}.}
 
-\item{analysis.date}{A POSIXct date indicating the date that the dataset was imported}
+\item{analysis.date}{A POSIXct date indicating the date that the dataset was
+imported.}
 
 \item{extractor}{a function to extract the relevant parameters from the model}
 
-\item{seed}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
+\item{seed}{A single integer used as a seed for all calculations.
+A random seed will be inserted when missing.}
 }
 \description{
-A new n2kComposite model is created when \code{parent} is a data.frame
+A new \code{n2kComposite} model is created when \code{parent} is a
+\code{data.frame}.
 }

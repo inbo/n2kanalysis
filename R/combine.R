@@ -7,7 +7,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   "combine",
-  def = function(...){
+  def = function(...) {
     standardGeneric("combine") # nocov
   }
 )
@@ -19,13 +19,13 @@ setGeneric(
 setMethod(
   f = "combine",
   signature = "n2kAnalysisVersion",
-  definition = function(...){
+  definition = function(...) {
     dots <- list(...)
     analysis.version <- unique(do.call(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@AnalysisVersion
         }
       )
@@ -39,7 +39,7 @@ setMethod(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@RPackage
         }
       )
@@ -49,7 +49,7 @@ setMethod(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@AnalysisVersionRPackage
         }
       )
@@ -76,13 +76,13 @@ setMethod(
 setMethod(
   f = "combine",
   signature = "n2kParameter",
-  definition = function(...){
+  definition = function(...) {
     dots <- list(...)
     parameter <- unique(do.call(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@Parameter
         }
       )
@@ -91,7 +91,7 @@ setMethod(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@ParameterEstimate
         }
       )
@@ -111,13 +111,13 @@ setMethod(
 setMethod(
   f = "combine",
   signature = "n2kAnomaly",
-  definition = function(...){
+  definition = function(...) {
     dots <- list(...)
     anomaly.type <- unique(do.call(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@AnomalyType
         }
       )
@@ -126,7 +126,7 @@ setMethod(
       rbind,
       lapply(
         dots,
-        function(x){
+        function(x) {
           x@Anomaly
         }
       )

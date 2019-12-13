@@ -1,9 +1,11 @@
 #' Store a n2kModel object
-#' @param x the n2kModel
-#' @param base the base location to store the model
-#' @param project will be a relative path within the base location
-#' @param overwrite should an existing object be overwritten? Defaults to TRUE
-#' @param validate check that the object is valid before storing it. Defaults to TRUE
+#' @param x The n2kModel.
+#' @param base The base location to store the model.
+#' @param project Will be a relative path within the base location.
+#' @param overwrite Should an existing object be overwritten?
+#' Defaults to TRUE.
+#' @param validate Check that the object is valid before storing it.
+#' Defaults to TRUE.
 #' @name store_model
 #' @rdname store_model
 #' @exportMethod store_model
@@ -11,7 +13,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "store_model",
-  def = function(x, base, project, overwrite = TRUE, validate = TRUE){
+  def = function(x, base, project, overwrite = TRUE, validate = TRUE) {
     standardGeneric("store_model") # nocov
   }
 )
@@ -22,7 +24,7 @@ setGeneric(
 setMethod(
   f = "store_model",
   signature = signature(base = "character"),
-  definition = function(x, base, project, overwrite = TRUE, validate = TRUE){
+  definition = function(x, base, project, overwrite = TRUE, validate = TRUE) {
     assert_that(is.flag(overwrite))
     assert_that(noNA(overwrite))
     assert_that(inherits(x, "n2kModel"))
@@ -70,13 +72,14 @@ setMethod(
 #' @rdname store_model
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.string is.flag
-#' @importFrom aws.s3 bucket_exists get_bucket s3saveRDS delete_object copy_object
+#' @importFrom aws.s3 bucket_exists copy_object delete_object get_bucket
+#' s3saveRDS
 #' @importFrom purrr map_chr
 #' @include import_S3_classes.R
 setMethod(
   f = "store_model",
   signature = signature(base = "s3_bucket"),
-  definition = function(x, base, project, overwrite = TRUE, validate = TRUE){
+  definition = function(x, base, project, overwrite = TRUE, validate = TRUE) {
     assert_that(inherits(x, "n2kModel"))
     assert_that(is.string(project))
     assert_that(is.flag(overwrite))

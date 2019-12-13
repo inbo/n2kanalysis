@@ -89,7 +89,7 @@ describe("select_factor_count_strictly_positive", {
         dimension = 1,
         relative = TRUE
       ),
-      throws_error("threshold must be smaller than 1")
+      throws_error("threshold not less than 1")
     )
   })
 })

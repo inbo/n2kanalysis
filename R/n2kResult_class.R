@@ -16,7 +16,7 @@ setClass(
 #' @importFrom methods setValidity
 setValidity(
   "n2kResult",
-  function(object){
+  function(object) {
     if (!all(
       object@AnalysisMetadata$AnalysisVersion %in%
         object@AnalysisVersion$Fingerprint

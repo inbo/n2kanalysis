@@ -9,7 +9,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "store_manifest",
-  def = function(x, base, project){
+  def = function(x, base, project) {
     standardGeneric("store_manifest") # nocov
   }
 )
@@ -21,7 +21,7 @@ setGeneric(
 setMethod(
   f = "store_manifest",
   signature = signature(base = "character"),
-  definition = function(x, base, project){
+  definition = function(x, base, project) {
     assert_that(inherits(x, "n2kManifest"))
     assert_that(is.string(base))
     assert_that(file_test("-d", base))
@@ -60,7 +60,7 @@ setMethod(
 setMethod(
   f = "store_manifest",
   signature = signature(base = "s3_bucket"),
-  definition = function(x, base, project){
+  definition = function(x, base, project) {
     assert_that(inherits(x, "n2kManifest"))
     assert_that(is.string(project))
     validObject(x, complete = TRUE)

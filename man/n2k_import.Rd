@@ -17,18 +17,25 @@ n2k_import(...)
 A new n2kImport model.
 }
 \details{
-\describe{
-\item{\code{scheme.id}}{a string holding the id of the scheme.}
-\item{\code{species.group.id}}{a string identifing the species group}
-\item{\code{location.group.id}}{a string identifing the location group}
-\item{\code{model.type}}{a string identifying the type of model to fit to the data}
-\item{\code{formula}}{a string holding the model formula}
-\item{\code{first.imported.year}}{Oldest year considered in the data}
-\item{\code{last.imported.year}}{Most recent year considered in the data}
-\item{\code{duration}}{The width of the moving window. Defaults to the last.imported.year - first.imported.year + 1}
-\item{\code{last.analysed.year}}{Most recent year in the window. Defaults to \code{last.imported.year}}
-\item{\code{analysis.date}}{A POSIXct date indicating the date that the dataset was imported}
-\item{\code{seed}}{a single integer used as a seed for all calculations. A random seed will be inserted when missing.}
-\item{\code{dataset}}{a \code{data.frame} with \code{filename}, \code{fingerprint} and \code{import_date}}
+\itemize{
+\item \code{scheme.id}: a string holding the id of the scheme.
+\item \code{species.group.id}: a string identifing the species group.
+\item \code{location.group.id}: a string identifing the location group.
+\item \code{model.type}: a string identifying the type of model to fit to the data.
+\item \code{first.imported.year}: Oldest year considered in the data.
+\item \code{last.imported.year}: Most recent year considered in the data.
+\item \code{duration}: The width of the moving window.
+Defaults to the \code{last.imported.year - first.imported.year + 1}.
+\item \code{last.analysed.year}: Most recent year in the window.
+Defaults to \code{last.imported.year}.
+\item \code{analysis.date}: A POSIXct date indicating the date that the dataset was
+imported.
+\item \code{seed}: A single integer used as a seed for all calculations.
+A random seed will be inserted when missing.
+}
+
+\itemize{
+\item \code{formula}: a string holding the model formula.
+\item \code{dataset}: A \code{data.frame} with \code{filename}, \code{fingerprint} and \code{import_date}.
 }
 }

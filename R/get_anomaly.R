@@ -8,7 +8,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "get_anomaly",
-  def = function(analysis, ...){
+  def = function(analysis, ...) {
     standardGeneric("get_anomaly") # nocov
   }
 )

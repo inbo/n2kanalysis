@@ -9,7 +9,7 @@ setGeneric(
   name = "n2k_inla",
   def = function(
     data, ..., model.fit
-  ){
+  ) {
     standardGeneric("n2k_inla") # nocov
   }
 )
@@ -24,14 +24,18 @@ setGeneric(
 #' @importFrom utils sessionInfo
 #' @include n2kInla_class.R
 #' @inheritParams n2k_inla_comparison
-#' @param family the family to use in the INLA model
-#' @param lin.comb A model matrix to calculate linear combinations
-#' @param replicate.name A list with the names of replicates. Defaults to an empty list. Used in case of \code{f(X, ..., replicate = Z)}}. Should be a named list like e.g. \code{list(X = c("a", "b", "c")).
+#' @param family the family to use in the INLA model.
+#' @param lin.comb A model matrix to calculate linear combinations.
+#' @param replicate.name A list with the names of replicates.
+#' Defaults to an empty list.
+#' Used in case of `f(X, ..., replicate = Z)`.
+#' Should be a named list like e.g. `list(X = c("a", "b", "c"))`.
 #' @param imputation.size The required number of imputations defaults to 0.
-#' @param minimum the name of the variable which holds the minimum counts. Only relevant in case of multiple imputation
-#' @param parent the file fingerprint of the optional parent analysis
-#' @param parent.status the status of the parent analysis
-#' @param parent.statusfingerprint the statusfingerprint of the parent analysis
+#' @param minimum The name of the variable which holds the minimum counts.
+#' Only relevant in case of multiple imputation.
+#' @param parent The file fingerprint of the optional parent analysis.
+#' @param parent.status The status of the parent analysis.
+#' @param parent.statusfingerprint The statusfingerprint of the parent analysis.
 setMethod(
   f = "n2k_inla",
   signature = signature(data = "data.frame"),
@@ -42,7 +46,7 @@ setMethod(
     analysis.date, lin.comb = NULL, minimum = "", imputation.size,
     parent = character(0), seed, replicate.name = list(),
     parent.status = "converged", parent.statusfingerprint, ..., model.fit
-  ){
+  ) {
     assert_that(is.string(status))
     assert_that(is.string(minimum))
     if (missing(seed)) {
@@ -182,7 +186,9 @@ setMethod(
   }
 )
 
-#' @description In case \code{data} a n2kInla object is, then only the model and status are updated. All other slots are unaffected.
+#' @description In case `data` is an `n2kInla` object, then only the model and
+#' status are updated.
+#' All other slots are unaffected.
 #' @rdname n2k_inla
 #' @aliases n2k_inla,n2kInla-methods
 #' @importFrom methods setMethod validObject new
@@ -195,7 +201,7 @@ setMethod(
   signature = signature(data = "n2kInla", model.fit = "inla"),
   definition = function(
     data, status, raw.imputed = NULL, ..., model.fit
-  ){
+  ) {
     assert_that(is.string(status))
     data@Model <- model.fit
     data@AnalysisMetadata$Status <- status

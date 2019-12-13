@@ -39,7 +39,7 @@ setClass(
 #' @importFrom n2khelper check_dataframe_variable
 setValidity(
   "n2kContrast",
-  function(object){
+  function(object) {
     check_dataframe_variable(
       df = object@Contrast,
       variable = c("Fingerprint", "Description", "Analysis"),

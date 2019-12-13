@@ -14,11 +14,14 @@ read_manifest(base, project, hash)
 \S4method{read_manifest}{s3_bucket}(base, project, hash)
 }
 \arguments{
-\item{base}{the base location to read the manifest}
+\item{base}{The base location to read the manifest.}
 
-\item{project}{will be a relative path within the base location}
+\item{project}{Will be a relative path within the base location.}
 
-\item{hash}{optinaly the sha1 of the manifest. This can be abbreviated to to first unique characters. The function will return an error in case of multiple matches. If missing, then most recent manifest will be returned.}
+\item{hash}{Optinaly the sha1 of the manifest.
+This can be abbreviated to to first unique characters.
+The function will return an error in case of multiple matches.
+If missing, then most recent manifest will be returned.}
 }
 \description{
 Read a n2kManifest object
