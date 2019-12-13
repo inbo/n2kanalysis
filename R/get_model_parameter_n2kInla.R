@@ -49,138 +49,23 @@ setMethod(
         LowerConfidenceLimit = .data$`0.025quant`,
         UpperConfidenceLimit = .data$`0.975quant`
       ) -> parameter.estimate
+    attr(parameter.estimate, "parameter") <- parameter
     fixed.parent <- parameter$Fingerprint[
       parameter$Description == "Fixed effect"
     ]
     interaction <- grepl(":", variable)
-    main.effect <- variable[!interaction]
-    interaction <- variable[interaction]
-    for (i in main.effect) {
-      present <- grep(paste0("^", i), parameter.estimate$Parameter)
-      present <- present[!grepl(":", parameter.estimate$Parameter[present])]
-      if (length(present) == 0) {
-        next
-      }
-      extra <- tibble(
-        Description = i,
-        Parent = fixed.parent
-      ) %>%
-        mutate(
-          Fingerprint = map2_chr(
-            .data$Description,
-            .data$Parent,
-            ~sha1(c(Description = .x, Parent = .y))
-          )
-        )
-      extra.factor <- tibble(
-        Description = gsub(
-          paste0("^", i),
-          "",
-          parameter.estimate$Parameter[present]
-        ),
-        Parent = extra$Fingerprint
-      ) %>%
-        filter(.data$Description != "")
-      if (nrow(extra.factor) == 0) {
-        to.merge <- extra %>%
-          select(-"Parent")
-      } else {
-        extra.factor <- extra.factor %>%
-          mutate(
-            Fingerprint = map2_chr(
-              .data$Description,
-              .data$Parent,
-              ~sha1(c(Description = .x, Parent = .y))
-            )
-          )
-        extra.factor %>%
-          select(-"Parent") %>%
-          mutate(Description = paste0(i, .data$Description)) -> to.merge
-      }
-      left_join(
-        parameter.estimate,
-        to.merge,
-        by = c("Parameter" = "Description")
-      ) %>%
-        mutate(
-          Parameter = ifelse(
-            is.na(.data$Fingerprint), .data$Parameter, .data$Fingerprint
-          )
-        ) %>%
-        select(-"Fingerprint") -> parameter.estimate
-      parameter <- bind_rows(parameter, extra, extra.factor)
-    }
-    for (i in interaction) {
-      pattern <- paste0("^", gsub(":", ".*:", i))
-      present <- grep(pattern, parameter.estimate$Parameter)
-      if (length(present) == 0) {
-        next
-      }
-      extra <- tibble(
-        Description = i,
-        Parent = fixed.parent
-      ) %>%
-        mutate(
-          Fingerprint = map2_chr(
-            .data$Description,
-            .data$Parent,
-            ~sha1(c(Description = .x, Parent = .y))
-          )
-        )
-      parts <- strsplit(i, ":")[[1]]
-      level.name <- gsub(
-        paste0("^", parts[1]),
-        "",
-        parameter.estimate$Parameter[present]
-      )
-      for (j in parts[-1]) {
-        level.name <- gsub(paste0(":", j), ":", level.name)
-      }
-      extra.factor <- tibble(
-        Description = level.name,
-        Parent = extra$Fingerprint
-      ) %>%
-        filter(!grepl("^:*$", .data$Description)) %>%
-        mutate(
-          Fingerprint = map2_chr(
-            .data$Description,
-            .data$Parent,
-            ~sha1(c(Description = .x, Parent = .y))
-          )
-        )
-      if (nrow(extra.factor) > 0) {
-        to.merge <- extra.factor %>%
-          select(-"Parent") %>%
-          inner_join(
-            tibble(
-              Description = level.name,
-              Original = parameter.estimate$Parameter[present]
-            ),
-            by = "Description"
-          ) %>%
-          select(
-            -"Description",
-            Description = "Original"
-          )
-      } else {
-        to.merge <- extra %>%
-          select(-"Parent")
-      }
-      parameter.estimate <- left_join(
-        parameter.estimate,
-        to.merge,
-        by = c("Parameter" = "Description")
-      ) %>%
-        mutate(
-          Parameter = ifelse(
-            is.na(.data$Fingerprint),
-            .data$Parameter,
-            .data$Fingerprint
-          )
-        ) %>%
-        select(-"Fingerprint")
-      parameter <- bind_rows(parameter, extra, extra.factor)
-    }
+
+    parameter.estimate <- model_parameter_main(
+      parameter.estimate = parameter.estimate,
+      main.effect = variable[!interaction],
+      fixed.parent = fixed.parent
+    )
+    parameter.estimate <- model_parameter_interaction(
+      parameter.estimate = parameter.estimate,
+      interaction = variable[interaction],
+      fixed.parent = fixed.parent
+    )
+    parameter <- attr(parameter.estimate, "parameter")
 
     # add random effect variance
     display(verbose, ", random effect variance", FALSE)
@@ -469,3 +354,145 @@ setMethod(
     )
   }
 )
+
+model_parameter_main <- function(
+  parameter.estimate, main.effect, fixed.parent
+) {
+  attr(parameter.estimate, "parameter") -> parameter
+  for (i in main.effect) {
+    present <- grep(paste0("^", i), parameter.estimate$Parameter)
+    present <- present[!grepl(":", parameter.estimate$Parameter[present])]
+    if (length(present) == 0) {
+      next
+    }
+    extra <- tibble(
+      Description = i,
+      Parent = fixed.parent
+    ) %>%
+      mutate(
+        Fingerprint = map2_chr(
+          .data$Description,
+          .data$Parent,
+          ~sha1(c(Description = .x, Parent = .y))
+        )
+      )
+    extra.factor <- tibble(
+      Description = gsub(
+        paste0("^", i),
+        "",
+        parameter.estimate$Parameter[present]
+      ),
+      Parent = extra$Fingerprint
+    ) %>%
+      filter(.data$Description != "")
+    if (nrow(extra.factor) == 0) {
+      to.merge <- extra %>%
+        select(-"Parent")
+    } else {
+      extra.factor <- extra.factor %>%
+        mutate(
+          Fingerprint = map2_chr(
+            .data$Description,
+            .data$Parent,
+            ~sha1(c(Description = .x, Parent = .y))
+          )
+        )
+      extra.factor %>%
+        select(-"Parent") %>%
+        mutate(Description = paste0(i, .data$Description)) -> to.merge
+    }
+    left_join(
+      parameter.estimate,
+      to.merge,
+      by = c("Parameter" = "Description")
+    ) %>%
+      mutate(
+        Parameter = ifelse(
+          is.na(.data$Fingerprint), .data$Parameter, .data$Fingerprint
+        )
+      ) %>%
+      select(-"Fingerprint") -> parameter.estimate
+    parameter <- bind_rows(parameter, extra, extra.factor)
+  }
+  attr(parameter.estimate, "parameter") <- parameter
+  return(parameter.estimate)
+}
+
+model_parameter_interaction <- function(
+  parameter.estimate, interaction, fixed.parent
+) {
+  attr(parameter.estimate, "parameter") -> parameter
+  for (i in interaction) {
+    pattern <- paste0("^", gsub(":", ".*:", i))
+    present <- grep(pattern, parameter.estimate$Parameter)
+    if (length(present) == 0) {
+      next
+    }
+    extra <- tibble(
+      Description = i,
+      Parent = fixed.parent
+    ) %>%
+      mutate(
+        Fingerprint = map2_chr(
+          .data$Description,
+          .data$Parent,
+          ~sha1(c(Description = .x, Parent = .y))
+        )
+      )
+    parts <- strsplit(i, ":")[[1]]
+    level.name <- gsub(
+      paste0("^", parts[1]),
+      "",
+      parameter.estimate$Parameter[present]
+    )
+    for (j in parts[-1]) {
+      level.name <- gsub(paste0(":", j), ":", level.name)
+    }
+    extra.factor <- tibble(
+      Description = level.name,
+      Parent = extra$Fingerprint
+    ) %>%
+      filter(!grepl("^:*$", .data$Description)) %>%
+      mutate(
+        Fingerprint = map2_chr(
+          .data$Description,
+          .data$Parent,
+          ~sha1(c(Description = .x, Parent = .y))
+        )
+      )
+    if (nrow(extra.factor) > 0) {
+      to.merge <- extra.factor %>%
+        select(-"Parent") %>%
+        inner_join(
+          tibble(
+            Description = level.name,
+            Original = parameter.estimate$Parameter[present]
+          ),
+          by = "Description"
+        ) %>%
+        select(
+          -"Description",
+          Description = "Original"
+        )
+    } else {
+      to.merge <- extra %>%
+        select(-"Parent")
+    }
+    parameter.estimate <- left_join(
+      parameter.estimate,
+      to.merge,
+      by = c("Parameter" = "Description")
+    ) %>%
+      mutate(
+        Parameter = ifelse(
+          is.na(.data$Fingerprint),
+          .data$Parameter,
+          .data$Fingerprint
+        )
+      ) %>%
+      select(-"Fingerprint")
+    parameter <- bind_rows(parameter, extra, extra.factor)
+  }
+  attr(parameter.estimate, "parameter") <- parameter
+  return(parameter.estimate)
+}
