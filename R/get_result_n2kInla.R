@@ -1,6 +1,6 @@
 #' @rdname get_result
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% data_frame rowwise mutate inner_join select transmute arrange filter semi_join rename
+#' @importFrom dplyr %>% tibble rowwise mutate inner_join select transmute arrange filter semi_join rename
 #' @importFrom rlang .data
 #' @importFrom digest sha1
 #' @importFrom tidyr gather_
@@ -241,7 +241,7 @@ setMethod(
     } else {
       lc <- x@Model$summary.lincomb
     }
-    contrast.estimate <- data_frame(
+    contrast.estimate <- tibble(
       Description = rownames(lc),
       Estimate = lc$mean,
       LowerConfidenceLimit = lc[, "0.025quant"],
