@@ -18,7 +18,7 @@ setGeneric(
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.string
 #' @importFrom utils read.table
-#' @importFrom dplyr %>% arrange_ slice_ desc
+#' @importFrom dplyr %>% arrange slice_ desc
 #' @importFrom tibble rownames_to_column
 setMethod(
   f = "read_manifest",
@@ -49,7 +49,7 @@ setMethod(
     if (missing(hash)) {
       manifest <- file.info(available) %>%
         rownames_to_column("filename") %>%
-        arrange_(~desc(mtime)) %>%
+        arrange(desc(.data$mtime)) %>%
         slice_(1) %>%
         "[["("filename") %>% #nolint
         read.table(

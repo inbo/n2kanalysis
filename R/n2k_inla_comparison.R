@@ -21,7 +21,7 @@ setGeneric(
 #' @importFrom methods setMethod new
 #' @importFrom n2khelper check_dataframe_variable
 #' @importFrom assertthat assert_that noNA is.count is.string
-#' @importFrom dplyr %>% select arrange_
+#' @importFrom dplyr %>% select arrange
 #' @importFrom digest sha1
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo

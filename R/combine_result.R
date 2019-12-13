@@ -1,7 +1,7 @@
 #' @rdname combine
 #' @aliases combine,n2kResult-methods
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% arrange_ distinct
+#' @importFrom dplyr %>% arrange distinct
 #' @importFrom stats as.formula
 #' @include n2kResult_class.R
 setMethod(
@@ -19,7 +19,7 @@ setMethod(
         }
       )
     ) %>%
-      arrange_(~FileFingerprint)
+      arrange(.data$FileFingerprint)
 
     analysis.formula <- lapply(analysis.metadata$Formula, as.formula)
 
@@ -31,7 +31,7 @@ setMethod(
           x@AnalysisRelation
         }
     )) %>%
-      arrange_(~Analysis, ~ParentAnalysis)
+      arrange(.data$Analysis, .data$ParentAnalysis)
 
     analysis.version <- do.call(
       rbind,
@@ -43,7 +43,7 @@ setMethod(
       )
     ) %>%
       distinct() %>%
-      arrange_(~Fingerprint)
+      arrange(.data$Fingerprint)
 
     r.package <- do.call(
       rbind,
@@ -55,7 +55,7 @@ setMethod(
       )
     ) %>%
       distinct() %>%
-      arrange_(~Fingerprint)
+      arrange(.data$Fingerprint)
 
     analysis.version.r.package <- do.call(
       rbind,
@@ -67,7 +67,7 @@ setMethod(
       )
     ) %>%
       distinct() %>%
-      arrange_(~AnalysisVersion, ~RPackage)
+      arrange(.data$AnalysisVersion, .data$RPackage)
 
     parameter <- do.call(
       rbind,
@@ -79,7 +79,7 @@ setMethod(
       )
     ) %>%
       distinct() %>%
-      arrange_(~Fingerprint)
+      arrange(.data$Fingerprint)
 
     parameter.estimate <- do.call(
       rbind,
@@ -91,7 +91,7 @@ setMethod(
       )
     ) %>%
       distinct() %>%
-      arrange_(~Analysis, ~Parameter)
+      arrange(.data$Analysis, .data$Parameter)
 
     anomaly.type <- do.call(
       rbind,
@@ -103,7 +103,7 @@ setMethod(
       )
     ) %>%
       distinct() %>%
-      arrange_(~Fingerprint)
+      arrange(.data$Fingerprint)
 
     anomaly <- do.call(
       rbind,
@@ -115,7 +115,7 @@ setMethod(
       )
     ) %>%
       distinct() %>%
-      arrange_(~Analysis, ~AnomalyType, ~Parameter)
+      arrange(.data$Analysis, .data$AnomalyType, .data$Parameter)
 
     contrast <- do.call(
       rbind,
@@ -127,7 +127,7 @@ setMethod(
       )
     ) %>%
       distinct() %>%
-      arrange_(~Fingerprint)
+      arrange(.data$Fingerprint)
     contrast.coefficient <- do.call(
       rbind,
       lapply(
@@ -138,7 +138,7 @@ setMethod(
       )
     ) %>%
       distinct() %>%
-      arrange_(~Contrast, ~Parameter)
+      arrange(.data$Contrast, .data$Parameter)
     contrast.estimate <- do.call(
       rbind,
       lapply(
@@ -149,7 +149,7 @@ setMethod(
       )
     ) %>%
       distinct() %>%
-      arrange_(~Contrast)
+      arrange(.data$Contrast)
 
     new(
       "n2kResult",
