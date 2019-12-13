@@ -31,7 +31,7 @@ setClass(
 #' @importFrom methods setValidity
 #' @importFrom n2khelper check_dataframe_variable
 #' @importFrom assertthat assert_that noNA
-#' @importFrom dplyr filter anti_join left_join select_
+#' @importFrom dplyr filter anti_join left_join select
 #' @importFrom rlang .data
 setValidity(
   "n2kManifest",
@@ -75,7 +75,7 @@ setValidity(
     if (any(!is.na(object@Manifest$Parent))) {
       link <- object@Manifest %>%
         left_join(object@Manifest, by = c("Parent" = "Fingerprint")) %>%
-        select_(~Fingerprint, Parent = ~Parent.y)
+        select(.data$Fingerprint, Parent = .data$Parent.y)
       i <- 1
       while (any(!is.na(link$Parent))) {
         if (i > 10) {
@@ -84,7 +84,7 @@ setValidity(
         i <- i + 1
         link <- link %>%
           left_join(object@Manifest, by = c("Parent" = "Fingerprint")) %>%
-          select_(~Fingerprint, Parent = ~Parent.y)
+          select(.data$Fingerprint, Parent = .data$Parent.y)
       }
     }
 

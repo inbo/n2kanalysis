@@ -15,7 +15,7 @@ this.last.analysed.year <- 2014L
 this.duration <- 1L
 dataset <- test_data()
 this.lc <- dataset %>%
-  select_(~A, ~B, ~C, ~D) %>%
+  select(.data$A, .data$B, .data$C, .data$D) %>%
   filter(.data$C == max(.data$C), .data$D == max(.data$D)) %>%
   distinct_() %>%
   model.matrix(object = ~A * (B + C) + C:D)

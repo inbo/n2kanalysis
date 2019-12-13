@@ -213,7 +213,7 @@ test_that(
       ),
     by = c("Parent" = "Fingerprint")
   ) %>%
-    select_(~Fingerprint, Main = ~Description) %>%
+    select("Fingerprint", Main = "Description") %>%
     left_join(
       param@Parameter,
       by = c("Fingerprint" = "Parent")
@@ -290,7 +290,7 @@ test_that(
       ),
     by = c("Parent" = "Fingerprint")
   ) %>%
-    select_(~Fingerprint, Main = ~Description) %>%
+    select("Fingerprint", Main = "Description") %>%
     left_join(
       param@Parameter,
       by = c("Fingerprint" = "Parent")
@@ -321,7 +321,7 @@ test_that(
         ),
     by = c("Parent" = "Fingerprint")
   ) %>%
-    select_(~Fingerprint, Main = ~Description) %>%
+    select("Fingerprint", Main = "Description") %>%
     left_join(
       param@Parameter %>%
         rename(Finger = "Fingerprint", Level = "Description"),
@@ -329,7 +329,7 @@ test_that(
     ) %>%
     left_join(
       param@Parameter %>%
-        select_(~ Parent, Level2 = ~Description),
+        select("Parent", Level2 = "Description"),
       by = c("Finger" = "Parent")
     )
   expect_false(any(is.na(random$Level)))
@@ -415,7 +415,7 @@ test_that(
       ),
     by = c("Parent" = "Fingerprint")
   ) %>%
-    select_(~Fingerprint, Main = ~Description) %>%
+    select("Fingerprint", Main = "Description") %>%
     left_join(
       param@Parameter,
       by = c("Fingerprint" = "Parent")
@@ -444,7 +444,7 @@ test_that(
       ),
     by = c("Parent" = "Fingerprint")
   ) %>%
-    select_(~Fingerprint, Main = ~Description) %>%
+    select("Fingerprint", Main = "Description") %>%
     left_join(
       param@Parameter %>%
         rename(Finger = "Fingerprint", Level = "Description"),
@@ -452,7 +452,7 @@ test_that(
     ) %>%
     left_join(
       param@Parameter %>%
-        select_(~ Parent, Level2 = ~Description, Finger2 = ~Fingerprint),
+        select("Parent", Level2 = "Description", Finger2 = "Fingerprint"),
       by = c("Finger" = "Parent")
     )
   expect_false(any(is.na(random$Level)))

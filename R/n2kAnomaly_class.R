@@ -32,7 +32,8 @@ setClass(
 #' @importFrom methods setValidity
 #' @importFrom n2khelper is.chartor
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr %>% anti_join select_
+#' @importFrom dplyr %>% anti_join select
+#' @importFrom rlang .data
 setValidity(
   "n2kAnomaly",
   function(object){
@@ -69,14 +70,14 @@ setValidity(
     }
 
     anomalytype.duplicate <- object@AnomalyType %>%
-      select_(~Fingerprint) %>%
+      select(.data$Fingerprint) %>%
       anyDuplicated()
     if (anomalytype.duplicate > 0) {
       stop("Duplicated anomalytypes")
     }
 
     anomaly.duplicate <- object@Anomaly %>%
-      select_(~Analysis, ~AnomalyType, ~Parameter) %>%
+      select(.data$Analysis, .data$AnomalyType, .data$Parameter) %>%
       anyDuplicated()
     if (anomaly.duplicate > 0) {
       stop("Duplicated anomalies")
