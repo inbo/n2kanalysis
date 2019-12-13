@@ -1,12 +1,11 @@
 #' @rdname get_anomaly
 #' @aliases get_anomaly,n2kInla-methods
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that is.count is.number is.flag noNA is.string
+#' @importFrom assertthat assert_that is.count is.number is.string
 #' @importFrom dplyr arrange bind_cols distinct filter group_by mutate select
 #' slice tibble transmute ungroup
 #' @importFrom rlang !!
 #' @importFrom digest sha1
-#' @importFrom utils flush.console
 #' @include n2kInla_class.R
 #' @param expected.ratio Observations that have
 #' `observed / fitted > expected.ratio` or `fitted / observed > expected.ratio`
@@ -58,8 +57,6 @@ setMethod(
         stop(analysis@Model$.args$family, " not handled yet")
       }
     }
-    assert_that(is.flag(verbose))
-    assert_that(noNA(verbose))
 
     parameter <- get_model_parameter(
       analysis = analysis,
@@ -76,10 +73,7 @@ setMethod(
       )
     }
 
-    if (verbose) {
-      message("    reading anomaly", appendLF = FALSE)
-    }
-    flush.console()
+    display(verbose, "    reading anomaly", FALSE)
 
     anomaly.type <- tibble(
       Description = c(
@@ -128,9 +122,7 @@ setMethod(
       inner_join(parameter.id, by = c("Observation" = "Description")) %>%
       arrange(desc(abs(.data$LogRatio)), desc(.data$Expected))
     # check observed counts versus expected counts
-    if (verbose) {
-      message(": observed > 0 vs fit", appendLF = FALSE)
-    }
+    display(verbose, ": observed > 0 vs fit", FALSE)
     high.ratio <- data %>%
       select(
         "Analysis", "Parameter", "Observation", "Datafield", "LogRatio"
@@ -163,9 +155,7 @@ setMethod(
         bind_rows(anomaly)
     }
 
-    if (verbose) {
-      message(", observed == 0 vs fit", appendLF = FALSE)
-    }
+    display(verbose, ", observed == 0 vs fit", FALSE)
     high.absent <- data %>%
       select(
         "Analysis", "Parameter", "Observation", "Datafield", "Expected",
@@ -182,9 +172,7 @@ setMethod(
         bind_rows(anomaly)
     }
     # select anomalies on random effects
-    if (verbose) {
-      message(", random effect")
-    }
+    display(verbose, ", random effect")
     re.anomaly <- parameter@Parameter %>%
       filter(.data$Description == "Random effect BLUP") %>%
       select(Parent = "Fingerprint") %>%

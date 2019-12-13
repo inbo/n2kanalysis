@@ -1,6 +1,5 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom aws.s3 s3readRDS
 #' @details
 #' - `status`: A vector with status levels naming the levels which should be
@@ -17,13 +16,8 @@ setMethod(
     dots <- list(...)
     if (is.null(dots$verbose)) {
       dots$verbose <- TRUE
-    } else {
-      assert_that(is.flag(dots$verbose))
-      assert_that(noNA(dots$verbose))
     }
-    if (dots$verbose) {
-      message(x$Key)
-    }
+    display(dots$verbose, x$Key)
     if (is.null(dots$base)) {
       dots$base <- get_bucket(x$Bucket)
     }
@@ -42,20 +36,14 @@ setMethod(
     }
     analysis <- s3readRDS(object = x)
     current_status <- status(analysis)
-    if (dots$verbose) {
-      message(status(analysis), " -> ", appendLF = FALSE)
-      utils::flush.console()
-    }
+    display(dots$verbose, paste(status(analysis), "-> "), FALSE)
     analysis.fitted <- fit_model(
       x = analysis,
       status = dots$status,
       base = dots$base,
       project = dots$project
     )
-    if (dots$verbose) {
-      message(status(analysis.fitted))
-      utils::flush.console()
-    }
+    display(dots$verbose, status(analysis.fitted))
     store_model(
       analysis.fitted,
       base = dots$base,

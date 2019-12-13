@@ -5,7 +5,6 @@
 #' @importFrom rlang .data
 #' @importFrom digest sha1
 #' @importFrom tidyr gather_
-#' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom stats as.formula
 #' @include n2kResult_class.R
 #' @include n2kInla_class.R
@@ -13,9 +12,6 @@ setMethod(
   f = "get_result",
   signature = signature(x = "n2kInla"),
   definition = function(x, verbose = TRUE, ...) {
-    assert_that(is.flag(verbose))
-    assert_that(noNA(verbose))
-
     validObject(x)
     anomaly <- get_anomaly(analysis = x, verbose = verbose, ...)
     if (is.null(x@LinearCombination)) {

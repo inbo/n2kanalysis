@@ -1,7 +1,6 @@
 #' @rdname get_model_parameter
 #' @importFrom methods setMethod new
 #' @importFrom lme4 ranef VarCorr
-#' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom digest sha1
 #' @importFrom stats qnorm fitted
 #' @include n2kGlmerPoisson_class.R
@@ -11,8 +10,6 @@ setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kGlmerPoisson"),
   definition = function(analysis, verbose = TRUE, ...) {
-    assert_that(is.flag(verbose))
-    assert_that(noNA(verbose))
 
     if (analysis@AnalysisMetadata$Status != "converged") {
       return(new("n2kParameter"))
@@ -27,10 +24,7 @@ setMethod(
     parameter$Fingerprint <- apply(parameter, 1, sha1)
 
     # add fixed effect parameters
-    if (verbose) {
-      message("    reading model parameters: fixed effects", appendLF = FALSE)
-    }
-    utils::flush.console()
+    display(verbose, "    reading model parameters: fixed effects", FALSE)
     variable <- c(
       "\\(Intercept\\)",
       attr(attr(get_model(analysis)@frame, "terms"), "term.labels")
@@ -88,10 +82,7 @@ setMethod(
     }
 
     # add random effect variance
-    if (verbose) {
-      message(", random effect variance", appendLF = FALSE)
-    }
-    utils::flush.console()
+    display(verbose, ", random effect variance", FALSE)
     random.variance <- VarCorr(get_model(analysis))
     if (any(sapply(random.variance, length) > 1)) {
       stop("get_model_parameters doesn't handle random slopes yet.")
@@ -117,10 +108,7 @@ setMethod(
     parameter.estimate <- rbind(parameter.estimate, tmp)
 
     # add random effect BLUP's
-    if (verbose) {
-      message(", random effect BLUP's", appendLF = FALSE)
-    }
-    utils::flush.console()
+    display(verbose, ", random effect BLUP's", FALSE)
     random.effect <- ranef(get_model(analysis), condVar = TRUE)
     extra <- data.frame(
       Description = names(random.effect),
@@ -155,10 +143,7 @@ setMethod(
     }
 
     # add fitted values
-    if (verbose) {
-      message(", fitted values")
-    }
-    utils::flush.console()
+    display(verbose, ", fitted values")
 
     extra.fitted <- data.frame(
       Description = analysis@Data$ObservationID,

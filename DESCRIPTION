@@ -54,6 +54,7 @@ Collate:
     'combine_result.R'
     'import_S3_classes.R'
     'delete_model.R'
+    'display.R'
     'n2kModel_class.R'
     'n2kInla_class.R'
     'extract.R'

@@ -48,7 +48,7 @@ setMethod(
           Description = i
         ) %>%
         mutate(
-          Fingerprint = map2(
+          Fingerprint = map2_chr(
             .data$Description,
             .data$Parent,
             ~sha1(c(Description = .x, Parent = .y))

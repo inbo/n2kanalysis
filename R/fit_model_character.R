@@ -1,6 +1,5 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom aws.s3 get_bucket
 #' @param base The root of a project. Can be either a directory on a file system
 #' or an AWS S3 bucket object.
@@ -22,10 +21,7 @@ setMethod(
     x, base, project, status = c("new", "waiting"), verbose = TRUE, ..., bucket
   ) {
     assert_that(is.string(x))
-    assert_that(is.flag(verbose))
-    if (isTRUE(verbose)) {
-      message(x)
-    }
+    display(verbose, x)
     manifest <- grepl("\\.manifest$", x)
     if (manifest) {
       pattern <- "(.*\\/)?(.*)\\/+manifest\\/([[:xdigit:]]{40})\\.manifest"
@@ -51,20 +47,14 @@ setMethod(
       return(invisible(NULL))
     }
     analysis <- read_model(hash, base = base, project = project)
-    if (isTRUE(verbose)) {
-      message(status(analysis), " -> ", appendLF = FALSE)
-      utils::flush.console()
-    }
+    display(verbose, paste(status(analysis), "-> "), FALSE)
     analysis <- fit_model(
       x = analysis,
       status = status,
       base = base,
       project = project
     )
-    if (verbose) {
-      message(status(analysis))
-      utils::flush.console()
-    }
+    display(verbose, status(analysis))
     store_model(analysis, base = base, project = project)
     rm(analysis)
     gc(verbose = FALSE)

@@ -24,41 +24,28 @@ fit_every_model <- function(path, status, verbose = TRUE, n.cluster = 1) {
     }
   }
   files <- list.files(path = path, pattern = "\\.rds$", full.names = TRUE)
-  if (n.cluster == 1) {
+  if (n.cluster == 1 || !requireNamespace("parallel", quietly = TRUE)) {
     lapply(files, fit_model, status = status, verbose = verbose)
-  } else {
-    if (requireNamespace("parallel", quietly = TRUE)) {
-      available.cluster <- parallel::detectCores()
-      if (n.cluster > available.cluster) {
-        message(
-          "Requesting ", n.cluster, " clusters but only ", available.cluster,
-          " available."
-        )
-        n.cluster <- available.cluster
-      }
-      message("Fitting models in parallel on ", n.cluster, " clusters")
-      utils::flush.console()
-      cl <- parallel::makeCluster(n.cluster)
-      result <- parallel::clusterApplyLB(
-        cl = cl,
-        x = files,
-        fun = function(x, status, verbose) {
-          require(optimx)
-          require(n2kanalysis)
-          fit_model(x = x, status = status, verbose = verbose)
-        },
-        status = status,
-        verbose = verbose
-      )
-      parallel::stopCluster(cl)
-    } else {
-      message(
-"Cannot load the parallel package. Falling back to non-parallel computing."
-      )
-      utils::flush.console()
-      lapply(files, fit_model, status = status, verbose = verbose)
-    }
+    return(invisible(NULL))
   }
+  n.cluster <- min(n.cluster, parallel::detectCores())
+  display(
+    verbose,
+    sprintf("Fitting models in parallel on %i clusters", , n.cluster)
+  )
+  cl <- parallel::makeCluster(n.cluster)
+  result <- parallel::clusterApplyLB(
+    cl = cl,
+    x = files,
+    fun = function(x, status, verbose) {
+      require(optimx)
+      require(n2kanalysis)
+      fit_model(x = x, status = status, verbose = verbose)
+    },
+    status = status,
+    verbose = verbose
+  )
+  parallel::stopCluster(cl)
 
   return(invisible(NULL))
 }
