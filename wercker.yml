@@ -1,5 +1,7 @@
+box: inbobmk/rstable:latest
+no-response-timeout: 60
+command-timeout: 60
 build:
-  box: inbobmk/rstable:latest
   steps:
     - script:
         name: "Install dependencies"
