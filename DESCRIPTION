@@ -40,6 +40,7 @@ Imports:
     tidyr (>= 0.4.0),
     yaml
 Remotes:
+  eddelbuettel/digest,
   inbo/multimput,
   inbo/n2khelper,
   inbo/INLA
