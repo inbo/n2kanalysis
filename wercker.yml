@@ -10,4 +10,4 @@ build:
           apt-get install r-cran-littler
     - inbobmk/r-check
     - inbobmk/r-coverage
-    - inbobmk/r-lint
+    - jimhester/r-lint
