@@ -66,7 +66,7 @@ setValidity(
     assert_that(noNA(object@Data$DataFieldID), msg = "DataFieldID cannot be NA")
 
     assert_that(
-      all(table(object@Data$ObservationID, object@Data$DataFieldID) == 1),
+      all(table(object@Data$ObservationID, object@Data$DataFieldID) <= 1),
       msg = "Duplicated ObservationID"
     )
 
