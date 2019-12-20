@@ -15,6 +15,10 @@ setClassUnion("maybeRawImputed", c("rawImputed", "aggregatedImputed", "NULL"))
 #'    \item{\code{ReplicateName}}{An optional list with names of replicates.}
 #'    \item{\code{Model}}{Either NULL or the resulting INLA model.}
 #'    \item{\code{Family}}{The family of the INLA model}
+#'    \item{\code{Control}}{
+#'    A named list with options passed to the arguments of
+#'    \code{\link[INLA]{inla}}.
+#'    }
 #'    \item{\code{ImputationSize}}{The number of multiple imputations.
 #'    Defaults to \code{0}, indication no multiple imputation.}
 #'    \item{\code{Minimum}}{An optional string containing the name of the
@@ -37,6 +41,7 @@ setClass(
     ReplicateName = "list",
     Model = "maybeInla",
     Family = "character",
+    Control = "list",
     ImputationSize = "integer",
     Minimum = "character",
     RawImputed = "maybeRawImputed"
@@ -105,6 +110,16 @@ setValidity(
         }
       }
     }
+    assert_that(
+      is.list(object@Control),
+      msg = "Control must be a list"
+    )
+    assert_that(
+      !has_name(object@Control, "formula"),
+      !has_name(object@Control, "family"),
+      !has_name(object@Control, "data"),
+      !has_name(object@Control, "lincomb")
+    )
     file.fingerprint <- sha1(
       list(
         object@Data,
@@ -122,7 +137,7 @@ setValidity(
         object@AnalysisMetadata$Seed,
         object@AnalysisRelation$ParentAnalysis,
         object@ReplicateName, object@LinearCombination, object@ImputationSize,
-        object@Minimum
+        object@Minimum, object@Control
       )
     )
     assert_that(

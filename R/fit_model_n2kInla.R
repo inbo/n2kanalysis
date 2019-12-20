@@ -25,9 +25,6 @@ setMethod(
     data <- get_data(x)
     model.formula <- x@AnalysisFormula[[1]]
 
-    response <- data[, as.character(x@AnalysisFormula[[1]][[2]])]
-    link <- ifelse(is.na(response), 1, NA)
-
     if (is.null(x@LinearCombination)) {
       lc <- NULL
     } else {
@@ -47,22 +44,17 @@ setMethod(
         }
       }
     }
+    control <- x@Control
+    control$formula <- model.formula
+    control$family <- x@Family
+    control$data <- data
+    control$lincomb <- lc
     model <- try({
       if (!is.null(timeout)) {
         assert_that(is.number(timeout), timeout > 0)
         setTimeLimit(cpu = timeout, elapsed = timeout)
       }
-      inla(
-        formula = model.formula,
-        family = x@Family,
-        data = data,
-        lincomb = lc,
-        control.compute = list(
-          dic = TRUE, waic = TRUE, cpo = TRUE, config = TRUE
-        ),
-        control.predictor = list(compute = TRUE, link = link),
-        control.fixed = list(prec.intercept = 1)
-      )
+      do.call(inla, control)
     })
     if (inherits(model, "try-error")) {
       if (grepl("reached .* time limit", model)) {

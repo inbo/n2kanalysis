@@ -622,7 +622,7 @@ outside imported range\\."
         analysis.date = this.analysis.date,
         scheme.id = this.scheme.id
       ),
-      throws_error("object@Data does not have .*name.*Count")
+      throws_error("Response variable is missing from data")
     )
     expect_that(
       n2k_inla(

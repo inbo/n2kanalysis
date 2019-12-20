@@ -30,6 +30,8 @@ setGeneric(
 #' Defaults to an empty list.
 #' Used in case of `f(X, ..., replicate = Z)`.
 #' Should be a named list like e.g. `list(X = c("a", "b", "c"))`.
+#' @param control A named list passed to \code{\link[INLA]{inla}} when fitting
+#' the model.
 #' @param imputation.size The required number of imputations defaults to 0.
 #' @param minimum The name of the variable which holds the minimum counts.
 #' Only relevant in case of multiple imputation.
@@ -44,7 +46,7 @@ setMethod(
     formula, species.group.id, location.group.id, model.type,
     first.imported.year, last.imported.year, duration, last.analysed.year,
     analysis.date, lin.comb = NULL, minimum = "", imputation.size,
-    parent = character(0), seed, replicate.name = list(),
+    parent = character(0), seed, replicate.name = list(), control = list(),
     parent.status = "converged", parent.statusfingerprint, ..., model.fit
   ) {
     assert_that(is.string(status))
@@ -101,6 +103,46 @@ setMethod(
       is.character(family),
       length(family) >= 1
     )
+    assert_that(is.list(control))
+    control$control.compute$dic <- ifelse(
+      is.null(control$control.compute$dic),
+      TRUE,
+      control$control.compute$dic
+    )
+    control$control.compute$waic <- ifelse(
+      is.null(control$control.compute$waic),
+      TRUE,
+      control$control.compute$waic
+    )
+    control$control.compute$cpo <- ifelse(
+      is.null(control$control.compute$cpo),
+      TRUE,
+      control$control.compute$cpo
+    )
+    control$control.compute$config <- ifelse(
+      is.null(control$control.compute$config),
+      TRUE,
+      control$control.compute$config
+    )
+    control$control.predictor$compute <- ifelse(
+      is.null(control$control.predictor$compute),
+      TRUE,
+      control$control.predictor$compute
+    )
+    assert_that(
+      has_name(data, as.character(as.formula(formula)[[2]])),
+      msg = "Response variable is missing from data"
+    )
+    response <- data[, as.character(as.formula(formula)[[2]])]
+    if (is.null(control$control.predictor$link)) {
+      control$control.predictor$link <- ifelse(is.na(response), 1, NA)
+    }
+    control$control.fixed$prec.intercept <- ifelse(
+      is.null(control$control.fixed$prec.intercept),
+      1,
+      control$control.fixed$prec.intercept
+    )
+
     file.fingerprint <- sha1(
       list(
         data, result.datasource.id, scheme.id, species.group.id,
@@ -109,7 +151,7 @@ setMethod(
         last.imported.year, duration, last.analysed.year,
         format(analysis.date, tz = "UTC"),
         seed, parent, replicate.name,
-        lin.comb, imputation.size, minimum
+        lin.comb, imputation.size, minimum, control
       )
     )
 
@@ -179,6 +221,7 @@ setMethod(
       LinearCombination = lin.comb,
       Model = NULL,
       Family = family,
+      Control = control,
       ImputationSize = imputation.size,
       Minimum = minimum,
       RawImputed = NULL

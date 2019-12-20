@@ -1,7 +1,7 @@
 Package: n2kanalysis
 Title: Generic Functions to Analyse Data from the Natura 2000 Monitoring
-Version: 0.2.8
-Date: 2019-12-14
+Version: 0.2.9
+Date: 2019-12-20
 Authors@R: c(
   person(
     "Thierry", "Onkelinx", role = c("aut", "cre"), 
@@ -27,7 +27,7 @@ Imports:
     aws.s3,
     digest (>= 0.6.23.2),
     dplyr,
-    INLA,
+    INLA (>= 19.09.03),
     lme4,
     MASS,
     methods,

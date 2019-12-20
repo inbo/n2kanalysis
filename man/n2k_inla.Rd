@@ -16,7 +16,8 @@ n2k_inla(data, ..., model.fit)
   last.imported.year, duration, last.analysed.year, analysis.date,
   lin.comb = NULL, minimum = "", imputation.size,
   parent = character(0), seed, replicate.name = list(),
-  parent.status = "converged", parent.statusfingerprint, ..., model.fit)
+  control = list(), parent.status = "converged",
+  parent.statusfingerprint, ..., model.fit)
 
 \S4method{n2k_inla}{n2kInla,inla}(data, status, raw.imputed = NULL, ...,
   model.fit)
@@ -75,6 +76,9 @@ A random seed will be inserted when missing.}
 Defaults to an empty list.
 Used in case of \code{f(X, ..., replicate = Z)}.
 Should be a named list like e.g. \code{list(X = c("a", "b", "c"))}.}
+
+\item{control}{A named list passed to \code{\link[INLA]{inla}} when fitting
+the model.}
 
 \item{parent.status}{The status of the parent analysis.}
 

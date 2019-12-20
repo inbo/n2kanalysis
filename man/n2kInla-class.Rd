@@ -16,6 +16,10 @@ combinations.}
 \item{\code{ReplicateName}}{An optional list with names of replicates.}
 \item{\code{Model}}{Either NULL or the resulting INLA model.}
 \item{\code{Family}}{The family of the INLA model}
+\item{\code{Control}}{
+A named list with options passed to the arguments of
+\code{\link[INLA]{inla}}.
+}
 \item{\code{ImputationSize}}{The number of multiple imputations.
 Defaults to \code{0}, indication no multiple imputation.}
 \item{\code{Minimum}}{An optional string containing the name of the
