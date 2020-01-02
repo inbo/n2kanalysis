@@ -137,3 +137,5 @@ Collate:
 Encoding: UTF-8
 RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)
+URL: https://doi.org/10.5281/zenodo.3576047
+BugReports: https://github.com/inbo/n2kanalysis/issues
