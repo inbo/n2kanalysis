@@ -2,7 +2,7 @@
 % Please edit documentation in R/inla_inverse.R
 \name{inla_inverse}
 \alias{inla_inverse}
-\title{Calculate the mean and 95\% confidence interval from the inverse of a
+\title{Calculate the mean and 95\\% confidence interval from the inverse of a
 marginal}
 \usage{
 inla_inverse(marginal)

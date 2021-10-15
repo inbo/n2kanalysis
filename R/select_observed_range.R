@@ -13,7 +13,7 @@ select_observed_range <- function(observation, variable) {
   variable <- check_character(
     x = variable,
     name = "variable",
-    na.action = na.fail
+    na_action = na.fail
   )
   junk <- check_dataframe_variable(
     df = observation,

@@ -13,8 +13,7 @@ extract(extractor, object, base, project)
 
 \S4method{extract}{ANY,character}(extractor, object, base, project)
 
-\S4method{extract}{ANY,n2kInla}(extractor, object, base = NULL,
-  project = NULL)
+\S4method{extract}{ANY,n2kInla}(extractor, object, base = NULL, project = NULL)
 }
 \arguments{
 \item{extractor}{the extractor function}

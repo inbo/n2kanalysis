@@ -13,8 +13,7 @@ n2k_glmer_poisson(data, ..., model.fit)
 
 \S4method{n2k_glmer_poisson}{data.frame,ANY}(data, ..., model.fit)
 
-\S4method{n2k_glmer_poisson}{n2kGlmerPoisson,glmerMod}(data, ...,
-  model.fit)
+\S4method{n2k_glmer_poisson}{n2kGlmerPoisson,glmerMod}(data, ..., model.fit)
 }
 \arguments{
 \item{data}{a data.frame with the data to analyse}

@@ -3,13 +3,10 @@ Title: Generic Functions to Analyse Data from the Natura 2000 Monitoring
 Version: 0.2.9
 Date: 2019-12-20
 Authors@R: c(
-  person(
-    "Thierry", "Onkelinx", role = c("aut", "cre"), 
-    email = "thierry.onkelinx@inbo.be", 
-    comment = c(ORCID = "0000-0001-8804-4216")),
-  person(
-    family = "Research Institute for Nature and Forest",
-    role = c("cph", "fnd"), email = "info@inbo.be"))
+    person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-8804-4216")),
+    person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
+  )
 Description: All generic functions for the analysis. The full analysis is
     defined in the analysis package of each monitoring scheme.
 Depends:
@@ -33,7 +30,7 @@ Imports:
     methods,
     multimput (>= 0.2.9),
     purrr,
-    n2khelper (>= 0.4.3),
+    n2khelper (>= 0.5.0),
     rlang,
     RODBC,
     tibble,
@@ -135,7 +132,7 @@ Collate:
     'union.R'
     'validOject.R'
 Encoding: UTF-8
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 URL: https://doi.org/10.5281/zenodo.3576047
 BugReports: https://github.com/inbo/n2kanalysis/issues

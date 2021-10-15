@@ -22,8 +22,15 @@
 \usage{
 fit_model(x, ...)
 
-\S4method{fit_model}{character}(x, base, project, status = c("new",
-  "waiting"), verbose = TRUE, ..., bucket)
+\S4method{fit_model}{character}(
+  x,
+  base,
+  project,
+  status = c("new", "waiting"),
+  verbose = TRUE,
+  ...,
+  bucket
+)
 
 \S4method{fit_model}{n2kAggregate}(x, ...)
 
@@ -33,13 +40,20 @@ fit_model(x, ...)
 
 \S4method{fit_model}{n2kInla}(x, status = "new", ..., timeout = NULL)
 
-\S4method{fit_model}{n2kInlaComparison}(x, base, project, status = "new",
-  verbose = TRUE, ...)
+\S4method{fit_model}{n2kInlaComparison}(x, base, project, status = "new", verbose = TRUE, ...)
 
 \S4method{fit_model}{n2kLrtGlmer}(x, ...)
 
-\S4method{fit_model}{n2kManifest}(x, base, project, status = c("new",
-  "waiting"), verbose = TRUE, ..., local, bash = FALSE)
+\S4method{fit_model}{n2kManifest}(
+  x,
+  base,
+  project,
+  status = c("new", "waiting"),
+  verbose = TRUE,
+  ...,
+  local,
+  bash = FALSE
+)
 
 \S4method{fit_model}{n2kModelImputed}(x, ...)
 

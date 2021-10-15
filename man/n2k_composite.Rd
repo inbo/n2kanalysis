@@ -9,10 +9,24 @@
 \usage{
 n2k_composite(parent.status, ...)
 
-\S4method{n2k_composite}{data.frame}(parent.status, status = "waiting",
-  result.datasource.id, scheme.id, formula, species.group.id,
-  location.group.id, model.type, first.imported.year, last.imported.year,
-  duration, last.analysed.year, analysis.date, extractor, ..., seed)
+\S4method{n2k_composite}{data.frame}(
+  parent.status,
+  status = "waiting",
+  result.datasource.id,
+  scheme.id,
+  formula,
+  species.group.id,
+  location.group.id,
+  model.type,
+  first.imported.year,
+  last.imported.year,
+  duration,
+  last.analysed.year,
+  analysis.date,
+  extractor,
+  ...,
+  seed
+)
 }
 \arguments{
 \item{parent.status}{A \code{data.frame} with columns

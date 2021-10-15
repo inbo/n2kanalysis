@@ -10,17 +10,35 @@
 \usage{
 n2k_inla(data, ..., model.fit)
 
-\S4method{n2k_inla}{data.frame,ANY}(data, status = "new",
-  result.datasource.id, scheme.id, family = "poisson", formula,
-  species.group.id, location.group.id, model.type, first.imported.year,
-  last.imported.year, duration, last.analysed.year, analysis.date,
-  lin.comb = NULL, minimum = "", imputation.size,
-  parent = character(0), seed, replicate.name = list(),
-  control = list(), parent.status = "converged",
-  parent.statusfingerprint, ..., model.fit)
+\S4method{n2k_inla}{data.frame,ANY}(
+  data,
+  status = "new",
+  result.datasource.id,
+  scheme.id,
+  family = "poisson",
+  formula,
+  species.group.id,
+  location.group.id,
+  model.type,
+  first.imported.year,
+  last.imported.year,
+  duration,
+  last.analysed.year,
+  analysis.date,
+  lin.comb = NULL,
+  minimum = "",
+  imputation.size,
+  parent = character(0),
+  seed,
+  replicate.name = list(),
+  control = list(),
+  parent.status = "converged",
+  parent.statusfingerprint,
+  ...,
+  model.fit
+)
 
-\S4method{n2k_inla}{n2kInla,inla}(data, status, raw.imputed = NULL, ...,
-  model.fit)
+\S4method{n2k_inla}{n2kInla,inla}(data, status, raw.imputed = NULL, ..., model.fit)
 }
 \arguments{
 \item{data}{a data.frame with the data to analyse}

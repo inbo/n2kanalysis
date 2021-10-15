@@ -44,7 +44,7 @@ select_factor_count_strictly_positive <- function(# nolint
   variable <- check_character(
     x = variable,
     name = "variable",
-    na.action = na.fail
+    na_action = na.fail
   )
   assert_that(is.count(dimension))
   assert_that(is.flag(relative))

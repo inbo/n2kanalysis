@@ -32,7 +32,7 @@ setGeneric(
 #' @importFrom digest sha1
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
-#' @importFrom n2khelper is.chartor
+#' @importFrom n2khelper is_chartor
 #' @include n2kGlmerPoisson_class.R
 setMethod(
   f = "n2k_glmer_poisson",
@@ -79,7 +79,7 @@ setMethod(
     if (is.null(dots$parent)) {
       dots$parent <- character(0)
     } else {
-      assert_that(is.chartor(dots$parent))
+      assert_that(is_chartor(dots$parent))
       assert_that(noNA(dots$parent))
     }
     file.fingerprint <- sha1(

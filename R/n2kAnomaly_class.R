@@ -30,7 +30,7 @@ setClass(
 )
 
 #' @importFrom methods setValidity
-#' @importFrom n2khelper is.chartor
+#' @importFrom n2khelper is_chartor
 #' @importFrom assertthat assert_that
 #' @importFrom dplyr %>% anti_join select
 #' @importFrom rlang .data
@@ -40,18 +40,18 @@ setValidity(
     assert_that(has_name(object@AnomalyType, "Description"))
     assert_that(has_name(object@AnomalyType, "Fingerprint"))
 
-    assert_that(is.chartor(object@AnomalyType$Description))
-    assert_that(is.chartor(object@AnomalyType$Fingerprint))
+    assert_that(is_chartor(object@AnomalyType$Description))
+    assert_that(is_chartor(object@AnomalyType$Fingerprint))
 
     assert_that(has_name(object@Anomaly, "AnomalyType"))
     assert_that(has_name(object@Anomaly, "Analysis"))
     assert_that(has_name(object@Anomaly, "Parameter"))
     assert_that(has_name(object@Anomaly, "Observation"))
 
-    assert_that(is.chartor(object@Anomaly$AnomalyType))
-    assert_that(is.chartor(object@Anomaly$Analysis))
-    assert_that(is.chartor(object@Anomaly$Parameter))
-    assert_that(is.chartor(object@Anomaly$Observation))
+    assert_that(is_chartor(object@Anomaly$AnomalyType))
+    assert_that(is_chartor(object@Anomaly$Analysis))
+    assert_that(is_chartor(object@Anomaly$Parameter))
+    assert_that(is_chartor(object@Anomaly$Observation))
 
     antijoin.anomalytype <- object@Anomaly %>%
       anti_join(object@AnomalyType, by = c("AnomalyType" = "Fingerprint")) %>%

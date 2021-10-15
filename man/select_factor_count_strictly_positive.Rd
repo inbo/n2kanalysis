@@ -4,8 +4,13 @@
 \alias{select_factor_count_strictly_positive}
 \title{Select data based on the number of prescences per category}
 \usage{
-select_factor_count_strictly_positive(observation, variable, threshold,
-  relative = FALSE, dimension = 1)
+select_factor_count_strictly_positive(
+  observation,
+  variable,
+  threshold,
+  relative = FALSE,
+  dimension = 1
+)
 }
 \arguments{
 \item{observation}{the \code{data.frame} with observations}

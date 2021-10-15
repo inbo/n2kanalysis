@@ -22,8 +22,7 @@ get_model_parameter(analysis, ...)
 
 \S4method{get_model_parameter}{n2kComposite}(analysis, ...)
 
-\S4method{get_model_parameter}{n2kGlmerPoisson}(analysis, verbose = TRUE,
-  ...)
+\S4method{get_model_parameter}{n2kGlmerPoisson}(analysis, verbose = TRUE, ...)
 
 \S4method{get_model_parameter}{n2kInla}(analysis, verbose = TRUE, ...)
 

@@ -9,11 +9,9 @@
 \usage{
 store_model(x, base, project, overwrite = TRUE, validate = TRUE)
 
-\S4method{store_model}{ANY,character}(x, base, project, overwrite = TRUE,
-  validate = TRUE)
+\S4method{store_model}{ANY,character}(x, base, project, overwrite = TRUE, validate = TRUE)
 
-\S4method{store_model}{ANY,s3_bucket}(x, base, project, overwrite = TRUE,
-  validate = TRUE)
+\S4method{store_model}{ANY,s3_bucket}(x, base, project, overwrite = TRUE, validate = TRUE)
 }
 \arguments{
 \item{x}{The n2kModel.}

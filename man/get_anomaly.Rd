@@ -13,12 +13,25 @@
 \usage{
 get_anomaly(analysis, ...)
 
-\S4method{get_anomaly}{n2kGlmerPoisson}(analysis, n = 20,
-  log.expected.ratio = log(5), log.expected.absent = log(5),
-  random.threshold = log(5), verbose = TRUE, ...)
+\S4method{get_anomaly}{n2kGlmerPoisson}(
+  analysis,
+  n = 20,
+  log.expected.ratio = log(5),
+  log.expected.absent = log(5),
+  random.threshold = log(5),
+  verbose = TRUE,
+  ...
+)
 
-\S4method{get_anomaly}{n2kInla}(analysis, n = 20, expected.ratio = 5,
-  expected.absent = 5, random.threshold = 1.05, verbose = TRUE, ...)
+\S4method{get_anomaly}{n2kInla}(
+  analysis,
+  n = 20,
+  expected.ratio = 5,
+  expected.absent = 5,
+  random.threshold = 1.05,
+  verbose = TRUE,
+  ...
+)
 
 \S4method{get_anomaly}{n2kModel}(analysis, verbose = TRUE, ...)
 }

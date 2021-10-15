@@ -27,7 +27,7 @@ setClass(
 
 #' @importFrom methods setValidity
 #' @importFrom assertthat assert_that has_name
-#' @importFrom n2khelper is.chartor
+#' @importFrom n2khelper is_chartor
 #' @importFrom stats as.formula
 setValidity(
   "n2kAnalysisMetadata",
@@ -50,16 +50,16 @@ setValidity(
     assert_that(has_name(object@AnalysisMetadata, "AnalysisVersion"))
     assert_that(has_name(object@AnalysisMetadata, "StatusFingerprint"))
 
-    assert_that(is.chartor(object@AnalysisMetadata$ResultDatasourceID))
-    assert_that(is.chartor(object@AnalysisMetadata$SchemeID))
-    assert_that(is.chartor(object@AnalysisMetadata$SpeciesGroupID))
-    assert_that(is.chartor(object@AnalysisMetadata$LocationGroupID))
-    assert_that(is.chartor(object@AnalysisMetadata$ModelType))
-    assert_that(is.chartor(object@AnalysisMetadata$Formula))
-    assert_that(is.chartor(object@AnalysisMetadata$FileFingerprint))
-    assert_that(is.chartor(object@AnalysisMetadata$Status))
-    assert_that(is.chartor(object@AnalysisMetadata$AnalysisVersion))
-    assert_that(is.chartor(object@AnalysisMetadata$StatusFingerprint))
+    assert_that(is_chartor(object@AnalysisMetadata$ResultDatasourceID))
+    assert_that(is_chartor(object@AnalysisMetadata$SchemeID))
+    assert_that(is_chartor(object@AnalysisMetadata$SpeciesGroupID))
+    assert_that(is_chartor(object@AnalysisMetadata$LocationGroupID))
+    assert_that(is_chartor(object@AnalysisMetadata$ModelType))
+    assert_that(is_chartor(object@AnalysisMetadata$Formula))
+    assert_that(is_chartor(object@AnalysisMetadata$FileFingerprint))
+    assert_that(is_chartor(object@AnalysisMetadata$Status))
+    assert_that(is_chartor(object@AnalysisMetadata$AnalysisVersion))
+    assert_that(is_chartor(object@AnalysisMetadata$StatusFingerprint))
     assert_that(is.integer(object@AnalysisMetadata$FirstImportedYear))
     assert_that(is.integer(object@AnalysisMetadata$LastImportedYear))
     assert_that(is.integer(object@AnalysisMetadata$Duration))
@@ -103,10 +103,10 @@ setValidity(
     assert_that(has_name(object@AnalysisRelation, "ParentStatusFingerprint"))
     assert_that(has_name(object@AnalysisRelation, "ParentStatus"))
 
-    assert_that(is.chartor(object@AnalysisRelation$Analysis))
-    assert_that(is.chartor(object@AnalysisRelation$ParentAnalysis))
-    assert_that(is.chartor(object@AnalysisRelation$ParentStatusFingerprint))
-    assert_that(is.chartor(object@AnalysisRelation$ParentStatus))
+    assert_that(is_chartor(object@AnalysisRelation$Analysis))
+    assert_that(is_chartor(object@AnalysisRelation$ParentAnalysis))
+    assert_that(is_chartor(object@AnalysisRelation$ParentStatusFingerprint))
+    assert_that(is_chartor(object@AnalysisRelation$ParentStatus))
 
     this.year <- as.integer(format(Sys.time(), "%Y"))
     if (any(object@AnalysisMetadata$LastImportedYear > this.year)) {

@@ -9,11 +9,23 @@
 \usage{
 n2k_inla_comparison(parent.status, ...)
 
-\S4method{n2k_inla_comparison}{data.frame}(parent.status,
-  status = "waiting", result.datasource.id, scheme.id, formula,
-  species.group.id, location.group.id, model.type, first.imported.year,
-  last.imported.year, duration, last.analysed.year, analysis.date, ...,
-  seed)
+\S4method{n2k_inla_comparison}{data.frame}(
+  parent.status,
+  status = "waiting",
+  result.datasource.id,
+  scheme.id,
+  formula,
+  species.group.id,
+  location.group.id,
+  model.type,
+  first.imported.year,
+  last.imported.year,
+  duration,
+  last.analysed.year,
+  analysis.date,
+  ...,
+  seed
+)
 }
 \arguments{
 \item{parent.status}{A \code{data.frame} with columns

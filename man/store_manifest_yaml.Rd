@@ -9,11 +9,9 @@
 \usage{
 store_manifest_yaml(x, base, project, docker, dependencies)
 
-\S4method{store_manifest_yaml}{ANY,s3_bucket}(x, base, project, docker,
-  dependencies)
+\S4method{store_manifest_yaml}{ANY,s3_bucket}(x, base, project, docker, dependencies)
 
-\S4method{store_manifest_yaml}{ANY,character}(x, base, project, docker,
-  dependencies)
+\S4method{store_manifest_yaml}{ANY,character}(x, base, project, docker, dependencies)
 }
 \arguments{
 \item{x}{the n2kManifest}
