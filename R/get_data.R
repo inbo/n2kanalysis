@@ -14,18 +14,6 @@ setGeneric(
 )
 
 #' @rdname get_data
-#' @aliases get_data,n2kGlmerPoisson-methods
-#' @importFrom methods setMethod new
-#' @include n2kGlmerPoisson_class.R
-setMethod(
-  f = "get_data",
-  signature = signature(x = "n2kGlmerPoisson"),
-  definition = function(x) {
-    return(x@Data)
-  }
-)
-
-#' @rdname get_data
 #' @aliases get_data,n2kInla-methods
 #' @importFrom methods setMethod new
 #' @include n2kInla_class.R

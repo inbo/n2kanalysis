@@ -90,29 +90,6 @@ setGeneric(
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kGlmerPoisson_class.R
-setReplaceMethod(
-  "status",
-  "n2kGlmerPoisson",
-  function(x, value) {
-    x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- sha1(
-      list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        x@Model, x@AnalysisMetadata$AnalysisVersion,
-        x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
-        x@AnalysisRelation
-      ),
-      digits = 6L
-    )
-    validObject(x)
-    return(x)
-  }
-)
-
-#' @rdname status.change
-#' @importFrom methods setReplaceMethod
-#' @importFrom digest sha1
 #' @include n2kInla_class.R
 setReplaceMethod(
   "status",

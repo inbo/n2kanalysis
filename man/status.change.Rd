@@ -3,7 +3,6 @@
 \docType{methods}
 \name{status<-}
 \alias{status<-}
-\alias{status<-,n2kGlmerPoisson-method}
 \alias{status<-,n2kInla-method}
 \alias{status<-,n2kComposite-method}
 \alias{status<-,n2kInlaComparison-method}
@@ -12,8 +11,6 @@
 \title{Overwrite the status of a n2kAnalysisMetadata}
 \usage{
 status(x) <- value
-
-\S4method{status}{n2kGlmerPoisson}(x) <- value
 
 \S4method{status}{n2kInla}(x) <- value
 

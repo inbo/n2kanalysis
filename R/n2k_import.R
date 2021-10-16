@@ -1,5 +1,5 @@
 #' Create a n2kImport object
-#' @inheritParams n2k_glmer_poisson
+#' @inheritParams n2k_inla
 #' @template analysis-metadata
 #' @details
 #' - `formula`: a string holding the model formula.

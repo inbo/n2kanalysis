@@ -3,15 +3,11 @@
 \docType{methods}
 \name{get_data}
 \alias{get_data}
-\alias{get_data,n2kGlmerPoisson-method}
-\alias{get_data,n2kGlmerPoisson-methods}
 \alias{get_data,n2kInla-method}
 \alias{get_data,n2kInla-methods}
 \title{Get the data of a n2kModel object}
 \usage{
 get_data(x)
-
-\S4method{get_data}{n2kGlmerPoisson}(x)
 
 \S4method{get_data}{n2kInla}(x)
 }

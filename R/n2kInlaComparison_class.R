@@ -14,7 +14,7 @@ setClassUnion("maybeDataFrame", c("data.frame", "NULL"))
 #' @aliases n2kInlaComparison-class
 #' @importFrom methods setClass
 #' @docType class
-#' @include n2kModel_class.R n2kGlmerPoisson_class.R
+#' @include n2kModel_class.R
 setClass(
   "n2kInlaComparison",
   representation = representation(

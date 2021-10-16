@@ -1,5 +1,5 @@
 #' Create a n2kAggregate object
-#' @inheritParams n2k_glmer_poisson
+#' @inheritParams n2k_inla
 #' @template analysis-metadata
 #' @details
 #' - `fun`: The function to apply when aggregating.

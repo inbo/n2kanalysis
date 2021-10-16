@@ -1,5 +1,7 @@
 #' Create a n2kInla object
-#' @inheritParams n2k_glmer_poisson
+#' @param data a data.frame with the data to analyse
+#' @param model.fit The fitted model
+#' @param ... other arguments. See below
 #' @name n2k_inla
 #' @rdname n2k_inla
 #' @exportMethod n2k_inla
