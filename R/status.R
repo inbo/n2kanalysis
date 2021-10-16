@@ -135,40 +135,6 @@ setReplaceMethod(
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kLrtGlmer_class.R
-setReplaceMethod(
-  "status",
-  "n2kLrtGlmer",
-  function(x, value) {
-    x@AnalysisMetadata$Status <- value
-    if (is.null(x@Model)) {
-      model <- NULL
-    } else {
-      model <- x@Model@frame
-    }
-    if (is.null(x@Model0)) {
-      model0 <- NULL
-    } else {
-      model0 <- x@Model0@frame
-    }
-    x@AnalysisMetadata$StatusFingerprint <- sha1(
-      list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        x@Model, x@Model0, x@Anova,
-        x@AnalysisMetadata$AnalysisVersion,
-        x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
-        x@AnalysisRelation
-      ),
-      digits = 6L
-    )
-    validObject(x)
-    return(x)
-  }
-)
-
-#' @rdname status.change
-#' @importFrom methods setReplaceMethod
-#' @importFrom digest sha1
 #' @include n2kComposite_class.R
 setReplaceMethod(
   "status",

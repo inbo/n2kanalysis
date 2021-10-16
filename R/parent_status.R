@@ -43,27 +43,6 @@ setGeneric(
 #' @rdname parent.status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kLrtGlmer_class.R
-setReplaceMethod(
-  "parent_status",
-  "n2kLrtGlmer",
-  function(x, value) {
-    x@AnalysisRelation <- value
-    x@StatusFingerprint <- sha1(
-      list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Model,
-        x@Model0,  x@Anova, x@AnalysisMetadata$AnalysisVersion,
-        x@AnalysisRelation
-      )
-    )
-    validObject(x)
-    return(x)
-  }
-)
-
-#' @rdname parent.status.change
-#' @importFrom methods setReplaceMethod
-#' @importFrom digest sha1
 #' @include n2kComposite_class.R
 setReplaceMethod(
   "parent_status",

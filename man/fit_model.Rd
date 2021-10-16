@@ -2,9 +2,8 @@
 % Please edit documentation in R/fit_model.R, R/fit_model_character.R,
 %   R/fit_model_n2kAggregate.R, R/fit_model_n2kComposite.R,
 %   R/fit_model_n2kGlmerPoisson.R, R/fit_model_n2kInla.R,
-%   R/fit_model_n2kInlaComparison.R, R/fit_model_n2kLrtGlmer.R,
-%   R/fit_model_n2kManifest.R, R/fit_model_n2kModelImputed.R,
-%   R/fit_model_s3_object.R
+%   R/fit_model_n2kInlaComparison.R, R/fit_model_n2kManifest.R,
+%   R/fit_model_n2kModelImputed.R, R/fit_model_s3_object.R
 \docType{methods}
 \name{fit_model}
 \alias{fit_model}
@@ -14,7 +13,6 @@
 \alias{fit_model,n2kGlmerPoisson-method}
 \alias{fit_model,n2kInla-method}
 \alias{fit_model,n2kInlaComparison-method}
-\alias{fit_model,n2kLrtGlmer-method}
 \alias{fit_model,n2kManifest-method}
 \alias{fit_model,n2kModelImputed-method}
 \alias{fit_model,s3_object-method}
@@ -41,8 +39,6 @@ fit_model(x, ...)
 \S4method{fit_model}{n2kInla}(x, status = "new", ..., timeout = NULL)
 
 \S4method{fit_model}{n2kInlaComparison}(x, base, project, status = "new", verbose = TRUE, ...)
-
-\S4method{fit_model}{n2kLrtGlmer}(x, ...)
 
 \S4method{fit_model}{n2kManifest}(
   x,

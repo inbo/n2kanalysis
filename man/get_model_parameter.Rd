@@ -3,7 +3,7 @@
 %   R/get_model_parameter_n2kAggregated.R, R/get_model_parameter_n2kComposite.R,
 %   R/get_model_parameter_n2kGlmerPoisson.R, R/get_model_parameter_n2kInla.R,
 %   R/get_model_parameter_n2kInlaComparison.R,
-%   R/get_model_parameter_n2kLrtGlmer.R, R/get_model_parameter_n2kModelImputed.R
+%   R/get_model_parameter_n2kModelImputed.R
 \docType{methods}
 \name{get_model_parameter}
 \alias{get_model_parameter}
@@ -12,7 +12,6 @@
 \alias{get_model_parameter,n2kGlmerPoisson-method}
 \alias{get_model_parameter,n2kInla-method}
 \alias{get_model_parameter,n2kInlaComparison-method}
-\alias{get_model_parameter,n2kLrtGlmer-method}
 \alias{get_model_parameter,n2kModelImputed-method}
 \title{Add the model parameters from a model}
 \usage{
@@ -27,8 +26,6 @@ get_model_parameter(analysis, ...)
 \S4method{get_model_parameter}{n2kInla}(analysis, verbose = TRUE, ...)
 
 \S4method{get_model_parameter}{n2kInlaComparison}(analysis, ...)
-
-\S4method{get_model_parameter}{n2kLrtGlmer}(analysis, ...)
 
 \S4method{get_model_parameter}{n2kModelImputed}(analysis, ...)
 }
