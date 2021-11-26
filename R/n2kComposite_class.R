@@ -39,7 +39,7 @@ setValidity(
       stop("'ParentAnalysis' in 'AnalysisRelation' slot cannot be missing")
     }
 
-    file.fingerprint <- sha1(
+    file_fingerprint <- sha1(
       list(
         object@AnalysisMetadata$ResultDatasourceID,
         object@AnalysisMetadata$SchemeID,
@@ -57,10 +57,10 @@ setValidity(
         as.character(body(object@Extractor))
       )
     )
-    if (object@AnalysisMetadata$FileFingerprint != file.fingerprint) {
+    if (object@AnalysisMetadata$FileFingerprint != file_fingerprint) {
       stop("Corrupt FileFingerprint")
     }
-    status.fingerprint <- sha1(
+    status_fingerprint <- sha1(
       list(
         object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
         object@Parameter, object@Index, object@AnalysisMetadata$AnalysisVersion,
@@ -69,7 +69,7 @@ setValidity(
       ),
       digits = 6L
     )
-    if (object@AnalysisMetadata$StatusFingerprint != status.fingerprint) {
+    if (object@AnalysisMetadata$StatusFingerprint != status_fingerprint) {
       stop("Corrupt StatusFingerprint")
     }
 

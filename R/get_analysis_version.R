@@ -29,17 +29,17 @@ setMethod(
     if (is.null(attr(version, "AnalysisVersion"))) {
       stop("Missing AnalysisVersion attribute")
     }
-    analysis.version <- data.frame(
+    analysis_version <- data.frame(
       Fingerprint = attr(version, "AnalysisVersion"),
       stringsAsFactors = FALSE
     )
     version <- version[order(version$Description, version$Version), ]
     new(
       "n2kAnalysisVersion",
-      AnalysisVersion = analysis.version,
+      AnalysisVersion = analysis_version,
       RPackage = version,
       AnalysisVersionRPackage = data.frame(
-        AnalysisVersion = analysis.version$Fingerprint,
+        AnalysisVersion = analysis_version$Fingerprint,
         RPackage = version$Fingerprint,
         stringsAsFactors = FALSE
       )

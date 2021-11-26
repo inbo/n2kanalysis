@@ -8,89 +8,89 @@
 \alias{n2k_inla,n2kInla,inla-method}
 \title{Create a n2kInla object}
 \usage{
-n2k_inla(data, ..., model.fit)
+n2k_inla(data, ..., model_fit)
 
 \S4method{n2k_inla}{data.frame,ANY}(
   data,
   status = "new",
-  result.datasource.id,
-  scheme.id,
+  result_datasource_id,
+  scheme_id,
   family = "poisson",
   formula,
-  species.group.id,
-  location.group.id,
-  model.type,
-  first.imported.year,
-  last.imported.year,
+  species_group_id,
+  location_group_id,
+  model_type,
+  first_imported_year,
+  last_imported_year,
   duration,
-  last.analysed.year,
-  analysis.date,
-  lin.comb = NULL,
+  last_analysed_year,
+  analysis_date,
+  lin_comb = NULL,
   minimum = "",
-  imputation.size,
+  imputation_size,
   parent = character(0),
   seed,
-  replicate.name = list(),
+  replicate_name = list(),
   control = list(),
-  parent.status = "converged",
-  parent.statusfingerprint,
+  parent_status = "converged",
+  parent_statusfingerprint,
   ...,
-  model.fit
+  model_fit
 )
 
-\S4method{n2k_inla}{n2kInla,inla}(data, status, raw.imputed = NULL, ..., model.fit)
+\S4method{n2k_inla}{n2kInla,inla}(data, status, raw_imputed = NULL, ..., model_fit)
 }
 \arguments{
 \item{data}{a data.frame with the data to analyse}
 
 \item{...}{other arguments. See below}
 
-\item{model.fit}{The fitted model}
+\item{model_fit}{The fitted model}
 
 \item{status}{A single character indicating the status of the model.
 Defaults to \code{"waiting"}.}
 
-\item{result.datasource.id}{The id of the results datasource.}
+\item{result_datasource_id}{The id of the results datasource.}
 
-\item{scheme.id}{A single integer holding the id of the scheme.}
+\item{scheme_id}{A single integer holding the id of the scheme.}
 
 \item{family}{the family to use in the INLA model.}
 
 \item{formula}{A single character identifying the comparison.}
 
-\item{species.group.id}{A single integer identifing the species group.}
+\item{species_group_id}{A single integer identifing the species group.}
 
-\item{location.group.id}{A single integer identifing the location group.}
+\item{location_group_id}{A single integer identifing the location group.}
 
-\item{model.type}{The type of the models.
+\item{model_type}{The type of the models.
 Must start with \code{"inla comparison:"}.}
 
-\item{first.imported.year}{Oldest year considered in the data.}
+\item{first_imported_year}{Oldest year considered in the data.}
 
-\item{last.imported.year}{Most recent year considered in the data.}
+\item{last_imported_year}{Most recent year considered in the data.}
 
 \item{duration}{The width of the moving window.
-Defaults to the \code{last.imported.year - first.imported.year + 1}.}
+Defaults to the \code{last_imported_year - first_imported_year + 1}.}
 
-\item{last.analysed.year}{Most recent year in the window.
-Defaults to \code{last.imported.year}.}
+\item{last_analysed_year}{Most recent year in the window.
+Defaults to \code{last_imported_year}.}
 
-\item{analysis.date}{A POSIXct date indicating the date that the dataset was
+\item{analysis_date}{A POSIXct date indicating the date that the dataset was
 imported.}
 
-\item{lin.comb}{A model matrix to calculate linear combinations.}
+\item{lin_comb}{A model matrix to calculate linear combinations.}
 
 \item{minimum}{The name of the variable which holds the minimum counts.
 Only relevant in case of multiple imputation.}
 
-\item{imputation.size}{The required number of imputations defaults to 0.}
+\item{imputation_size}{The required number of imputations defaults to 0.}
 
 \item{parent}{The file fingerprint of the optional parent analysis.}
 
 \item{seed}{A single integer used as a seed for all calculations.
 A random seed will be inserted when missing.}
 
-\item{replicate.name}{A list with the names of replicates.
+\item{replicate_name}{A list with the names of replicates.
 Defaults to an empty list.
 Used in case of \code{f(X, ..., replicate = Z)}.
 Should be a named list like e.g. \code{list(X = c("a", "b", "c"))}.}
@@ -98,11 +98,11 @@ Should be a named list like e.g. \code{list(X = c("a", "b", "c"))}.}
 \item{control}{A named list passed to \code{\link[INLA]{inla}} when fitting
 the model.}
 
-\item{parent.status}{The status of the parent analysis.}
+\item{parent_status}{The status of the parent analysis.}
 
-\item{parent.statusfingerprint}{The statusfingerprint of the parent analysis.}
+\item{parent_statusfingerprint}{The statusfingerprint of the parent analysis.}
 
-\item{raw.imputed}{the optional RawImputed object}
+\item{raw_imputed}{the optional RawImputed object}
 }
 \description{
 A new n2kInla model is created when \code{data} is a data.frame.

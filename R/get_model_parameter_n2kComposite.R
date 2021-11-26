@@ -16,28 +16,28 @@ setMethod(
     )
     parameter$Fingerprint <- apply(parameter, 1, sha1)
 
-    parameter.estimate <- cbind(
+    parameter_estimate <- cbind(
       Analysis = analysis@AnalysisMetadata$FileFingerprint,
       analysis@Index,
       stringsAsFactors = FALSE
     )
-    colnames(parameter.estimate)[2] <- "Parameter"
-    row.names(parameter.estimate) <- NULL
+    colnames(parameter_estimate)[2] <- "Parameter"
+    row.names(parameter_estimate) <- NULL
 
     extra <- data.frame(
-      Description = parameter.estimate$Parameter,
+      Description = parameter_estimate$Parameter,
       Parent = parameter$Fingerprint,
       stringsAsFactors = FALSE
     )
     extra$Fingerprint <- apply(extra, 1, sha1)
     parameter <- rbind(parameter, extra)
 
-    parameter.estimate$Parameter <- extra$Fingerprint
+    parameter_estimate$Parameter <- extra$Fingerprint
 
     new(
       "n2kParameter",
       Parameter = parameter,
-      ParameterEstimate = parameter.estimate
+      ParameterEstimate = parameter_estimate
     )
   }
 )

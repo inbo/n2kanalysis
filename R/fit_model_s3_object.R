@@ -37,7 +37,7 @@ setMethod(
     analysis <- s3readRDS(object = x)
     current_status <- status(analysis)
     display(dots$verbose, paste(status(analysis), "-> "), FALSE)
-    analysis.fitted <- fit_model(
+    analysis_fitted <- fit_model(
       x = analysis,
       status = dots$status,
       base = dots$base,
@@ -45,7 +45,7 @@ setMethod(
     )
     display(dots$verbose, status(analysis.fitted))
     store_model(
-      analysis.fitted,
+      analysis_fitted,
       base = dots$base,
       project = dots$project
     )

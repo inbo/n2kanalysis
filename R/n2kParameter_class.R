@@ -36,20 +36,20 @@ setClass(
 setValidity(
   "n2kParameter",
   function(object) {
-    Parameter <- object@Parameter
+    parameter <- object@Parameter
     assert_that(
-      has_name(Parameter, "Description"),
-      has_name(Parameter, "Parent"),
-      has_name(Parameter, "Fingerprint")
+      has_name(parameter, "Description"),
+      has_name(parameter, "Parent"),
+      has_name(parameter, "Fingerprint")
     )
 
-    ParameterEstimate <- object@ParameterEstimate
+    parameter_estimate <- object@ParameterEstimate
     assert_that(
-      has_name(ParameterEstimate, "Analysis"),
-      has_name(ParameterEstimate, "Parameter"),
-      has_name(ParameterEstimate, "Estimate"),
-      has_name(ParameterEstimate, "LowerConfidenceLimit"),
-      has_name(ParameterEstimate, "UpperConfidenceLimit")
+      has_name(parameter_estimate, "Analysis"),
+      has_name(parameter_estimate, "Parameter"),
+      has_name(parameter_estimate, "Estimate"),
+      has_name(parameter_estimate, "LowerConfidenceLimit"),
+      has_name(parameter_estimate, "UpperConfidenceLimit")
     )
 
     if (!all(

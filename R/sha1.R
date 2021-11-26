@@ -6,7 +6,7 @@ digest::sha1
 #' @export
 #' @method sha1 inla
 #' @include import_S3_classes.R
-sha1.inla <- function(x, digits = 14L, zapsmall = 7L, ...) {
+sha1.inla <- function(x, digits = 14L, zapsmall = 7L, ...) { #nolint
   parameter <- list(
     RandomEffects = x$summary.random,
     FixedEffects = list(x$summary.fixed),

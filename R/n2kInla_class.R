@@ -120,7 +120,7 @@ setValidity(
       !has_name(object@Control, "data"),
       !has_name(object@Control, "lincomb")
     )
-    file.fingerprint <- sha1(
+    file_fingerprint <- sha1(
       list(
         object@Data,
         object@AnalysisMetadata$ResultDatasourceID,
@@ -141,11 +141,11 @@ setValidity(
       )
     )
     assert_that(
-      object@AnalysisMetadata$FileFingerprint == file.fingerprint,
+      object@AnalysisMetadata$FileFingerprint == file_fingerprint,
       msg = "Corrupt FileFingerprint"
     )
 
-    status.fingerprint <- sha1(
+    status_fingerprint <- sha1(
       list(
         object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
         object@Model, object@AnalysisMetadata$AnalysisVersion,
@@ -156,7 +156,7 @@ setValidity(
     )
 
     assert_that(
-      object@AnalysisMetadata$StatusFingerprint == status.fingerprint,
+      object@AnalysisMetadata$StatusFingerprint == status_fingerprint,
       msg = "Corrupt StatusFingerprint"
     )
 

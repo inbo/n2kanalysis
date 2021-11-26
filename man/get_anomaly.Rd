@@ -14,9 +14,9 @@ get_anomaly(analysis, ...)
 \S4method{get_anomaly}{n2kInla}(
   analysis,
   n = 20,
-  expected.ratio = 5,
-  expected.absent = 5,
-  random.threshold = 1.05,
+  expected_ratio = 5,
+  expected_absent = 5,
+  random_threshold = 1.05,
   verbose = TRUE,
   ...
 )
@@ -28,13 +28,13 @@ get_anomaly(analysis, ...)
 
 \item{...}{Extra options. See details}
 
-\item{expected.ratio}{Observations that have
-\code{observed / fitted > expected.ratio} or \code{fitted / observed > expected.ratio}
+\item{expected_ratio}{Observations that have
+\code{observed / fitted > expected_ratio} or \code{fitted / observed > expected_ratio}
 are potential anomalies.
 Defaults to \code{5}, which implies that observed values that are 5 times higher
 or lower than the fitted values are potential anomalies.}
 
-\item{expected.absent}{Zero observations where \code{fitted > expected.absent} are
+\item{expected_absent}{Zero observations where \code{fitted > expected_absent} are
 potential anomalies.}
 }
 \description{

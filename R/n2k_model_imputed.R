@@ -2,15 +2,15 @@
 #' @inheritParams n2k_inla
 #' @template analysis-metadata
 #' @details
-#' - `model.fun`: The `model.fun` argument of
+#' - `model_fun`: The `model_fun` argument of
 #' \code{\link[multimput]{model_impute}}.
 #' - `package`: A character vector of package names which must be loaded for
-#' \code{model.fun}.
-#' - `model.args`: An optional list for the `model.args` argument of
+#' \code{model_fun}.
+#' - `model_args`: An optional list for the `model_args` argument of
 #' \code{\link[multimput]{model_impute}}.
 #' - `extractor`: An optional list for the `extractor` argument of
 #' \code{\link[multimput]{model_impute}}.
-#' - `extractor.args`: An optional list for the `extractor.args` argument of
+#' - `extractor_args`: An optional list for the `extractor_args` argument of
 #' \code{\link[multimput]{model_impute}}.
 #' - `filter`: An optional list for the `filter` argument of
 #'  \code{\link[multimput]{model_impute}}.
@@ -56,29 +56,29 @@ setMethod(
       assert_that(is.count(dots$seed))
       dots$seed <- as.integer(dots$seed)
     }
-    assert_that(is.string(dots$result.datasource.id))
-    assert_that(is.string(dots$scheme.id))
-    assert_that(is.string(dots$species.group.id))
-    assert_that(is.string(dots$location.group.id))
-    assert_that(is.string(dots$model.type))
+    assert_that(is.string(dots$result_datasource_id))
+    assert_that(is.string(dots$scheme_id))
+    assert_that(is.string(dots$species_group_id))
+    assert_that(is.string(dots$location_group_id))
+    assert_that(is.string(dots$model_type))
     assert_that(is.string(dots$formula))
-    assert_that(is.count(dots$first.imported.year))
-    dots$first.imported.year <- as.integer(dots$first.imported.year)
-    assert_that(is.count(dots$last.imported.year))
-    dots$last.imported.year <- as.integer(dots$last.imported.year)
+    assert_that(is.count(dots$first_imported_year))
+    dots$first_imported_year <- as.integer(dots$first_imported_year)
+    assert_that(is.count(dots$last_imported_year))
+    dots$last_imported_year <- as.integer(dots$last_imported_year)
     if (is.null(dots$duration)) {
-      dots$duration <- dots$last.imported.year - dots$first.imported.year + 1L
+      dots$duration <- dots$last_imported_year - dots$first_imported_year + 1L
     } else {
       assert_that(is.count(dots$duration))
       dots$duration <- as.integer(dots$duration)
     }
-    if (is.null(dots$last.analysed.year)) {
-      dots$last.analysed.year <- dots$last.imported.year
+    if (is.null(dots$last_analysed_year)) {
+      dots$last_analysed_year <- dots$last_imported_year
     } else {
-      assert_that(is.count(dots$last.analysed.year))
-      dots$last.analysed.year <- as.integer(dots$last.analysed.year)
+      assert_that(is.count(dots$last_analysed_year))
+      dots$last_analysed_year <- as.integer(dots$last_analysed_year)
     }
-    assert_that(is.time(dots$analysis.date))
+    assert_that(is.time(dots$analysis_date))
     if (is.null(dots$filter)) {
       dots$filter <- list()
     } else {
@@ -89,26 +89,26 @@ setMethod(
     } else {
       assert_that(is.list(dots$mutate))
     }
-    assert_that(is.function(dots$model.fun))
+    assert_that(is.function(dots$model_fun))
     assert_that(is.function(dots$extractor))
-    if (is.null(dots$model.args)) {
-      dots$model.args <- list()
+    if (is.null(dots$model_args)) {
+      dots$model_args <- list()
     } else {
-      assert_that(is.list(dots$model.args))
+      assert_that(is.list(dots$model_args))
     }
-    if (is.null(dots$prepare.model.args)) {
-      dots$prepare.model.args <- list()
+    if (is.null(dots$prepare_model_args)) {
+      dots$prepare_model_args <- list()
     } else {
-      assert_that(is.list(dots$prepare.model.args),
-                  length(dots$prepare.model.args) <= 1)
-      if (length(dots$prepare.model.args)) {
-        assert_that(is.function(dots$prepare.model.args[[1]]))
+      assert_that(is.list(dots$prepare_model_args),
+                  length(dots$prepare_model_args) <= 1)
+      if (length(dots$prepare_model_args)) {
+        assert_that(is.function(dots$prepare_model_args[[1]]))
       }
     }
-    if (is.null(dots$extractor.args)) {
-      dots$extractor.args <- list()
+    if (is.null(dots$extractor_args)) {
+      dots$extractor_args <- list()
     } else {
-      assert_that(is.list(dots$extractor.args))
+      assert_that(is.list(dots$extractor_args))
     }
     if (is.null(dots$package)) {
       dots$package <- character(0)
@@ -117,45 +117,45 @@ setMethod(
     }
     assert_that(is.string(dots$parent))
 
-    file.fingerprint <- sha1(
+    file_fingerprint <- sha1(
       list(
-        dots$result.datasource.id,
-        dots$scheme.id, dots$species.group.id, dots$location.group.id,
-        dots$model.type, dots$formula, dots$first.imported.year,
-        dots$last.imported.year, dots$duration, dots$last.analysed.year,
-        format(dots$analysis.date, tz = "UTC"),
-        dots$seed, dots$parent, dots$model.fun, dots$filter,
-        dots$mutate, dots$model.args, dots$prepare.model.args, dots$extractor,
-        dots$extractor.args, dots$package
+        dots$result_datasource_id,
+        dots$scheme_id, dots$species_group_id, dots$location_group_id,
+        dots$model_type, dots$formula, dots$first_imported_year,
+        dots$last_imported_year, dots$duration, dots$last_analysed_year,
+        format(dots$analysis_date, tz = "UTC"),
+        dots$seed, dots$parent, dots$model_fun, dots$filter,
+        dots$mutate, dots$model_args, dots$prepare_model_args, dots$extractor,
+        dots$extractor_args, dots$package
       ),
       environment = FALSE
     )
 
-    if (is.null(dots$parent.statusfingerprint)) {
-      if (is.null(dots$parent.status)) {
-        dots$parent.status <- "waiting"
+    if (is.null(dots$parent_statusfingerprint)) {
+      if (is.null(dots$parent_status)) {
+        dots$parent_status <- "waiting"
       }
-      dots$parent.statusfingerprint <- sha1(dots$parent.status)
+      dots$parent_statusfingerprint <- sha1(dots$parent_status)
     } else {
-      if (is.null(dots[["parent.status"]])) {
+      if (is.null(dots[["parent_status"]])) {
         stop(
-"'parent.status' is required when 'parent.status.fingerprint' is provided"
+"'parent_status' is required when 'parent_statusfingerprint' is provided"
         )
       }
     }
-    analysis.relation <- data.frame(
-      Analysis = file.fingerprint,
+    analysis_relation <- data_frame(
+      Analysis = file_fingerprint,
       ParentAnalysis = dots$parent,
-      ParentStatusFingerprint = dots$parent.statusfingerprint,
-      ParentStatus = dots$parent.status,
+      ParentStatusFingerprint = dots$parent_statusfingerprint,
+      ParentStatus = dots$parent_status,
       stringsAsFactors = FALSE
     )
     version <- get_analysis_version(sessionInfo())
-    status.fingerprint <- sha1(
+    status_fingerprint <- sha1(
       list(
-        file.fingerprint, dots$status, version@AnalysisVersion$Fingerprint,
+        file_fingerprint, dots$status, version@AnalysisVersion$Fingerprint,
         version@AnalysisVersion, version@RPackage,
-        version@AnalysisVersionRPackage, analysis.relation, NULL, NULL
+        version@AnalysisVersionRPackage, analysis_relation, NULL, NULL
       ),
       digits = 6L
     )
@@ -166,34 +166,34 @@ setMethod(
       RPackage = version@RPackage,
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
       AnalysisMetadata = data.frame(
-        ResultDatasourceID = dots$result.datasource.id,
-        SchemeID = dots$scheme.id,
-        SpeciesGroupID = dots$species.group.id,
-        LocationGroupID = dots$location.group.id,
-        ModelType = dots$model.type,
+        ResultDatasourceID = dots$result_datasource_id,
+        SchemeID = dots$scheme_id,
+        SpeciesGroupID = dots$species_group_id,
+        LocationGroupID = dots$location_group_id,
+        ModelType = dots$model_type,
         Formula = dots$formula,
-        FirstImportedYear = dots$first.imported.year,
-        LastImportedYear = dots$last.imported.year,
+        FirstImportedYear = dots$first_imported_year,
+        LastImportedYear = dots$last_imported_year,
         Duration = dots$duration,
-        LastAnalysedYear = dots$last.analysed.year,
-        AnalysisDate = dots$analysis.date,
+        LastAnalysedYear = dots$last_analysed_year,
+        AnalysisDate = dots$analysis_date,
         Seed = dots$seed,
         Status = dots$status,
         AnalysisVersion = version@AnalysisVersion$Fingerprint,
-        FileFingerprint = file.fingerprint,
-        StatusFingerprint = status.fingerprint,
+        FileFingerprint = file_fingerprint,
+        StatusFingerprint = status_fingerprint,
         stringsAsFactors = FALSE
       ),
       AnalysisFormula = list(as.formula(dots$formula)),
-      AnalysisRelation = analysis.relation,
-      Function = dots$model.fun,
+      AnalysisRelation = analysis_relation,
+      Function = dots$model_fun,
       Package = dots$package,
       Filter = dots$filter,
       Mutate = dots$mutate,
-      ModelArgs = dots$model.args,
-      PrepareModelArgs = dots$prepare.model.args,
+      ModelArgs = dots$model_args,
+      PrepareModelArgs = dots$prepare_model_args,
       Extractor = dots$extractor,
-      ExtractorArgs = dots$extractor.args,
+      ExtractorArgs = dots$extractor_args,
       AggregatedImputed = NULL,
       Results = NULL
     )

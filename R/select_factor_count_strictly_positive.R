@@ -64,19 +64,19 @@ select_factor_count_strictly_positive <- function(# nolint
     stop("the dimension can't exceed the number of variables")
   }
 
-  positive.observation <- observation[observation$Count > 0, ]
-  observed.combination <- table(positive.observation[, variable])
+  positive_observation <- observation[observation$Count > 0, ]
+  observed_combination <- table(positive_observation[, variable])
   if (length(variable) == 1) {
     if (relative) {
-      observed.combination <- observed.combination / sum(observed.combination)
+      observed_combination <- observed_combination / sum(observed_combination)
     }
-    relevance <- observed.combination >= threshold
+    relevance <- observed_combination >= threshold
   } else {
-    relevance <- apply(observed.combination > 0, dimension, sum) >= threshold
+    relevance <- apply(observed_combination > 0, dimension, sum) >= threshold
   }
-  selected.level <- names(relevance)[relevance]
+  selected_level <- names(relevance)[relevance]
 
   selection <- as.character(observation[[variable[dimension]]]) %in%
-    selected.level
+    selected_level
   return(observation[selection, ])
 }

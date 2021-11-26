@@ -74,18 +74,18 @@ setMethod(
 
     concat <- function(parent, child) {
       child[is.na(child)] <- ""
-      parent.split <- strsplit(parent, ":")
-      child.split <- strsplit(child, ":")
-      too.short <- sapply(child.split, length) < sapply(parent.split, length)
-      child.split[too.short] <- lapply(child.split[too.short], c, "")
+      parent_split <- strsplit(parent, ":")
+      child_split <- strsplit(child, ":")
+      too_short <- sapply(child_split, length) < sapply(parent_split, length)
+      child_split[too_short] <- lapply(child_split[too_short], c, "")
       sapply(
-        seq_along(parent.split),
+        seq_along(parent_split),
         function(i) {
-          rbind(parent.split[[i]], child.split[[i]])
+          rbind(parent_split[[i]], child_split[[i]])
         }
       )
       apply(
-        cbind(parent.split, child.split),
+        cbind(parent_split, child_split),
         1,
         function(z) {
           do.call(
@@ -98,7 +98,7 @@ setMethod(
       )
     }
 
-    fixed.parameterid <- anomaly@Parameter %>%
+    fixed_parameterid <- anomaly@Parameter %>%
       semi_join(
         anomaly@Parameter %>%
           filter(.data$Description == "Fixed effect"),
@@ -122,16 +122,16 @@ setMethod(
       )
 
     if (is.matrix(x@LinearCombination)) {
-      contrast.coefficient <- x@LinearCombination
-      contrast.coefficient[abs(contrast.coefficient) < 1e-8] <- NA
-      contrast.coefficient <- contrast.coefficient %>%
+      contrast_coefficient <- x@LinearCombination
+      contrast_coefficient[abs(contrast_coefficient) < 1e-8] <- NA
+      contrast_coefficient <- contrast_coefficient %>%
         as.data.frame() %>%
         rownames_to_column("Description") %>%
         gather_(
           "ParameterID",
           "Coefficient",
-          colnames(contrast.coefficient)[
-            !grepl("Description", colnames(contrast.coefficient))
+          colnames(contrast_coefficient)[
+            !grepl("Description", colnames(contrast_coefficient))
           ],
           na.rm = TRUE
         ) %>%
@@ -142,12 +142,12 @@ setMethod(
         ) %>%
         select(-"Description", Contrast = .data$Fingerprint) %>%
         mutate(ParameterID = gsub("[\\(|\\)]", "", .data$ParameterID)) %>%
-        inner_join(fixed.parameterid, by = "ParameterID") %>%
+        inner_join(fixed_parameterid, by = "ParameterID") %>%
         select(.data$Contrast, .data$Parameter, .data$Coefficient) %>%
         arrange(.data$Contrast, .data$Parameter) %>%
         as.data.frame()
     } else {
-      contrast.coefficient <- lapply(
+      contrast_coefficient <- lapply(
         names(x@LinearCombination),
         function(y) {
           if (is.vector(x@LinearCombination[[y]])) {
@@ -158,10 +158,10 @@ setMethod(
               stringsAsFactors = FALSE
             ) %>%
               filter(abs(.data$Coefficient) >= 1e-8) %>%
-              inner_join(fixed.parameterid, by = "ParameterID") %>%
+              inner_join(fixed_parameterid, by = "ParameterID") %>%
               select(.data$Contrast, .data$Parameter, .data$Coefficient)
           } else {
-            random.id <- anomaly@Parameter %>%
+            random_id <- anomaly@Parameter %>%
               semi_join(
                 anomaly@Parameter %>%
                 semi_join(
@@ -199,7 +199,7 @@ setMethod(
                     x@Model$summary.random[[y]]$ID[.data$Description]
                   )
                 ) %>%
-                inner_join(random.id, by = "Description") %>%
+                inner_join(random_id, by = "Description") %>%
                 select(-"Description")
             } else {
               lc %>%
@@ -215,7 +215,7 @@ setMethod(
                 inner_join(
                   anomaly@Parameter %>%
                     inner_join(
-                      random.id %>%
+                      random_id %>%
                         rename(Main = "Description"),
                       by = c("Parent" = "Parameter")
                     ) %>%
@@ -241,7 +241,7 @@ setMethod(
     } else {
       lc <- x@Model$summary.lincomb
     }
-    contrast.estimate <- tibble(
+    contrast_estimate <- tibble(
       Description = rownames(lc),
       Estimate = lc$mean,
       LowerConfidenceLimit = lc[, "0.025quant"],
@@ -273,8 +273,8 @@ setMethod(
       AnomalyType = anomaly@AnomalyType,
       Anomaly = anomaly@Anomaly,
       Contrast = contrast,
-      ContrastCoefficient = contrast.coefficient,
-      ContrastEstimate = contrast.estimate
+      ContrastCoefficient = contrast_coefficient,
+      ContrastEstimate = contrast_estimate
     )
   }
 )

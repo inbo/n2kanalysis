@@ -21,7 +21,7 @@ setMethod(
   signature = "n2kAnalysisVersion",
   definition = function(...) {
     dots <- list(...)
-    analysis.version <- unique(do.call(
+    analysis_version <- unique(do.call(
       rbind,
       lapply(
         dots,
@@ -30,12 +30,12 @@ setMethod(
         }
       )
     ))
-    analysis.version <- analysis.version[
-      order(analysis.version$Fingerprint),
+    analysis_version <- analysis_version[
+      order(analysis_version$Fingerprint),
       ,
       drop = FALSE
     ]
-    r.package <- unique(do.call(
+    r_package <- unique(do.call(
       rbind,
       lapply(
         dots,
@@ -44,8 +44,8 @@ setMethod(
         }
       )
     ))
-    r.package <- r.package[order(r.package$Description, r.package$Version), ]
-    analysis.version.r.package <- unique(do.call(
+    r_package <- r_package[order(r_package$Description, r_package$Version), ]
+    analysis_version_r_package <- unique(do.call(
       rbind,
       lapply(
         dots,
@@ -54,17 +54,17 @@ setMethod(
         }
       )
     ))
-    analysis.version.r.package <- analysis.version.r.package[
+    analysis_version_r_package <- analysis_version_r_package[
       order(
-        analysis.version.r.package$AnalysisVersion,
-        analysis.version.r.package$RPackage
+        analysis_version_r_package$AnalysisVersion,
+        analysis_version_r_package$RPackage
       ),
     ]
     new(
       "n2kAnalysisVersion",
-      AnalysisVersion = analysis.version,
-      RPackage = r.package,
-      AnalysisVersionRPackage = analysis.version.r.package
+      AnalysisVersion = analysis_version,
+      RPackage = r_package,
+      AnalysisVersionRPackage = analysis_version_r_package
     )
   }
 )
@@ -87,7 +87,7 @@ setMethod(
         }
       )
     ))
-    parameter.estimate <- unique(do.call(
+    parameter_estimate <- unique(do.call(
       rbind,
       lapply(
         dots,
@@ -99,7 +99,7 @@ setMethod(
     new(
       "n2kParameter",
       Parameter = parameter,
-      ParameterEstimate = parameter.estimate
+      ParameterEstimate = parameter_estimate
     )
   }
 )
@@ -113,7 +113,7 @@ setMethod(
   signature = "n2kAnomaly",
   definition = function(...) {
     dots <- list(...)
-    anomaly.type <- unique(do.call(
+    anomaly_type <- unique(do.call(
       rbind,
       lapply(
         dots,
@@ -133,7 +133,7 @@ setMethod(
     ))
     new(
       "n2kAnomaly",
-      AnomalyType = anomaly.type,
+      AnomalyType = anomaly_type,
       Anomaly = anomaly
     )
   }

@@ -36,15 +36,15 @@ A random seed will be inserted when missing.
 }
 
 \itemize{
-\item \code{model.fun}: The \code{model.fun} argument of
+\item \code{model_fun}: The \code{model_fun} argument of
 \code{\link[multimput]{model_impute}}.
 \item \code{package}: A character vector of package names which must be loaded for
-\code{model.fun}.
-\item \code{model.args}: An optional list for the \code{model.args} argument of
+\code{model_fun}.
+\item \code{model_args}: An optional list for the \code{model_args} argument of
 \code{\link[multimput]{model_impute}}.
 \item \code{extractor}: An optional list for the \code{extractor} argument of
 \code{\link[multimput]{model_impute}}.
-\item \code{extractor.args}: An optional list for the \code{extractor.args} argument of
+\item \code{extractor_args}: An optional list for the \code{extractor_args} argument of
 \code{\link[multimput]{model_impute}}.
 \item \code{filter}: An optional list for the \code{filter} argument of
 \code{\link[multimput]{model_impute}}.

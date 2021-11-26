@@ -53,33 +53,33 @@ setValidity(
     assert_that(is_chartor(object@Anomaly$Parameter))
     assert_that(is_chartor(object@Anomaly$Observation))
 
-    antijoin.anomalytype <- object@Anomaly %>%
+    antijoin_anomalytype <- object@Anomaly %>%
       anti_join(object@AnomalyType, by = c("AnomalyType" = "Fingerprint")) %>%
       nrow()
-    if (antijoin.anomalytype > 0) {
+    if (antijoin_anomalytype > 0) {
       stop("Some Anomaly have no matching Fingerprint in 'AnomalyType'")
     }
 
-    antijoin.anomaly <- object@Anomaly %>%
+    antijoin_anomaly <- object@Anomaly %>%
       anti_join(object@ParameterEstimate, by = c("Analysis", "Parameter")) %>%
       nrow()
-    if (antijoin.anomaly > 0) {
+    if (antijoin_anomaly > 0) {
       stop(
 "Mismatch on Analysis and Parameter between Anomaly and ParameterEstimate slot"
       )
     }
 
-    anomalytype.duplicate <- object@AnomalyType %>%
+    anomalytype_duplicate <- object@AnomalyType %>%
       select(.data$Fingerprint) %>%
       anyDuplicated()
-    if (anomalytype.duplicate > 0) {
+    if (anomalytype_duplicate > 0) {
       stop("Duplicated anomalytypes")
     }
 
-    anomaly.duplicate <- object@Anomaly %>%
+    anomaly_duplicate <- object@Anomaly %>%
       select(.data$Analysis, .data$AnomalyType, .data$Parameter) %>%
       anyDuplicated()
-    if (anomaly.duplicate > 0) {
+    if (anomaly_duplicate > 0) {
       stop("Duplicated anomalies")
     }
     return(TRUE)

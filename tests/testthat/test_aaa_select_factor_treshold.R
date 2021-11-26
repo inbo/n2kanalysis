@@ -2,11 +2,11 @@ context("select data based the average")
 describe("select_factor_threshold", {
   observation <- data.frame(
     Count = c(100, 101, 50, 51, 1, 0, 0, 0),
-    LocationID = rep(1:4, each = 2)
+    location_id = rep(1:4, each = 2)
   )
-  observation$LocationFactor <- factor(observation$LocationID)
-  variable <- "LocationFactor"
-  variable.numeric <- "LocationID"
+  observation$location_factor <- factor(observation$location_id)
+  variable <- "location_factor"
+  variable_numeric <- "location_id"
   threshold <- 0.05
 
   it("selects correctly", {
@@ -18,7 +18,7 @@ describe("select_factor_threshold", {
           threshold = threshold
         )
       ),
-      is_identical_to(subset(observation, LocationID %in% 1:2))
+      is_identical_to(subset(observation, location_id %in% 1:2))
     )
   })
   it("checks the number of observations", {

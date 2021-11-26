@@ -45,20 +45,20 @@ setMethod(
     }
 
     status(x) <- "waiting"
-    parent.status <- parent_status(x)
-    parent.status %>%
+    parent_status <- parent_status(x)
+    parent_status %>%
       filter(.data$ParentStatus %in% c("new", "waiting", status)) %>%
       pull("ParentAnalysis") -> todo
 
     for (parent in todo) {
       model <- read_model(x = parent, base = base, project = project)
-      parent.status[parent.status$ParentAnalysis == parent, "ParentStatus"] <-
+      parent_status[parent_status$ParentAnalysis == parent, "ParentStatus"] <-
         status(model)
-      parent.status[
-        parent.status$ParentAnalysis == parent,
+      parent_status[
+        parent_status$ParentAnalysis == parent,
         "ParentStatusFingerprint"
       ] <- get_status_fingerprint(model)
-      x@AnalysisRelation <- parent.status
+      x@AnalysisRelation <- parent_status
       if (status(model) == "converged") {
         extract(
           extractor = x@Extractor,
@@ -72,9 +72,9 @@ setMethod(
           arrange(.data$Parent, .data$Value) -> x@Parameter
       }
     }
-    if (all(parent.status$ParentStatus == "converged")) {
+    if (all(parent_status$ParentStatus == "converged")) {
       status(x) <- "new"
-    } else if (any(parent.status$ParentStatus == "error")) {
+    } else if (any(parent_status$ParentStatus == "error")) {
       status(x) <- "error"
     } else {
       status(x) <- "waiting"

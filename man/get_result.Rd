@@ -12,7 +12,7 @@
 \usage{
 get_result(x, ...)
 
-\S4method{get_result}{character}(x, n.cluster = 1, verbose = TRUE, ...)
+\S4method{get_result}{character}(x, n_cluster = 1, verbose = TRUE, ...)
 
 \S4method{get_result}{n2kInla}(x, verbose = TRUE, ...)
 
@@ -25,7 +25,7 @@ get_result(x, ...)
 
 \item{...}{further arguments (see Details)}
 
-\item{n.cluster}{The number of clusters to run this function in parallel.
+\item{n_cluster}{The number of clusters to run this function in parallel.
 Defaults to \code{1} (= no parallel computing).}
 
 \item{verbose}{Print extra information on the screen}

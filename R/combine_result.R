@@ -10,7 +10,7 @@ setMethod(
   definition = function(...) {
     dots <- list(...)
 
-    analysis.metadata <- do.call(
+    analysis_metadata <- do.call(
       rbind,
       lapply(
         dots,
@@ -21,9 +21,9 @@ setMethod(
     ) %>%
       arrange(.data$FileFingerprint)
 
-    analysis.formula <- lapply(analysis.metadata$Formula, as.formula)
+    analysis_formula <- lapply(analysis_metadata$Formula, as.formula)
 
-    analysis.relation <- do.call(
+    analysis_relation <- do.call(
       rbind,
       lapply(
         dots,
@@ -33,7 +33,7 @@ setMethod(
     )) %>%
       arrange(.data$Analysis, .data$ParentAnalysis)
 
-    analysis.version <- do.call(
+    analysis_version <- do.call(
       rbind,
       lapply(
         dots,
@@ -45,7 +45,7 @@ setMethod(
       distinct() %>%
       arrange(.data$Fingerprint)
 
-    r.package <- do.call(
+    r_package <- do.call(
       rbind,
       lapply(
         dots,
@@ -57,7 +57,7 @@ setMethod(
       distinct() %>%
       arrange(.data$Fingerprint)
 
-    analysis.version.r.package <- do.call(
+    analysis_version_r_package <- do.call(
       rbind,
       lapply(
         dots,
@@ -81,7 +81,7 @@ setMethod(
       distinct() %>%
       arrange(.data$Fingerprint)
 
-    parameter.estimate <- do.call(
+    parameter_estimate <- do.call(
       rbind,
       lapply(
         dots,
@@ -93,7 +93,7 @@ setMethod(
       distinct() %>%
       arrange(.data$Analysis, .data$Parameter)
 
-    anomaly.type <- do.call(
+    anomaly_type <- do.call(
       rbind,
       lapply(
         dots,
@@ -128,7 +128,7 @@ setMethod(
     ) %>%
       distinct() %>%
       arrange(.data$Fingerprint)
-    contrast.coefficient <- do.call(
+    contrast_coefficient <- do.call(
       rbind,
       lapply(
         dots,
@@ -139,7 +139,7 @@ setMethod(
     ) %>%
       distinct() %>%
       arrange(.data$Contrast, .data$Parameter)
-    contrast.estimate <- do.call(
+    contrast_estimate <- do.call(
       rbind,
       lapply(
         dots,
@@ -153,19 +153,19 @@ setMethod(
 
     new(
       "n2kResult",
-      AnalysisMetadata = analysis.metadata,
-      AnalysisFormula = analysis.formula,
-      AnalysisRelation = analysis.relation,
-      AnalysisVersion = analysis.version,
-      RPackage = r.package,
-      AnalysisVersionRPackage = analysis.version.r.package,
+      AnalysisMetadata = analysis_metadata,
+      AnalysisFormula = analysis_formula,
+      AnalysisRelation = analysis_relation,
+      AnalysisVersion = analysis_version,
+      RPackage = r_package,
+      AnalysisVersionRPackage = analysis_version_r_package,
       Parameter = parameter,
-      ParameterEstimate = parameter.estimate,
-      AnomalyType = anomaly.type,
+      ParameterEstimate = parameter_estimate,
+      AnomalyType = anomaly_type,
       Anomaly = anomaly,
       Contrast = contrast,
-      ContrastCoefficient = contrast.coefficient,
-      ContrastEstimate = contrast.estimate
+      ContrastCoefficient = contrast_coefficient,
+      ContrastEstimate = contrast_estimate
     )
   }
 )

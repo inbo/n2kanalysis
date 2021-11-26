@@ -23,7 +23,7 @@ setMethod(
     set.seed(get_seed(x))
 
     data <- get_data(x)
-    model.formula <- x@AnalysisFormula[[1]]
+    model_formula <- x@AnalysisFormula[[1]]
 
     if (is.null(x@LinearCombination)) {
       lc <- NULL
@@ -45,7 +45,7 @@ setMethod(
       }
     }
     control <- x@Control
-    control$formula <- model.formula
+    control$formula <- model_formula
     control$family <- x@Family
     control$data <- data
     control$lincomb <- lc

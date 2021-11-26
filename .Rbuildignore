@@ -1,6 +1,7 @@
 ^.*\.Rproj$
-^\.Rproj\.user$
 ^\.git$
 ^\.lintr$
-^wercker\.yml$
+^\.Rproj\.user$
+^\.zenodo\.json$
 ^man-roxygen$
+^wercker\.yml$

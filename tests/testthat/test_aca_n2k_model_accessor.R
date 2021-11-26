@@ -3,24 +3,24 @@ data("cbpp", package = "lme4")
 cbpp$DataFieldID <- sha1(letters)
 cbpp$ObservationID <- seq_len(nrow(cbpp))
 object <- n2k_glmer_poisson(
-  result.datasource.id = sha1(letters),
-  scheme.id = sha1(letters),
-  species.group.id = sha1(letters),
-  location.group.id = sha1(letters),
-  model.type = "glmer poisson: period + herd",
+  result_datasource_id = sha1(letters),
+  scheme_id = sha1(letters),
+  species_group_id = sha1(letters),
+  location_group_id = sha1(letters),
+  model_type = "glmer poisson: period + herd",
   formula = "incidence ~ offset(log(size)) + period + (1|herd)",
-  first.imported.year = 1990,
-  last.imported.year = 2015,
+  first_imported_year = 1990,
+  last_imported_year = 2015,
   analysis.date = as.POSIXct("2000-01-01 12:13:14", tz = "UTC"),
   data = cbpp
 )
-model.object <- lme4::glmer(
+model_object <- lme4::glmer(
   incidence ~ offset(log(size)) + period + (1 | herd),
   data = object@Data,
   family = poisson
 )
-object.model <- n2k_glmer_poisson(
-  data = object, model.fit = model.object, status = "converged"
+object_model <- n2k_glmer_poisson(
+  data = object, model_fit = model_object, status = "converged"
 )
 
 describe("status() handles n2kModel objects", {
@@ -30,8 +30,8 @@ describe("status() handles n2kModel objects", {
       is_identical_to(object@AnalysisMetadata$Status)
     )
     expect_that(
-      status(object.model),
-      is_identical_to(object.model@AnalysisMetadata$Status)
+      status(object_model),
+      is_identical_to(object_model@AnalysisMetadata$Status)
     )
   })
   it("updates the status", {
@@ -54,7 +54,7 @@ describe("get_data() handles n2kModel objects", {
       is_identical_to(cbpp)
     )
     expect_that(
-      get_data(object.model),
+      get_data(object_model),
       is_identical_to(cbpp)
     )
   })

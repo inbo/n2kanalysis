@@ -85,12 +85,12 @@ setValidity(
         stop("Formulas in 'AnalysisMetadata' don't match 'AnalysisFormula'")
       }
     } else {
-      formula.list <- lapply(
+      formula_list <- lapply(
         levels(object@AnalysisMetadata$Formula),
         as.formula
       )
       if (!isTRUE(all.equal(
-        formula.list[object@AnalysisMetadata$Formula],
+        formula_list[object@AnalysisMetadata$Formula],
         object@AnalysisFormula
       ))) {
         stop("Formulas in 'AnalysisMetadata' don't match 'AnalysisFormula'")
@@ -108,8 +108,8 @@ setValidity(
     assert_that(is_chartor(object@AnalysisRelation$ParentStatusFingerprint))
     assert_that(is_chartor(object@AnalysisRelation$ParentStatus))
 
-    this.year <- as.integer(format(Sys.time(), "%Y"))
-    if (any(object@AnalysisMetadata$LastImportedYear > this.year)) {
+    this_year <- as.integer(format(Sys.time(), "%Y"))
+    if (any(object@AnalysisMetadata$LastImportedYear > this_year)) {
       stop("LastImportedYear from the future.")
     }
     if (any(
@@ -145,20 +145,20 @@ outside imported range."
       )
     }
 
-    ok.status <- c(
+    ok_status <- c(
       "new", "working", "waiting", "error", "converged", "false_convergence",
       "unstable", "insufficient_data", "time-out"
     )
-    if (!all(object@AnalysisMetadata$Status %in% ok.status)) {
+    if (!all(object@AnalysisMetadata$Status %in% ok_status)) {
       stop(
         "Status must be one of the following: ",
-        paste0("'", ok.status, "'", collapse = ", ")
+        paste0("'", ok_status, "'", collapse = ", ")
       )
     }
-    if (!all(object@AnalysisRelation$ParentStatus %in% ok.status)) {
+    if (!all(object@AnalysisRelation$ParentStatus %in% ok_status)) {
       stop(
         "Status must be one of the following: ",
-        paste0("'", ok.status, "'", collapse = ", ")
+        paste0("'", ok_status, "'", collapse = ", ")
       )
     }
     if (any(object@AnalysisMetadata$AnalysisDate > Sys.time())) {

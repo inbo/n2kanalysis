@@ -5,34 +5,34 @@ describe("file fingerprint for n2k_glmer_poisson", {
   cbpp$Weight <- cbpp$size
   cbpp$DataFieldID <- sha1(letters)
   cbpp$ObservationID <- seq_len(nrow(cbpp))
-  this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
-  this.result.datasource.id <- sha1(letters[1:5])
-  this.scheme.id <- sha1(letters[6:10])
-  this.species.group.id <- sha1(letters[11:15])
-  this.location.group.id <- sha1(letters[16:20])
-  this.seed <- 4L
-  this.model.type <- "glmer poisson: period + herd"
-  this.formula <- "incidence ~ offset(log(size)) + period + (1|herd)"
-  this.first.imported.year <- 1990L
-  this.last.imported.year <- 2015L
-  this.last.analysed.year <- 2015L
-  this.parent <- "abcdef"
-  this.duration <- this.last.imported.year - this.first.imported.year + 1
+  this_analysis_date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
+  this_result_datasource_id <- sha1(letters[1:5])
+  this_scheme_id <- sha1(letters[6:10])
+  this_species_group_id <- sha1(letters[11:15])
+  this_location_group_id <- sha1(letters[16:20])
+  this_seed <- 4L
+  this_model_type <- "glmer poisson: period + herd"
+  this_formula <- "incidence ~ offset(log(size)) + period + (1|herd)"
+  this_first_imported_year <- 1990L
+  this_last_imported_year <- 2015L
+  this_last_analysed_year <- 2015L
+  this_parent <- "abcdef"
+  this_duration <- this_last_imported_year - this_first_imported_year + 1
   object <- n2k_glmer_poisson(
-    result.datasource.id = this.result.datasource.id,
-    scheme.id = this.scheme.id,
-    species.group.id = this.species.group.id,
-    location.group.id = this.location.group.id,
-    model.type = this.model.type,
-    formula = this.formula,
-    first.imported.year = this.first.imported.year,
-    last.imported.year = this.last.imported.year,
-    last.analysed.year = this.last.analysed.year,
-    analysis.date = this.analysis.date,
-    seed = this.seed,
+    result_datasource_id = this_result_datasource_id,
+    scheme_id = this_scheme_id,
+    species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id,
+    model_type = this_model_type,
+    formula = this_formula,
+    first_imported_year = this_first_imported_year,
+    last_imported_year = this_last_imported_year,
+    last_analysed_year = this_last_analysed_year,
+    analysis_date = this_analysis_date,
+    seed = this_seed,
     data = cbpp,
-    parent = this.parent,
-    this.duration
+    parent = this_parent,
+    this_duration
   )
   gm1 <- lme4::glmer(
     cbind(incidence, size - incidence) ~ period + (1 | herd),
@@ -41,18 +41,18 @@ describe("file fingerprint for n2k_glmer_poisson", {
   )
 
 
-  test.element <- list(
-    cbpp, this.result.datasource.id,
-    this.scheme.id, this.species.group.id, this.location.group.id,
-    this.model.type, this.formula, this.first.imported.year,
-    this.last.imported.year, this.duration, this.last.analysed.year,
-    this.analysis.date, this.seed, this.parent, gm1,
+  test_element <- list(
+    cbpp, this_result_datasource_id,
+    this_scheme_id, this_species_group_id, this_location_group_id,
+    this_model_type, this_formula, this_first_imported_year,
+    this_last_imported_year, this_duration, this_last_analysed_year,
+    this_analysis_date, this_seed, this_parent, gm1,
     -0.005754 # gives error when using signif(x, 4)
   )
   # generate the correct values
   cat("\ncorrect <- c(\n")
   cat(
-    sprintf("  \"%s\"", sapply(test.element, sha1)),
+    sprintf("  \"%s\"", sapply(test_element, sha1)),
     sep = ",\n"
   )
   cat(")\n")
@@ -76,11 +76,11 @@ describe("file fingerprint for n2k_glmer_poisson", {
     "6b4b2c93a3c40ebb82d66150a136e2c6bed60733"
   )
   it("return the same SHA1 on both 32-bit and 64-bit OS", {
-    for (i in seq_along(test.element)) {
+    for (i in seq_along(test_element)) {
       expect_identical(
-        sha1(test.element[[i]]),
+        sha1(test_element[[i]]),
         correct[i],
-        label = paste0("test.element[[", i, "]]")
+        label = paste0("test_element[[", i, "]]")
       )
     }
   })

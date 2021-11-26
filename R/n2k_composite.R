@@ -7,7 +7,7 @@
 setGeneric(
   name = "n2k_composite",
   def = function(
-    parent.status, ...
+    parent_status, ...
   ) {
     standardGeneric("n2k_composite") # nocov
   }
@@ -30,19 +30,19 @@ setGeneric(
 #' @param extractor a function to extract the relevant parameters from the model
 setMethod(
   f = "n2k_composite",
-  signature = signature(parent.status = "data.frame"),
+  signature = signature(parent_status = "data.frame"),
   definition = function(
-    parent.status, status = "waiting", result.datasource.id, scheme.id,
-    formula, species.group.id, location.group.id, model.type,
-    first.imported.year, last.imported.year, duration, last.analysed.year,
-    analysis.date, extractor, ..., seed
+    parent_status, status = "waiting", result_datasource_id, scheme_id,
+    formula, species_group_id, location_group_id, model_type,
+    first_imported_year, last_imported_year, duration, last_analysed_year,
+    analysis_date, extractor, ..., seed
   ) {
     assert_that(
-      has_name(parent.status, "ParentAnalysis"),
-      has_name(parent.status, "ParentStatusFingerprint"),
-      has_name(parent.status, "ParentStatus")
+      has_name(parent_status, "ParentAnalysis"),
+      has_name(parent_status, "ParentStatusFingerprint"),
+      has_name(parent_status, "ParentStatus")
     )
-    parent.status <- parent.status %>%
+    parent_status <- parent_status %>%
       arrange(.data$ParentAnalysis)
     assert_that(is.string(status))
     if (missing(seed)) {
@@ -51,44 +51,44 @@ setMethod(
       assert_that(is.count(seed))
       seed <- as.integer(seed)
     }
-    assert_that(is.string(result.datasource.id))
-    assert_that(is.string(scheme.id))
-    assert_that(is.string(species.group.id))
-    assert_that(is.string(location.group.id))
-    assert_that(is.string(model.type))
+    assert_that(is.string(result_datasource_id))
+    assert_that(is.string(scheme_id))
+    assert_that(is.string(species_group_id))
+    assert_that(is.string(location_group_id))
+    assert_that(is.string(model_type))
     assert_that(is.string(formula))
-    assert_that(is.count(first.imported.year))
-    first.imported.year <- as.integer(first.imported.year)
-    assert_that(is.count(last.imported.year))
-    last.imported.year <- as.integer(last.imported.year)
+    assert_that(is.count(first_imported_year))
+    first_imported_year <- as.integer(first_imported_year)
+    assert_that(is.count(last_imported_year))
+    last_imported_year <- as.integer(last_imported_year)
     if (missing(duration)) {
-      duration <- last.imported.year - first.imported.year + 1L
+      duration <- last_imported_year - first_imported_year + 1L
     } else {
       assert_that(is.count(duration))
       duration <- as.integer(duration)
     }
-    if (missing(last.analysed.year)) {
-      last.analysed.year <- last.imported.year
+    if (missing(last_analysed_year)) {
+      last_analysed_year <- last_imported_year
     } else {
-      assert_that(is.count(last.analysed.year))
-      last.analysed.year <- as.integer(last.analysed.year)
+      assert_that(is.count(last_analysed_year))
+      last_analysed_year <- as.integer(last_analysed_year)
     }
-    assert_that(is.time(analysis.date))
+    assert_that(is.time(analysis_date))
     assert_that(inherits(extractor, "function"))
-    file.fingerprint <- sha1(
+    file_fingerprint <- sha1(
       list(
-        result.datasource.id,
-        scheme.id, species.group.id, location.group.id,
-        model.type, formula, first.imported.year,
-        last.imported.year, duration, last.analysed.year,
-        format(analysis.date, tz = "UTC"),
-        seed, parent.status$ParentAnalysis,
+        result_datasource_id,
+        scheme_id, species_group_id, location_group_id,
+        model_type, formula, first_imported_year,
+        last_imported_year, duration, last_analysed_year,
+        format(analysis_date, tz = "UTC"),
+        seed, parent_status$ParentAnalysis,
         formals(extractor),
         as.character(body(extractor))
       )
     )
-    parent.status$Analysis <- file.fingerprint
-    parent.status <- parent.status %>%
+    parent_status$Analysis <- file_fingerprint
+    parent_status <- parent_status %>%
       select(
         "Analysis", "ParentAnalysis", "ParentStatusFingerprint", "ParentStatus"
       )
@@ -108,11 +108,11 @@ setMethod(
     )
 
     version <- get_analysis_version(sessionInfo())
-    status.fingerprint <- sha1(
+    status_fingerprint <- sha1(
       list(
-        file.fingerprint, status, parameter, index,
+        file_fingerprint, status, parameter, index,
         version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
-        version@RPackage, version@AnalysisVersionRPackage, parent.status
+        version@RPackage, version@AnalysisVersionRPackage, parent_status
       ),
       digits = 6L
     )
@@ -123,26 +123,26 @@ setMethod(
       RPackage = version@RPackage,
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
       AnalysisMetadata = data.frame(
-        ResultDatasourceID = result.datasource.id,
-        SchemeID = scheme.id,
-        SpeciesGroupID = species.group.id,
-        LocationGroupID = location.group.id,
-        ModelType = model.type,
+        ResultDatasourceID = result_datasource_id,
+        SchemeID = scheme_id,
+        SpeciesGroupID = species_group_id,
+        LocationGroupID = location_group_id,
+        ModelType = model_type,
         Formula = formula,
-        FirstImportedYear = first.imported.year,
-        LastImportedYear = last.imported.year,
+        FirstImportedYear = first_imported_year,
+        LastImportedYear = last_imported_year,
         Duration = duration,
-        LastAnalysedYear = last.analysed.year,
-        AnalysisDate = analysis.date,
+        LastAnalysedYear = last_analysed_year,
+        AnalysisDate = analysis_date,
         Seed = seed,
         Status = status,
         AnalysisVersion = version@AnalysisVersion$Fingerprint,
-        FileFingerprint = file.fingerprint,
-        StatusFingerprint = status.fingerprint,
+        FileFingerprint = file_fingerprint,
+        StatusFingerprint = status_fingerprint,
         stringsAsFactors = FALSE
       ),
       AnalysisFormula = list(as.formula(formula)),
-      AnalysisRelation = parent.status,
+      AnalysisRelation = parent_status,
       Extractor = extractor,
       Parameter = parameter,
       Index = index

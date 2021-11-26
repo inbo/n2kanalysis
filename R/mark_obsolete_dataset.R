@@ -37,6 +37,5 @@ mark_obsolete_dataset <- function(channel) {
       Obsolete = 0 AND
       ImportDate < MostRecent
   "
-  sql.status <- sqlQuery(channel = channel, query = sql)
-  return(sql.status)
+  sqlQuery(channel = channel, query = sql)
 }

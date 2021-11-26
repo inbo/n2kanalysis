@@ -4,7 +4,7 @@
 #' @export
 union <- function(...) {
   dots <- list(...)
-  r.package <- do.call(
+  r_package <- do.call(
     rbind,
     lapply(
       dots,
@@ -13,22 +13,22 @@ union <- function(...) {
       }
     )
   )
-  r.package <- unique(r.package)
-  r.package <- r.package[order(r.package$Description, r.package$Version), ]
-  rownames(r.package) <- NULL
-  analysis.version <- sha1(r.package)
-  analysis.version.r.package <- data.frame(
-    AnalysisVersion = analysis.version,
-    RPackage = r.package$Fingerprint
+  r_package <- unique(r_package)
+  r_package <- r_package[order(r_package$Description, r_package$Version), ]
+  rownames(r_package) <- NULL
+  analysis_version <- sha1(r_package)
+  analysis_version_r_package <- data.frame(
+    AnalysisVersion = analysis_version,
+    RPackage = r_package$Fingerprint
   )
   output <- combine(
     ...,
     new(
       "n2kAnalysisVersion",
-      AnalysisVersion = data.frame(Fingerprint = analysis.version),
-      RPackage = r.package,
-      AnalysisVersionRPackage = analysis.version.r.package
+      AnalysisVersion = data.frame(Fingerprint = analysis_version),
+      RPackage = r_package,
+      AnalysisVersionRPackage = analysis_version_r_package
     )
   )
-  return(list(Union = output, UnionFingerprint = analysis.version))
+  return(list(Union = output, UnionFingerprint = analysis_version))
 }
