@@ -43,7 +43,7 @@ setMethod(
       assert_that(is.count(dots$seed))
       dots$seed <- as.integer(dots$seed)
     }
-    assert_that(is.string(dots$result.datasource_id))
+    assert_that(is.string(dots$result_datasource_id))
     assert_that(is.string(dots$scheme_id))
     assert_that(is.string(dots$species_group_id))
     assert_that(is.string(dots$location_group_id))

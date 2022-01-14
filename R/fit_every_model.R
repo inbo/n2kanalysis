@@ -34,7 +34,7 @@ fit_every_model <- function(path, status, verbose = TRUE, n_cluster = 1) {
     sprintf("Fitting models in parallel on %i clusters", , n_cluster)
   )
   cl <- parallel::makeCluster(n_cluster)
-  result <- parallel::clusterApplyLB(
+  parallel::clusterApplyLB(
     cl = cl,
     x = files,
     fun = function(x, status, verbose) {

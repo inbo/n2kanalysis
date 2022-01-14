@@ -15,7 +15,7 @@ select_observed_range <- function(observation, variable) {
     name = "variable",
     na_action = na.fail
   )
-  junk <- check_dataframe_variable(
+  check_dataframe_variable(
     df = observation,
     variable = c("Count", variable),
     name = "observation",

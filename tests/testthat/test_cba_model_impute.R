@@ -1,62 +1,62 @@
 context("model imputed")
 test_that("model imputation works", {
   set.seed(20191213)
-  this.result.datasource.id <- sha1(letters)
-  this.scheme.id <- sha1(letters)
-  this.species.group.id <- sha1(letters)
-  this.location.group.id <- sha1(letters)
-  this.analysis.date <- Sys.time()
-  this.model.type <- "inla poisson: A * (B + C) + C:D"
-  this.first.imported.year <- 1990L
-  this.last.imported.year <- 2015L
-  this.last.analysed.year <- 2014L
-  this.duration <- 1L
+  this_result_datasource_id <- sha1(letters)
+  this_scheme_id <- sha1(letters)
+  this_species_group_id <- sha1(letters)
+  this_location_group_id <- sha1(letters)
+  this_analysis_date <- Sys.time()
+  this_model_type <- "inla poisson: A * (B + C) + C:D"
+  this_first_imported_year <- 1990L
+  this_last_imported_year <- 2015L
+  this_last_analysed_year <- 2014L
+  this_duration <- 1L
   dataset <- test_data(missing = 0.2)
   base <- tempdir()
   project <- "imputation"
 
   imputation <- n2k_inla(
-    data = dataset, scheme.id = this.scheme.id,
-    result.datasource.id = this.result.datasource.id,
-    species.group.id = this.species.group.id,
-    location.group.id = this.location.group.id, model.type = this.model.type,
-    first.imported.year = this.first.imported.year, imputation.size = 100,
-    last.imported.year = this.last.imported.year, family = "poisson",
-    last.analyses.year = this.last.analysed.year, duration = this.duration,
+    data = dataset, scheme_id = this_scheme_id,
+    result_datasource_id = this_result_datasource_id,
+    species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    first_imported_year = this_first_imported_year, imputation.size = 100,
+    last_imported_year = this_last_imported_year, family = "poisson",
+    last_analyses_year = this_last_analysed_year, duration = this_duration,
     formula = "Count ~ A * (B + C) + f(E, model = \"iid\")",
-    analysis.date = Sys.time(),
+    analysis_date = Sys.time(),
   )
   aggregation <- n2k_aggregate(
-    scheme.id = this.scheme.id,
-    result.datasource.id = this.result.datasource.id, formula = "~ A + B",
-    species.group.id = this.species.group.id,
-    location.group.id = this.location.group.id, model.type = this.model.type,
-    first.imported.year = this.first.imported.year, analysis.date = Sys.time(),
-    last.imported.year = this.last.imported.year, fun = sum,
-    last.analyses.year = this.last.analysed.year, duration = this.duration,
+    scheme_id = this_scheme_id,
+    result_datasource_id = this_result_datasource_id, formula = "~ A + B",
+    species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    first_imported_year = this_first_imported_year, analysis_date = Sys.time(),
+    last_imported_year = this_last_imported_year, fun = sum,
+    last_analyses_year = this_last_analysed_year, duration = this_duration,
     parent = get_file_fingerprint(imputation)
   )
   aggregation2 <- n2k_aggregate(
-    scheme.id = this.scheme.id,
-    result.datasource.id = this.result.datasource.id, formula = "~ A",
-    species.group.id = this.species.group.id,
-    location.group.id = this.location.group.id, model.type = this.model.type,
-    first.imported.year = this.first.imported.year, analysis.date = Sys.time(),
-    last.imported.year = this.last.imported.year, fun = sum,
-    last.analyses.year = this.last.analysed.year, duration = this.duration,
+    scheme_id = this_scheme_id,
+    result_datasource_id = this_result_datasource_id, formula = "~ A",
+    species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    first_imported_year = this_first_imported_year, analysis_date = Sys.time(),
+    last_imported_year = this_last_imported_year, fun = sum,
+    last_analyses_year = this_last_analysed_year, duration = this_duration,
     parent = get_file_fingerprint(aggregation)
   )
   extractor <- function(model) {
     model$summary.fixed[, c("mean", "sd")]
   }
   mi <- n2k_model_imputed(
-    scheme.id = this.scheme.id, model.args = list(family = "poisson"),
-    result.datasource.id = this.result.datasource.id, model.fun = INLA::inla,
-    species.group.id = this.species.group.id, extractor = extractor,
-    location.group.id = this.location.group.id, model.type = this.model.type,
-    first.imported.year = this.first.imported.year, analysis.date = Sys.time(),
-    last.imported.year = this.last.imported.year, formula = "~ A",
-    last.analyses.year = this.last.analysed.year, duration = this.duration,
+    scheme_id = this_scheme_id, model_args = list(family = "poisson"),
+    result_datasource_id = this_result_datasource_id, model_fun = INLA::inla,
+    species_group_id = this_species_group_id, extractor = extractor,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    first_imported_year = this_first_imported_year, analysis_date = Sys.time(),
+    last_imported_year = this_last_imported_year, formula = "~ A",
+    last_analyses_year = this_last_analysed_year, duration = this_duration,
     parent = get_file_fingerprint(aggregation)
   )
   pma <- list(
@@ -65,14 +65,14 @@ test_that("model imputation works", {
     }
   )
   mi2 <- n2k_model_imputed(
-    scheme.id = this.scheme.id, model.args = list(),
-    result.datasource.id = this.result.datasource.id, model.fun = INLA::inla,
-    species.group.id = this.species.group.id, extractor = extractor,
-    location.group.id = this.location.group.id, model.type = this.model.type,
-    first.imported.year = this.first.imported.year, analysis.date = Sys.time(),
-    last.imported.year = this.last.imported.year, formula = "~ A",
-    last.analyses.year = this.last.analysed.year, duration = this.duration,
-    parent = get_file_fingerprint(aggregation), prepare.model.args = pma
+    scheme_id = this_scheme_id, model_args = list(),
+    result_datasource_id = this_result_datasource_id, model_fun = INLA::inla,
+    species_group_id = this_species_group_id, extractor = extractor,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    first_imported_year = this_first_imported_year, analysis_date = Sys.time(),
+    last_imported_year = this_last_imported_year, formula = "~ A",
+    last_analyses_year = this_last_analysed_year, duration = this_duration,
+    parent = get_file_fingerprint(aggregation), prepare.model_args = pma
   )
   store_model(imputation, base, project)
   store_model(aggregation, base, project)

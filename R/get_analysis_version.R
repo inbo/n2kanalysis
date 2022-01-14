@@ -26,11 +26,13 @@ setMethod(
       variable = c("Description", "Version", "Origin", "Fingerprint"),
       name = "version"
     )
-    if (is.null(attr(version, "AnalysisVersion"))) {
-      stop("Missing AnalysisVersion attribute")
-    }
+    stopifnot(
+      "Missing analysis_version attribute" = !is.null(
+        attr(version, "analysis_version")
+      )
+    )
     analysis_version <- data.frame(
-      Fingerprint = attr(version, "AnalysisVersion"),
+      Fingerprint = attr(version, "analysis_version"),
       stringsAsFactors = FALSE
     )
     version <- version[order(version$Description, version$Version), ]

@@ -84,7 +84,7 @@ setMethod(
     rownames(package) <- NULL
     package <- package[order(package$Description), ]
     package$Fingerprint <- apply(package, 1, sha1)
-    attr(package, "AnalysisVersion") <- sha1(package)
+    attr(package, "analysis_version") <- sha1(package)
     return(package)
   }
 )

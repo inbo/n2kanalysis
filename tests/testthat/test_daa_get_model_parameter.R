@@ -3,34 +3,34 @@ test_that(
   "n2kInla with categorical and numeric fixed effect without random
     effect", {
   dataset <- test_data()
-  this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
-  this.result.datasource.id <- sha1(sample(letters))
-  this.scheme.id <- sha1(sample(letters))
-  this.species.group.id <- sha1(sample(letters))
-  this.location.group.id <- sha1(sample(letters))
-  this.seed <- 4L
-  this.model.type <- "inla nbinomial: A * B + E"
-  this.first.imported.year <- 1990L
-  this.last.imported.year <- 2015L
-  this.last.analysed.year <- 2015L
-  this.parent <- "abcdef"
-  this.duration <- this.last.imported.year - this.first.imported.year + 1
+  this_analysis_date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
+  this_result_datasource_id <- sha1(sample(letters))
+  this_scheme_id <- sha1(sample(letters))
+  this_species_group_id <- sha1(sample(letters))
+  this_location_group_id <- sha1(sample(letters))
+  this_seed <- 4L
+  this_model_type <- "inla nbinomial: A * B + E"
+  this_first_imported_year <- 1990L
+  this_last_imported_year <- 2015L
+  this_last_analysed_year <- 2015L
+  this_parent <- "abcdef"
+  this_duration <- this_last_imported_year - this_first_imported_year + 1
   analysis <- n2k_inla(
     data = dataset,
     formula = "Count ~ A + C",
-    result.datasource.id = this.result.datasource.id,
-    scheme.id = this.scheme.id,
-    species.group.id = this.species.group.id,
-    location.group.id = this.location.group.id,
+    result_datasource_id = this_result_datasource_id,
+    scheme_id = this_scheme_id,
+    species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id,
     family = "nbinomial",
-    model.type = this.model.type,
-    first.imported.year = this.first.imported.year,
-    last.imported.year = this.last.imported.year,
-    last.analysed.year = this.last.analysed.year,
-    analysis.date = this.analysis.date,
-    seed = this.seed,
-    parent = this.parent,
-    duration = this.duration
+    model_type = this_model_type,
+    first_imported_year = this_first_imported_year,
+    last_imported_year = this_last_imported_year,
+    last_analysed_year = this_last_analysed_year,
+    analysis_date = this_analysis_date,
+    seed = this_seed,
+    parent = this_parent,
+    duration = this_duration
   )
   expect_is(
     param <- get_model_parameter(analysis),
@@ -100,34 +100,34 @@ test_that(
   "n2kInla with single random effect, categorical-categorical
       interaction and categorical numeric interaction", {
   dataset <- test_data()
-  this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
-  this.result.datasource.id <- sha1(sample(letters))
-  this.scheme.id <- sha1(sample(letters))
-  this.species.group.id <- sha1(sample(letters))
-  this.location.group.id <- sha1(sample(letters))
-  this.seed <- 4L
-  this.model.type <- "inla nbinomial: A * B + E"
-  this.first.imported.year <- 1990L
-  this.last.imported.year <- 2015L
-  this.last.analysed.year <- 2015L
-  this.parent <- "abcdef"
-  this.duration <- this.last.imported.year - this.first.imported.year + 1
+  this_analysis_date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
+  this_result_datasource_id <- sha1(sample(letters))
+  this_scheme_id <- sha1(sample(letters))
+  this_species_group_id <- sha1(sample(letters))
+  this_location_group_id <- sha1(sample(letters))
+  this_seed <- 4L
+  this_model_type <- "inla nbinomial: A * B + E"
+  this_first_imported_year <- 1990L
+  this_last_imported_year <- 2015L
+  this_last_analysed_year <- 2015L
+  this_parent <- "abcdef"
+  this_duration <- this_last_imported_year - this_first_imported_year + 1
   analysis <- n2k_inla(
     formula = "Count ~ 0 + A * C + A * B + f(E, model = \"iid\")",
-    result.datasource.id = this.result.datasource.id,
-    scheme.id = this.scheme.id,
-    species.group.id = this.species.group.id,
-    location.group.id = this.location.group.id,
+    result_datasource_id = this_result_datasource_id,
+    scheme_id = this_scheme_id,
+    species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id,
     family = "nbinomial",
-    model.type = this.model.type,
-    first.imported.year = this.first.imported.year,
-    last.imported.year = this.last.imported.year,
-    last.analysed.year = this.last.analysed.year,
-    analysis.date = this.analysis.date,
-    seed = this.seed,
+    model_type = this_model_type,
+    first_imported_year = this_first_imported_year,
+    last_imported_year = this_last_imported_year,
+    last_analysed_year = this_last_analysed_year,
+    analysis_date = this_analysis_date,
+    seed = this_seed,
     data = dataset,
-    parent = this.parent,
-    duration = this.duration
+    parent = this_parent,
+    duration = this_duration
   )
   analysis <- fit_model(analysis)
   expect_message(
@@ -223,36 +223,36 @@ test_that(
   "n2kInla with numeric-numeric interaction and two random effects of
     which on replicated", {
   dataset <- test_data()
-  this.analysis.date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
-  this.result.datasource.id <- sha1(sample(letters))
-  this.scheme.id <- sha1(sample(letters))
-  this.species.group.id <- sha1(sample(letters))
-  this.location.group.id <- sha1(sample(letters))
-  this.seed <- 4L
-  this.model.type <- "inla nbinomial: A * B + E"
-  this.first.imported.year <- 1990L
-  this.last.imported.year <- 2015L
-  this.last.analysed.year <- 2015L
-  this.parent <- "abcdef"
-  this.duration <- this.last.imported.year - this.first.imported.year + 1
+  this_analysis_date <- as.POSIXct("2015-01-01 04:05:06.12", tz = "UTC")
+  this_result_datasource_id <- sha1(sample(letters))
+  this_scheme_id <- sha1(sample(letters))
+  this_species_group_id <- sha1(sample(letters))
+  this_location_group_id <- sha1(sample(letters))
+  this_seed <- 4L
+  this_model_type <- "inla nbinomial: A * B + E"
+  this_first_imported_year <- 1990L
+  this_last_imported_year <- 2015L
+  this_last_analysed_year <- 2015L
+  this_parent <- "abcdef"
+  this_duration <- this_last_imported_year - this_first_imported_year + 1
   analysis <- n2k_inla(
     formula = "Count ~ C * D +
     f(E, model = \"rw1\", replicate = as.integer(A)) +
     f(F, model = \"iid\")",
-    result.datasource.id = this.result.datasource.id,
-    scheme.id = this.scheme.id,
-    species.group.id = this.species.group.id,
-    location.group.id = this.location.group.id,
+    result_datasource_id = this_result_datasource_id,
+    scheme_id = this_scheme_id,
+    species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id,
     family = "nbinomial",
-    model.type = this.model.type,
-    first.imported.year = this.first.imported.year,
-    last.imported.year = this.last.imported.year,
-    last.analysed.year = this.last.analysed.year,
-    analysis.date = this.analysis.date,
-    seed = this.seed,
+    model_type = this_model_type,
+    first_imported_year = this_first_imported_year,
+    last_imported_year = this_last_imported_year,
+    last_analysed_year = this_last_analysed_year,
+    analysis_date = this_analysis_date,
+    seed = this_seed,
     data = dataset,
-    parent = this.parent,
-    duration = this.duration
+    parent = this_parent,
+    duration = this_duration
   )
   analysis <- fit_model(analysis)
   expect_message(

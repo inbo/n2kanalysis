@@ -50,7 +50,7 @@ setMethod(
       assert_that(is.count(dots$seed))
       dots$seed <- as.integer(dots$seed)
     }
-    assert_that(is.string(dots$result.datasource_id))
+    assert_that(is.string(dots$result_datasource_id))
     assert_that(is.string(dots$scheme_id))
     assert_that(is.string(dots$species_group_id))
     assert_that(is.string(dots$location_group_id))
@@ -92,7 +92,7 @@ setMethod(
 
     file_fingerprint <- sha1(
       list(
-        dots$result.datasource_id,
+        dots$result_datasource_id,
         dots$scheme_id, dots$species_group_id, dots$location_group_id,
         dots$model_type, dots$formula, dots$first_imported_year,
         dots$last_imported_year, dots$duration, dots$last_analysed_year,
@@ -137,7 +137,7 @@ setMethod(
       RPackage = version@RPackage,
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
       AnalysisMetadata = data.frame(
-        ResultDatasourceID = dots$result.datasource_id,
+        ResultDatasourceID = dots$result_datasource_id,
         SchemeID = dots$scheme_id,
         SpeciesGroupID = dots$species_group_id,
         LocationGroupID = dots$location_group_id,

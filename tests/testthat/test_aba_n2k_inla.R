@@ -34,14 +34,14 @@ object <- n2k_inla(
 model_object <- inla(
   Count ~ A * (B + C) + C:D +
     f(E, model = "rw1", replicate = as.integer(A)) +
-    f(F, model = "iid"),
+    f(G, model = "iid"),
   data = object@Data,
   family = "poisson"
 )
 model_truth <- inla(
   Count ~ A * (B + C) + C:D +
     f(E, model = "rw1", replicate = as.integer(A)) +
-    f(F, model = "iid"),
+    f(G, model = "iid"),
   data = dataset,
   family = "poisson"
 )
@@ -862,7 +862,7 @@ describe("add a model to a n2kInla object", {
   model_other <- inla(
     Count ~ A * (B + C) + C:D +
       f(E, model = "rw1", replicate = as.integer(A)) +
-      f(F, model = "iid"),
+      f(G, model = "iid"),
     data = object@Data,
     family = "nbinomial"
   )

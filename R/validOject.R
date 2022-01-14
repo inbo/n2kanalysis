@@ -54,11 +54,11 @@ setMethod(
           objects <- list(readRDS(file = object))
           names(objects) <- object
         } else {
-          local.environment <- new.env()
-          load(object, envir = local.environment)
-          objects <- ls(envir = local.environment) %>%
-            lapply(read_object_environment, env = local.environment)
-          names(objects) <- ls(envir = local.environment)
+          local_environment <- new.env()
+          load(object, envir = local_environment)
+          objects <- ls(envir = local_environment) %>%
+            lapply(read_object_environment, env = local_environment)
+          names(objects) <- ls(envir = local_environment)
         }
         # handles an empty file
         if (length(objects) == 0) {

@@ -440,16 +440,16 @@ model_parameter_interaction <- function(
         )
       )
     parts <- strsplit(i, ":")[[1]]
-    level.name <- gsub(
+    level_name <- gsub(
       paste0("^", parts[1]),
       "",
       parameter_estimate$Parameter[present]
     )
     for (j in parts[-1]) {
-      level.name <- gsub(paste0(":", j), ":", level.name)
+      level_name <- gsub(paste0(":", j), ":", level_name)
     }
     extra_factor <- tibble(
-      Description = level.name,
+      Description = level_name,
       Parent = extra$Fingerprint
     ) %>%
       filter(!grepl("^:*$", .data$Description)) %>%
@@ -465,7 +465,7 @@ model_parameter_interaction <- function(
         select(-"Parent") %>%
         inner_join(
           tibble(
-            Description = level.name,
+            Description = level_name,
             Original = parameter_estimate$Parameter[present]
           ),
           by = "Description"
