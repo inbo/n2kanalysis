@@ -57,7 +57,7 @@ describe("new('n2k_manifest')", {
     )
     expect_error(
       new("n2kManifest", Manifest = manifest, Fingerprint = letters),
-      "Fingerprint is not a string \\(a length one character vector\\)."
+      "Fingerprint is not a string \\(a length one character vector\\)." # nolint: nonportable_path_linter, line_length_linter.
     )
     expect_is(
       new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),

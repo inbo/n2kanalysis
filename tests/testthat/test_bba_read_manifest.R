@@ -48,7 +48,7 @@ test_that("read_manifest reads the manifest on a local file system", {
     read_manifest(temp_dir, "read_manifest", "3"),
     "Multiple manifests found starting with '3'"
   )
-  sprintf("%s/read_manifest", temp_dir) %>%
+  file.path(temp_dir, "read_manifest") %>%
     list.files(recursive = TRUE, full.names = TRUE) %>%
     file.remove()
 })

@@ -169,7 +169,7 @@ describe("n2k_inla", {
         analysis_date = this_analysis_date,
         seed = this_seed + 0.1
       ),
-      throws_error("seed is not a count \\(a single positive integer\\)")
+      throws_error("seed is not a count \\(a single positive integer\\)") # nolint: nonportable_path_linter, line_length_linter.
     )
   })
   it("sets a random seed when not provided", {
@@ -330,7 +330,7 @@ describe("n2k_inla", {
         scheme_id = this_scheme_id
       ),
       throws_error(
-        "last_imported_year is not a count \\(a single positive integer\\)"
+        "last_imported_year is not a count \\(a single positive integer\\)" # nolint: nonportable_path_linter, line_length_linter.
       )
     )
   })
@@ -434,7 +434,7 @@ describe("n2k_inla", {
         analysis_date = this_analysis_date,
         scheme_id = this_scheme_id
       ),
-      throws_error("duration is not a count \\(a single positive integer\\)")
+      throws_error("duration is not a count \\(a single positive integer\\)") # nolint: nonportable_path_linter, line_length_linter.
     )
   })
   it(
@@ -474,7 +474,7 @@ ranges"
         scheme_id = this_scheme_id
       ),
       throws_error(
-        "duration is not a count \\(a single positive integer\\)"
+        "duration is not a count \\(a single positive integer\\)" # nolint: nonportable_path_linter, line_length_linter.
       )
     )
   })
@@ -547,7 +547,7 @@ ranges"
         scheme_id = this_scheme_id
       ),
       throws_error(
-        "last_analysed_year is not a count \\(a single positive integer\\)"
+        "last_analysed_year is not a count \\(a single positive integer\\)" # nolint: nonportable_path_linter, line_length_linter.
       )
     )
   })
@@ -930,7 +930,7 @@ describe("n2kInla handles linear combinations", {
       lin.comb = this_lc,
       replicate.name = "junk"
     ),
-    "replicate\\.name is not a list"
+    "replicate\\.name is not a list" # nolint: nonportable_path_linter, line_length_linter.
   )
   expect_error(
     n2k_inla(
@@ -947,6 +947,6 @@ describe("n2kInla handles linear combinations", {
       lin.comb = this_lc,
       replicate.name = list("junk")
     ),
-    "replicate\\.name must have names"
+    "replicate\\.name must have names" # nolint: nonportable_path_linter, line_length_linter.
   )
 })

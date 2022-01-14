@@ -26,7 +26,7 @@ setMethod(
     assert_that(is.dir(base))
     assert_that(is.string(project))
 
-    filename <- sprintf("%s/%s/%s", base, project, substring(x, 1, 4)) %>%
+    filename <- file.path(base, project, substring(x, 1, 4), fsep = "/") %>%
       normalizePath() %>%
       list.files(pattern = x, full.names = TRUE, recursive = TRUE)
     filename <- filename[grepl("\\.rds$", filename)]
@@ -55,7 +55,7 @@ setMethod(
     assert_that(is.string(x))
     assert_that(is.string(project))
 
-    prefix <- sprintf("%s/%s/", project, substring(x, 1, 4))
+    prefix <- file.path(project, substring(x, 1, 4), "", fsep = "/")
     available <- get_bucket(base, prefix = prefix, max = Inf)
     map_chr(available, "Key") %>%
       basename() %>%

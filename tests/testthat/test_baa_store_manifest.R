@@ -21,7 +21,7 @@ test_that("store_manifest stores the manifest on a local file system", {
   expect_identical(filename, filename2)
   expect_identical(file_info, file_info2)
 
-  sprintf("%s/store_manifest", temp_dir) %>%
+  file.path(temp_dir, "store_manifest") %>%
     list.files(recursive = TRUE, full.names = TRUE) %>%
     file.remove()
 })

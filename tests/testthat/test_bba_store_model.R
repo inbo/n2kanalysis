@@ -46,7 +46,7 @@ test_that("store_model stores the model on a local file system", {
 
   fitted <- fit_model(filename, base, project)
   expect_identical(
-    sprintf("%s/%s", base, project) %>%
+    file.path(base, project) %>%
       list.files(recursive = TRUE, full.names = TRUE),
     gsub("new", "converged", filename)
   )
@@ -67,7 +67,7 @@ test_that("store_model stores the model on a local file system", {
     filename
   )
 
-  sprintf("%s/%s", base, project) %>%
+  file.path(base, project) %>%
     list.files(recursive = TRUE, full.names = TRUE) %>%
     file.remove()
 })

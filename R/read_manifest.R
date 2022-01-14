@@ -32,7 +32,7 @@ setMethod(
     assert_that(is.string(project))
 
     #check dir if exists
-    dir <- sprintf("%s/%s/manifest", base, project) %>%
+    dir <- file.path(base, project, "manifest") %>%
       normalizePath(winslash = "/", mustWork = FALSE)
     assert_that(
       dir.exists(dir),

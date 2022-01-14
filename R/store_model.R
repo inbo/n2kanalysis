@@ -54,7 +54,7 @@ setMethod(
         full.names = TRUE,
         recursive = TRUE
       )
-    filename <- sprintf("%s/%s.rds", dir, fingerprint) %>%
+    filename <- file.path(dir, sprintf("%%s.rds", fingerprint)) %>%
       normalizePath(winslash = "/", mustWork = FALSE)
 
     if (length(current) > 0) {
@@ -105,7 +105,10 @@ setMethod(
       } else {
         old <- existing[hashes == fingerprint]
         backup <- paste0(
-          "abv/backup/", sha1(list(project, fingerprint, status, Sys.time()))
+          file.path(
+            "abv", "backup",
+            sha1(list(project, fingerprint, status, Sys.time())), sep = "/"
+          )
         )
         copy_object(
           from_object = old[1], to_object = backup,
@@ -115,9 +118,7 @@ setMethod(
       }
     }
 
-    filename <- sprintf(
-      "%s/%s/%s/%s.rds", project, part, status, fingerprint
-    )
+    filename <- file.path(project, part, status, sprintf("%s.rds", fingerprint))
 
     # try several times to write to S3 bucket
     # avoids errors due to time out

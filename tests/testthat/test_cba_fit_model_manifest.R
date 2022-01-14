@@ -74,7 +74,7 @@ describe("it handles a manifest", {
       NULL
     )
 
-    sprintf("%s/%s", base, project) %>%
+    file.path(base, project) %>%
       list.files(recursive = TRUE, full.names = TRUE) %>%
       file.remove()
   })

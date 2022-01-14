@@ -2,9 +2,9 @@ context("read_model")
 test_that("read_model() handles exceptions on characters", {
   base <- tempdir()
   project <- "read_model"
-  dir.create(sprintf("%s/%s/test", base, project), recursive = TRUE)
-  writeLines("junk", sprintf("%s/%s/test/test1.rds", base, project))
-  writeLines("junk", sprintf("%s/%s/test/test2.rds", base, project))
+  dir.create(file.path(base, project, "test"), recursive = TRUE)
+  writeLines("junk", file.path(base, project, "test", "test2.rds"))
+  writeLines("junk", file.path(base, project, "test", "test2.rds"))
   expect_error(
     suppressWarnings(read_model("junk", base, project)),
     "no matching object in directory"
@@ -13,7 +13,7 @@ test_that("read_model() handles exceptions on characters", {
     read_model("test", base, project),
     "multiple matching objects in directory"
   )
-  sprintf("%s/%s", base, project) %>%
+  file.path(base, project) %>%
     list.files(recursive = TRUE, full.names = TRUE) %>%
     file.remove()
 })
@@ -24,12 +24,12 @@ test_that("read_model() works with S3 buckets", {
   s3saveRDS(
     project,
     bucket = base,
-    object = sprintf("%s/test/test1.rds", project)
+    object = file.path(project, "test", "test1.rds")
   )
   s3saveRDS(
     project,
     bucket = base,
-    object = sprintf("%s/test/test2.rds", project)
+    object = file.path(project, "test", "test2.rds")
   )
   expect_identical(
     read_model("test1", base, project),

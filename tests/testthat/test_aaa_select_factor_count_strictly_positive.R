@@ -79,7 +79,7 @@ describe("select_factor_count_strictly_positive", {
         dimension = 1,
         relative = FALSE
       ),
-      throws_error("threshold is not a count \\(a single positive integer\\)")
+      throws_error("threshold is not a count \\(a single positive integer\\)") # nolint: nonportable_path_linter, line_length_linter.
     )
     expect_that(
       select_factor_count_strictly_positive(

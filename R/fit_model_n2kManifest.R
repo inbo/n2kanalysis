@@ -39,7 +39,7 @@ setMethod(
     if (inherits(base, "character")) {
       assert_that(is.dir(base))
       manifest <- data.frame(
-        Filename = sprintf("%s/%s", base, project) %>%
+        Filename = sprintf("%s/%s", base, project) %>% # nolint: nonportable_path_linter, line_length_linter.
           list.files(recursive = TRUE, full.names = TRUE),
         stringsAsFactors = FALSE
       ) %>%
@@ -81,7 +81,9 @@ setMethod(
 
     manifest %>%
       mutate(
-        Prefix = sprintf("%s/%s", project, substring(.data$Fingerprint, 1, 4)),
+        Prefix = file.path(
+          project, substring(.data$Fingerprint, 1, 4), fsep = "/"
+        ),
         Filename = map(.data$Prefix, get_bucket, bucket = base) %>%
           map("Contents") %>%
           map("Key"),
