@@ -10,12 +10,9 @@ setMethod(
   signature = signature(x = "n2kInla"),
   definition = function(x, status = "new", ..., timeout = NULL) {
     validObject(x)
+    assert_that(is.character(status), length(status) >= 1 )
 
-    assert_that(
-      is.character(status),
-      length(status) >= 1
-    )
-
+    # don't fit model when status doesn't match
     if (!(status(x) %in% status)) {
       return(x)
     }
@@ -25,6 +22,7 @@ setMethod(
     data <- get_data(x)
     model_formula <- x@AnalysisFormula[[1]]
 
+    # prepaper linear combinations
     if (is.null(x@LinearCombination)) {
       lc <- NULL
     } else {
@@ -44,11 +42,13 @@ setMethod(
         }
       }
     }
+    # prepare inla() arguments
     control <- x@Control
     control$formula <- model_formula
     control$family <- x@Family
     control$data <- data
     control$lincomb <- lc
+    # fit model
     model <- try({
       if (!is.null(timeout)) {
         assert_that(is.number(timeout), timeout > 0)
@@ -56,30 +56,25 @@ setMethod(
       }
       do.call(inla, control)
     })
+    # handle error in model fit
     if (inherits(model, "try-error")) {
+      status(x) <- "error"
       if (grepl("reached .* time limit", model)) {
         status(x) <- "time-out"
-      } else {
-        status(x) <- "error"
       }
       return(x)
     }
+    # return fitted model when no imputation is required
     if (x@ImputationSize == 0) {
-      return(
-        n2k_inla(data = x, model.fit = model, status = "converged")
-      )
+      return(n2k_inla(data = x, model_fit = model, status = "converged"))
     }
-    return(
-      n2k_inla(
-        data = x,
-        model.fit = model,
-        raw.imputed = impute(
-          model = model,
-          n.imp = x@ImputationSize,
-          minimum = x@Minimum
-        ),
-        status = "converged"
+
+    # return fitted model with imputations
+    return(n2k_inla(
+      data = x, model_fit = model, status = "converged",
+      raw_imputed = impute(
+        model = model, n.imp = x@ImputationSize, minimum = x@Minimum
       )
-    )
+    ))
   }
 )
