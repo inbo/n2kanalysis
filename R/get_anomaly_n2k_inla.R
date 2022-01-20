@@ -6,7 +6,7 @@
 #' slice tibble transmute ungroup
 #' @importFrom rlang !!
 #' @importFrom digest sha1
-#' @include n2kInla_class.R
+#' @include n2k_inla_class.R
 #' @param expected_ratio Observations that have
 #' `observed / fitted > expected_ratio` or `fitted / observed > expected_ratio`
 #' are potential anomalies.

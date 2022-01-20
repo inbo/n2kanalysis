@@ -47,7 +47,7 @@ setMethod(
 #' @importFrom assertthat assert_that is.string
 #' @importFrom purrr map_chr
 #' @importFrom aws.s3 bucket_exists get_bucket s3readRDS
-#' @include import_S3_classes.R
+#' @include import_s3_classes.R
 setMethod(
   f = "read_model",
   signature = signature(base = "s3_bucket"),

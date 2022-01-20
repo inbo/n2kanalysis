@@ -10,7 +10,7 @@
 #' @exportClass n2kImport
 #' @importFrom methods setClass
 #' @docType class
-#' @include n2kModel_class.R
+#' @include n2k_model_class.R
 setClass(
   "n2kImport",
   representation = representation(

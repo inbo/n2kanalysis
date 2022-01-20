@@ -1,7 +1,7 @@
 #' @rdname get_result
 #' @importFrom methods setMethod new
-#' @include n2kModel_class.R
-#' @include n2kResult_class.R
+#' @include n2k_model_class.R
+#' @include n2k_result_class.R
 #' @param verbose Print extra information on the screen
 setMethod(
   f = "get_result",

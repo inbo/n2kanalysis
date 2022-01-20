@@ -7,7 +7,7 @@
 #' @aliases n2kModel-class
 #' @importFrom methods setClass
 #' @docType class
-#' @include n2kAnalysisMetadata_class.R
+#' @include n2k_analysis_metadata_class.R
 setClass(
   "n2kModel",
   representation = representation(

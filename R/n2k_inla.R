@@ -24,7 +24,7 @@ setGeneric(
 #' @importFrom digest sha1
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
-#' @include n2kInla_class.R
+#' @include n2k_inla_class.R
 #' @inheritParams n2k_inla_comparison
 #' @param family the family to use in the INLA model.
 #' @param lin_comb A model matrix to calculate linear combinations.
@@ -239,7 +239,7 @@ setMethod(
 #' @importFrom methods setMethod validObject new
 #' @importFrom digest sha1
 #' @importFrom utils sessionInfo
-#' @include n2kInla_class.R
+#' @include n2k_inla_class.R
 #' @param raw_imputed the optional RawImputed object
 setMethod(
   f = "n2k_inla",

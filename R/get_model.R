@@ -16,7 +16,7 @@ setGeneric(
 #' @rdname get_model
 #' @aliases get_model,n2kInla-methods
 #' @importFrom methods setMethod new
-#' @include n2kInla_class.R
+#' @include n2k_inla_class.R
 setMethod(
   f = "get_model",
   signature = signature(x = "n2kInla"),

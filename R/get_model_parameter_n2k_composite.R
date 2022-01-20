@@ -1,6 +1,6 @@
 #' @rdname get_model_parameter
 #' @importFrom methods setMethod new
-#' @include n2kComposite_class.R
+#' @include n2k_composite_class.R
 setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kComposite"),

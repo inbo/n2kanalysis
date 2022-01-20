@@ -4,7 +4,7 @@
 #' @importFrom rlang .data
 #' @importFrom utils file_test
 #' @importFrom stats qnorm
-#' @include n2kComposite_class.R
+#' @include n2k_composite_class.R
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kComposite"),

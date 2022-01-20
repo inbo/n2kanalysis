@@ -16,7 +16,7 @@ setGeneric(
 #' @rdname parent_status
 #' @aliases parent_status,n2kAnalysisMetadata-methods
 #' @importFrom methods setMethod new
-#' @include n2kAnalysisMetadata_class.R
+#' @include n2k_analysis_metadata_class.R
 setMethod(
   f = "parent_status",
   signature = signature(x = "n2kAnalysisMetadata"),
@@ -43,7 +43,7 @@ setGeneric(
 #' @rdname parent.status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kComposite_class.R
+#' @include n2k_composite_class.R
 setReplaceMethod(
   "parent_status",
   "n2kComposite",

@@ -1,6 +1,6 @@
 #' Create a n2kImport object
 #' @inheritParams n2k_inla
-#' @template analysis-metadata
+#' @template analysis_metadata
 #' @details
 #' - `formula`: a string holding the model formula.
 #' - `dataset`: A `data.frame` with `filename`, `fingerprint` and `import_date`.
@@ -25,7 +25,7 @@ setGeneric(
 #' @importFrom digest sha1
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
-#' @include n2kImport_class.R
+#' @include n2k_import_class.R
 setMethod(
   f = "n2k_import",
   signature = signature("ANY"),

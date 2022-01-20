@@ -3,14 +3,14 @@
 #' @importFrom assertthat assert_that is.number
 #' @importMethodsFrom multimput impute
 #' @importFrom INLA inla inla.make.lincombs
-#' @include n2kInla_class.R
+#' @include n2k_inla_class.R
 #' @param timeout the optional number of second until the model will time out
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kInla"),
   definition = function(x, status = "new", ..., timeout = NULL) {
     validObject(x)
-    assert_that(is.character(status), length(status) >= 1 )
+    assert_that(is.character(status), length(status) >= 1)
 
     # don't fit model when status doesn't match
     if (!(status(x) %in% status)) {

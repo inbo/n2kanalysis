@@ -56,7 +56,7 @@ setMethod(
 #' @importFrom assertthat assert_that is.string
 #' @importFrom aws.s3 bucket_exists get_bucket s3write_using
 #' @importFrom utils write.table
-#' @include import_S3_classes.R
+#' @include import_s3_classes.R
 setMethod(
   f = "store_manifest",
   signature = signature(base = "s3_bucket"),

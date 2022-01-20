@@ -5,9 +5,9 @@
 #' @aliases n2kResult-class
 #' @importFrom methods setClass
 #' @docType class
-#' @include n2kAnalysisMetadata_class.R
-#' @include n2kAnomaly_class.R
-#' @include n2kContrast_class.R
+#' @include n2k_analysis_metadata_class.R
+#' @include n2k_anomaly_class.R
+#' @include n2k_contrast_class.R
 setClass(
   "n2kResult",
   contains = c("n2kAnalysisMetadata", "n2kAnomaly", "n2kContrast")

@@ -31,8 +31,8 @@
 #' @aliases n2kModelImputed-class
 #' @importFrom methods setClass
 #' @docType class
-#' @include n2kModelImputed_class.R
-#' @include n2kInlaComparison_class.R
+#' @include n2k_model_imputed_class.R
+#' @include n2k_inla_comparison_class.R
 setClass(
   "n2kModelImputed",
   representation = representation(

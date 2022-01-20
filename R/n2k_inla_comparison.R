@@ -29,7 +29,7 @@ setGeneric(
 #' @importFrom digest sha1
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
-#' @include n2kInlaComparison_class.R
+#' @include n2k_inla_comparison_class.R
 #' @param result_datasource_id The id of the results datasource.
 #' @param status A single character indicating the status of the model.
 #' Defaults to `"waiting"`.

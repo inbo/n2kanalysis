@@ -4,7 +4,7 @@
 #' @importFrom dplyr %>% filter pull bind_rows
 #' @importFrom rlang .data
 #' @importFrom utils file_test
-#' @include n2kInlaComparison_class.R
+#' @include n2k_inla_comparison_class.R
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kInlaComparison"),

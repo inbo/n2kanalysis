@@ -45,7 +45,7 @@ setMethod(
 #' @importFrom assertthat assert_that is.string
 #' @importFrom aws.s3 bucket_exists get_bucket delete_object
 #' @importFrom purrr map
-#' @include import_S3_classes.R
+#' @include import_s3_classes.R
 setMethod(
   f = "delete_model",
   signature = signature(base = "s3_bucket"),

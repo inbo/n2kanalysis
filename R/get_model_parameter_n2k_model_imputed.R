@@ -2,8 +2,8 @@
 #' @importFrom methods setMethod new
 #' @importFrom dplyr transmute mutate
 #' @importFrom purrr map2_chr
-#' @include n2kModelImputed_class.R
-#' @include n2kParameter_class.R
+#' @include n2k_model_imputed_class.R
+#' @include n2k_parameter_class.R
 setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kModelImputed"),

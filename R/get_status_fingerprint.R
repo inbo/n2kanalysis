@@ -16,7 +16,7 @@ setGeneric(
 #' @rdname get_status_fingerprint
 #' @aliases get_status_fingerprint,n2kAnalysisMetadata-methods
 #' @importFrom methods setMethod new
-#' @include n2kAnalysisMetadata_class.R
+#' @include n2k_analysis_metadata_class.R
 setMethod(
   f = "get_status_fingerprint",
   signature = signature(x = "n2kAnalysisMetadata"),

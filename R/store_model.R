@@ -74,7 +74,7 @@ setMethod(
 #' @importFrom aws.s3 bucket_exists copy_object delete_object get_bucket
 #' s3saveRDS
 #' @importFrom purrr map_chr
-#' @include import_S3_classes.R
+#' @include import_s3_classes.R
 setMethod(
   f = "store_model",
   signature = signature(base = "s3_bucket"),

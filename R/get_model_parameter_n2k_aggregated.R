@@ -3,8 +3,8 @@
 #' @importFrom dplyr mutate_all funs select transmute mutate rename distinct
 #' @importFrom purrr map2_chr
 #' @importFrom stats quantile
-#' @include n2kAggregate_class.R
-#' @include n2kParameter_class.R
+#' @include n2k_aggregate_class.R
+#' @include n2k_parameter_class.R
 setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kAggregate"),

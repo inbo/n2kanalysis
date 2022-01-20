@@ -18,7 +18,7 @@ setGeneric(
 #' @rdname status
 #' @aliases status,n2kAnalysisMetadata-methods
 #' @importFrom methods setMethod new
-#' @include n2kAnalysisMetadata_class.R
+#' @include n2k_analysis_metadata_class.R
 setMethod(
   f = "status",
   signature = signature(x = "n2kAnalysisMetadata"),
@@ -79,7 +79,7 @@ setMethod(
 #' @exportMethod status<-
 #' @docType methods
 #' @importFrom methods setGeneric
-#' @include n2kAnalysisMetadata_class.R
+#' @include n2k_analysis_metadata_class.R
 setGeneric(
   name = "status<-",
   def = function(x, value) {
@@ -90,7 +90,7 @@ setGeneric(
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kInla_class.R
+#' @include n2k_inla_class.R
 setReplaceMethod(
   "status",
   "n2kInla",
@@ -112,7 +112,7 @@ setReplaceMethod(
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kComposite_class.R
+#' @include n2k_composite_class.R
 setReplaceMethod(
   "status",
   "n2kComposite",
@@ -135,7 +135,7 @@ setReplaceMethod(
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kInlaComparison_class.R
+#' @include n2k_inla_comparison_class.R
 setReplaceMethod(
   "status",
   "n2kInlaComparison",
@@ -158,7 +158,7 @@ setReplaceMethod(
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kAggregate_class.R
+#' @include n2k_aggregate_class.R
 setReplaceMethod(
   "status",
   "n2kAggregate",
@@ -181,7 +181,7 @@ setReplaceMethod(
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kModelImputed_class.R
+#' @include n2k_model_imputed_class.R
 setReplaceMethod(
   "status",
   "n2kModelImputed",

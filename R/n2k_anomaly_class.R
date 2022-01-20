@@ -5,7 +5,7 @@
 #' @aliases n2kAnomaly-class
 #' @importFrom methods setClass
 #' @docType class
-#' @include n2kParameter_class.R
+#' @include n2k_parameter_class.R
 setClass(
   "n2kAnomaly",
   representation = representation(

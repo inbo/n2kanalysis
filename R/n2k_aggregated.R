@@ -1,6 +1,6 @@
 #' Create a n2kAggregate object
 #' @inheritParams n2k_inla
-#' @template analysis-metadata
+#' @template analysis_metadata
 #' @details
 #' - `fun`: The function to apply when aggregating.
 #' - `filter`: An optional list for the \code{filter} argument of
@@ -29,7 +29,7 @@ setGeneric(
 #' @importFrom digest sha1
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
-#' @include n2kAggregate_class.R
+#' @include n2k_aggregate_class.R
 setMethod(
   f = "n2k_aggregate",
   signature = signature("ANY"),

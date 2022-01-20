@@ -1,6 +1,6 @@
 #' @importFrom methods setClassUnion
 #' @importClassesFrom multimput aggregatedImputed
-#' @include n2kInla_class.R
+#' @include n2k_inla_class.R
 setClassUnion("maybeAggregatedImputed", c("aggregatedImputed", "NULL"))
 
 #' The n2kAggregate class
@@ -24,7 +24,7 @@ setClassUnion("maybeAggregatedImputed", c("aggregatedImputed", "NULL"))
 #' @aliases n2kAggregate-class
 #' @importFrom methods setClass
 #' @docType class
-#' @include n2kModel_class.R
+#' @include n2k_model_class.R
 setClass(
   "n2kAggregate",
   representation = representation(

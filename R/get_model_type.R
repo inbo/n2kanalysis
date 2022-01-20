@@ -16,7 +16,7 @@ setGeneric(
 #' @rdname get_model_type
 #' @aliases get_model_type,n2kAnalysisMetadata-methods
 #' @importFrom methods setMethod new
-#' @include n2kAnalysisMetadata_class.R
+#' @include n2k_analysis_metadata_class.R
 setMethod(
   f = "get_model_type",
   signature = signature(x = "n2kAnalysisMetadata"),

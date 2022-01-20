@@ -6,8 +6,8 @@
 #' @importFrom digest sha1
 #' @importFrom tidyr gather_
 #' @importFrom stats as.formula
-#' @include n2kResult_class.R
-#' @include n2kInla_class.R
+#' @include n2k_result_class.R
+#' @include n2k_inla_class.R
 setMethod(
   f = "get_result",
   signature = signature(x = "n2kInla"),

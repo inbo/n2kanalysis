@@ -1,6 +1,6 @@
 #' @rdname get_anomaly
 #' @importFrom methods setMethod new
-#' @include n2kModel_class.R
+#' @include n2k_model_class.R
 setMethod(
   f = "get_anomaly",
   signature = signature(analysis = "n2kModel"),

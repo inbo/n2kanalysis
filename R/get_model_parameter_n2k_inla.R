@@ -8,8 +8,8 @@
 #' @importFrom digest sha1
 #' @importFrom INLA inla.tmarginal inla.qmarginal
 #' @importFrom stats terms
-#' @include n2kInla_class.R
-#' @include n2kParameter_class.R
+#' @include n2k_inla_class.R
+#' @include n2k_parameter_class.R
 setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kInla"),

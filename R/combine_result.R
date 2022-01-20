@@ -3,7 +3,7 @@
 #' @importFrom methods setMethod new
 #' @importFrom dplyr %>% arrange distinct
 #' @importFrom stats as.formula
-#' @include n2kResult_class.R
+#' @include n2k_result_class.R
 setMethod(
   f = "combine",
   signature = "n2kResult",

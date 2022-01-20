@@ -4,7 +4,7 @@
 #' @exportClass n2kAnalysisMetadata
 #' @aliases n2kAnalysisMetadata-class
 #' @importFrom methods setClass
-#' @include n2kAnalysisVersion_class.R
+#' @include n2k_analysis_version_class.R
 #' @docType class
 setClass(
   "n2kAnalysisMetadata",

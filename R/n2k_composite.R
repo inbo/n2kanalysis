@@ -25,7 +25,7 @@ setGeneric(
 #' @importFrom digest sha1
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
-#' @include n2kComposite_class.R
+#' @include n2k_composite_class.R
 #' @inheritParams n2k_inla_comparison
 #' @param extractor a function to extract the relevant parameters from the model
 setMethod(

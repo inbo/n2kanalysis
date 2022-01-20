@@ -54,7 +54,7 @@ setMethod(
 #' @rdname extract
 #' @aliases extract,n2kInla-methods
 #' @importFrom methods setMethod new
-#' @include n2kInla_class.R
+#' @include n2k_inla_class.R
 setMethod(
   f = "extract",
   signature = signature(object = "n2kInla"),

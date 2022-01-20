@@ -1,42 +1,39 @@
-#' The n2kComposite class
+#' @importFrom methods setClassUnion
+setClassUnion("maybeDataFrame", c("data.frame", "NULL"))
+
+#' The n2kInlaComparison class
 #'
-#' Calculate composite indices from multiple analysis
+#' Compare multiple models using the WAIC criterion
 #' @section Slots:
 #'   \describe{
-#'    \item{\code{Extractor}}{A function to extract the relevant parameters from
-#'    the model.}
-#'    \item{\code{Parameter}}{A data.frame with the relevant parameter estimates
-#'    of each parent analysis.}
-#'    \item{\code{Index}}{The composite index based on the parameters}
+#'    \item{\code{WAIC}}{A \code{data.frame} with WAIC values per model.}
 #'   }
-#' @name n2kComposite-class
-#' @rdname n2kComposite-class
-#' @exportClass n2kComposite
-#' @aliases n2kComposite-class
+#' @name n2kInlaComparison-class
+#' @rdname n2kInlaComparison-class
+#' @exportClass n2kInlaComparison
+#' @aliases n2kInlaComparison-class
 #' @importFrom methods setClass
 #' @docType class
-#' @include n2kModel_class.R
+#' @include n2k_model_class.R
 setClass(
-  "n2kComposite",
+  "n2kInlaComparison",
   representation = representation(
-    Extractor = "function",
-    Parameter = "data.frame",
-    Index = "data.frame"
+    WAIC = "maybeDataFrame"
   ),
   contains = "n2kModel"
 )
 
-
 #' @importFrom methods setValidity
+#' @importFrom assertthat assert_that noNA
 #' @importFrom digest sha1
 setValidity(
-  "n2kComposite",
+  "n2kInlaComparison",
   function(object) {
-    if (nrow(object@AnalysisRelation) == 0) {
-      stop("'AnalysisRelation' not defined")
-    }
-    if (anyNA(object@AnalysisRelation$ParentAnalysis)) {
-      stop("'ParentAnalysis' in 'AnalysisRelation' slot cannot be missing")
+    assert_that(nrow(object@AnalysisRelation) > 1)
+    assert_that(noNA(object@AnalysisRelation$ParentAnalysis))
+
+    if (!grepl("^inla comparison: ", object@AnalysisMetadata$ModelType)) {
+      stop("ModelType should be 'inla comparison:'")
     }
 
     file_fingerprint <- sha1(
@@ -52,18 +49,17 @@ setValidity(
         object@AnalysisMetadata$LastAnalysedYear,
         format(object@AnalysisMetadata$AnalysisDate, tz = "UTC"),
         object@AnalysisMetadata$Seed,
-        object@AnalysisRelation$ParentAnalysis,
-        formals(object@Extractor),
-        as.character(body(object@Extractor))
+        object@AnalysisRelation$ParentAnalysis
       )
     )
     if (object@AnalysisMetadata$FileFingerprint != file_fingerprint) {
       stop("Corrupt FileFingerprint")
     }
+
     status_fingerprint <- sha1(
       list(
         object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
-        object@Parameter, object@Index, object@AnalysisMetadata$AnalysisVersion,
+        object@WAIC, object@AnalysisMetadata$AnalysisVersion,
         object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation
       ),

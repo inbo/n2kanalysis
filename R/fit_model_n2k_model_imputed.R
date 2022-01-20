@@ -1,7 +1,7 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
 #' @importFrom multimput model_impute
-#' @include n2kModelImputed_class.R
+#' @include n2k_model_imputed_class.R
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kModelImputed"),

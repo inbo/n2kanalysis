@@ -32,7 +32,7 @@ setClassUnion("maybeRawImputed", c("rawImputed", "aggregatedImputed", "NULL"))
 #' @aliases n2kInla-class
 #' @importFrom methods setClass
 #' @docType class
-#' @include n2kModel_class.R
+#' @include n2k_model_class.R
 setClass(
   "n2kInla",
   representation = representation(

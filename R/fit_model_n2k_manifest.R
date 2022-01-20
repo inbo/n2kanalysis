@@ -6,7 +6,7 @@
 #' @importFrom tibble rowid_to_column
 #' @importFrom rlang .data
 #' @importFrom purrr map map_lgl map2_chr pmap_chr walk
-#' @include n2kManifest_class.R
+#' @include n2k_manifest_class.R
 #' @param local A local folder into which objects from an AWS S3 bucket are
 #' downloaded.
 #' @param bash Use the `littler` package do run the models in separate sessions.

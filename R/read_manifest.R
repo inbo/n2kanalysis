@@ -92,7 +92,7 @@ setMethod(
 #' @importFrom dplyr %>%
 #' @importFrom purrr map_chr
 #' @importFrom utils read.table
-#' @include import_S3_classes.R
+#' @include import_s3_classes.R
 setMethod(
   f = "read_manifest",
   signature = signature(base = "s3_bucket"),

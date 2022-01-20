@@ -22,7 +22,7 @@ setGeneric(
 #' @importFrom dplyr %>% distinct arrange
 #' @importFrom rlang .data
 #' @importFrom digest sha1
-#' @include n2kManifest_class.R
+#' @include n2k_manifest_class.R
 setMethod(
   f = "n2k_manifest",
   signature = signature(manifest = "data.frame"),

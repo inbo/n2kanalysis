@@ -1,6 +1,6 @@
 #' Create a n2kModelImputed object
 #' @inheritParams n2k_inla
-#' @template analysis-metadata
+#' @template analysis_metadata
 #' @details
 #' - `model_fun`: The `model_fun` argument of
 #' \code{\link[multimput]{model_impute}}.
@@ -38,7 +38,7 @@ setGeneric(
 #' @importFrom digest sha1
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
-#' @include n2kModelImputed_class.R
+#' @include n2k_model_imputed_class.R
 setMethod(
   f = "n2k_model_imputed",
   signature = signature("ANY"),

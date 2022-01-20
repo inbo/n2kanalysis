@@ -1,7 +1,7 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
 #' @importFrom multimput aggregate_impute
-#' @include n2kAggregate_class.R
+#' @include n2k_aggregate_class.R
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kAggregate"),
