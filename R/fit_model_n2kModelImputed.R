@@ -47,14 +47,10 @@ setMethod(
     }
     model <- try(
       model_impute(
-        object = x@AggregatedImputed,
-        model.fun = x@Function,
+        object = x@AggregatedImputed, model_fun = x@Function,
         rhs = gsub("~", "", x@AnalysisMetadata$Formula),
-        model.args = model_args,
-        extractor = x@Extractor,
-        extractor.args = x@ExtractorArgs,
-        filter = x@Filter,
-        mutate = x@Mutate
+        model_args = model_args, extractor = x@Extractor,
+        extractor_args = x@ExtractorArgs, filter = x@Filter, mutate = x@Mutate
       )
     )
     if ("try-error" %in% class(model)) {

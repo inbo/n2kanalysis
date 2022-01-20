@@ -73,7 +73,7 @@ setMethod(
     return(n2k_inla(
       data = x, model_fit = model, status = "converged",
       raw_imputed = impute(
-        model = model, n.imp = x@ImputationSize, minimum = x@Minimum
+        model = model, n_imp = x@ImputationSize, minimum = x@Minimum
       )
     ))
   }
