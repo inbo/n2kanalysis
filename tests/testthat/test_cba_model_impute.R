@@ -1,4 +1,3 @@
-context("model imputed")
 test_that("model imputation works", {
   set.seed(20191213)
   this_result_datasource_id <- sha1(letters)
@@ -72,16 +71,26 @@ test_that("model imputation works", {
     first_imported_year = this_first_imported_year, analysis_date = Sys.time(),
     last_imported_year = this_last_imported_year, formula = "~ A",
     last_analyses_year = this_last_analysed_year, duration = this_duration,
-    parent = get_file_fingerprint(aggregation), prepare.model_args = pma
+    parent = get_file_fingerprint(aggregation), prepare_model_args = pma
   )
   store_model(imputation, base, project)
   store_model(aggregation, base, project)
   store_model(mi, base, project)
   store_model(aggregation2, base, project)
   store_model(mi2, base, project)
-  fit_model(get_file_fingerprint(imputation), base, project)
-  fit_model(get_file_fingerprint(aggregation), base, project)
-  fit_model(get_file_fingerprint(mi), base, project)
-  fit_model(get_file_fingerprint(aggregation2), base, project)
-  fit_model(get_file_fingerprint(mi2), base, project)
+  expect_message(
+    fit_model(get_file_fingerprint(imputation), base, project), "converged"
+  )
+  expect_message(
+    fit_model(get_file_fingerprint(aggregation), base, project), "converged"
+  )
+  expect_message(
+    fit_model(get_file_fingerprint(mi), base, project), "converged"
+  )
+  expect_message(
+    fit_model(get_file_fingerprint(aggregation2), base, project), "converged"
+  )
+  expect_message(
+    fit_model(get_file_fingerprint(mi2), base, project), "converged"
+  )
 })
