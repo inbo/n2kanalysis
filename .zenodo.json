@@ -1,0 +1,30 @@
+{
+  "title": "n2kanalysis: Generic Functions to Analyse Data from the Natura 2000 Monitoring",
+  "version": "0.3.0",
+  "description": "All generic functions for the analysis. The full analysis is defined in the analysis package of each monitoring scheme.",
+  "creators": [
+    {
+      "name": "Onkelinx, Thierry",
+      "orcid": "https://orcid.org/0000-0001-8804-4216"
+    }
+  ],
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "GPL-3.0",
+  "communities": [
+    {
+      "identifier": "inbo"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "Research Institute for Nature and Forest",
+      "type": "RightsHolder"
+    },
+    {
+      "name": "Onkelinx, Thierry",
+      "type": "ContactPerson",
+      "orcid": "https://orcid.org/0000-0001-8804-4216"
+    }
+  ]
+}
