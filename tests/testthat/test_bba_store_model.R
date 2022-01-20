@@ -1,4 +1,3 @@
-context("store_model")
 test_that("store_model stores the model on a local file system", {
   base <- tempdir()
   project <- "store_model"
@@ -11,7 +10,7 @@ test_that("store_model stores the model on a local file system", {
   this_formula <-
     "Count ~ A * (B + C) + C:D +
       f(E, model = \"rw1\", replicate = as.integer(A)) +
-      f(F, model = \"iid\")"
+      f(G, model = \"iid\")"
   this_first_imported_year <- 1990L
   this_last_imported_year <- 2015L
   this_last_analysed_year <- 2014L
@@ -87,7 +86,7 @@ test_that("store_model stores the model on an S3 bucket", {
   this_formula <-
     "Count ~ A * (B + C) + C:D +
       f(E, model = \"rw1\", replicate = as.integer(A)) +
-      f(F, model = \"iid\")"
+      f(G, model = \"iid\")"
   this_first_imported_year <- 1990L
   this_last_imported_year <- 2015L
   this_last_analysed_year <- 2014L

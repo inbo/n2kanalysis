@@ -20,11 +20,11 @@ test_that("model imputation works", {
     result_datasource_id = this_result_datasource_id,
     species_group_id = this_species_group_id,
     location_group_id = this_location_group_id, model_type = this_model_type,
-    first_imported_year = this_first_imported_year, imputation.size = 100,
+    first_imported_year = this_first_imported_year, imputation_size = 100,
     last_imported_year = this_last_imported_year, family = "poisson",
     last_analyses_year = this_last_analysed_year, duration = this_duration,
-    formula = "Count ~ A * (B + C) + f(E, model = \"iid\")",
-    analysis_date = Sys.time(),
+    formula = "Count ~ A + f(E, model = \"iid\")",
+    analysis_date = Sys.time()
   )
   aggregation <- n2k_aggregate(
     scheme_id = this_scheme_id,

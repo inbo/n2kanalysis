@@ -143,7 +143,7 @@ setMethod(
         )
       }
     }
-    analysis_relation <- data_frame(
+    analysis_relation <- data.frame(
       Analysis = file_fingerprint,
       ParentAnalysis = dots$parent,
       ParentStatusFingerprint = dots$parent_statusfingerprint,

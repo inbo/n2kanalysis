@@ -22,12 +22,12 @@ setMethod(
     data <- get_data(x)
     model_formula <- x@AnalysisFormula[[1]]
 
-    # prepaper linear combinations
+    # prepare linear combinations
     if (is.null(x@LinearCombination)) {
       lc <- NULL
     } else {
       lincomb <- x@LinearCombination
-      if (class(lincomb) == "matrix") {
+      if (inherits(lincomb, "matrix")) {
         lc <- lincomb %>%
           as.data.frame() %>%
           as.list() %>%
@@ -50,12 +50,12 @@ setMethod(
     control$lincomb <- lc
     # fit model
     model <- try({
-      if (!is.null(timeout)) {
-        assert_that(is.number(timeout), timeout > 0)
-        setTimeLimit(cpu = timeout, elapsed = timeout)
-      }
-      do.call(inla, control)
-    })
+        if (!is.null(timeout)) {
+          assert_that(is.number(timeout), timeout > 0)
+          setTimeLimit(cpu = timeout, elapsed = timeout)
+        }
+        do.call(inla, control)
+        }, silent = TRUE)
     # handle error in model fit
     if (inherits(model, "try-error")) {
       status(x) <- "error"

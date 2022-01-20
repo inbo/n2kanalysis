@@ -1,9 +1,8 @@
-context("read_model")
 test_that("read_model() handles exceptions on characters", {
   base <- tempdir()
   project <- "read_model"
   dir.create(file.path(base, project, "test"), recursive = TRUE)
-  writeLines("junk", file.path(base, project, "test", "test2.rds"))
+  writeLines("junk", file.path(base, project, "test", "test1.rds"))
   writeLines("junk", file.path(base, project, "test", "test2.rds"))
   expect_error(
     suppressWarnings(read_model("junk", base, project)),

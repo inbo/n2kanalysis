@@ -1,18 +1,15 @@
 context("get the correct status fingerprint")
-describe("status fingerprint for n2k_glmer_poisson", {
+describe("status fingerprint for n2k_inla", {
 
-  data(cbpp, package = "lme4")
-  cbpp$Weight <- cbpp$size
-  cbpp$DataFieldID <- sha1(letters)
-  cbpp$ObservationID <- seq_len(nrow(cbpp))
+  dataset <- test_data()
   this_analysis_date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
   this_result_datasource_id <- sha1(sample(letters))
   this_scheme_id <- sha1(sample(letters))
   this_species_group_id <- sha1(sample(letters))
   this_location_group_id <- sha1(sample(letters))
   this_seed <- 4L
-  this_model_type <- "glmer poisson: period + herd"
-  this_formula <- "incidence ~ offset(log(size)) + period + (1|herd)"
+  this_model_type <- "inla poisson: A"
+  this_formula <- "Count ~ A"
   this_first_imported_year <- 1990L
   this_last_imported_year <- 2015L
   this_last_analysed_year <- 2015L
@@ -20,7 +17,7 @@ describe("status fingerprint for n2k_glmer_poisson", {
   this_duration <- this_last_imported_year - this_first_imported_year + 1
 
   it("sets the correct fingerprint for an new object", {
-    object <- n2k_glmer_poisson(
+    object <- n2k_inla(
       result_datasource_id = this_result_datasource_id,
       scheme_id = this_scheme_id,
       species_group_id = this_species_group_id,
@@ -32,7 +29,7 @@ describe("status fingerprint for n2k_glmer_poisson", {
       last_analysed_year = this_last_analysed_year,
       analysis_date = this_analysis_date,
       seed = this_seed,
-      data = cbpp,
+      data = dataset,
       parent = this_parent,
       this_duration
     )

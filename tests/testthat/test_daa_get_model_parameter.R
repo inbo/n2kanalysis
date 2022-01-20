@@ -238,7 +238,7 @@ test_that(
   analysis <- n2k_inla(
     formula = "Count ~ C * D +
     f(E, model = \"rw1\", replicate = as.integer(A)) +
-    f(F, model = \"iid\")",
+    f(G, model = \"iid\")",
     result_datasource_id = this_result_datasource_id,
     scheme_id = this_scheme_id,
     species_group_id = this_species_group_id,
@@ -336,7 +336,7 @@ test_that(
         Missing = mean(.data$Missing)
       ),
     tibble(
-      Main = c("E", "F"),
+      Main = c("E", "G"),
       N1 = 3L,
       N2 = c(10, 1),
       Missing = c(0, 1)

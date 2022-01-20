@@ -1,16 +1,15 @@
-context("read_manifest")
 test_that("read_manifest reads the manifest on a local file system", {
   temp_dir <- tempdir()
   object <- n2k_manifest(
     data.frame(
-      Fingerprint = "4",
+      Fingerprint = "3",
       Parent = NA_character_,
       stringsAsFactors = FALSE
     )
   )
   object2 <- n2k_manifest(
     data.frame(
-      Fingerprint = "5",
+      Fingerprint = "7",
       Parent = NA_character_,
       stringsAsFactors = FALSE
     )
@@ -19,7 +18,7 @@ test_that("read_manifest reads the manifest on a local file system", {
     read_manifest(temp_dir, "read_manifest"),
     "No manifest files in"
   )
-  paste(temp_dir, "read_manifest", "manifest", sep = "/") %>%
+  file.path(temp_dir, "read_manifest", "manifest") %>%
     normalizePath(mustWork = FALSE) %>%
     dir.create(recursive = TRUE)
   expect_error(
@@ -36,17 +35,15 @@ test_that("read_manifest reads the manifest on a local file system", {
     read_manifest(temp_dir, "read_manifest", object2@Fingerprint),
     object2
   )
-  expect_equal(
-    read_manifest(temp_dir, "read_manifest"),
-    object2
-  )
+  Sys.sleep(1)
+  expect_equal(read_manifest(temp_dir, "read_manifest"), object2)
   expect_error(
     read_manifest(temp_dir, "read_manifest", "junk"),
     "No manifest found starting with 'junk'"
   )
   expect_error(
-    read_manifest(temp_dir, "read_manifest", "3"),
-    "Multiple manifests found starting with '3'"
+    read_manifest(temp_dir, "read_manifest", "a"),
+    "Multiple manifests found starting with 'a'"
   )
   file.path(temp_dir, "read_manifest") %>%
     list.files(recursive = TRUE, full.names = TRUE) %>%
@@ -58,14 +55,14 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
   project <- "unittest_read_manifest"
   object <- n2k_manifest(
     data.frame(
-      Fingerprint = "4",
+      Fingerprint = "3",
       Parent = NA_character_,
       stringsAsFactors = FALSE
     )
   )
   object2 <- n2k_manifest(
     data.frame(
-      Fingerprint = "5",
+      Fingerprint = "7",
       Parent = NA_character_,
       stringsAsFactors = FALSE
     )
@@ -98,8 +95,8 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
     "No manifest found starting with 'junk'"
   )
   expect_error(
-    read_manifest(bucket, project, "3"),
-    "Multiple manifests found starting with '3'"
+    read_manifest(bucket, project, "a"),
+    "Multiple manifests found starting with 'a'"
   )
 
   available <- get_bucket("n2kmonitoring", prefix = project) %>%

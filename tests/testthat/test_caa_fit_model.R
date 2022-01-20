@@ -1,99 +1,4 @@
-context("fit_model")
-describe("fit_model() on GlmerPoisson based objects", {
-  temp_dir <- tempdir()
-  data(cbpp, package = "lme4")
-  cbpp$Weight <- cbpp$size
-  cbpp$DataFieldID <- sha1(letters)
-  cbpp$ObservationID <- seq_len(nrow(cbpp))
-  this_analysis_date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
-  this_seed <- 1L
-  object <- n2k_glmer_poisson(
-    result_datasource_id = sha1(letters),
-    scheme_id = sha1(letters),
-    species_group_id = sha1(letters),
-    location_group_id = sha1(letters),
-    model_type = "glmer poisson: period + herd",
-    formula = "incidence ~ offset(log(size)) + period + (1|herd)",
-    first_imported_year = 1990L,
-    last_imported_year = 2015L,
-    analysis_date = this_analysis_date,
-    seed = this_seed,
-    data = cbpp
-  )
-  weighted_object <- n2k_glmer_poisson(
-    result_datasource_id = sha1(letters),
-    scheme_id = sha1(letters),
-    species_group_id = sha1(letters),
-    location_group_id = sha1(letters),
-    model_type = "weighted glmer poisson: period + herd",
-    formula = "incidence ~ offset(log(size)) + period + (1|herd)",
-    first_imported_year = 1990L,
-    last_imported_year = 2015L,
-    analysis_date = this_analysis_date,
-    seed = this_seed,
-    data = cbpp
-  )
-  object_fit <- fit_model(object)
-  weighted_object_fit <- fit_model(weighted_object)
-  cat(
-    "\nobject_file <- \"", get_file_fingerprint(object), "\"\n",
-    "weighted_object_file <- \"",
-      get_file_fingerprint(weighted_object), "\"\n",
-    sep = ""
-  )
-  # 32-bit windows
-  object_file <- "64b56280b79201c5151dd3cb165b2fee9bf6de36"
-  weighted_object_file <- "0e36a4dc07d236286c8c6a679aff34a74ce22190"
-
-  it("returns the same file fingerprints on 32-bit and 64-bit", {
-    expect_identical(object_file, get_file_fingerprint(object))
-    expect_identical(
-      weighted_object_file,
-      get_file_fingerprint(weighted_object)
-    )
-  })
-  it("doesn't alter the file fingerprint when fitting a model", {
-    expect_identical(
-      get_file_fingerprint(object),
-      get_file_fingerprint(object_fit)
-    )
-    expect_identical(
-      get_file_fingerprint(weighted_object),
-      get_file_fingerprint(weighted_object_fit)
-    )
-  })
-  it("returns valid objects", {
-    expect_true(validObject(object_fit))
-    expect_true(validObject(weighted_object_fit))
-  })
-  it("works with objects saved in rds files", {
-    filename <- store_model(object, base = temp_dir, project = "fit_model")
-    expect_identical(status(filename)$Status, "new")
-    fit_model(filename, verbose = FALSE)
-    filename <- gsub("new", "converged", filename)
-    expect_identical(
-      status(filename)$Status,
-      "converged"
-    )
-    filename <- store_model(
-      weighted_object,
-      base = temp_dir,
-      project = "fit_model"
-    )
-    expect_identical(status(filename)$Status, "new")
-    fit_model(filename, verbose = FALSE)
-    filename <- gsub("new", "converged", filename)
-    expect_identical(
-      status(filename)$Status,
-      "converged"
-    )
-  })
-
-  # clean temp files
-  file.remove(list.files(temp_dir, recursive = TRUE, full.names = TRUE))
-})
-
-describe("fit_model() on INLA based objects", {
+test_that("fit_model() on INLA based objects", {
   temp_dir <- tempdir()
   dataset <- test_data(missing = 0.2)
   this_analysis_date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
@@ -194,8 +99,9 @@ describe("fit_model() on INLA based objects", {
     imputation.size = 10,
     data = dataset
   )
-  timeout <- fit_model(object, timeout = 0.001)
-  expect_identical(status(timeout), "time-out")
+  timeout_object <- fit_model(object, timeout = 0.001)
+  expect_identical(status(timeout_object), "time-out")
+  Sys.sleep(1)
   object_fit <- fit_model(object)
   object_lc_fit <- fit_model(object_lc)
   object_lc_list_fit <- fit_model(object_lc_list)
@@ -210,73 +116,59 @@ describe("fit_model() on INLA based objects", {
     "object_badlc_file <- \"", get_file_fingerprint(object_badlc), "\"\n",
     sep = ""
   )
-  # 32-bit windows
-  object_file <- "b662c99aae23839f2754da0debd1b44184fd6ba9"
-  object_lc_file <- "f6efab494ad42de4effbe59a2a9357bbd7894647"
-  object_lc_list_file <- "836ce2546888bf1d258753d454b05b89cbdc6e87"
-  object_lc_list2_file <- "8efa2b8081c3e785a945e1fcab70550306dfa8dc"
-  object_badlc_file <- "cc06786df1e1a6490c4ba6ba55e5b26415e1d556"
-  it("returns the same file fingerprints on 32-bit and 64-bit", {
-    expect_identical(object_file, get_file_fingerprint(object))
-    expect_identical(object_lc_file, get_file_fingerprint(object_lc))
-    expect_identical(object_lc_list_file, get_file_fingerprint(object_lc_list))
-    expect_identical(
-      object_lc_list2_file,
-      get_file_fingerprint(object_lc_list2)
-    )
-    expect_identical(object_badlc_file, get_file_fingerprint(object_badlc))
-  })
-  it("doesn't alter the file fingerprint when fitting a model", {
-    expect_identical(
-      get_file_fingerprint(object),
-      get_file_fingerprint(object_fit)
-    )
-    expect_identical(
-      get_file_fingerprint(object_lc),
-      get_file_fingerprint(object_lc_fit)
-    )
-  })
-  it("returns valid objects", {
-    expect_true(validObject(object_fit))
-    expect_true(validObject(object_lc_fit))
-  })
-  it("works with objects saved in rds files", {
-    analysis <- object
-    filename <- store_model(analysis, base = temp_dir, project = "fit_model")
-    expect_identical(status(filename)$Status, "new")
-    fit_model(filename)
-    filename <- gsub("new", "converged", filename)
-    expect_identical(
-      status(filename)$Status,
-      "converged"
-    )
-    analysis <- object_lc
-    filename <- store_model(analysis, base = temp_dir, project = "fit_model")
-    expect_identical(status(filename)$Status, "new")
-    fit_model(filename)
-    filename <- gsub("new", "converged", filename)
-    expect_identical(
-      status(filename)$Status,
-      "converged"
-    )
-  })
+  # 64-bit linux
+  object_file <- "6505d397cf88080e781d7f018892a5e15c0d1aa2"
+  object_lc_file <- "0983ebf99495a56bd6cfcd40a63ad84304041bcb"
+  object_lc_list_file <- "ec489ba34df1b0e6850a63d4fa9e2fa54baf55a6"
+  object_lc_list2_file <- "e188f514a43ed83ac511c65de910365e9c0f1e9e"
+  object_badlc_file <- "8b1d468d373b3357794f14ba679dc2bcf7b9cbe4"
 
-  it("doesn't refit converged models with the default status", {
-    expect_identical(
-      fit_model(object_fit),
-      object_fit
-    )
-    expect_identical(
-      fit_model(object_lc_fit),
-      object_lc_fit
-    )
-  })
-  it("returns an error when the linear combination is not valid", {
-    expect_identical(
-      status(object_badlc_fit),
-      "error"
-    )
-  })
+  # returns the same file fingerprints on 32-bit and 64-bit
+  expect_identical(object_file, get_file_fingerprint(object))
+  expect_identical(object_lc_file, get_file_fingerprint(object_lc))
+  expect_identical(object_lc_list_file, get_file_fingerprint(object_lc_list))
+  expect_identical(
+    object_lc_list2_file,
+    get_file_fingerprint(object_lc_list2)
+  )
+  expect_identical(object_badlc_file, get_file_fingerprint(object_badlc))
+  # doesn't alter the file fingerprint when fitting a model
+  expect_identical(
+    get_file_fingerprint(object),
+    get_file_fingerprint(object_fit)
+  )
+  expect_identical(
+    get_file_fingerprint(object_lc),
+    get_file_fingerprint(object_lc_fit)
+  )
+
+  # returns valid objects
+  expect_true(validObject(object_fit))
+  expect_true(validObject(object_lc_fit))
+
+  # works with objects saved in rds files
+  analysis <- object
+  filename <- store_model(analysis, base = temp_dir, project = "fit_model")
+  expect_identical(status(filename)$Status, "new")
+  suppressWarnings(suppressMessages(fit_model(filename)))
+  filename <- gsub("new", "converged", filename)
+  expect_identical(status(filename)$Status, "converged")
+  analysis <- object_lc
+  filename <- store_model(analysis, base = temp_dir, project = "fit_model")
+  expect_identical(status(filename)$Status, "new")
+  suppressWarnings(suppressMessages(fit_model(filename)))
+  filename <- gsub("new", "converged", filename)
+  expect_identical(status(filename)$Status, "converged")
+
+  # doesn't refit converged models with the default status
+  expect_identical(fit_model(object_fit), object_fit)
+  expect_identical(fit_model(object_lc_fit), object_lc_fit)
+
+  # returns an error when the linear combination is not valid
+  expect_identical(
+    status(object_badlc_fit),
+    "error"
+  )
 
   # clean temp files
   file.remove(list.files(temp_dir, recursive = TRUE, full.names = TRUE))
