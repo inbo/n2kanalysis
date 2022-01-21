@@ -33,12 +33,10 @@ Suggests:
     Matrix,
     littler,
     parallel,
+    sn,
     testthat (>= 2.0.1)
-Remotes:
-    eddelbuettel/digest,
-    inbo/INLA,
-    inbo/multimput,
-    inbo/n2khelper
+Additional_repositories: https://inla.r-inla-download.org/R/testing,
+    https://inbo.r-universe.org
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

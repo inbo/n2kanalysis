@@ -19,7 +19,7 @@ test_that("model imputation works", {
     result_datasource_id = this_result_datasource_id,
     species_group_id = this_species_group_id,
     location_group_id = this_location_group_id, model_type = this_model_type,
-    first_imported_year = this_first_imported_year, imputation_size = 100,
+    first_imported_year = this_first_imported_year, imputation_size = 3,
     last_imported_year = this_last_imported_year, family = "poisson",
     last_analyses_year = this_last_analysed_year, duration = this_duration,
     formula = "Count ~ A + f(E, model = \"iid\")",
@@ -79,7 +79,10 @@ test_that("model imputation works", {
   store_model(aggregation2, base, project)
   store_model(mi2, base, project)
   expect_message(
-    fit_model(get_file_fingerprint(imputation), base, project), "converged"
+    fit_model(
+      get_file_fingerprint(imputation), base, project, parallel_configs = FALSE
+    ),
+    "converged"
   )
   expect_message(
     fit_model(get_file_fingerprint(aggregation), base, project), "converged"

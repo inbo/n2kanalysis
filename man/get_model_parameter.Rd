@@ -30,6 +30,8 @@ get_model_parameter(analysis, ...)
 \item{analysis}{The model to add.}
 
 \item{...}{extra options}
+
+\item{verbose}{Print extra information on the screen}
 }
 \description{
 Add the model parameters from a model

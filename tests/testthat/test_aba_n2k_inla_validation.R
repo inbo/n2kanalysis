@@ -1,28 +1,26 @@
 context("n2kInla validation")
 
-data("cbpp", package = "lme4")
-cbpp$DataFieldID <- sha1(letters)
-cbpp$ObservationID <- seq_len(nrow(cbpp))
-lin_comb <- model.matrix(~period, unique(cbpp[, "period", drop = FALSE]))
+dataset <- test_data()
+lin_comb <- model.matrix(~A, unique(dataset[, "A", drop = FALSE]))
 object <- n2k_inla(
   result_datasource_id = sha1(letters),
   scheme_id = sha1(letters),
   species_group_id = sha1(letters),
   location_group_id = sha1(letters),
-  model_type = "inla poisson: period + herd",
-  formula = "incidence ~ offset(log(size)) + period + f(herd, model = 'iid')",
+  model_type = "inla poisson: A",
+  formula = "Count ~ A",
   first_imported_year = 1990,
   last_imported_year = 2015,
   duration = 1,
   last_analysed_year = 1995,
   analysis_date = as.POSIXct("2000-01-01 12:13:14", tz = "UTC"),
-  data = cbpp
+  data = dataset
 )
 
 describe("illegal changes in the file fingerprint", {
   it("detects changes in Data", {
     change_object <- object
-    change_object@Data <- head(cbpp, 1)
+    change_object@Data <- head(dataset, 1)
     expect_that(
       validObject(change_object),
       throws_error("Corrupt FileFingerprint")
@@ -76,7 +74,7 @@ describe("illegal changes in the file fingerprint", {
 
   it("detects changes in Formula", {
     change_object <- object
-    change_object@AnalysisMetadata$Formula <- "incidence ~ period"
+    change_object@AnalysisMetadata$Formula <- "Count ~ B"
     expect_that(
       validObject(change_object),
       throws_error(
@@ -153,7 +151,7 @@ describe("illegal changes in the status fingerprint", {
 
   it("detects changes in Model", {
     model_object <- inla(
-      incidence ~ offset(log(size)) + period + f(herd, model = "iid"),
+      Count ~ B,
       data = object@Data,
       family = "poisson"
     )
@@ -161,7 +159,7 @@ describe("illegal changes in the status fingerprint", {
       data = object, model_fit = model_object, status = "converged"
     )
     change_model <- inla(
-      incidence ~ period + f(herd, model = "iid"),
+      Count ~ C,
       data = object@Data,
       family = "poisson"
     )

@@ -1,22 +1,20 @@
 context("get_model() handles n2kInla objects")
 describe("get_model", {
-  data("cbpp", package = "lme4")
-  cbpp$DataFieldID <- sha1(letters)
-  cbpp$ObservationID <- seq_len(nrow(cbpp))
+  dataset <- test_data()
   object <- n2k_inla(
     result_datasource_id = sha1(letters),
     scheme_id = sha1(letters),
     species_group_id = sha1(letters),
     location_group_id = sha1(letters),
-    model_type = "inla poisson: period + herd",
-    formula = "incidence ~ offset(log(size)) + period + f(herd, model = 'iid')",
+    model_type = "inla poisson: A",
+    formula = "Count ~ A",
     first_imported_year = 1990,
     last_imported_year = 2015,
     analysis_date = as.POSIXct("2000-01-01 12:13:14", tz = "UTC"),
-    data = cbpp
+    data = dataset
   )
   model_object <- inla(
-    incidence ~ offset(log(size)) + period + f(herd, model = "iid"),
+    Count ~ A,
     data = object@Data,
     family = "poisson"
   )

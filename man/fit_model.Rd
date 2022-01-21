@@ -33,7 +33,15 @@ fit_model(x, ...)
 
 \S4method{fit_model}{n2kComposite}(x, base, project, status = "new", ...)
 
-\S4method{fit_model}{n2kInla}(x, status = "new", ..., timeout = NULL)
+\S4method{fit_model}{n2kInla}(
+  x,
+  status = "new",
+  ...,
+  timeout = NULL,
+  seed = 0L,
+  num_threads = NULL,
+  parallel_configs = TRUE
+)
 
 \S4method{fit_model}{n2kInlaComparison}(x, base, project, status = "new", verbose = TRUE, ...)
 
@@ -76,6 +84,26 @@ Defaults to \code{TRUE}.}
 Only used when \code{base} is missing.}
 
 \item{timeout}{the optional number of second until the model will time out}
+
+\item{seed}{See the same argument in \code{\link[INLA:qsample]{INLA::inla.qsample()}} for further
+information.
+In order to produce reproducible results, you ALSO need to make sure the RNG
+in R is in the same state, see the example in
+\code{\link[INLA:posterior.sample]{INLA::inla.posterior.sample()}}.
+When seed is non-zero, \code{num_threads} is forced to \code{"1:1"} and
+\code{parallel_configs} is set to \code{FALSE}, since parallel sampling would not
+produce a reproducible sequence of pseudo-random numbers.}
+
+\item{num_threads}{The number of threads to use in the format \code{"A:B"}
+defining the number threads in the outer (\code{A}) and inner (\code{B}) layer for
+nested parallelism.
+\verb{A "0"} will be replaced intelligently.
+\code{seed != 0} requires serial computations.}
+
+\item{parallel_configs}{Logical.
+If TRUE and not on Windows, then try to run each configuration in parallel
+(not Windows) using \code{A} threads (see \code{num_threads}), where each of them is
+using \code{B:0} threads.}
 
 \item{local}{A local folder into which objects from an AWS S3 bucket are
 downloaded.}

@@ -5,9 +5,10 @@
 #' @param verbose Show the name of the current analysis file on screen.
 #' Defaults to `TRUE`
 #' @param n_cluster The number of clusters to use.
+#' @param ... Arguments passed to [fit_model()]
 #' @export
 #' @importFrom n2khelper check_character
-fit_every_model <- function(path, status, verbose = TRUE, n_cluster = 1) {
+fit_every_model <- function(path, status, verbose = TRUE, n_cluster = 1, ...) {
   assert_that(is.dir(path))
   if (missing(status)) {
     status <- c("new", "waiting")
@@ -25,7 +26,7 @@ fit_every_model <- function(path, status, verbose = TRUE, n_cluster = 1) {
   }
   files <- list.files(path = path, pattern = "\\.rds$", full.names = TRUE)
   if (n_cluster == 1 || !requireNamespace("parallel", quietly = TRUE)) {
-    lapply(files, fit_model, status = status, verbose = verbose)
+    lapply(files, fit_model, status = status, verbose = verbose, ...)
     return(invisible(NULL))
   }
   n_cluster <- min(n_cluster, parallel::detectCores())
@@ -37,9 +38,9 @@ fit_every_model <- function(path, status, verbose = TRUE, n_cluster = 1) {
   parallel::clusterApplyLB(
     cl = cl,
     x = files,
-    fun = function(x, status, verbose) {
+    fun = function(x, status, verbose, ...) {
       require(n2kanalysis)
-      fit_model(x = x, status = status, verbose = verbose)
+      fit_model(x = x, status = status, verbose = verbose, ...)
     },
     status = status,
     verbose = verbose

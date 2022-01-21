@@ -28,6 +28,8 @@ get_anomaly(analysis, ...)
 
 \item{...}{Extra options. See details}
 
+\item{n}{the number of anomalies per category.}
+
 \item{expected_ratio}{Observations that have
 \code{observed / fitted > expected_ratio} or \code{fitted / observed > expected_ratio}
 are potential anomalies.
@@ -36,6 +38,12 @@ or lower than the fitted values are potential anomalies.}
 
 \item{expected_absent}{Zero observations where \code{fitted > expected_absent} are
 potential anomalies.}
+
+\item{random_threshold}{The minimal relative effect size of a random effect.
+Random effect with a smaller effect size will never be an anomaly.
+Defaults to 1.05 (5\%).}
+
+\item{verbose}{Print extra information on the screen}
 }
 \description{
 Get the anomalies from a model

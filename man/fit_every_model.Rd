@@ -4,7 +4,7 @@
 \alias{fit_every_model}
 \title{Fit the model to the analysis files}
 \usage{
-fit_every_model(path, status, verbose = TRUE, n_cluster = 1)
+fit_every_model(path, status, verbose = TRUE, n_cluster = 1, ...)
 }
 \arguments{
 \item{path}{The path containing the analysis files.}
@@ -16,6 +16,8 @@ Defaults to \code{c("new", "waiting")} when missing.}
 Defaults to \code{TRUE}}
 
 \item{n_cluster}{The number of clusters to use.}
+
+\item{...}{Arguments passed to \code{\link[=fit_model]{fit_model()}}}
 }
 \description{
 Fit the model to the analysis files

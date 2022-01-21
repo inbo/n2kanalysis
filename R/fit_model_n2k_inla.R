@@ -5,10 +5,14 @@
 #' @importFrom INLA inla inla.make.lincombs
 #' @include n2k_inla_class.R
 #' @param timeout the optional number of second until the model will time out
+#' @inheritParams multimput::impute
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kInla"),
-  definition = function(x, status = "new", ..., timeout = NULL) {
+  definition = function(
+    x, status = "new", ..., timeout = NULL, seed = 0L, num_threads = NULL,
+    parallel_configs = TRUE
+  ) {
     validObject(x)
     assert_that(is.character(status), length(status) >= 1)
 
@@ -73,7 +77,9 @@ setMethod(
     return(n2k_inla(
       data = x, model_fit = model, status = "converged",
       raw_imputed = impute(
-        model = model, n_imp = x@ImputationSize, minimum = x@Minimum
+        model = model, n_imp = x@ImputationSize, minimum = x@Minimum,
+        seed = seed, num_threads = num_threads,
+        parallel_configs = parallel_configs
       )
     ))
   }

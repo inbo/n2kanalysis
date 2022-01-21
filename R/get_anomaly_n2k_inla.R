@@ -6,6 +6,7 @@
 #' slice tibble transmute ungroup
 #' @importFrom rlang !!
 #' @importFrom digest sha1
+#' @importFrom utils head tail
 #' @include n2k_inla_class.R
 #' @param expected_ratio Observations that have
 #' `observed / fitted > expected_ratio` or `fitted / observed > expected_ratio`
@@ -14,6 +15,11 @@
 #' or lower than the fitted values are potential anomalies.
 #' @param expected_absent Zero observations where `fitted > expected_absent` are
 #' potential anomalies.
+#' @param n the number of anomalies per category.
+#' @param random_threshold The minimal relative effect size of a random effect.
+#' Random effect with a smaller effect size will never be an anomaly.
+#' Defaults to 1.05 (5%).
+#' @inheritParams get_result
 setMethod(
   f = "get_anomaly",
   signature = signature(analysis = "n2kInla"),

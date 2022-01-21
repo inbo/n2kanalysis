@@ -49,10 +49,7 @@ setMethod(
     analysis <- read_model(hash, base = base, project = project)
     display(verbose, paste(status(analysis), "-> "), FALSE)
     analysis <- fit_model(
-      x = analysis,
-      status = status,
-      base = base,
-      project = project
+      x = analysis, status = status, base = base, project = project, ...
     )
     display(verbose, status(analysis))
     store_model(analysis, base = base, project = project)
