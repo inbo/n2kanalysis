@@ -3,6 +3,7 @@
 S3method(sha1,aggregatedImputed)
 S3method(sha1,inla)
 S3method(sha1,rawImputed)
+export(display)
 export(fit_every_model)
 export(get_parents)
 export(inla_inverse)
