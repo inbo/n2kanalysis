@@ -25,21 +25,15 @@ test_that("get_result on n2kInla", {
       f(G, model = 'iid')"
   analysis <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    family = "nbinomial",
-    model_type = this_model_type,
-    formula = this_formula,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, family = "nbinomial",
+    model_type = this_model_type, formula = this_formula,
     first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset
+    analysis_date = this_analysis_date, data = dataset
   )
   result <- get_result(
-    analysis,
-    datasource_id = this_datasource,
-    verbose = FALSE
+    analysis, datasource_id = this_datasource, verbose = FALSE
   )
   expect_is(result, "n2kResult")
   expect_identical(nrow(result@Parameter), 0L)
@@ -54,9 +48,7 @@ test_that("get_result on n2kInla", {
   fit_model(filename, verbose = FALSE)
   filename <- gsub(pattern = "new", replacement = "converged", filename)
   result <- get_result(
-    readRDS(filename),
-    datasource_id = this_datasource,
-    verbose = FALSE
+    readRDS(filename), datasource_id = this_datasource, verbose = FALSE
   )
   expect_is(result, "n2kResult")
   expect_lt(0, nrow(result@Parameter))
@@ -69,10 +61,7 @@ test_that("get_result on n2kInla", {
 
   # with linear combination
   lin_comb <- dataset %>%
-    filter(
-      .data$C == max(.data$C),
-      .data$D == max(.data$D)
-    ) %>%
+    filter(.data$C == max(.data$C), .data$D == max(.data$D)) %>%
     select("A", "B", "C", "D") %>%
     distinct() %>%
     model.matrix(object = ~A * (B + C) + C:D)
@@ -80,23 +69,16 @@ test_that("get_result on n2kInla", {
   this_parent <- "abcd"
   analysis <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    family = "nbinomial",
-    model_type = this_model_type,
-    formula = this_formula,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, family = "nbinomial",
+    model_type = this_model_type, formula = this_formula,
     first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset,
-    lin_comb = lin_comb,
+    analysis_date = this_analysis_date, data = dataset, lin_comb = lin_comb,
     parent = this_parent
   )
   result <- get_result(
-    analysis,
-    datasource_id = this_datasource,
-    verbose = FALSE
+    analysis, datasource_id = this_datasource, verbose = FALSE
   )
   expect_is(result, "n2kResult")
   expect_identical(nrow(result@Parameter), 0L)
@@ -113,9 +95,7 @@ test_that("get_result on n2kInla", {
   fit_model(filename, verbose = FALSE)
   filename <- gsub(pattern = "new", replacement = "converged", filename)
   result <- get_result(
-    readRDS(filename),
-    datasource_id = this_datasource,
-    verbose = FALSE
+    readRDS(filename), datasource_id = this_datasource, verbose = FALSE
   )
   expect_is(result, "n2kResult")
   expect_lt(0, nrow(result@Parameter))
@@ -133,23 +113,16 @@ test_that("get_result on n2kInla", {
   names(lin_comb[[1]]) <- seq_along(lin_comb[[1]])
   analysis <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    family = "nbinomial",
-    model_type = this_model_type,
-    formula = this_formula,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, family = "nbinomial",
+    model_type = this_model_type, formula = this_formula,
     first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset,
-    lin_comb = lin_comb,
+    analysis_date = this_analysis_date, data = dataset, lin_comb = lin_comb,
     parent = this_parent
   )
   result <- get_result(
-    analysis,
-    datasource_id = this_datasource,
-    verbose = FALSE
+    analysis, datasource_id = this_datasource, verbose = FALSE
   )
   expect_is(result, "n2kResult")
   expect_identical(nrow(result@Parameter), 0L)
@@ -165,9 +138,7 @@ test_that("get_result on n2kInla", {
   fit_model(filename, verbose = FALSE)
   filename <- gsub(pattern = "new", replacement = "converged", filename)
   result <- get_result(
-    readRDS(filename),
-    datasource_id = this_datasource,
-    verbose = FALSE
+    readRDS(filename), datasource_id = this_datasource, verbose = FALSE
   )
   expect_is(result, "n2kResult")
   expect_lt(0, nrow(result@Parameter))
@@ -202,26 +173,17 @@ test_that("get_result on n2kInla", {
   )
   analysis <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    model_type = this_model_type,
-    family = "nbinomial",
-    formula = this_formula,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    family = "nbinomial", formula = this_formula,
     first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset,
-    lin_comb = lin_comb,
-    replicate_name = list(
-      E = levels(dataset$A)
-    ),
+    analysis_date = this_analysis_date, data = dataset, lin_comb = lin_comb,
+    replicate_name = list(E = levels(dataset$A)),
     parent = this_parent
   )
   result <- get_result(
-    analysis,
-    datasource_id = this_datasource,
-    verbose = FALSE
+    analysis, datasource_id = this_datasource, verbose = FALSE
   )
   expect_is(result, "n2kResult")
   expect_identical(nrow(result@Parameter), 0L)
@@ -237,9 +199,7 @@ test_that("get_result on n2kInla", {
   fit_model(filename, verbose = FALSE)
   filename <- gsub(pattern = "new", replacement = "converged", filename)
   result <- get_result(
-    readRDS(filename),
-    datasource_id = this_datasource,
-    verbose = FALSE
+    readRDS(filename), datasource_id = this_datasource, verbose = FALSE
   )
   expect_is(result, "n2kResult")
   expect_lt(0, nrow(result@Parameter))

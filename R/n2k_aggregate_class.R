@@ -45,40 +45,42 @@ setValidity(
   function(object) {
     file_fingerprint <- sha1(
       list(
-        object@AnalysisMetadata$ResultDatasourceID,
-        object@AnalysisMetadata$SchemeID,
-        object@AnalysisMetadata$SpeciesGroupID,
-        object@AnalysisMetadata$LocationGroupID,
-        object@AnalysisMetadata$ModelType, object@AnalysisMetadata$Formula,
-        object@AnalysisMetadata$FirstImportedYear,
-        object@AnalysisMetadata$LastImportedYear,
-        object@AnalysisMetadata$Duration,
-        object@AnalysisMetadata$LastAnalysedYear,
-        format(object@AnalysisMetadata$AnalysisDate, tz = "UTC"),
-        object@AnalysisMetadata$Seed,
-        object@AnalysisRelation$ParentAnalysis,
+        object@AnalysisMetadata$result_datasource_id,
+        object@AnalysisMetadata$scheme_id,
+        object@AnalysisMetadata$species_group_id,
+        object@AnalysisMetadata$location_group_id,
+        object@AnalysisMetadata$model_type, object@AnalysisMetadata$formula,
+        object@AnalysisMetadata$first_imported_year,
+        object@AnalysisMetadata$last_imported_year,
+        object@AnalysisMetadata$duration,
+        object@AnalysisMetadata$last_analysed_year,
+        format(object@AnalysisMetadata$analysis_date, tz = "UTC"),
+        object@AnalysisMetadata$seed,
+        object@AnalysisRelation$parent_analysis,
         object@Function, object@Filter, object@Join
       ),
       environment = FALSE
     )
 
-    if (object@AnalysisMetadata$FileFingerprint != file_fingerprint) {
-      stop("Corrupt FileFingerprint")
-    }
+    assert_that(
+      object@AnalysisMetadata$file_fingerprint == file_fingerprint,
+      msg = "Corrupt file_fingerprint"
+    )
 
     status_fingerprint <- sha1(
       list(
-        object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
-        object@AnalysisMetadata$AnalysisVersion, object@AnalysisVersion,
+        object@AnalysisMetadata$file_fingerprint, object@AnalysisMetadata$status,
+        object@AnalysisMetadata$analysis_version, object@AnalysisVersion,
         object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation, object@RawImputed, object@AggregatedImputed
       ),
       digits = 6L
     )
 
-    if (object@AnalysisMetadata$StatusFingerprint != status_fingerprint) {
-      stop("Corrupt StatusFingerprint")
-    }
+    assert_that(
+      object@AnalysisMetadata$status_fingerprint == status_fingerprint,
+      msg = "Corrupt status_fingerprint"
+    )
 
     return(TRUE)
   }

@@ -14,51 +14,47 @@ setMethod(
     }
 
     parameter <- data.frame(
-      Description = "AggregatedImputed",
-      Parent = NA_character_,
-      Fingerprint = sha1(c("AggregatedImputed", NA_character_)),
+      description = "AggregatedImputed", parent = NA_character_,
+      fingerprint = sha1(c("AggregatedImputed", NA_character_)),
       stringsAsFactors = FALSE
     )
     observations <- analysis@AggregatedImputed@Covariate %>%
       mutate_all(funs("as.character")) %>%
-      mutate(Parent = .data$parameter$Fingerprint)
+      mutate(parent = .data$parameter$fingerprint)
     for (i in colnames(analysis@AggregatedImputed@Covariate)) {
       extra <- observations %>%
-        distinct(.data$Parent) %>%
-        mutate(Description = i) %>%
+        distinct(.data$parent) %>%
+        mutate(description = i) %>%
         mutate(
-          Fingerprint = map2_chr(
-            .data$Description,
-            .data$Parent,
-            ~sha1(c(Description = .x, Parent = .y))
+          fingerprint = map2_chr(
+            .data$description, .data$parent,
+            ~sha1(c(description = .x, parent = .y))
           )
         )
       observations <- observations %>%
         inner_join(
           extra %>%
-            select(.data$Parent, .data$Fingerprint),
-          by = "Parent"
+            select(.data$parent, .data$fingerprint),
+          by = "parent"
         ) %>%
-        rename(Parent = "Fingerprint")
+        rename(Parent = "fingerprint")
       parameter <- bind_rows(parameter, extra)
       extra <- observations %>%
-        distinct(.data$Parent, i) %>%
+        distinct(.data$parent, i) %>%
         transmute(
-          .data$Parent,
-          Description = i
+          .data$parent, description = i
         ) %>%
         mutate(
-          Fingerprint = map2_chr(
-            .data$Description,
-            .data$Parent,
-            ~sha1(c(Description = .x, Parent = .y))
+          fingerprint = map2_chr(
+            .data$description, .data$parent,
+            ~sha1(c(description = .x, parent = .y))
           )
         )
-      link <- c("Parent", "Description")
-      names(link) <- c("Parent", i)
+      link <- c("parent", "description")
+      names(link) <- c("parent", i)
       observations <- observations %>%
         inner_join(extra, by = link) %>%
-        rename(Parent = "Fingerprint")
+        rename(parent = "fingerprint")
       parameter <- bind_rows(parameter, extra)
     }
     new(
@@ -69,13 +65,11 @@ setMethod(
         t() %>%
         as.data.frame() %>%
         select(
-          Estimate = 1,
-          LowerConfidenceLimit = 2,
-          UpperConfidenceLimit = 3
+          estimate = 1, lower_confidence_limit = 2, upper_confidence_limit = 3
         ) %>%
         mutate(
-          Analysis = get_file_fingerprint(analysis),
-          Parameter = extra$Fingerprint
+          analysis = get_file_fingerprint(analysis),
+          parameter = extra$fingerprint
         )
     )
   }

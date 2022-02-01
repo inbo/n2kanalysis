@@ -40,7 +40,7 @@ setMethod(
     }
     parent <- read_model(object, base = base, project = project)
     cbind(
-      Parent = object,
+      parent = object,
       extract(
         extractor = extractor,
         object = parent,

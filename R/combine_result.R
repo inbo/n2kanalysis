@@ -10,144 +10,63 @@ setMethod(
   definition = function(...) {
     dots <- list(...)
 
-    analysis_metadata <- do.call(
-      rbind,
-      lapply(
-        dots,
-        function(x) {
-          x@AnalysisMetadata
-        }
-      )
-    ) %>%
-      arrange(.data$FileFingerprint)
+    analysis_metadata <- lapply(dots, slot, "AnalysisMetadata") %>%
+      do.call(what = rbind) %>%
+      arrange(.data$file_fingerprint)
 
-    analysis_formula <- lapply(analysis_metadata$Formula, as.formula)
+    analysis_formula <- lapply(analysis_metadata$formula, as.formula)
 
-    analysis_relation <- do.call(
-      rbind,
-      lapply(
-        dots,
-        function(x) {
-          x@AnalysisRelation
-        }
-    )) %>%
-      arrange(.data$Analysis, .data$ParentAnalysis)
+    analysis_relation <- lapply(dots, slot, "AnalysisRelation") %>%
+      do.call(what = rbind) %>%
+      arrange(.data$analysis, .data$parent_analysis)
 
-    analysis_version <- do.call(
-      rbind,
-      lapply(
-        dots,
-        function(x) {
-          x@AnalysisVersion
-        }
-      )
-    ) %>%
+    analysis_version <- lapply(dots, slot, "AnalysisVersion") %>%
+      do.call(what = rbind) %>%
       distinct() %>%
-      arrange(.data$Fingerprint)
+      arrange(.data$fingerprint)
 
-    r_package <- do.call(
-      rbind,
-      lapply(
-        dots,
-        function(x) {
-          x@RPackage
-        }
-      )
-    ) %>%
+    r_package <- lapply(dots, slot, name = "RPackage") %>%
+      do.call(what = rbind) %>%
       distinct() %>%
-      arrange(.data$Fingerprint)
+      arrange(.data$fingerprint)
 
-    analysis_version_r_package <- do.call(
-      rbind,
-      lapply(
-        dots,
-        function(x) {
-          x@AnalysisVersionRPackage
-        }
-      )
+    analysis_version_r_package <- lapply(
+      dots, slot, name = "AnalysisVersionRPackage"
     ) %>%
+      do.call(what = rbind) %>%
       distinct() %>%
-      arrange(.data$AnalysisVersion, .data$RPackage)
+      arrange(.data$analysis_version, .data$r_package)
 
-    parameter <- do.call(
-      rbind,
-      lapply(
-        dots,
-        function(x) {
-          x@Parameter
-        }
-      )
-    ) %>%
+    parameter <- lapply(dots, slot, "Parameter") %>%
+      do.call(what = rbind) %>%
       distinct() %>%
-      arrange(.data$Fingerprint)
+      arrange(.data$fingerprint)
 
-    parameter_estimate <- do.call(
-      rbind,
-      lapply(
-        dots,
-        function(x) {
-          x@ParameterEstimate
-        }
-      )
-    ) %>%
+    parameter_estimate <- lapply(dots, slot, "ParameterEstimate") %>%
+      do.call(what = rbind) %>%
       distinct() %>%
-      arrange(.data$Analysis, .data$Parameter)
+      arrange(.data$analysis, .data$parameter)
 
-    anomaly_type <- do.call(
-      rbind,
-      lapply(
-        dots,
-        function(x) {
-          x@AnomalyType
-        }
-      )
-    ) %>%
+    anomaly_type <- lapply(dots, slot, "AnomalyType") %>%
+      do.call(what = rbind) %>%
       distinct() %>%
-      arrange(.data$Fingerprint)
+      arrange(.data$fingerprint)
 
-    anomaly <- do.call(
-      rbind,
-      lapply(
-        dots,
-        function(x) {
-          x@Anomaly
-        }
-      )
-    ) %>%
+    anomaly <- lapply(dots, slot, "Anomaly") %>%
+      do.call(what = rbind) %>%
       distinct() %>%
-      arrange(.data$Analysis, .data$AnomalyType, .data$Parameter)
+      arrange(.data$analysis, .data$anomaly_type, .data$parameter)
 
-    contrast <- do.call(
-      rbind,
-      lapply(
-        dots,
-        function(x) {
-          x@Contrast
-        }
-      )
-    ) %>%
+    contrast <- lapply(dots, slot, "Contrast") %>%
+      do.call(what = rbind) %>%
       distinct() %>%
-      arrange(.data$Fingerprint)
-    contrast_coefficient <- do.call(
-      rbind,
-      lapply(
-        dots,
-        function(x) {
-          x@ContrastCoefficient
-        }
-      )
-    ) %>%
+      arrange(.data$fingerprint)
+    contrast_coefficient <- lapply(dots, slot, "ContrastCoefficient") %>%
+      do.call(what = rbind) %>%
       distinct() %>%
-      arrange(.data$Contrast, .data$Parameter)
-    contrast_estimate <- do.call(
-      rbind,
-      lapply(
-        dots,
-        function(x) {
-          x@ContrastEstimate
-        }
-      )
-    ) %>%
+      arrange(.data$Contrast, .data$parameter)
+    contrast_estimate <- lapply(dots, slot, "ContrastEstimate") %>%
+      do.call(what = rbind) %>%
       distinct() %>%
       arrange(.data$Contrast)
 

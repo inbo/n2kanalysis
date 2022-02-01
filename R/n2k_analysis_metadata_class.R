@@ -16,10 +16,8 @@ setClass(
   contains = "n2kAnalysisVersion",
   prototype = prototype(
     AnalysisRelation = data.frame(
-      Analysis = character(0),
-      ParentAnalysis = character(0),
-      ParentStatusFingerprint = character(0),
-      ParentStatus = character(0),
+      analysis = character(0), parent_analysis = character(0),
+      parentstatus_fingerprint = character(0), parent_status = character(0),
       stringsAsFactors = FALSE
     )
   )
@@ -32,115 +30,113 @@ setClass(
 setValidity(
   "n2kAnalysisMetadata",
   function(object) {
-    assert_that(has_name(object@AnalysisMetadata, "ResultDatasourceID"))
-    assert_that(has_name(object@AnalysisMetadata, "SchemeID"))
-    assert_that(has_name(object@AnalysisMetadata, "SpeciesGroupID"))
-    assert_that(has_name(object@AnalysisMetadata, "LocationGroupID"))
-    assert_that(has_name(object@AnalysisMetadata, "ModelType"))
-    assert_that(has_name(object@AnalysisMetadata, "Formula"))
-    assert_that(has_name(object@AnalysisMetadata, "SchemeID"))
-    assert_that(has_name(object@AnalysisMetadata, "FirstImportedYear"))
-    assert_that(has_name(object@AnalysisMetadata, "LastImportedYear"))
-    assert_that(has_name(object@AnalysisMetadata, "Duration"))
-    assert_that(has_name(object@AnalysisMetadata, "LastAnalysedYear"))
-    assert_that(has_name(object@AnalysisMetadata, "AnalysisDate"))
-    assert_that(has_name(object@AnalysisMetadata, "Seed"))
-    assert_that(has_name(object@AnalysisMetadata, "FileFingerprint"))
-    assert_that(has_name(object@AnalysisMetadata, "Status"))
-    assert_that(has_name(object@AnalysisMetadata, "AnalysisVersion"))
-    assert_that(has_name(object@AnalysisMetadata, "StatusFingerprint"))
+    assert_that(has_name(object@AnalysisMetadata, "result_datasource_id"))
+    assert_that(has_name(object@AnalysisMetadata, "scheme_id"))
+    assert_that(has_name(object@AnalysisMetadata, "species_group_id"))
+    assert_that(has_name(object@AnalysisMetadata, "location_group_id"))
+    assert_that(has_name(object@AnalysisMetadata, "model_type"))
+    assert_that(has_name(object@AnalysisMetadata, "formula"))
+    assert_that(has_name(object@AnalysisMetadata, "scheme_id"))
+    assert_that(has_name(object@AnalysisMetadata, "first_imported_year"))
+    assert_that(has_name(object@AnalysisMetadata, "last_imported_year"))
+    assert_that(has_name(object@AnalysisMetadata, "duration"))
+    assert_that(has_name(object@AnalysisMetadata, "last_analysed_year"))
+    assert_that(has_name(object@AnalysisMetadata, "analysis_date"))
+    assert_that(has_name(object@AnalysisMetadata, "seed"))
+    assert_that(has_name(object@AnalysisMetadata, "file_fingerprint"))
+    assert_that(has_name(object@AnalysisMetadata, "status"))
+    assert_that(has_name(object@AnalysisMetadata, "analysis_version"))
+    assert_that(has_name(object@AnalysisMetadata, "status_fingerprint"))
 
-    assert_that(is_chartor(object@AnalysisMetadata$ResultDatasourceID))
-    assert_that(is_chartor(object@AnalysisMetadata$SchemeID))
-    assert_that(is_chartor(object@AnalysisMetadata$SpeciesGroupID))
-    assert_that(is_chartor(object@AnalysisMetadata$LocationGroupID))
-    assert_that(is_chartor(object@AnalysisMetadata$ModelType))
-    assert_that(is_chartor(object@AnalysisMetadata$Formula))
-    assert_that(is_chartor(object@AnalysisMetadata$FileFingerprint))
-    assert_that(is_chartor(object@AnalysisMetadata$Status))
-    assert_that(is_chartor(object@AnalysisMetadata$AnalysisVersion))
-    assert_that(is_chartor(object@AnalysisMetadata$StatusFingerprint))
-    assert_that(is.integer(object@AnalysisMetadata$FirstImportedYear))
-    assert_that(is.integer(object@AnalysisMetadata$LastImportedYear))
-    assert_that(is.integer(object@AnalysisMetadata$Duration))
-    assert_that(is.integer(object@AnalysisMetadata$LastAnalysedYear))
-    assert_that(is.integer(object@AnalysisMetadata$Seed))
-    assert_that(inherits(object@AnalysisMetadata$AnalysisDate, "POSIXct"))
+    assert_that(is_chartor(object@AnalysisMetadata$result_datasource_id))
+    assert_that(is_chartor(object@AnalysisMetadata$scheme_id))
+    assert_that(is_chartor(object@AnalysisMetadata$species_group_id))
+    assert_that(is_chartor(object@AnalysisMetadata$location_group_id))
+    assert_that(is_chartor(object@AnalysisMetadata$model_type))
+    assert_that(is_chartor(object@AnalysisMetadata$formula))
+    assert_that(is_chartor(object@AnalysisMetadata$file_fingerprint))
+    assert_that(is_chartor(object@AnalysisMetadata$status))
+    assert_that(is_chartor(object@AnalysisMetadata$analysis_version))
+    assert_that(is_chartor(object@AnalysisMetadata$status_fingerprint))
+    assert_that(is.integer(object@AnalysisMetadata$first_imported_year))
+    assert_that(is.integer(object@AnalysisMetadata$last_imported_year))
+    assert_that(is.integer(object@AnalysisMetadata$duration))
+    assert_that(is.integer(object@AnalysisMetadata$last_analysed_year))
+    assert_that(is.integer(object@AnalysisMetadata$seed))
+    assert_that(inherits(object@AnalysisMetadata$analysis_date, "POSIXct"))
 
-    assert_that(all(object@AnalysisMetadata$FirstImportedYear > 0))
-    assert_that(all(object@AnalysisMetadata$LastImportedYear > 0))
-    assert_that(all(object@AnalysisMetadata$LastAnalysedYear > 0))
-    assert_that(all(object@AnalysisMetadata$Seed > 0))
+    assert_that(all(object@AnalysisMetadata$first_imported_year > 0))
+    assert_that(all(object@AnalysisMetadata$last_imported_year > 0))
+    assert_that(all(object@AnalysisMetadata$last_analysed_year > 0))
+    assert_that(all(object@AnalysisMetadata$seed > 0))
 
-    if (length(object@AnalysisFormula) != nrow(object@AnalysisMetadata)) {
-      stop(
-        "Number of 'AnalysisFormula' not equal to number of 'AnalysisMetadata'"
-      )
-    }
-    if (class(object@AnalysisMetadata$Formula) == "character") {
-      if (!isTRUE(all.equal(
-        lapply(object@AnalysisMetadata$Formula, as.formula),
+    assert_that(
+      length(object@AnalysisFormula) == nrow(object@AnalysisMetadata),
+  msg = "Number of 'AnalysisFormula' not equal to number of 'AnalysisMetadata'"
+    )
+    if (inherits(object@AnalysisMetadata$formula, "character")) {
+      assert_that(isTRUE(all.equal(
+        lapply(object@AnalysisMetadata$formula, as.formula),
         object@AnalysisFormula
-      ))) {
-        stop("Formulas in 'AnalysisMetadata' don't match 'AnalysisFormula'")
-      }
+        )),
+        msg = "Formulas in 'AnalysisMetadata' don't match 'AnalysisFormula'"
+      )
     } else {
       formula_list <- lapply(
-        levels(object@AnalysisMetadata$Formula),
+        levels(object@AnalysisMetadata$formula),
         as.formula
       )
-      if (!isTRUE(all.equal(
-        formula_list[object@AnalysisMetadata$Formula],
+      assert_that(isTRUE(all.equal(
+        formula_list[object@AnalysisMetadata$formula],
         object@AnalysisFormula
-      ))) {
-        stop("Formulas in 'AnalysisMetadata' don't match 'AnalysisFormula'")
-      }
+      )),
+        msg = "Formulas in 'AnalysisMetadata' don't match 'AnalysisFormula'"
+      )
     }
 
+    assert_that(has_name(object@AnalysisRelation, "analysis"))
+    assert_that(has_name(object@AnalysisRelation, "parent_analysis"))
+    assert_that(has_name(object@AnalysisRelation, "parentstatus_fingerprint"))
+    assert_that(has_name(object@AnalysisRelation, "parent_status"))
 
-    assert_that(has_name(object@AnalysisRelation, "Analysis"))
-    assert_that(has_name(object@AnalysisRelation, "ParentAnalysis"))
-    assert_that(has_name(object@AnalysisRelation, "ParentStatusFingerprint"))
-    assert_that(has_name(object@AnalysisRelation, "ParentStatus"))
-
-    assert_that(is_chartor(object@AnalysisRelation$Analysis))
-    assert_that(is_chartor(object@AnalysisRelation$ParentAnalysis))
-    assert_that(is_chartor(object@AnalysisRelation$ParentStatusFingerprint))
-    assert_that(is_chartor(object@AnalysisRelation$ParentStatus))
+    assert_that(is_chartor(object@AnalysisRelation$analysis))
+    assert_that(is_chartor(object@AnalysisRelation$parent_analysis))
+    assert_that(is_chartor(object@AnalysisRelation$parentstatus_fingerprint))
+    assert_that(is_chartor(object@AnalysisRelation$parent_status))
 
     this_year <- as.integer(format(Sys.time(), "%Y"))
-    if (any(object@AnalysisMetadata$LastImportedYear > this_year)) {
-      stop("LastImportedYear from the future.")
+    if (any(object@AnalysisMetadata$last_imported_year > this_year)) {
+      stop("last_imported_year from the future.")
     }
     if (any(
-      object@AnalysisMetadata$FirstImportedYear >
-        object@AnalysisMetadata$LastImportedYear
+      object@AnalysisMetadata$first_imported_year >
+        object@AnalysisMetadata$last_imported_year
     )) {
-      stop("FirstImportedYear cannot exceed LastImportedYear")
+      stop("first_imported_year cannot exceed last_imported_year")
     }
     if (any(
-      object@AnalysisMetadata$LastAnalysedYear >
-        object@AnalysisMetadata$LastImportedYear
+      object@AnalysisMetadata$last_analysed_year >
+        object@AnalysisMetadata$last_imported_year
     )) {
-      stop("LastAnalysedYear cannot exceed LastImportedYear")
+      stop("last_analysed_year cannot exceed last_imported_year")
     }
     if (any(
-      object@AnalysisMetadata$Duration >
-        object@AnalysisMetadata$LastImportedYear -
-        object@AnalysisMetadata$FirstImportedYear + 1
+      object@AnalysisMetadata$duration >
+        object@AnalysisMetadata$last_imported_year -
+        object@AnalysisMetadata$first_imported_year + 1
     )) {
       stop(
-"Duration longer than the interval from FirstImportedYear to LastImportedYear"
+"duration longer than the interval from first_imported_year to last_imported_year"
       )
     }
 
     if (any(
-      object@AnalysisMetadata$LastAnalysedYear <
-        object@AnalysisMetadata$FirstImportedYear +
-        object@AnalysisMetadata$Duration - 1
+      object@AnalysisMetadata$last_analysed_year <
+        object@AnalysisMetadata$first_imported_year +
+        object@AnalysisMetadata$duration - 1
     )) {
       stop(
-"LastAnalysedYear smaller than FirstImportedYear + Duration - 1. Window
+"last_analysed_year smaller than first_imported_year + duration - 1. Window
 outside imported range."
       )
     }
@@ -149,28 +145,28 @@ outside imported range."
       "new", "working", "waiting", "error", "converged", "false_convergence",
       "unstable", "insufficient_data", "time-out"
     )
-    if (!all(object@AnalysisMetadata$Status %in% ok_status)) {
+    if (!all(object@AnalysisMetadata$status %in% ok_status)) {
       stop(
-        "Status must be one of the following: ",
+        "status must be one of the following: ",
         paste0("'", ok_status, "'", collapse = ", ")
       )
     }
-    if (!all(object@AnalysisRelation$ParentStatus %in% ok_status)) {
+    if (!all(object@AnalysisRelation$parent_status %in% ok_status)) {
       stop(
-        "Status must be one of the following: ",
+        "status must be one of the following: ",
         paste0("'", ok_status, "'", collapse = ", ")
       )
     }
-    if (any(object@AnalysisMetadata$AnalysisDate > Sys.time())) {
-      stop("AnalysisDate must be in the past")
+    if (any(object@AnalysisMetadata$analysis_date > Sys.time())) {
+      stop("analysis_date must be in the past")
     }
 
     if (!all(
-      object@AnalysisRelation$Analysis %in%
-        object@AnalysisMetadata$FileFingerprint
+      object@AnalysisRelation$analysis %in%
+        object@AnalysisMetadata$file_fingerprint
     )) {
       stop(
-"Some Analysis in 'AnalysisRelation' slot have no matching FileFingerprint in
+"Some Analysis in 'AnalysisRelation' slot have no matching file_fingerprint in
 'Analysis' slot"
       )
     }

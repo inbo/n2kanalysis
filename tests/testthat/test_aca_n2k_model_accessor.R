@@ -34,10 +34,10 @@ object_model <- fit_model(object)
 
 test_that("status() returns the status of n2kModels", {
   expect_that(
-    status(object), is_identical_to(object@AnalysisMetadata$Status)
+    status(object), is_identical_to(object@AnalysisMetadata$status)
   )
   expect_that(
-    status(object_model), is_identical_to(object_model@AnalysisMetadata$Status)
+    status(object_model), is_identical_to(object_model@AnalysisMetadata$status)
   )
 })
 test_that("status() updates the status of n2kModels", {
@@ -45,7 +45,7 @@ test_that("status() updates the status of n2kModels", {
   expect_that(status(object), is_identical_to("error"))
   expect_that(
     status(object) <- "junk",
-    throws_error("Status must be one of the following")
+    throws_error("status must be one of the following")
   )
 })
 
@@ -54,41 +54,41 @@ test_that("get_data() returns the Data slot", {
   expect_that(get_data(object_model), is_identical_to(dataset))
 })
 
-test_that("get_seed() returns the Seed slot", {
-  expect_that(get_seed(object), is_identical_to(object@AnalysisMetadata$Seed))
+test_that("get_seed() returns the seed slot", {
+  expect_that(get_seed(object), is_identical_to(object@AnalysisMetadata$seed))
 })
 
-test_that("get_scheme_id() returns the SchemeID slot", {
+test_that("get_scheme_id() returns the scheme_id slot", {
   expect_that(
-    get_scheme_id(object), is_identical_to(object@AnalysisMetadata$SchemeID)
+    get_scheme_id(object), is_identical_to(object@AnalysisMetadata$scheme_id)
   )
 })
 
-test_that("get_species_group_id() returns the SpeciesGroupID slot", {
+test_that("get_species_group_id() returns the species_group_id slot", {
   expect_that(
     get_species_group_id(object),
-    is_identical_to(object@AnalysisMetadata$SpeciesGroupID)
+    is_identical_to(object@AnalysisMetadata$species_group_id)
   )
 })
 
-test_that("get_location_group_id() returns the LocationGroupID slot", {
+test_that("get_location_group_id() returns the location_group_id slot", {
   expect_that(
     get_location_group_id(object),
-    is_identical_to(object@AnalysisMetadata$LocationGroupID)
+    is_identical_to(object@AnalysisMetadata$location_group_id)
   )
 })
 
-test_that("get_analysis_date() returns the AnalysisDate slot", {
+test_that("get_analysis_date() returns the analysis_date slot", {
   expect_that(
     get_analysis_date(object),
-    is_identical_to(object@AnalysisMetadata$AnalysisDate)
+    is_identical_to(object@AnalysisMetadata$analysis_date)
   )
 })
 
-test_that("get_model_type() returns the ModelType slot", {
+test_that("get_model_type() returns the model_type slot", {
   expect_that(
     get_model_type(object),
-    is_identical_to(object@AnalysisMetadata$ModelType)
+    is_identical_to(object@AnalysisMetadata$model_type)
   )
 })
 
@@ -96,16 +96,16 @@ test_that("get_formula() returns the AnalysisFormula slot", {
   expect_that(get_formula(object), is_identical_to(object@AnalysisFormula))
 })
 
-test_that("get_file_fingerprint() returns the FileFingerprint slot", {
+test_that("get_file_fingerprint() returns the file_fingerprint slot", {
   expect_that(
     get_file_fingerprint(object),
-    is_identical_to(object@AnalysisMetadata$FileFingerprint)
+    is_identical_to(object@AnalysisMetadata$file_fingerprint)
   )
 })
 
-test_that("get_status_fingerprint() returns the StatusFingerprint slot", {
+test_that("get_status_fingerprint() returns the status_fingerprint slot", {
   expect_that(
     get_status_fingerprint(object),
-    is_identical_to(object@AnalysisMetadata$StatusFingerprint)
+    is_identical_to(object@AnalysisMetadata$status_fingerprint)
   )
 })

@@ -43,9 +43,9 @@ setMethod(
       } else {
         stop("cannot handle a parent of class ", class(parent))
       }
-      x@AnalysisRelation$ParentStatus <- parent@AnalysisMetadata$Status
-      x@AnalysisRelation$ParentStatusFingerprint <-
-        parent@AnalysisMetadata$StatusFingerprint
+      x@AnalysisRelation$parent_status <- parent@AnalysisMetadata$status
+      x@AnalysisRelation$parentstatus_fingerprint <-
+        parent@AnalysisMetadata$status_fingerprint
       status(x) <- "new"
     }
     model <- try(

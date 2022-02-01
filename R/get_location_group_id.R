@@ -21,6 +21,6 @@ setMethod(
   f = "get_location_group_id",
   signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x) {
-    return(x@AnalysisMetadata$LocationGroupID)
+    return(x@AnalysisMetadata$location_group_id)
   }
 )

@@ -13,7 +13,7 @@ setMethod(
       new(
         "n2kResult",
         AnalysisMetadata = x@AnalysisMetadata,
-        AnalysisFormula = lapply(x@AnalysisMetadata$Formula, as.formula),
+        AnalysisFormula = lapply(x@AnalysisMetadata$formula, as.formula),
         AnalysisRelation = x@AnalysisRelation,
         AnalysisVersion = x@AnalysisVersion,
         RPackage = x@RPackage,

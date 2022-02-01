@@ -18,20 +18,13 @@ test_that("store_model stores the model on a local file system", {
   dataset <- test_data()
   object <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    model_type = this_model_type,
-    formula = this_formula,
-    first_imported_year = this_first_imported_year,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = this_formula, first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset
+    analysis_date = this_analysis_date, data = dataset
   )
-  expect_is(
-    filename <- store_model(object, base, project),
-    "character"
-  )
+  expect_is(filename <- store_model(object, base, project), "character")
   file_info <- file.info(filename)
   expect_is(
     filename2 <- store_model(object, base, project, overwrite = FALSE),
@@ -53,18 +46,9 @@ test_that("store_model stores the model on a local file system", {
     filename2 <- store_model(object, base, project, overwrite = FALSE),
     "character"
   )
-  expect_identical(
-    filename2,
-    gsub("new", "converged", filename)
-  )
-  expect_is(
-    filename2 <- store_model(object, base, project),
-    "character"
-  )
-  expect_identical(
-    filename2,
-    filename
-  )
+  expect_identical(filename2, gsub("new", "converged", filename))
+  expect_is(filename2 <- store_model(object, base, project), "character")
+  expect_identical(filename2, filename)
 
   file.path(base, project) %>%
     list.files(recursive = TRUE, full.names = TRUE) %>%
@@ -72,9 +56,7 @@ test_that("store_model stores the model on a local file system", {
 })
 
 test_that("store_model stores the model on an S3 bucket", {
-  if (Sys.getenv("AWS_SECRET_ACCESS_KEY") == "") {
-    return(NULL)
-  }
+  skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
   bucket <- get_bucket("n2kmonitoring")
   project <- "unittest_store_model"
   this_result_datasource_id <- sha1(sample(letters))
@@ -94,33 +76,21 @@ test_that("store_model stores the model on an S3 bucket", {
   dataset <- test_data()
   object <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    model_type = this_model_type,
-    formula = this_formula,
-    first_imported_year = this_first_imported_year,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = this_formula, first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset
+    analysis_date = this_analysis_date, data = dataset
   )
   expect_is(
-    filename <- store_model(
-      x = object,
-      base = bucket,
-      project = project
-    ),
+    filename <- store_model(x = object, base = bucket, project = project),
     "character"
   )
   available <- get_bucket("n2kmonitoring", prefix = project) %>%
     sapply("[[", "Key")
   expect_true(filename %in% available)
   expect_is(
-    filename2 <- store_model(
-      x = object,
-      base = bucket,
-      project = project
-    ),
+    filename2 <- store_model(x = object, base = bucket, project = project),
     "character"
   )
   available <- get_bucket("n2kmonitoring", prefix = project) %>%

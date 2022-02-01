@@ -17,27 +17,21 @@ test_that("status fingerprint for n2k_inla", {
 
   object <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    model_type = this_model_type,
-    formula = this_formula,
-    first_imported_year = this_first_imported_year,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = this_formula, first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
     last_analysed_year = this_last_analysed_year,
-    analysis_date = this_analysis_date,
-    seed = this_seed,
-    data = dataset,
-    parent = this_parent,
-    duration = this_duration
+    analysis_date = this_analysis_date, seed = this_seed, data = dataset,
+    parent = this_parent, duration = this_duration
   )
   version <- get_analysis_version(sessionInfo())
   status_fingerprint <- sha1(
     list(
       get_file_fingerprint(object), status(object), NULL,
-      version@AnalysisVersion$Fingerprint,
-      version@AnalysisVersion, version@RPackage,
-      version@AnalysisVersionRPackage, object@AnalysisRelation, NULL
+      version@AnalysisVersion$fingerprint, version@AnalysisVersion,
+      version@RPackage, version@AnalysisVersionRPackage,
+      object@AnalysisRelation, NULL
     ),
     digits = 6L
   )

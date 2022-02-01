@@ -19,7 +19,7 @@ setMethod(
     if (status(x) == "waiting" | is.null(x@AggregatedImputed)) {
       parent <- get_parents(x, base = dots$base, project = dots$project)
       if (length(parent) == 0) {
-        stop("Parent analysis not found")
+        stop("parent analysis not found")
       }
       if (length(parent) > 1) {
         stop("Multiple parents")
@@ -34,9 +34,9 @@ setMethod(
         return(x)
       }
       x@AggregatedImputed <- parent[[1]]@AggregatedImputed
-      x@AnalysisRelation$ParentStatus <- parent[[1]]@AnalysisMetadata$Status
-      x@AnalysisRelation$ParentStatusFingerprint <-
-        parent[[1]]@AnalysisMetadata$StatusFingerprint
+      x@AnalysisRelation$parent_status <- parent[[1]]@AnalysisMetadata$status
+      x@AnalysisRelation$parentstatus_fingerprint <-
+        parent[[1]]@AnalysisMetadata$status_fingerprint
       status(x) <- "new"
     }
     sapply(x@Package, require, quietly = TRUE, character.only = TRUE)
@@ -48,7 +48,7 @@ setMethod(
     model <- try(
       model_impute(
         object = x@AggregatedImputed, model_fun = x@Function,
-        rhs = gsub("~", "", x@AnalysisMetadata$Formula),
+        rhs = gsub("~", "", x@AnalysisMetadata$formula),
         model_args = model_args, extractor = x@Extractor,
         extractor_args = x@ExtractorArgs, filter = x@Filter, mutate = x@Mutate
       )

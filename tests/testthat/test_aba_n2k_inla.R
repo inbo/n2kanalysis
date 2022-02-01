@@ -62,7 +62,7 @@ test_that("n2k_inla() adds the data as a data.frame", {
 })
 test_that("n2k_inla(), uses 'new' as default status", {
   expect_that(
-    object@AnalysisMetadata$Status,
+    object@AnalysisMetadata$status,
     is_identical_to("new")
   )
 })
@@ -81,58 +81,44 @@ test_that("n2k_inla() requires a correct status", {
       analysis_date = this_analysis_date,
       status = "junk"
     ),
-    throws_error("Status must be one of the following")
+    throws_error("status must be one of the following")
   )
   expect_that(
     n2k_inla(
-      data = dataset,
-      result_datasource_id = this_result_datasource_id,
-      scheme_id = this_scheme_id,
-      species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
-      formula = this_formula,
-      first_imported_year = this_first_imported_year,
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      formula = this_formula, first_imported_year = this_first_imported_year,
       last_imported_year = this_last_imported_year,
-      analysis_date = this_analysis_date,
-      status = NA_character_
+      analysis_date = this_analysis_date, status = NA_character_
     ),
-    throws_error("Status must be one of the following")
+    throws_error("status must be one of the following")
   )
 })
 test_that("n2k_inla() checks the model type", {
   expect_that(
     n2k_inla(
-      data = dataset,
-      result_datasource_id = this_result_datasource_id,
-      scheme_id = this_scheme_id,
-      species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = "junk",
-      formula = this_formula,
-      first_imported_year = this_first_imported_year,
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = "junk",
+      formula = this_formula, first_imported_year = this_first_imported_year,
       last_imported_year = this_last_imported_year,
       analysis_date = this_analysis_date
     ),
-    throws_error("ModelType should be 'inla poisson'")
+    throws_error("model_type should be 'inla poisson'")
   )
 })
 test_that("n2k_inla() sets the correct seed", {
   this_seed <- 12345L
   expect_that(
     n2k_inla(
-      data = dataset,
-      result_datasource_id = this_result_datasource_id,
-      scheme_id = this_scheme_id,
-      species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
-      formula = this_formula,
-      first_imported_year = this_first_imported_year,
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      formula = this_formula, first_imported_year = this_first_imported_year,
       last_imported_year = this_last_imported_year,
-      analysis_date = this_analysis_date,
-      seed = this_seed
-    )@AnalysisMetadata$Seed,
+      analysis_date = this_analysis_date, seed = this_seed
+    )@AnalysisMetadata$seed,
     is_identical_to(this_seed)
   )
 })
@@ -140,148 +126,115 @@ test_that("n2k_inla() converts numeric seed, when possible", {
   this_seed <- 12345
   expect_that(
     n2k_inla(
-      data = dataset,
-      result_datasource_id = this_result_datasource_id,
-      scheme_id = this_scheme_id,
-      species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
-      formula = this_formula,
-      first_imported_year = this_first_imported_year,
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      formula = this_formula, first_imported_year = this_first_imported_year,
       last_imported_year = this_last_imported_year,
-      analysis_date = this_analysis_date,
-      seed = this_seed
-    )@AnalysisMetadata$Seed,
+      analysis_date = this_analysis_date, seed = this_seed
+    )@AnalysisMetadata$seed,
     is_identical_to(as.integer(this_seed))
   )
   expect_that(
     n2k_inla(
-      data = dataset,
-      result_datasource_id = this_result_datasource_id,
-      scheme_id = this_scheme_id,
-      species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = this_model_type,
       first_imported_year = this_first_imported_year,
       last_imported_year = this_last_imported_year,
-      analysis_date = this_analysis_date,
-      seed = this_seed + 0.1
+      analysis_date = this_analysis_date, seed = this_seed + 0.1
     ),
-    throws_error("seed is not a count \\(a single positive integer\\)") # nolint: nonportable_path_linter, line_length_linter.
+    throws_error("seed is not a count")
   )
 })
 test_that("n2k_inla() sets a random seed when not provided", {
-  expect_that(
-    object@AnalysisMetadata$Seed,
-    is_a("integer")
+  expect_is(object@AnalysisMetadata$seed, "integer")
+})
+
+test_that("n2k_inla() sets the correct scheme_id", {
+  expect_identical(
+    n2k_inla(
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      formula = this_formula, first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date, scheme_id = this_scheme_id
+    )@AnalysisMetadata$scheme_id,
+    this_scheme_id
   )
 })
 
-test_that("n2k_inla() sets the correct SchemeID", {
-  expect_that(
+test_that("n2k_inla() sets the correct species_group_id", {
+  expect_identical(
     n2k_inla(
-      data = dataset,
-      result_datasource_id = this_result_datasource_id,
+      data = dataset, result_datasource_id = this_result_datasource_id,
       species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
-      formula = this_formula,
+      location_group_id = this_location_group_id, model_type = this_model_type,
       first_imported_year = this_first_imported_year,
       last_imported_year = this_last_imported_year,
-      analysis_date = this_analysis_date,
+      analysis_date = this_analysis_date, formula = this_formula,
       scheme_id = this_scheme_id
-    )@AnalysisMetadata$SchemeID,
-    is_identical_to(this_scheme_id)
+    )@AnalysisMetadata$species_group_id,
+    this_species_group_id
   )
 })
 
-test_that("n2k_inla() sets the correct SpeciesGroupID", {
-  expect_that(
+test_that("n2k_inla() sets the correct location_group_id", {
+  expect_identical(
     n2k_inla(
-      data = dataset,
-      result_datasource_id = this_result_datasource_id,
+      data = dataset, result_datasource_id = this_result_datasource_id,
       species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
-      first_imported_year = this_first_imported_year,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      formula = this_formula, first_imported_year = this_first_imported_year,
       last_imported_year = this_last_imported_year,
-      analysis_date = this_analysis_date,
-      formula = this_formula,
-      scheme_id = this_scheme_id
-    )@AnalysisMetadata$SpeciesGroupID,
-    is_identical_to(this_species_group_id)
+      analysis_date = this_analysis_date, scheme_id = this_scheme_id
+    )@AnalysisMetadata$location_group_id,
+    this_location_group_id
   )
 })
 
-test_that("n2k_inla() sets the correct LocationGroupID", {
-  expect_that(
+test_that("n2k_inla() sets the correct first_imported_year", {
+  expect_identical(
     n2k_inla(
-      data = dataset,
-      result_datasource_id = this_result_datasource_id,
+      data = dataset, result_datasource_id = this_result_datasource_id,
       species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
-      formula = this_formula,
-      first_imported_year = this_first_imported_year,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      formula = this_formula, first_imported_year = this_first_imported_year,
       last_imported_year = this_last_imported_year,
-      analysis_date = this_analysis_date,
-      scheme_id = this_scheme_id
-    )@AnalysisMetadata$LocationGroupID,
-    is_identical_to(this_location_group_id)
+      analysis_date = this_analysis_date, scheme_id = this_scheme_id
+    )@AnalysisMetadata$first_imported_year,
+    this_first_imported_year
   )
 })
-
-test_that("n2k_inla() sets the correct FirstImportedYear", {
-  expect_that(
+test_that("n2k_inla() checks that first_imported_year is from the past", {
+  expect_error(
     n2k_inla(
-      data = dataset,
-      result_datasource_id = this_result_datasource_id,
+      data = dataset, result_datasource_id = this_result_datasource_id,
       species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
-      formula = this_formula,
-      first_imported_year = this_first_imported_year,
-      last_imported_year = this_last_imported_year,
-      analysis_date = this_analysis_date,
-      scheme_id = this_scheme_id
-    )@AnalysisMetadata$FirstImportedYear,
-    is_identical_to(this_first_imported_year)
-  )
-})
-test_that("n2k_inla() checks that FirstImportedYear is from the past", {
-  expect_that(
-    n2k_inla(
-      data = dataset,
-      result_datasource_id = this_result_datasource_id,
-      species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
+      location_group_id = this_location_group_id, model_type = this_model_type,
       formula = this_formula,
       first_imported_year = as.integer(format(Sys.time(), "%Y")) + 1,
       last_imported_year = this_last_imported_year,
-      analysis_date = this_analysis_date,
-      scheme_id = this_scheme_id
+      analysis_date = this_analysis_date, scheme_id = this_scheme_id
     ),
-    throws_error("FirstImportedYear cannot exceed LastImportedYear")
+    "first_imported_year cannot exceed last_imported_year"
   )
-  expect_that(
+  expect_is(
     n2k_inla(
-      data = dataset,
-      result_datasource_id = this_result_datasource_id,
+      data = dataset, result_datasource_id = this_result_datasource_id,
       species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
+      location_group_id = this_location_group_id, model_type = this_model_type,
       formula = this_formula,
       first_imported_year = as.integer(format(Sys.time(), "%Y")),
       last_imported_year = as.integer(format(Sys.time(), "%Y")),
-      analysis_date = this_analysis_date,
-      scheme_id = this_scheme_id
+      analysis_date = this_analysis_date, scheme_id = this_scheme_id
     ),
-    is_a("n2kInla")
+    "n2kInla"
   )
 })
 
-test_that("n2k_inla() sets the correct LastImportedYear", {
+test_that("n2k_inla() sets the correct last_imported_year", {
   expect_that(
     n2k_inla(
       data = dataset,
@@ -294,7 +247,7 @@ test_that("n2k_inla() sets the correct LastImportedYear", {
       last_imported_year = this_last_imported_year,
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
-    )@AnalysisMetadata$LastImportedYear,
+    )@AnalysisMetadata$last_imported_year,
     is_identical_to(this_last_imported_year)
   )
 })
@@ -311,7 +264,7 @@ test_that("n2k_inla() converts numeric last_imported_year, when possible", {
       last_imported_year = as.numeric(this_last_imported_year),
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
-    )@AnalysisMetadata$LastImportedYear,
+    )@AnalysisMetadata$last_imported_year,
     is_identical_to(this_last_imported_year)
   )
   expect_that(
@@ -332,7 +285,7 @@ test_that("n2k_inla() converts numeric last_imported_year, when possible", {
     )
   )
 })
-test_that("n2k_inla() checks that LastImportedYear is from the past", {
+test_that("n2k_inla() checks that last_imported_year is from the past", {
   expect_that(
     n2k_inla(
       data = dataset,
@@ -346,11 +299,11 @@ test_that("n2k_inla() checks that LastImportedYear is from the past", {
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
     ),
-    throws_error("LastImportedYear from the future")
+    throws_error("last_imported_year from the future")
   )
 })
 test_that(
-  "n2k_inla() checks that LastImportedYear is not earlier that FirstImportedYear
+  "n2k_inla() checks that last_imported_year is not earlier that first_imported_year
   ", {
   expect_that(
     n2k_inla(
@@ -365,11 +318,11 @@ test_that(
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
     ),
-    throws_error("FirstImportedYear cannot exceed LastImportedYear")
+    throws_error("first_imported_year cannot exceed last_imported_year")
   )
 })
 
-test_that("n2k_inla() sets the correct Duration", {
+test_that("n2k_inla() sets the correct duration", {
   expect_that(
     n2k_inla(
       data = dataset,
@@ -383,7 +336,7 @@ test_that("n2k_inla() sets the correct Duration", {
       duration = this_duration,
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
-    )@AnalysisMetadata$Duration,
+    )@AnalysisMetadata$duration,
     is_identical_to(this_duration)
   )
   expect_that(
@@ -398,7 +351,7 @@ test_that("n2k_inla() sets the correct Duration", {
       last_imported_year = this_last_imported_year,
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
-    )@AnalysisMetadata$Duration,
+    )@AnalysisMetadata$duration,
     is_identical_to(this_last_imported_year - this_first_imported_year + 1L)
   )
 })
@@ -417,7 +370,7 @@ test_that("n2k_inla() converts numeric duration, when possible", {
       duration = as.numeric(this_duration),
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
-    )@AnalysisMetadata$Duration,
+    )@AnalysisMetadata$duration,
     is_identical_to(this_duration)
   )
   expect_that(
@@ -438,8 +391,8 @@ test_that("n2k_inla() converts numeric duration, when possible", {
   )
 })
 test_that(
-"n2k_inla() checks that Duration is not outside the FirstImportYear -
-LastImportedYear ranges", {
+"n2k_inla() checks that duration is not outside the FirstImportYear -
+last_imported_year ranges", {
   expect_that(
     n2k_inla(
       data = dataset,
@@ -455,7 +408,7 @@ LastImportedYear ranges", {
       scheme_id = this_scheme_id
     ),
     throws_error(
-"Duration longer than the interval from FirstImportedYear to LastImportedYear"
+"duration longer than the interval from first_imported_year to last_imported_year"
     )
   )
   expect_that(
@@ -478,7 +431,7 @@ LastImportedYear ranges", {
   )
 })
 
-test_that("sets the correct LastAnalysedYear", {
+test_that("sets the correct last_analysed_year", {
   expect_that(
     n2k_inla(
       data = dataset,
@@ -493,7 +446,7 @@ test_that("sets the correct LastAnalysedYear", {
       duration = 1L,
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
-    )@AnalysisMetadata$LastAnalysedYear,
+    )@AnalysisMetadata$last_analysed_year,
     is_identical_to(this_last_analysed_year)
   )
   expect_that(
@@ -508,7 +461,7 @@ test_that("sets the correct LastAnalysedYear", {
       last_imported_year = this_last_imported_year,
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
-    )@AnalysisMetadata$LastAnalysedYear,
+    )@AnalysisMetadata$last_analysed_year,
     is_identical_to(this_last_imported_year)
   )
 })
@@ -527,7 +480,7 @@ test_that("n2k_inla() converts numeric last_analysed_year, when possible", {
       duration = 1,
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
-    )@AnalysisMetadata$LastAnalysedYear,
+    )@AnalysisMetadata$last_analysed_year,
     is_identical_to(this_last_analysed_year)
   )
   expect_that(
@@ -550,7 +503,7 @@ test_that("n2k_inla() converts numeric last_analysed_year, when possible", {
     )
   )
 })
-test_that("n2k_inla() checks that LastAnalysedYear is within the range", {
+test_that("n2k_inla() checks that last_analysed_year is within the range", {
   expect_that(
     n2k_inla(
       data = dataset,
@@ -566,7 +519,7 @@ test_that("n2k_inla() checks that LastAnalysedYear is within the range", {
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
     ),
-    throws_error("LastAnalysedYear cannot exceed LastImportedYear")
+    throws_error("last_analysed_year cannot exceed last_imported_year")
   )
   expect_that(
     n2k_inla(
@@ -584,7 +537,7 @@ test_that("n2k_inla() checks that LastAnalysedYear is within the range", {
       scheme_id = this_scheme_id
     ),
     throws_error(
-"LastAnalysedYear smaller than FirstImportedYear \\+ Duration \\- 1\\. Window
+"last_analysed_year smaller than first_imported_year \\+ duration \\- 1\\. Window
 outside imported range\\."
     )
   )
@@ -604,7 +557,7 @@ test_that("n2k_inla() checks if analysis date is from the past", {
       analysis_date = Sys.time() + 24 * 60 * 60,
       scheme_id = this_scheme_id
     ),
-    throws_error("AnalysisDate must be in the past")
+    throws_error("analysis_date must be in the past")
   )
 })
 test_that(
@@ -694,18 +647,18 @@ test_that("n2k_inla() keeps the objects", {
     is_identical_to(model_object)
   )
   expect_that(
-    object_model@AnalysisMetadata$Seed,
-    is_identical_to(object@AnalysisMetadata$Seed)
+    object_model@AnalysisMetadata$seed,
+    is_identical_to(object@AnalysisMetadata$seed)
   )
   expect_that(
     n2k_inla(
       data = object, model_fit = model_object, status = "converged", seed = 1
-    )@AnalysisMetadata$Seed,
-    is_identical_to(object@AnalysisMetadata$Seed)
+    )@AnalysisMetadata$seed,
+    is_identical_to(object@AnalysisMetadata$seed)
   )
   expect_that(
-    object_model@AnalysisMetadata$SchemeID,
-    is_identical_to(object@AnalysisMetadata$SchemeID)
+    object_model@AnalysisMetadata$scheme_id,
+    is_identical_to(object@AnalysisMetadata$scheme_id)
   )
   expect_that(
     n2k_inla(
@@ -713,12 +666,12 @@ test_that("n2k_inla() keeps the objects", {
       model_fit = model_object,
       status = "converged",
       scheme_id = 999
-    )@AnalysisMetadata$SchemeID,
-    is_identical_to(object@AnalysisMetadata$SchemeID)
+    )@AnalysisMetadata$scheme_id,
+    is_identical_to(object@AnalysisMetadata$scheme_id)
   )
   expect_that(
-    object_model@AnalysisMetadata$SpeciesGroupID,
-    is_identical_to(object@AnalysisMetadata$SpeciesGroupID)
+    object_model@AnalysisMetadata$species_group_id,
+    is_identical_to(object@AnalysisMetadata$species_group_id)
   )
   expect_that(
     n2k_inla(
@@ -726,12 +679,12 @@ test_that("n2k_inla() keeps the objects", {
       model_fit = model_object,
       status = "converged",
       species_group_id = sha1(LETTERS)
-    )@AnalysisMetadata$SpeciesGroupID,
-    is_identical_to(object@AnalysisMetadata$SpeciesGroupID)
+    )@AnalysisMetadata$species_group_id,
+    is_identical_to(object@AnalysisMetadata$species_group_id)
   )
   expect_that(
-    object_model@AnalysisMetadata$LocationGroupID,
-    is_identical_to(object@AnalysisMetadata$LocationGroupID)
+    object_model@AnalysisMetadata$location_group_id,
+    is_identical_to(object@AnalysisMetadata$location_group_id)
   )
   expect_that(
     n2k_inla(
@@ -739,12 +692,12 @@ test_that("n2k_inla() keeps the objects", {
       model_fit = model_object,
       status = "converged",
       location_group_id = sha1(LETTERS)
-    )@AnalysisMetadata$LocationGroupID,
-    is_identical_to(object@AnalysisMetadata$LocationGroupID)
+    )@AnalysisMetadata$location_group_id,
+    is_identical_to(object@AnalysisMetadata$location_group_id)
   )
   expect_that(
-    object_model@AnalysisMetadata$ModelType,
-    is_identical_to(object@AnalysisMetadata$ModelType)
+    object_model@AnalysisMetadata$model_type,
+    is_identical_to(object@AnalysisMetadata$model_type)
   )
   expect_that(
     n2k_inla(
@@ -752,8 +705,8 @@ test_that("n2k_inla() keeps the objects", {
       model_fit = model_object,
       status = "converged",
       model_type = 999
-    )@AnalysisMetadata$ModelType,
-    is_identical_to(object@AnalysisMetadata$ModelType)
+    )@AnalysisMetadata$model_type,
+    is_identical_to(object@AnalysisMetadata$model_type)
   )
   expect_that(
     object_model@AnalysisMetadata$Covariate,
@@ -769,12 +722,12 @@ test_that("n2k_inla() keeps the objects", {
     is_identical_to(object@AnalysisMetadata$Covariate)
   )
   expect_that(
-    object_model@AnalysisMetadata$FirstImportedYear,
-    is_identical_to(object@AnalysisMetadata$FirstImportedYear)
+    object_model@AnalysisMetadata$first_imported_year,
+    is_identical_to(object@AnalysisMetadata$first_imported_year)
   )
   expect_that(
-    object_model@AnalysisMetadata$Duration,
-    is_identical_to(object@AnalysisMetadata$Duration)
+    object_model@AnalysisMetadata$duration,
+    is_identical_to(object@AnalysisMetadata$duration)
   )
   expect_that(
     n2k_inla(
@@ -782,8 +735,8 @@ test_that("n2k_inla() keeps the objects", {
       model_fit = model_object,
       status = "converged",
       duration = 999
-    )@AnalysisMetadata$Duration,
-    is_identical_to(object@AnalysisMetadata$Duration)
+    )@AnalysisMetadata$duration,
+    is_identical_to(object@AnalysisMetadata$duration)
   )
   expect_that(
     n2k_inla(
@@ -791,12 +744,12 @@ test_that("n2k_inla() keeps the objects", {
       model_fit = model_object,
       status = "converged",
       first_imported_year = 999
-    )@AnalysisMetadata$FirstImportedYear,
-    is_identical_to(object@AnalysisMetadata$FirstImportedYear)
+    )@AnalysisMetadata$first_imported_year,
+    is_identical_to(object@AnalysisMetadata$first_imported_year)
   )
   expect_that(
-    object_model@AnalysisMetadata$LastImportedYear,
-    is_identical_to(object@AnalysisMetadata$LastImportedYear)
+    object_model@AnalysisMetadata$last_imported_year,
+    is_identical_to(object@AnalysisMetadata$last_imported_year)
   )
   expect_that(
     n2k_inla(
@@ -804,12 +757,12 @@ test_that("n2k_inla() keeps the objects", {
       model_fit = model_object,
       status = "converged",
       last_imported_year = 999
-    )@AnalysisMetadata$LastImportedYear,
-    is_identical_to(object@AnalysisMetadata$LastImportedYear)
+    )@AnalysisMetadata$last_imported_year,
+    is_identical_to(object@AnalysisMetadata$last_imported_year)
   )
   expect_that(
-    object_model@AnalysisMetadata$LastAnalysedYear,
-    is_identical_to(object@AnalysisMetadata$LastAnalysedYear)
+    object_model@AnalysisMetadata$last_analysed_year,
+    is_identical_to(object@AnalysisMetadata$last_analysed_year)
   )
   expect_that(
     n2k_inla(
@@ -817,12 +770,12 @@ test_that("n2k_inla() keeps the objects", {
       model_fit = model_object,
       status = "converged",
       last_analysed_year = 3000
-    )@AnalysisMetadata$LastAnalysedYear,
-    is_identical_to(object@AnalysisMetadata$LastAnalysedYear)
+    )@AnalysisMetadata$last_analysed_year,
+    is_identical_to(object@AnalysisMetadata$last_analysed_year)
   )
   expect_that(
-    object_model@AnalysisMetadata$AnalysisDate,
-    is_identical_to(object@AnalysisMetadata$AnalysisDate)
+    object_model@AnalysisMetadata$analysis_date,
+    is_identical_to(object@AnalysisMetadata$analysis_date)
   )
   expect_that(
     n2k_inla(
@@ -830,20 +783,20 @@ test_that("n2k_inla() keeps the objects", {
       model_fit = model_object,
       status = "converged",
       analysis.data = 999
-    )@AnalysisMetadata$AnalysisDate,
-    is_identical_to(object@AnalysisMetadata$AnalysisDate)
+    )@AnalysisMetadata$analysis_date,
+    is_identical_to(object@AnalysisMetadata$analysis_date)
   )
 })
 test_that("n2k_inla() stores the new status", {
   expect_that(
-    object_model@AnalysisMetadata$Status,
+    object_model@AnalysisMetadata$status,
     is_identical_to("converged")
   )
   expect_that(
     n2k_inla(
       data = object, model_fit = model_object, status = "junk"
     ),
-    throws_error("Status must be one of the following")
+    throws_error("status must be one of the following")
   )
 })
 model_other <- inla(

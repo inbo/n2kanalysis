@@ -21,6 +21,6 @@ setMethod(
   f = "get_scheme_id",
   signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x) {
-    return(x@AnalysisMetadata$SchemeID)
+    return(x@AnalysisMetadata$scheme_id)
   }
 )

@@ -19,7 +19,7 @@ setMethod(
         new(
           "n2kResult",
           AnalysisMetadata = x@AnalysisMetadata,
-          AnalysisFormula = lapply(x@AnalysisMetadata$Formula, as.formula),
+          AnalysisFormula = lapply(x@AnalysisMetadata$formula, as.formula),
           AnalysisRelation = x@AnalysisRelation,
           AnalysisVersion = x@AnalysisVersion,
           RPackage = x@RPackage,
@@ -41,24 +41,22 @@ setMethod(
       }
     }
     contrast <- tibble(
-        Description = description,
-        Analysis = get_file_fingerprint(x)
-      ) %>%
+      description = description, analysis = get_file_fingerprint(x)
+    ) %>%
       mutate(
-        Fingerprint = map2_chr(
-          .data$Description,
-          .data$Analysis,
-          ~sha1(c(Description = .x, Analysis = .y))
+        fingerprint = map2_chr(
+          .data$description, .data$analysis,
+          ~sha1(c(description = .x, analysis = .y))
         )
       ) %>%
-      select("Fingerprint", "Description", "Analysis") %>%
+      select("fingerprint", "description", "analysis") %>%
       as.data.frame()
     if (is.null(get_model(x))) {
       return(
         new(
           "n2kResult",
           AnalysisMetadata = x@AnalysisMetadata,
-          AnalysisFormula = lapply(x@AnalysisMetadata$Formula, as.formula),
+          AnalysisFormula = lapply(x@AnalysisMetadata$formula, as.formula),
           AnalysisRelation = x@AnalysisRelation,
           AnalysisVersion = x@AnalysisVersion,
           RPackage = x@RPackage,
@@ -98,26 +96,23 @@ setMethod(
       )
     }
 
-    fixed_parameterid <- anomaly@Parameter %>%
+    fixed_parameter_id <- anomaly@Parameter %>%
       semi_join(
         anomaly@Parameter %>%
-          filter(.data$Description == "Fixed effect"),
-        by = c("Parent" = "Fingerprint")
+          filter(.data$description == "Fixed effect"),
+        by = c("parent" = "fingerprint")
       ) %>%
       select(
-        ParentDescription = .data$Description,
-        Parent = .data$Fingerprint
+        parent_description = .data$description,
+        parent = .data$fingerprint
       ) %>%
-      left_join(anomaly@Parameter, by = "Parent") %>%
+      left_join(anomaly@Parameter, by = "parent") %>%
       transmute(
-        Parameter = ifelse(
-          is.na(.data$Fingerprint),
-          .data$Parent,
-          .data$Fingerprint
+        parameter = ifelse(
+          is.na(.data$fingerprint), .data$parent, .data$fingerprint
         ),
-        ParameterID = concat(
-          child = .data$Description,
-          parent = .data$ParentDescription
+        parameter_id = concat(
+          child = .data$description, parent = .data$parent_description
         )
       )
 
@@ -126,25 +121,25 @@ setMethod(
       contrast_coefficient[abs(contrast_coefficient) < 1e-8] <- NA
       contrast_coefficient <- contrast_coefficient %>%
         as.data.frame() %>%
-        rownames_to_column("Description") %>%
+        rownames_to_column("description") %>%
         gather_(
-          "ParameterID",
-          "Coefficient",
+          "parameter_id",
+          "coefficient",
           colnames(contrast_coefficient)[
-            !grepl("Description", colnames(contrast_coefficient))
+            !grepl("description", colnames(contrast_coefficient))
           ],
           na.rm = TRUE
         ) %>%
         inner_join(
           contrast %>%
-            select(-"Analysis"),
-          by = "Description"
+            select(-"analysis"),
+          by = "description"
         ) %>%
-        select(-"Description", Contrast = .data$Fingerprint) %>%
-        mutate(ParameterID = gsub("[\\(|\\)]", "", .data$ParameterID)) %>%
-        inner_join(fixed_parameterid, by = "ParameterID") %>%
-        select(.data$Contrast, .data$Parameter, .data$Coefficient) %>%
-        arrange(.data$Contrast, .data$Parameter) %>%
+        select(-"description", contrast = .data$fingerprint) %>%
+        mutate(parameter_id = gsub("[\\(|\\)]", "", .data$parameter_id)) %>%
+        inner_join(fixed_parameter_id, by = "parameter_id") %>%
+        select(.data$contrast, .data$parameter, .data$coefficient) %>%
+        arrange(.data$contrast, .data$parameter) %>%
         as.data.frame()
     } else {
       contrast_coefficient <- lapply(
@@ -152,14 +147,14 @@ setMethod(
         function(y) {
           if (is.vector(x@LinearCombination[[y]])) {
             data.frame(
-              Contrast = contrast$Fingerprint,
-              ParameterID = gsub("[\\(|\\)]", "", y),
-              Coefficient = x@LinearCombination[[y]],
+              contrast = contrast$fingerprint,
+              parameter_id = gsub("[\\(|\\)]", "", y),
+              coefficient = x@LinearCombination[[y]],
               stringsAsFactors = FALSE
             ) %>%
-              filter(abs(.data$Coefficient) >= 1e-8) %>%
-              inner_join(fixed_parameterid, by = "ParameterID") %>%
-              select(.data$Contrast, .data$Parameter, .data$Coefficient)
+              filter(abs(.data$coefficient) >= 1e-8) %>%
+              inner_join(fixed_parameter_id, by = "parameter_id") %>%
+              select(.data$contrast, .data$parameter, .data$coefficient)
           } else {
             random_id <- anomaly@Parameter %>%
               semi_join(
@@ -168,72 +163,65 @@ setMethod(
                   anomaly@Parameter %>%
                     semi_join(
                       data.frame(
-                        Description = "Random effect BLUP",
+                        description = "Random effect BLUP",
                         stringsAsFactors = FALSE
                       ),
-                      by = "Description"
+                      by = "description"
                     ) %>%
-                    mutate(Description = y),
-                  by = c("Parent" = "Fingerprint", "Description")
+                    mutate(description = y),
+                  by = c("parent" = "fingerprint", "description")
                 ),
-                by = c("Parent" = "Fingerprint")
+                by = c("parent" = "fingerprint")
               ) %>%
-              select(-"Parent", Parameter = .data$Fingerprint)
+              select(-"parent", parameter = .data$fingerprint)
             lc <- x@LinearCombination[[y]] %>%
               as.data.frame()
             lc[abs(lc) < 1e-8] <- NA
             if (anyDuplicated(x@Model$summary.random[[y]]$ID) == 0) {
               lc %>%
-                mutate(Contrast = contrast$Fingerprint) %>%
+                mutate(contrast = contrast$fingerprint) %>%
                 gather_(
-                  "Description",
-                  "Coefficient",
-                  colnames(lc)[
-                    !grepl("Contrast", colnames(lc))
-                  ],
-                  na.rm = TRUE,
-                  factor_key = TRUE
+                  "description", "coefficient",
+                  colnames(lc)[!grepl("contrast", colnames(lc))],
+                  na.rm = TRUE, factor_key = TRUE
                 ) %>%
                 mutate(
-                  Description = as.character(
-                    x@Model$summary.random[[y]]$ID[.data$Description]
+                  description = as.character(
+                    x@Model$summary.random[[y]]$ID[.data$description]
                   )
                 ) %>%
-                inner_join(random_id, by = "Description") %>%
-                select(-"Description")
+                inner_join(random_id, by = "description") %>%
+                select(-"description")
             } else {
               lc %>%
-                mutate(Contrast = contrast$Fingerprint) %>%
+                mutate(contrast = contrast$fingerprint) %>%
                 gather_(
-                  "Description",
-                  "Coefficient",
-                  colnames(lc)[
-                    !grepl("Contrast", colnames(lc))
-                  ],
+                  "description", "coefficient",
+                  colnames(lc)[!grepl("contrast", colnames(lc))],
                   na.rm = TRUE
                 ) %>%
                 inner_join(
                   anomaly@Parameter %>%
                     inner_join(
                       random_id %>%
-                        rename(Main = "Description"),
-                      by = c("Parent" = "Parameter")
+                        rename(main = "description"),
+                      by = c("parent" = "parameter")
                     ) %>%
                     mutate(
-                      Description = sprintf(
-                        "%s:%s", .data$Main, .data$Description
+                      description = sprintf(
+                        "%s:%s", .data$main, .data$description
                       )
                     ) %>%
-                    select(Parameter = .data$Fingerprint, .data$Description),
-                  by = "Description"
+                    select(parameter = .data$fingerprint, .data$description),
+                  by = "description"
                 ) %>%
-                select(-"Description")
+                select(-"description")
             }
           }
         }
       ) %>%
         bind_rows() %>%
-        arrange(.data$Contrast, .data$Parameter) %>%
+        arrange(.data$contrast, .data$parameter) %>%
         as.data.frame()
     }
     if (nrow(x@Model$summary.lincomb) == 0) {
@@ -242,28 +230,25 @@ setMethod(
       lc <- x@Model$summary.lincomb
     }
     contrast_estimate <- tibble(
-      Description = rownames(lc),
-      Estimate = lc$mean,
-      LowerConfidenceLimit = lc[, "0.025quant"],
-      UpperConfidenceLimit = lc[, "0.975quant"]
+      description = rownames(lc), estimate = lc$mean,
+      lower_confidence_limit = lc[, "0.025quant"],
+      upper_confidence_limit = lc[, "0.975quant"]
     ) %>%
       inner_join(
         contrast %>%
-          select(-"Analysis"),
-        by = "Description"
+          select(-"analysis"),
+        by = "description"
       ) %>%
       select(
-        Contrast = .data$Fingerprint,
-        .data$Estimate,
-        .data$LowerConfidenceLimit,
-        .data$UpperConfidenceLimit
+        contrast = .data$fingerprint, .data$estimate,
+        .data$lower_confidence_limit, .data$upper_confidence_limit
       ) %>%
-      arrange(.data$Contrast) %>%
+      arrange(.data$contrast) %>%
       as.data.frame()
     new(
       "n2kResult",
       AnalysisMetadata = x@AnalysisMetadata,
-      AnalysisFormula = lapply(x@AnalysisMetadata$Formula, as.formula),
+      AnalysisFormula = lapply(x@AnalysisMetadata$formula, as.formula),
       AnalysisRelation = x@AnalysisRelation,
       AnalysisVersion = x@AnalysisVersion,
       RPackage = x@RPackage,

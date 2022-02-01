@@ -22,8 +22,8 @@ setMethod(
     status(x) <- "waiting"
     parent_status <- parent_status(x)
     parent_status %>%
-      filter(.data$ParentStatus %in% c("new", "waiting", status)) %>%
-      pull("ParentAnalysis") -> todo
+      filter(.data$parent_status %in% c("new", "waiting", status)) %>%
+      pull("parent_analysis") -> todo
     if (length(todo) == 0) {
       return(x)
     }
@@ -33,28 +33,28 @@ setMethod(
       if (status(model) %in% c("new", "waiting")) {
         next
       }
-      parent_status[parent_status$ParentAnalysis == parent, "ParentStatus"] <-
+      parent_status[parent_status$parent_analysis == parent, "parent_status"] <-
         status(model)
       parent_status[
-        parent_status$ParentAnalysis == parent,
-        "ParentStatusFingerprint"
+        parent_status$parent_analysis == parent,
+        "parentstatus_fingerprint"
       ] <- get_status_fingerprint(model)
       x@AnalysisRelation <- parent_status
       if (status(model) == "converged") {
         update_waic <- data.frame(
-          Parent = parent,
-          WAIC = model@Model$waic$waic,
-          Peff = model@Model$waic$p.eff,
+          parent = parent,
+          waic = model@Model$waic$waic,
+          p_eff = model@Model$waic$p.eff,
           stringsAsFactors = FALSE
         )
         if (is.null(x@WAIC)) {
           x@WAIC <- update_waic
         } else {
           x@WAIC %>%
-            filter(.data$Parent != parent) %>%
+            filter(.data$parent != parent) %>%
             bind_rows(update_waic) -> x@WAIC
         }
-        if (all(parent_status$ParentStatus == "converged")) {
+        if (all(parent_status$parent_status == "converged")) {
           status(x) <- "converged"
         } else {
           status(x) <- status(x)

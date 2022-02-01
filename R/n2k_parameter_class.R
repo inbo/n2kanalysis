@@ -13,17 +13,12 @@ setClass(
   ),
   prototype = prototype(
     Parameter = data.frame(
-      Description = character(0),
-      Parent = character(0),
-      Fingerprint = character(0),
-      stringsAsFactors = FALSE
+      description = character(0), parent = character(0),
+      fingerprint = character(0), stringsAsFactors = FALSE
     ),
     ParameterEstimate = data.frame(
-      Analysis = character(0),
-      Parameter = character(0),
-      Estimate = numeric(0),
-      LowerConfidenceLimit = numeric(0),
-      UpperConfidenceLimit = numeric(0),
+      analysis = character(0), parameter = character(0), estimate = numeric(0),
+      lower_confidence_limit = numeric(0), upper_confidence_limit = numeric(0),
       stringsAsFactors = FALSE
     )
   )
@@ -38,67 +33,66 @@ setValidity(
   function(object) {
     parameter <- object@Parameter
     assert_that(
-      has_name(parameter, "Description"),
-      has_name(parameter, "Parent"),
-      has_name(parameter, "Fingerprint")
+      has_name(parameter, "description"), has_name(parameter, "parent"),
+      has_name(parameter, "fingerprint")
     )
 
     parameter_estimate <- object@ParameterEstimate
     assert_that(
-      has_name(parameter_estimate, "Analysis"),
-      has_name(parameter_estimate, "Parameter"),
-      has_name(parameter_estimate, "Estimate"),
-      has_name(parameter_estimate, "LowerConfidenceLimit"),
-      has_name(parameter_estimate, "UpperConfidenceLimit")
+      has_name(parameter_estimate, "analysis"),
+      has_name(parameter_estimate, "parameter"),
+      has_name(parameter_estimate, "estimate"),
+      has_name(parameter_estimate, "lower_confidence_limit"),
+      has_name(parameter_estimate, "upper_confidence_limit")
     )
 
     if (!all(
-      na.omit(object@Parameter$Parent) %in% object@Parameter$Fingerprint
+      na.omit(object@Parameter$parent) %in% object@Parameter$fingerprint
     )) {
-      stop("Some Parent in 'Parameter' slot not found")
+      stop("Some parent in 'Parameter' slot not found")
     }
     if (!all(
-      object@ParameterEstimate$Parameter %in% object@Parameter$Fingerprint
+      object@ParameterEstimate$parameter %in% object@Parameter$fingerprint
     )) {
       stop(
-"Some Parameter in 'ParameterEstimate' slot have no matching Fingerprint in
+"Some parameter in 'ParameterEstimate' slot have no matching fingerprint in
 'Parameter' slot"
       )
     }
-    if (anyDuplicated(object@Parameter$Fingerprint)) {
-      stop("Duplicated Fingerprint in 'Parameter' slot")
+    if (anyDuplicated(object@Parameter$fingerprint)) {
+      stop("Duplicated fingerprint in 'Parameter' slot")
     }
-    if (anyDuplicated(object@Parameter[, c("Description", "Parent")])) {
+    if (anyDuplicated(object@Parameter[, c("description", "parent")])) {
       stop("Duplicated rows in 'Parameter' slot")
     }
-    if (anyDuplicated(object@ParameterEstimate[, c("Analysis", "Parameter")])) {
+    if (anyDuplicated(object@ParameterEstimate[, c("analysis", "parameter")])) {
       stop("Duplicated rows in 'ParameterEstimate' slot")
     }
 
     if (nrow(object@ParameterEstimate) > 0) {
       test <- object@ParameterEstimate %>%
         summarise(
-          TestLCL = any(
-            .data$Estimate - .data$LowerConfidenceLimit <
+          test_lcl = any(
+            .data$estimate - .data$lower_confidence_limit <
               -.Machine$double.neg.eps,
             na.rm = TRUE
           ),
-          TestUCL = any(
-            .data$Estimate - .data$UpperConfidenceLimit >
+          test_ucl = any(
+            .data$estimate - .data$upper_confidence_limit >
               .Machine$double.neg.eps,
             na.rm = TRUE
           )
         )
-      if (test$TestLCL) {
+      if (test$test_lcl) {
         stop(
-  "All Estimate in 'ParameterEstimate' slot must be greather than the
-  LowerConfidenceLimit"
+  "All estimate in 'ParameterEstimate' slot must be greather than the
+  lower_confidence_limit"
         )
       }
-      if (test$TestUCL) {
+      if (test$test_ucl) {
         stop(
-  "All Estimate in 'ParameterEstimate' slot must be less than the
-  UpperConfidenceLimit"
+  "All estimate in 'ParameterEstimate' slot must be less than the
+  upper_confidence_limit"
         )
       }
     }

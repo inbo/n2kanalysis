@@ -1,8 +1,8 @@
 #' Create a n2kInlaComparison object
 #' @param parent_status A `data.frame` with columns
-#' `ParentAnalysis` (the file fingerprint of the parent),
-#' `ParentStatusFingerprint` (the status fingerprint of the parent),
-#' and `ParentStatus` (the status of the parent).
+#' `parent_analysis` (the file fingerprint of the parent),
+#' `parentstatus_fingerprint` (the status fingerprint of the parent),
+#' and `parent_status` (the status of the parent).
 #' @param ... other arguments
 #' @name n2k_inla_comparison
 #' @rdname n2k_inla_comparison
@@ -30,12 +30,12 @@ setGeneric(
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
 #' @include n2k_inla_comparison_class.R
-#' @param result_datasource_id The id of the results datasource.
+#' @param result_datasource_id A string identifying the datasource.
 #' @param status A single character indicating the status of the model.
 #' Defaults to `"waiting"`.
 #' @param scheme_id A single integer holding the id of the scheme.
-#' @param species_group_id A single integer identifing the species group.
-#' @param location_group_id A single integer identifing the location group.
+#' @param species_group_id A string identifying the species group.
+#' @param location_group_id A string identifying the location group.
 #' @param model_type The type of the models.
 #' Must start with `"inla comparison:"`.
 #' @param formula A single character identifying the comparison.
@@ -89,13 +89,13 @@ setMethod(
     }
     assert_that(is.time(analysis_date))
     assert_that(
-      has_name(parent_status, "ParentAnalysis"),
-      has_name(parent_status, "ParentStatusFingerprint"),
-      has_name(parent_status, "ParentStatus"),
+      has_name(parent_status, "parent_analysis"),
+      has_name(parent_status, "parentstatus_fingerprint"),
+      has_name(parent_status, "parent_status"),
       nrow(parent_status) > 1
     )
     parent_status <- parent_status %>%
-      arrange(.data$ParentAnalysis)
+      arrange(.data$parent_analysis)
     file_fingerprint <- sha1(
       list(
         result_datasource_id,
@@ -103,20 +103,20 @@ setMethod(
         model_type, formula, first_imported_year,
         last_imported_year, duration, last_analysed_year,
         format(analysis_date, tz = "UTC"), seed,
-        parent_status$ParentAnalysis
+        parent_status$parent_analysis
       )
     )
 
-    parent_status$Analysis <- file_fingerprint
+    parent_status$analysis <- file_fingerprint
     parent_status <- parent_status %>%
       select(
-        "Analysis", "ParentAnalysis", "ParentStatusFingerprint", "ParentStatus"
+        "analysis", "parent_analysis", "parentstatus_fingerprint", "parent_status"
       )
     version <- get_analysis_version(sessionInfo())
     status_fingerprint <- sha1(
       list(
         file_fingerprint, status, NULL,
-        version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
+        version@AnalysisVersion$fingerprint, version@AnalysisVersion,
         version@RPackage, version@AnalysisVersionRPackage, parent_status
       ),
       digits = 6L
@@ -128,22 +128,22 @@ setMethod(
       RPackage = version@RPackage,
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
       AnalysisMetadata = data.frame(
-        ResultDatasourceID = result_datasource_id,
-        SchemeID = scheme_id,
-        SpeciesGroupID = species_group_id,
-        LocationGroupID = location_group_id,
-        ModelType = model_type,
-        Formula = formula,
-        FirstImportedYear = first_imported_year,
-        LastImportedYear = last_imported_year,
-        Duration = duration,
-        LastAnalysedYear = last_analysed_year,
-        AnalysisDate = analysis_date,
-        Seed = seed,
-        Status = status,
-        AnalysisVersion = version@AnalysisVersion$Fingerprint,
-        FileFingerprint = file_fingerprint,
-        StatusFingerprint = status_fingerprint,
+        result_datasource_id = result_datasource_id,
+        scheme_id = scheme_id,
+        species_group_id = species_group_id,
+        location_group_id = location_group_id,
+        model_type = model_type,
+        formula = formula,
+        first_imported_year = first_imported_year,
+        last_imported_year = last_imported_year,
+        duration = duration,
+        last_analysed_year = last_analysed_year,
+        analysis_date = analysis_date,
+        seed = seed,
+        status = status,
+        analysis_version = version@AnalysisVersion$fingerprint,
+        file_fingerprint = file_fingerprint,
+        status_fingerprint = status_fingerprint,
         stringsAsFactors = FALSE
       ),
       AnalysisFormula = list(as.formula(formula)),

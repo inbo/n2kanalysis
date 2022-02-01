@@ -32,46 +32,47 @@ setClass(
 setValidity(
   "n2kComposite",
   function(object) {
-    if (nrow(object@AnalysisRelation) == 0) {
-      stop("'AnalysisRelation' not defined")
-    }
-    if (anyNA(object@AnalysisRelation$ParentAnalysis)) {
-      stop("'ParentAnalysis' in 'AnalysisRelation' slot cannot be missing")
-    }
+    assert_that(
+      nrow(object@AnalysisRelation) > 0, msg = "'AnalysisRelation' not defined"
+    )
+    assert_that(
+      noNA(object@AnalysisRelation$parent_analysis),
+      msg = "'parent_analysis' in 'AnalysisRelation' slot cannot be missing"
+    )
 
     file_fingerprint <- sha1(
       list(
-        object@AnalysisMetadata$ResultDatasourceID,
-        object@AnalysisMetadata$SchemeID,
-        object@AnalysisMetadata$SpeciesGroupID,
-        object@AnalysisMetadata$LocationGroupID,
-        object@AnalysisMetadata$ModelType, object@AnalysisMetadata$Formula,
-        object@AnalysisMetadata$FirstImportedYear,
-        object@AnalysisMetadata$LastImportedYear,
-        object@AnalysisMetadata$Duration,
-        object@AnalysisMetadata$LastAnalysedYear,
-        format(object@AnalysisMetadata$AnalysisDate, tz = "UTC"),
-        object@AnalysisMetadata$Seed,
-        object@AnalysisRelation$ParentAnalysis,
-        formals(object@Extractor),
-        as.character(body(object@Extractor))
+        object@AnalysisMetadata$result_datasource_id,
+        object@AnalysisMetadata$scheme_id,
+        object@AnalysisMetadata$species_group_id,
+        object@AnalysisMetadata$location_group_id,
+        object@AnalysisMetadata$model_type, object@AnalysisMetadata$formula,
+        object@AnalysisMetadata$first_imported_year,
+        object@AnalysisMetadata$last_imported_year,
+        object@AnalysisMetadata$duration,
+        object@AnalysisMetadata$last_analysed_year,
+        format(object@AnalysisMetadata$analysis_date, tz = "UTC"),
+        object@AnalysisMetadata$seed, object@AnalysisRelation$parent_analysis,
+        formals(object@Extractor), as.character(body(object@Extractor))
       )
     )
-    if (object@AnalysisMetadata$FileFingerprint != file_fingerprint) {
-      stop("Corrupt FileFingerprint")
-    }
+    assert_that(
+      object@AnalysisMetadata$file_fingerprint == file_fingerprint,
+      msg = "Corrupt file_fingerprint"
+    )
     status_fingerprint <- sha1(
       list(
-        object@AnalysisMetadata$FileFingerprint, object@AnalysisMetadata$Status,
-        object@Parameter, object@Index, object@AnalysisMetadata$AnalysisVersion,
-        object@AnalysisVersion, object@RPackage, object@AnalysisVersionRPackage,
-        object@AnalysisRelation
+        object@AnalysisMetadata$file_fingerprint,
+        object@AnalysisMetadata$status, object@Parameter, object@Index,
+        object@AnalysisMetadata$analysis_version, object@AnalysisVersion,
+        object@RPackage, object@AnalysisVersionRPackage, object@AnalysisRelation
       ),
       digits = 6L
     )
-    if (object@AnalysisMetadata$StatusFingerprint != status_fingerprint) {
-      stop("Corrupt StatusFingerprint")
-    }
+    assert_that(
+      object@AnalysisMetadata$status_fingerprint == status_fingerprint,
+      msg = "Corrupt status_fingerprint"
+    )
 
     return(TRUE)
   }

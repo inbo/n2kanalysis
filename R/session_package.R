@@ -18,22 +18,21 @@ package_version <- function(x) {
   if (has_name(x, "Repository")) {
     return(
       data.frame(
-        Description = x$Package,
-        Version = x$Version,
-        Origin = "CRAN",
+        description = x$Package, version = x$Version, origin = "CRAN",
         stringsAsFactors = FALSE
       )
     )
   }
   if (has_name(x, "RemoteType")) {
-    if (x$RemoteType != "github") {
-      stop("Only github remotes are currently handled")
-    }
+    assert_that(
+      x$RemoteType == "github",
+      msg = "Only github remotes are currently handled"
+    )
     return(
       data.frame(
-        Description = x$Package,
-        Version = x$Version,
-        Origin = sprintf(
+        description = x$Package,
+        version = x$Version,
+        origin = sprintf(
           "Github: %s/%s@%s", x$GithubUsername, x$GithubRepo, x$GithubSHA1
         ),
         stringsAsFactors = FALSE
@@ -41,9 +40,7 @@ package_version <- function(x) {
     )
   }
   data.frame(
-    Description = x$Package,
-    Version = x$Version,
-    Origin = "local",
+    description = x$Package, version = x$Version, origin = "local",
     stringsAsFactors = FALSE
   )
 }
@@ -58,15 +55,15 @@ setMethod(
   signature = signature(session = "sessionInfo"),
   definition = function(session) {
     package <- data.frame(
-      Description = c(session$running, "R"),
-      Version = c(
+      description = c(session$running, "R"),
+      version = c(
         session$R.version$platform,
         paste(
           session$R.version[c("major", "minor")],
           collapse = "."
         )
       ),
-      Origin = "CRAN",
+      origin = "CRAN",
       stringsAsFactors = FALSE
     )
     if ("otherPkgs" %in% names(session)) {
@@ -82,8 +79,8 @@ setMethod(
       )
     }
     rownames(package) <- NULL
-    package <- package[order(package$Description), ]
-    package$Fingerprint <- apply(package, 1, sha1)
+    package <- package[order(package$description), ]
+    package$fingerprint <- apply(package, 1, sha1)
     attr(package, "analysis_version") <- sha1(package)
     return(package)
   }

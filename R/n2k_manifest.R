@@ -29,15 +29,15 @@ setMethod(
   definition = function(
     manifest
   ) {
-    assert_that(has_name(manifest, "Fingerprint"))
-    assert_that(has_name(manifest, "Parent"))
+    assert_that(has_name(manifest, "fingerprint"))
+    assert_that(has_name(manifest, "parent"))
 
     if (inherits(manifest, "tbl")) {
       manifest <- as.data.frame(manifest)
     }
     manifest %>%
-      distinct(.data$Fingerprint, .data$Parent) %>%
-      arrange(.data$Fingerprint, .data$Parent) -> manifest
+      distinct(.data$fingerprint, .data$parent) %>%
+      arrange(.data$fingerprint, .data$parent) -> manifest
     new(
       "n2kManifest",
       Manifest = manifest,

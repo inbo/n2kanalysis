@@ -24,34 +24,32 @@ setMethod(
     assert_that(length(status) >= 1)
 
     manifest <- x@Manifest %>%
-      mutate(Level = ifelse(is.na(.data$Parent), 0, 1))
-    while (!all(is.na(manifest$Parent))) {
+      mutate(level = ifelse(is.na(.data$parent), 0, 1))
+    while (!all(is.na(manifest$parent))) {
       manifest <- manifest %>%
-        left_join(x@Manifest, by = c("Parent" = "Fingerprint")) %>%
+        left_join(x@Manifest, by = c("parent" = "fingerprint")) %>%
         transmute(
-          .data$Fingerprint,
-          Parent = .data$Parent.y,
-          Level = ifelse(is.na(.data$Parent), .data$Level, .data$Level + 1)
+          .data$fingerprint,
+          parent = .data$parent.y,
+          level = ifelse(is.na(.data$parent), .data$level, .data$level + 1)
         )
     }
     manifest %>%
-      distinct(.data$Fingerprint, .data$Level) -> manifest
+      distinct(.data$fingerprint, .data$level) -> manifest
     if (inherits(base, "character")) {
       assert_that(is.dir(base))
       manifest <- data.frame(
-        Filename = sprintf("%s/%s", base, project) %>% # nolint: nonportable_path_linter, line_length_linter.
+        filename = paste( base, project, sep = "/") %>%
           list.files(recursive = TRUE, full.names = TRUE),
         stringsAsFactors = FALSE
       ) %>%
         mutate(
-          Fingerprint = gsub(
-            ".*([[:xdigit:]]{40})\\.rds$",
-            "\\1",
-            .data$Filename
+          fingerprint = gsub(
+            ".*([[:xdigit:]]{40})\\.rds$", "\\1", .data$filename
           )
         ) %>%
-        left_join(x = manifest, by = "Fingerprint") %>%
-        arrange(.data$Level, .data$Fingerprint)
+        left_join(x = manifest, by = "fingerprint") %>%
+        arrange(.data$level, .data$fingerprint)
       if (isTRUE(bash) && requireNamespace("littler", quietly = TRUE)) {
         dots <- c(list(...), status = status)
         strings <- sapply(dots, is.string)
@@ -61,15 +59,13 @@ setMethod(
         sprintf(
           "r --package n2kanalysis -e 'fit_model(
 \"%s\", base = \"%s\", project = \"%s\", verbose = %s)'",
-          manifest$Filename, base, project, dots, verbose
+          manifest$filename, base, project, dots, verbose
         ) %>%
           lapply(system)
       } else {
         walk(
-          manifest$Filename,
-          fit_model,
-          base = base, project = project, status = status,
-          verbose = verbose, ...
+          manifest$filename, fit_model, base = base, project = project,
+          status = status, verbose = verbose, ...
         )
       }
       return(invisible(NULL))
@@ -81,22 +77,21 @@ setMethod(
 
     manifest %>%
       mutate(
-        Prefix = file.path(
-          project, substring(.data$Fingerprint, 1, 4), fsep = "/"
+        prefix = file.path(
+          project, substring(.data$fingerprint, 1, 4), fsep = "/"
         ),
-        Filename = map(.data$Prefix, get_bucket, bucket = base) %>%
+        filename = map(.data$prefix, get_bucket, bucket = base) %>%
           map("Contents") %>%
           map("Key"),
-        Filename = map2_chr(
-          .data$Fingerprint, .data$Filename,
-          ~.y[grep(.x, .y)]
+        filename = map2_chr(
+          .data$fingerprint, .data$filename, ~.y[grep(.x, .y)]
         ),
-        Status = dirname(.data$Filename) %>%
+        status = dirname(.data$filename) %>%
           basename(),
-        ToDo = .data$Status %in% status
+        to_do = .data$status %in% status
       ) %>%
-      arrange(.data$Level, .data$Fingerprint) -> manifest
-    if (!any(manifest$ToDo)) {
+      arrange(.data$level, .data$fingerprint) -> manifest
+    if (!any(manifest$to_do)) {
       return(invisible(NULL))
     }
     display(verbose, "Downloading objects")
@@ -107,41 +102,33 @@ setMethod(
       list.files(recursive = TRUE) -> local_files
     manifest %>%
       mutate(
-        Local = map_lgl(
-          .data$Fingerprint,
+        local = map_lgl(
+          .data$fingerprint,
           function(h) {
             any(grepl(h, local_files))
           }
         ),
-        LocalFilename = pmap_chr(
-          list(
-            .data$Local,
-            .data$Fingerprint,
-            .data$Filename
-          ),
+        local_filename = pmap_chr(
+          list(.data$local, .data$fingerprint, .data$filename),
           function(l, h, f) {
             ifelse(l, local_files[grep(h, local_files)], f)
           }
         )
       ) -> manifest
     walk(
-      which(!manifest$Local),
+      which(!manifest$local),
       function(i) {
-        display(verbose, manifest$LocalFilename[i])
+        display(verbose, manifest$local_filename[i])
         dir.create(
-          dirname(manifest$LocalFilename[i]),
-          recursive = TRUE,
+          dirname(manifest$local_filename[i]), recursive = TRUE,
           showWarnings = FALSE
         )
-        m <- read_model(
-          manifest$Fingerprint[i], base = base, project = project
-        )
+        m <- read_model(manifest$fingerprint[i], base = base, project = project)
         assert_that(
           !inherits(m, "try-error"),
           msg = sprintf(
-            "Object '%s' is missing for manifest '%s'",
-            manifest$Fingerprint[i],
-            x@Fingerprint
+            "Object '%s' is missing for manifest '%s'", manifest$fingerprint[i],
+            x@fingerprint
           )
         )
         store_model(m, base = local, project = project)
@@ -156,20 +143,18 @@ setMethod(
       sprintf(
         "r --package n2kanalysis -e 'fit_model(
 \"%s\", base = \"%s\", project = \"%s\", verbose = %s)'",
-        manifest$Fingerprint[manifest$ToDo], local, project, dots, verbose
+        manifest$fingerprint[manifest$to_do], local, project, dots, verbose
       ) %>%
         lapply(system)
     } else {
       walk(
-        manifest$Fingerprint[manifest$ToDo],
-        fit_model,
-        base = local, project = project, status = status,
-        verbose = verbose, ...
+        manifest$fingerprint[manifest$to_do], fit_model, base = local,
+        project = project, status = status, verbose = verbose, ...
       )
     }
     display(verbose, "Uploading objects")
     sapply(
-      basename(manifest$LocalFilename[manifest$ToDo]),
+      basename(manifest$local_filename[manifest$to_do]),
       function(x) {
         display(verbose, x)
         object <- try(read_model(x, base = local, project = project))
@@ -178,7 +163,7 @@ setMethod(
         }
       }
     )
-    map(manifest$Fingerprint, delete_model, base = local, project = project)
+    map(manifest$fingerprint, delete_model, base = local, project = project)
     return(invisible(NULL))
   }
 )

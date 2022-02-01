@@ -144,16 +144,14 @@ setMethod(
       }
     }
     analysis_relation <- data.frame(
-      Analysis = file_fingerprint,
-      ParentAnalysis = dots$parent,
-      ParentStatusFingerprint = dots$parent_statusfingerprint,
-      ParentStatus = dots$parent_status,
-      stringsAsFactors = FALSE
+      analysis = file_fingerprint, parent_analysis = dots$parent,
+      parentstatus_fingerprint = dots$parent_statusfingerprint,
+      parent_status = dots$parent_status, stringsAsFactors = FALSE
     )
     version <- get_analysis_version(sessionInfo())
     status_fingerprint <- sha1(
       list(
-        file_fingerprint, dots$status, version@AnalysisVersion$Fingerprint,
+        file_fingerprint, dots$status, version@AnalysisVersion$fingerprint,
         version@AnalysisVersion, version@RPackage,
         version@AnalysisVersionRPackage, analysis_relation, NULL, NULL
       ),
@@ -166,22 +164,22 @@ setMethod(
       RPackage = version@RPackage,
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
       AnalysisMetadata = data.frame(
-        ResultDatasourceID = dots$result_datasource_id,
-        SchemeID = dots$scheme_id,
-        SpeciesGroupID = dots$species_group_id,
-        LocationGroupID = dots$location_group_id,
-        ModelType = dots$model_type,
-        Formula = dots$formula,
-        FirstImportedYear = dots$first_imported_year,
-        LastImportedYear = dots$last_imported_year,
-        Duration = dots$duration,
-        LastAnalysedYear = dots$last_analysed_year,
-        AnalysisDate = dots$analysis_date,
-        Seed = dots$seed,
-        Status = dots$status,
-        AnalysisVersion = version@AnalysisVersion$Fingerprint,
-        FileFingerprint = file_fingerprint,
-        StatusFingerprint = status_fingerprint,
+        result_datasource_id = dots$result_datasource_id,
+        scheme_id = dots$scheme_id,
+        species_group_id = dots$species_group_id,
+        location_group_id = dots$location_group_id,
+        model_type = dots$model_type,
+        formula = dots$formula,
+        first_imported_year = dots$first_imported_year,
+        last_imported_year = dots$last_imported_year,
+        duration = dots$duration,
+        last_analysed_year = dots$last_analysed_year,
+        analysis_date = dots$analysis_date,
+        seed = dots$seed,
+        status = dots$status,
+        analysis_version = version@AnalysisVersion$fingerprint,
+        file_fingerprint = file_fingerprint,
+        status_fingerprint = status_fingerprint,
         stringsAsFactors = FALSE
       ),
       AnalysisFormula = list(as.formula(dots$formula)),

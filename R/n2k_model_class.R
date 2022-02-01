@@ -25,11 +25,11 @@ setValidity(
     }
     if (nrow(object@AnalysisRelation) > 0) {
       if (any(
-        object@AnalysisRelation$Analysis !=
-          object@AnalysisMetadata$FileFingerprint
+        object@AnalysisRelation$analysis !=
+          object@AnalysisMetadata$file_fingerprint
       )) {
         stop(
-          "Some Analysis in 'AnalysisRelation' slot don't match FileFingerprint"
+          "Some Analysis in 'AnalysisRelation' slot don't match file_fingerprint"
         )
       }
     }

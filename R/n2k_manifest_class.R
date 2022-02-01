@@ -9,19 +9,16 @@
 setClass(
   "n2kManifest",
   representation = representation(
-    Manifest = "data.frame",
-    Fingerprint = "character"
+    Manifest = "data.frame", Fingerprint = "character"
   ),
   prototype = prototype(
     Manifest = data.frame(
-      Fingerprint = character(0),
-      Parent = character(0),
+      fingerprint = character(0), parent = character(0),
       stringsAsFactors = FALSE
     ),
     Fingerprint = sha1(
       data.frame(
-        Fingerprint = character(0),
-        Parent = character(0),
+        fingerprint = character(0), parent = character(0),
         stringsAsFactors = FALSE
       )
     )
@@ -41,56 +38,56 @@ setValidity(
       msg = "Fingerprint is not a string (a length one character vector)."
     )
     check_dataframe_variable(
-      df = object@Manifest,
-      variable = list(Fingerprint = "character", Parent = "character"),
-      force_na = TRUE,
-      name = "Manifest"
+      df = object@Manifest, force_na = TRUE, name = "Manifest",
+      variable = list(fingerprint = "character", parent = "character")
     )
     assert_that(
-      noNA(object@Manifest$Fingerprint),
-      msg = "Fingerprint contains missing values"
+      noNA(object@Manifest$fingerprint),
+      msg = "fingerprint contains missing values"
     )
 
-    if (all(!is.na(object@Manifest$Parent))) {
-      stop("All rows have parents")
-    }
+    assert_that(
+      any(is.na(object@Manifest$parent)), msg = "All rows have parents"
+    )
 
     self_link <- object@Manifest %>%
-      filter(.data$Fingerprint == Parent) %>%
+      filter(.data$fingerprint == .data$parent) %>%
       nrow()
-    if (self_link > 0) {
-      stop("Self references between Parent and Fingerprint")
-    }
+    assert_that(
+      self_link == 0, msg = "Self references between parent and fingerprint"
+    )
 
-    if (!all(is.na(object@Manifest$Parent))) {
+    if (!all(is.na(object@Manifest$parent))) {
       missing_link <- object@Manifest %>%
-        filter(!is.na(.data$Parent)) %>%
-        anti_join(object@Manifest, by = c("Parent" = "Fingerprint")) %>%
+        filter(!is.na(.data$parent)) %>%
+        anti_join(object@Manifest, by = c("parent" = "fingerprint")) %>%
         nrow()
-      if (missing_link  > 0) {
-        stop("Some Parent in 'Manifest' slot have no matching Fingerprint")
-      }
+      assert_that(
+        missing_link == 0,
+        msg = "Some parent in 'Manifest' slot have no matching fingerprint"
+      )
     }
 
-    if (any(!is.na(object@Manifest$Parent))) {
-      link <- object@Manifest %>%
-        left_join(object@Manifest, by = c("Parent" = "Fingerprint")) %>%
-        select(.data$Fingerprint, Parent = .data$Parent.y)
+    if (any(!is.na(object@Manifest$parent))) {
+      object@Manifest %>%
+        left_join(object@Manifest, by = c("parent" = "fingerprint")) %>%
+        select(.data$fingerprint, parent = .data$parent.y) -> link
       i <- 1
-      while (any(!is.na(link$Parent))) {
+      while (any(!is.na(link$parent))) {
         if (i > 10) {
           stop("Too many parent - child levels.")
         }
         i <- i + 1
-        link <- link %>%
-          left_join(object@Manifest, by = c("Parent" = "Fingerprint")) %>%
-          select(.data$Fingerprint, Parent = .data$Parent.y)
+        link %>%
+          left_join(object@Manifest, by = c("parent" = "fingerprint")) %>%
+          select(.data$fingerprint, parent = .data$parent.y) -> link
       }
     }
 
-    if (sha1(object@Manifest) != object@Fingerprint) {
-      stop("wrong fingerprint")
-    }
+    assert_that(
+      sha1(object@Manifest) == object@Fingerprint, msg = "wrong fingerprint"
+    )
     return(TRUE)
   }
 )
+F

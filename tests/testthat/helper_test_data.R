@@ -30,7 +30,7 @@ test_data <- function(datafield_id = sha1(letters), missing = 0) {
   eta <- mm_fixed %*% fixed + mm_random %*% random
   dataset$Count <- rnbinom(nrow(dataset), mu = exp(eta), size = theta)
   dataset$Count[rbinom(nrow(dataset), size = 1, prob = missing) == 1] <- NA
-  dataset$DataFieldID <- datafield_id
-  dataset$ObservationID <- seq_along(dataset$Count)
+  dataset$data_field_id <- datafield_id
+  dataset$observation_id <- seq_along(dataset$Count)
   return(dataset)
 }

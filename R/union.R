@@ -14,21 +14,20 @@ union <- function(...) {
     )
   )
   r_package <- unique(r_package)
-  r_package <- r_package[order(r_package$Description, r_package$Version), ]
+  r_package <- r_package[order(r_package$description, r_package$version), ]
   rownames(r_package) <- NULL
   analysis_version <- sha1(r_package)
   analysis_version_r_package <- data.frame(
-    AnalysisVersion = analysis_version,
-    RPackage = r_package$Fingerprint
+    analysis_version = analysis_version, r_package = r_package$fingerprint
   )
   output <- combine(
     ...,
     new(
       "n2kAnalysisVersion",
-      AnalysisVersion = data.frame(Fingerprint = analysis_version),
+      AnalysisVersion = data.frame(fingerprint = analysis_version),
       RPackage = r_package,
       AnalysisVersionRPackage = analysis_version_r_package
     )
   )
-  return(list(Union = output, UnionFingerprint = analysis_version))
+  return(list(Union = output, Unionfingerprint = analysis_version))
 }

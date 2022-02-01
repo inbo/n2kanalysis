@@ -23,58 +23,58 @@ describe("illegal changes in the file fingerprint", {
     change_object@Data <- head(dataset, 1)
     expect_that(
       validObject(change_object),
-      throws_error("Corrupt FileFingerprint")
+      throws_error("Corrupt file_fingerprint")
     )
   })
 
-  it("detects changes in SchemeID", {
+  it("detects changes in scheme_id", {
     change_object <- object
-    change_object@AnalysisMetadata$SchemeID <- sha1(Sys.time())
+    change_object@AnalysisMetadata$scheme_id <- sha1(Sys.time())
     expect_that(
       validObject(change_object),
-      throws_error("Corrupt FileFingerprint")
+      throws_error("Corrupt file_fingerprint")
     )
   })
 
-  it("detects changes in SpeciesGroupID", {
+  it("detects changes in species_group_id", {
     change_object <- object
-    change_object@AnalysisMetadata$SpeciesGroupID <- sha1(Sys.time())
+    change_object@AnalysisMetadata$species_group_id <- sha1(Sys.time())
     expect_that(
       validObject(change_object),
-      throws_error("Corrupt FileFingerprint")
+      throws_error("Corrupt file_fingerprint")
     )
   })
 
-  it("detects changes in LocationGroupID", {
+  it("detects changes in location_group_id", {
     change_object <- object
-    change_object@AnalysisMetadata$LocationGroupID <- sha1(Sys.time())
+    change_object@AnalysisMetadata$location_group_id <- sha1(Sys.time())
     expect_that(
       validObject(change_object),
-      throws_error("Corrupt FileFingerprint")
+      throws_error("Corrupt file_fingerprint")
     )
   })
 
-  it("detects changes in AnalysisDate", {
+  it("detects changes in analysis_date", {
     change_object <- object
-    change_object@AnalysisMetadata$AnalysisDate <- Sys.time()
+    change_object@AnalysisMetadata$analysis_date <- Sys.time()
     expect_that(
       validObject(change_object),
-      throws_error("Corrupt FileFingerprint")
+      throws_error("Corrupt file_fingerprint")
     )
   })
 
-  it("detects changes in ModelType", {
+  it("detects changes in model_type", {
     change_object <- object
-    change_object@AnalysisMetadata$ModelType <- "inla poisson: period"
+    change_object@AnalysisMetadata$model_type <- "inla poisson: period"
     expect_that(
       validObject(change_object),
-      throws_error("Corrupt FileFingerprint")
+      throws_error("Corrupt file_fingerprint")
     )
   })
 
-  it("detects changes in Formula", {
+  it("detects changes in formula", {
     change_object <- object
-    change_object@AnalysisMetadata$Formula <- "Count ~ B"
+    change_object@AnalysisMetadata$formula <- "Count ~ B"
     expect_that(
       validObject(change_object),
       throws_error(
@@ -83,39 +83,39 @@ describe("illegal changes in the file fingerprint", {
     )
   })
 
-  it("detects changes in FirstImportedYear", {
+  it("detects changes in first_imported_year", {
     change_object <- object
-    change_object@AnalysisMetadata$FirstImportedYear <- 999L
+    change_object@AnalysisMetadata$first_imported_year <- 999L
     expect_that(
       validObject(change_object),
-      throws_error("Corrupt FileFingerprint")
+      throws_error("Corrupt file_fingerprint")
     )
   })
 
-  it("detects changes in LastImportedYear", {
+  it("detects changes in last_imported_year", {
     change_object <- object
-    change_object@AnalysisMetadata$LastImportedYear <- 2000L
+    change_object@AnalysisMetadata$last_imported_year <- 2000L
     expect_that(
       validObject(change_object),
-      throws_error("Corrupt FileFingerprint")
+      throws_error("Corrupt file_fingerprint")
     )
   })
 
-  it("detects changes in Duration", {
+  it("detects changes in duration", {
     change_object <- object
-    change_object@AnalysisMetadata$Duration <- 2L
+    change_object@AnalysisMetadata$duration <- 2L
     expect_that(
       validObject(change_object),
-      throws_error("Corrupt FileFingerprint")
+      throws_error("Corrupt file_fingerprint")
     )
   })
 
-  it("detects changes in LastAnalysedYear", {
+  it("detects changes in last_analysed_year", {
     change_object <- object
-    change_object@AnalysisMetadata$LastAnalysedYear <- 2000L
+    change_object@AnalysisMetadata$last_analysed_year <- 2000L
     expect_that(
       validObject(change_object),
-      throws_error("Corrupt FileFingerprint")
+      throws_error("Corrupt file_fingerprint")
     )
   })
 
@@ -124,27 +124,27 @@ describe("illegal changes in the file fingerprint", {
     change_object@LinearCombination <- lin_comb
     expect_that(
       validObject(change_object),
-      throws_error("Corrupt FileFingerprint")
+      throws_error("Corrupt file_fingerprint")
     )
   })
 })
 
 describe("illegal changes in the status fingerprint", {
-  it("detects changes in Status", {
+  it("detects changes in status", {
     change_object <- object
-    change_object@AnalysisMetadata$Status <- "error"
+    change_object@AnalysisMetadata$status <- "error"
     expect_that(
       validObject(change_object),
-      throws_error("Corrupt StatusFingerprint")
+      throws_error("Corrupt status_fingerprint")
     )
   })
 
   it("detects changes in AnalysisVersion", {
     change_object <- object
-    change_object@AnalysisMetadata$AnalysisVersion <- ""
+    change_object@AnalysisMetadata$analysis_version <- ""
     expect_that(
       validObject(change_object),
-      throws_error("Corrupt StatusFingerprint")
+      throws_error("Corrupt status_fingerprint")
     )
   })
 
@@ -166,7 +166,7 @@ describe("illegal changes in the status fingerprint", {
     object_model@Model <- change_model
     expect_that(
       validObject(object_model),
-      throws_error("Corrupt StatusFingerprint")
+      throws_error("Corrupt status_fingerprint")
     )
   })
 })

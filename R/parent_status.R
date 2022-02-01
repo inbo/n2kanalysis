@@ -48,11 +48,11 @@ setReplaceMethod(
   "parent_status",
   "n2kComposite",
   function(x, value) {
-    x@ParentStatus <- value
-    x@StatusFingerprint <- sha1(
+    x@parent_status <- value
+    x@status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        x@Parameter, x@Index, x@AnalysisMetadata$AnalysisVersion,
+        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status,
+        x@Parameter, x@Index, x@AnalysisMetadata$analysis_version,
         x@AnalysisRelation
       ),
       digits = 6L

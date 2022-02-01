@@ -1,4 +1,3 @@
-context("get_model_parameter")
 test_that(
   "n2kInla with categorical and numeric fixed effect without random
     effect", {
@@ -16,26 +15,18 @@ test_that(
   this_parent <- "abcdef"
   this_duration <- this_last_imported_year - this_first_imported_year + 1
   analysis <- n2k_inla(
-    data = dataset,
-    formula = "Count ~ A + C",
+    data = dataset, formula = "Count ~ A + C",
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    family = "nbinomial",
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, family = "nbinomial",
     model_type = this_model_type,
     first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
     last_analysed_year = this_last_analysed_year,
-    analysis_date = this_analysis_date,
-    seed = this_seed,
-    parent = this_parent,
+    analysis_date = this_analysis_date, seed = this_seed, parent = this_parent,
     duration = this_duration
   )
-  expect_is(
-    param <- get_model_parameter(analysis),
-    "n2kParameter"
-  )
+  expect_is(param <- get_model_parameter(analysis), "n2kParameter")
   expect_identical(nrow(param@Parameter), 0L)
   expect_identical(nrow(param@ParameterEstimate), 0L)
 
@@ -48,52 +39,32 @@ test_that(
   expect_identical(
     param@Parameter %>%
       semi_join(
-        tibble(Description = "Random effect BLUP"),
-        by = "Description"
+        tibble(description = "Random effect BLUP"), by = "description"
       ) %>%
-      inner_join(
-        param@Parameter,
-        by = c("Fingerprint" = "Parent")
-      ) %>%
+      inner_join(param@Parameter, by = c("fingerprint" = "parent")) %>%
      nrow(),
     0L
   )
   expect_identical(
     param@Parameter %>%
       semi_join(
-        tibble(Description = "Random effect variance"),
-        by = "Description"
+        tibble(description = "Random effect variance"), by = "description"
       ) %>%
-      inner_join(
-        param@Parameter,
-        by = c("Fingerprint" = "Parent")
-      ) %>%
+      inner_join(param@Parameter, by = c("fingerprint" = "parent")) %>%
      nrow(),
     0L
   )
   fixed <- param@Parameter %>%
     semi_join(
     param@Parameter %>%
-      semi_join(
-        tibble(Description = "Fixed effect"),
-        by = "Description"
-      ),
-    by = c("Parent" = "Fingerprint")
+      semi_join(tibble(description = "Fixed effect"), by = "description"),
+    by = c("parent" = "fingerprint")
   ) %>%
-    select("Fingerprint", Main = "Description") %>%
-    left_join(
-      param@Parameter,
-      by = c("Fingerprint" = "Parent")
-    )
+    select("fingerprint", main = "description") %>%
+    left_join(param@Parameter, by = c("fingerprint" = "parent"))
   expect_identical(nrow(fixed), 4L)
-  expect_identical(
-    fixed$Main == "A",
-    !is.na(fixed$Description)
-  )
-  expect_identical(
-    fixed$Main == "A",
-    !is.na(fixed$Fingerprint.y)
-  )
+  expect_identical(fixed$main == "A", !is.na(fixed$description))
+  expect_identical(fixed$main == "A", !is.na(fixed$fingerprint.y))
 })
 
 test_that(
@@ -114,20 +85,14 @@ test_that(
   this_duration <- this_last_imported_year - this_first_imported_year + 1
   analysis <- n2k_inla(
     formula = "Count ~ 0 + A * C + A * B + f(E, model = \"iid\")",
-    result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
+    result_datasource_id = this_result_datasource_id, scheme_id = this_scheme_id,
     species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    family = "nbinomial",
-    model_type = this_model_type,
-    first_imported_year = this_first_imported_year,
+    location_group_id = this_location_group_id, family = "nbinomial",
+    model_type = this_model_type, first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
     last_analysed_year = this_last_analysed_year,
-    analysis_date = this_analysis_date,
-    seed = this_seed,
-    data = dataset,
-    parent = this_parent,
-    duration = this_duration
+    analysis_date = this_analysis_date, seed = this_seed, data = dataset,
+    parent = this_parent, duration = this_duration
   )
   analysis <- fit_model(analysis)
   expect_message(
@@ -138,13 +103,9 @@ test_that(
   expect_identical(
     param@Parameter %>%
       semi_join(
-        tibble(Description = "Random effect variance"),
-        by = "Description"
+        tibble(description = "Random effect variance"), by = "description"
       ) %>%
-      inner_join(
-        param@Parameter,
-        by = c("Fingerprint" = "Parent")
-      ) %>%
+      inner_join(param@Parameter, by = c("fingerprint" = "parent")) %>%
      nrow(),
     1L
   )
@@ -152,67 +113,54 @@ test_that(
     semi_join(
     param@Parameter %>%
       semi_join(
-        tibble(Description = "Fixed effect"),
-        by = "Description"
+        tibble(description = "Fixed effect"),
+        by = "description"
       ),
-    by = c("Parent" = "Fingerprint")
+    by = c("parent" = "fingerprint")
   ) %>%
-    select("Fingerprint", Main = "Description") %>%
+    select("fingerprint", main = "description") %>%
     left_join(
       param@Parameter,
-      by = c("Fingerprint" = "Parent")
+      by = c("fingerprint" = "parent")
     )
   expect_identical(nrow(fixed), 9L)
-  expect_identical(
-    grepl(":", fixed$Main),
-    grepl(":", fixed$Description)
-  )
-  expect_identical(
-    fixed$Main == "C",
-    is.na(fixed$Fingerprint.y)
-  )
-  expect_identical(
-    fixed$Main == "A:C",
-    grepl(".+:$", fixed$Description)
-  )
-  expect_identical(
-    fixed$Main == "A:B",
-    grepl(".+:.+$", fixed$Description)
-  )
+  expect_identical(grepl(":", fixed$main), grepl(":", fixed$description))
+  expect_identical(fixed$main == "C", is.na(fixed$fingerprint.y))
+  expect_identical(fixed$main == "A:C", grepl(".+:$", fixed$description))
+  expect_identical(fixed$main == "A:B", grepl(".+:.+$", fixed$description))
   random <- param@Parameter %>%
     semi_join(
       param@Parameter %>%
         semi_join(
-          tibble(Description = "Random effect BLUP"),
-          by = "Description"
+          tibble(description = "Random effect BLUP"), by = "description"
         ),
-    by = c("Parent" = "Fingerprint")
+    by = c("parent" = "fingerprint")
   ) %>%
-    select("Fingerprint", Main = "Description") %>%
+    select("fingerprint", Main = "description") %>%
     left_join(
       param@Parameter %>%
-        rename(Finger = "Fingerprint", Level = "Description"),
-      by = c("Fingerprint" = "Parent")
+        rename(finger = "fingerprint", level = "description"),
+      by = c("fingerprint" = "parent")
     ) %>%
     left_join(
       param@Parameter %>%
-        select("Parent", Level2 = "Description"),
-      by = c("Finger" = "Parent")
+        select("parent", Level2 = "description"),
+      by = c("finger" = "parent")
     )
-  expect_false(any(is.na(random$Level)))
-  expect_true(all(is.na(random$Level2)))
+  expect_false(any(is.na(random$level)))
+  expect_true(all(is.na(random$level2)))
   expect_identical(
     dataset$E %>%
       unique() %>%
       sort() %>%
       as.character(),
-    random$Level
+    random$level
   )
   expect_identical(
     param@ParameterEstimate %>%
       inner_join(
         random,
-        by = c("Parameter" = "Finger")
+        by = c("parameter" = "finger")
       ) %>%
       nrow(),
     nrow(random)
@@ -240,19 +188,14 @@ test_that(
     f(E, model = \"rw1\", replicate = as.integer(A)) +
     f(G, model = \"iid\")",
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    family = "nbinomial",
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, family = "nbinomial",
     model_type = this_model_type,
     first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
     last_analysed_year = this_last_analysed_year,
-    analysis_date = this_analysis_date,
-    seed = this_seed,
-    data = dataset,
-    parent = this_parent,
-    duration = this_duration
+    analysis_date = this_analysis_date, seed = this_seed, data = dataset,
+    parent = this_parent, duration = this_duration
   )
   analysis <- fit_model(analysis)
   expect_message(
@@ -263,93 +206,70 @@ test_that(
   expect_identical(
     param@Parameter %>%
       semi_join(
-        tibble(Description = "Random effect variance"),
-        by = "Description"
+        tibble(description = "Random effect variance"), by = "description"
       ) %>%
-      inner_join(
-        param@Parameter,
-        by = c("Fingerprint" = "Parent")
-      ) %>%
+      inner_join(param@Parameter, by = c("fingerprint" = "parent")) %>%
      nrow(),
     2L
   )
   fixed <- param@Parameter %>%
     semi_join(
     param@Parameter %>%
-      semi_join(
-        tibble(Description = "Fixed effect"),
-        by = "Description"
-      ),
-    by = c("Parent" = "Fingerprint")
+      semi_join(tibble(description = "Fixed effect"), by = "description"),
+    by = c("parent" = "fingerprint")
   ) %>%
-    select("Fingerprint", Main = "Description") %>%
-    left_join(
-      param@Parameter,
-      by = c("Fingerprint" = "Parent")
-    )
+    select("fingerprint", main = "description") %>%
+    left_join(param@Parameter, by = c("fingerprint" = "parent"))
   expect_identical(nrow(fixed), 4L)
-  grepl(":", fixed$Description) %>%
+  grepl(":", fixed$description) %>%
     any() %>%
     expect_false()
-  grep(":", fixed$Main) %>%
+  grep(":", fixed$main) %>%
     length() %>%
     expect_identical(1L)
-  expect_identical(
-    is.na(fixed$Description),
-    is.na(fixed$Fingerprint.y)
-  )
-  fixed$Description %>%
+  expect_identical(is.na(fixed$description), is.na(fixed$fingerprint.y))
+  fixed$description %>%
     is.na() %>%
     all() %>%
     expect_true()
   random <- param@Parameter %>%
     semi_join(
     param@Parameter %>%
-      semi_join(
-        tibble(Description = "Random effect BLUP"),
-        by = "Description"
-      ),
-    by = c("Parent" = "Fingerprint")
+      semi_join(tibble(description = "Random effect BLUP"), by = "description"),
+    by = c("parent" = "fingerprint")
   ) %>%
-    select("Fingerprint", Main = "Description") %>%
+    select("fingerprint", main = "description") %>%
     left_join(
       param@Parameter %>%
-        rename(Finger = "Fingerprint", Level = "Description"),
-      by = c("Fingerprint" = "Parent")
+        rename(finger = "fingerprint", level = "description"),
+      by = c("fingerprint" = "parent")
     ) %>%
     left_join(
       param@Parameter %>%
-        select("Parent", Level2 = "Description", Finger2 = "Fingerprint"),
-      by = c("Finger" = "Parent")
+        select("parent", level2 = "description", finger2 = "fingerprint"),
+      by = c("finger" = "parent")
     )
-  expect_false(any(is.na(random$Level)))
+  expect_false(any(is.na(random$level)))
   expect_equal(
     random %>%
-      group_by(.data$Main, .data$Level) %>%
+      group_by(.data$main, .data$level) %>%
       summarise(
-        N = n(),
-        Missing = mean(is.na(.data$Level2))
+        n = n(), missing = mean(is.na(.data$level2)), .groups = "drop_last"
       ) %>%
       summarise(
-        N1 = n(),
-        N2 = mean(.data$N),
-        Missing = mean(.data$Missing)
+        n1 = n(), n2 = mean(.data$n), missing = mean(.data$missing),
+        .groups = "drop"
       ),
-    tibble(
-      Main = c("E", "G"),
-      N1 = 3L,
-      N2 = c(10, 1),
-      Missing = c(0, 1)
-  )
+    tibble(main = c("E", "G"), n1 = 3L, n2 = c(10, 1), missing = c(0, 1))
   )
   expect_identical(
     param@ParameterEstimate %>%
       inner_join(
         random %>%
           mutate(
-            Finger2 = ifelse(is.na(.data$Finger2), .data$Finger, .data$Finger2)
+            finger2 = ifelse(is.na(.data$finger2), .data$finger, .data$finger2)
           ),
-        by = c("Parameter" = "Finger2")
+        by = c("parameter" = "finger2")
       ) %>%
       nrow(),
     nrow(random)

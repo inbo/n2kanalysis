@@ -47,34 +47,32 @@ setMethod(
     status(x) <- "waiting"
     parent_status <- parent_status(x)
     parent_status %>%
-      filter(.data$ParentStatus %in% c("new", "waiting", status)) %>%
-      pull("ParentAnalysis") -> todo
+      filter(.data$parent_status %in% c("new", "waiting", status)) %>%
+      pull("parent_analysis") -> todo
 
-    for (parent in todo) {
-      model <- read_model(x = parent, base = base, project = project)
-      parent_status[parent_status$ParentAnalysis == parent, "ParentStatus"] <-
-        status(model)
+    for (this_parent in todo) {
+      model <- read_model(x = this_parent, base = base, project = project)
       parent_status[
-        parent_status$ParentAnalysis == parent,
-        "ParentStatusFingerprint"
+        parent_status$parent_analysis == this_parent, "parent_status"
+      ] <- status(model)
+      parent_status[
+        parent_status$parent_analysis == this_parent,
+        "parentstatus_fingerprint"
       ] <- get_status_fingerprint(model)
       x@AnalysisRelation <- parent_status
       if (status(model) == "converged") {
-        extract(
-          extractor = x@Extractor,
-          object = model
-        ) %>%
-          mutate(Parent = parent) %>%
+        extract(extractor = x@Extractor, object = model) %>%
+          mutate(parent = this_parent) %>%
           bind_rows(
             x@Parameter %>%
-              filter(.data$Parent != parent)
+              filter(.data$parent != this_parent)
           ) %>%
-          arrange(.data$Parent, .data$Value) -> x@Parameter
+          arrange(.data$parent, .data$Value) -> x@Parameter
       }
     }
-    if (all(parent_status$ParentStatus == "converged")) {
+    if (all(parent_status$parent_status == "converged")) {
       status(x) <- "new"
-    } else if (any(parent_status$ParentStatus == "error")) {
+    } else if (any(parent_status$parent_status == "error")) {
       status(x) <- "error"
     } else {
       status(x) <- "waiting"

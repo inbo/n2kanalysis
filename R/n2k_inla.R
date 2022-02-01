@@ -32,7 +32,7 @@ setGeneric(
 #' Defaults to an empty list.
 #' Used in case of `f(X, ..., replicate = Z)`.
 #' Should be a named list like e.g. `list(X = c("a", "b", "c"))`.
-#' @param control A named list passed to \code{\link[INLA]{inla}} when fitting
+#' @param control A named list passed to [INLA::inla()] when fitting
 #' the model.
 #' @param imputation_size The required number of imputations defaults to 0.
 #' @param minimum The name of the variable which holds the minimum counts.
@@ -55,25 +55,22 @@ setMethod(
     assert_that(is.string(minimum))
     if (missing(seed)) {
       seed <- sample(.Machine$integer.max, 1)
-    } else {
-      assert_that(is.count(seed))
-      seed <- as.integer(seed)
     }
+    assert_that(is.count(seed))
+    seed <- as.integer(seed)
     if (missing(imputation_size)) {
       imputation_size <- 0L
     } else {
       assert_that(is.count(imputation_size))
       imputation_size <- as.integer(imputation_size)
     }
-    assert_that(is.string(result_datasource_id))
-    assert_that(is.string(scheme_id))
-    assert_that(is.string(species_group_id))
-    assert_that(is.string(location_group_id))
-    assert_that(is.string(model_type))
-    assert_that(is.string(formula))
-    assert_that(is.count(first_imported_year))
+    assert_that(
+      is.string(result_datasource_id), is.string(scheme_id),
+      is.string(species_group_id), is.string(location_group_id),
+      is.string(model_type), is.string(formula), is.count(first_imported_year),
+      is.count(last_imported_year)
+    )
     first_imported_year <- as.integer(first_imported_year)
-    assert_that(is.count(last_imported_year))
     last_imported_year <- as.integer(last_imported_year)
     if (missing(duration)) {
       duration <- last_imported_year - first_imported_year + 1L
@@ -83,52 +80,37 @@ setMethod(
     }
     if (missing(last_analysed_year)) {
       last_analysed_year <- last_imported_year
-    } else {
-      assert_that(is.count(last_analysed_year))
-      last_analysed_year <- as.integer(last_analysed_year)
     }
+    assert_that(is.count(last_analysed_year))
+    last_analysed_year <- as.integer(last_analysed_year)
     assert_that(is.time(analysis_date))
-    if (!is.null(lin_comb)) {
-      ok <- inherits(lin_comb, "list") ||
-        (inherits(lin_comb, "matrix") && length(dim(lin_comb) == 2))
-      if (!ok) {
-        stop("lin_comb must be either a list or a matrix")
-      }
-    }
-    assert_that(is.list(replicate_name))
-    if (length(replicate_name) > 0) {
-      if (is.null(names(replicate_name))) {
-        stop("replicate_name must have names")
-      }
-    }
     assert_that(
-      is.character(family),
-      length(family) >= 1
+      is.null(lin_comb) || inherits(lin_comb, "list") ||
+      (inherits(lin_comb, "matrix") && length(dim(lin_comb) == 2)),
+      msg = "lin_comb must be either a list or a matrix"
     )
+    assert_that(is.list(replicate_name))
+    assert_that(
+      length(replicate_name) == 0 || !is.null(names(replicate_name)),
+      msg = "replicate_name must have names"
+    )
+    assert_that(is.character(family), length(family) >= 1)
     assert_that(is.list(control))
     control$control.compute$dic <- ifelse(
-      is.null(control$control.compute$dic),
-      TRUE,
-      control$control.compute$dic
+      is.null(control$control.compute$dic), TRUE, control$control.compute$dic
     )
     control$control.compute$waic <- ifelse(
-      is.null(control$control.compute$waic),
-      TRUE,
-      control$control.compute$waic
+      is.null(control$control.compute$waic), TRUE, control$control.compute$waic
     )
     control$control.compute$cpo <- ifelse(
-      is.null(control$control.compute$cpo),
-      TRUE,
-      control$control.compute$cpo
+      is.null(control$control.compute$cpo), TRUE, control$control.compute$cpo
     )
     control$control.compute$config <- ifelse(
-      is.null(control$control.compute$config),
-      TRUE,
+      is.null(control$control.compute$config), TRUE,
       control$control.compute$config
     )
     control$control.predictor$compute <- ifelse(
-      is.null(control$control.predictor$compute),
-      TRUE,
+      is.null(control$control.predictor$compute), TRUE,
       control$control.predictor$compute
     )
     assert_that(
@@ -139,10 +121,9 @@ setMethod(
     if (is.null(control$control.predictor$link)) {
       control$control.predictor$link <- ifelse(is.na(response), 1, NA)
     }
-    control$control.fixed$prec.intercept <- ifelse( # nolint
+    control$control.fixed$prec.intercept <- ifelse(
       is.null(control$control.fixed$prec.intercept),
-      1,
-      control$control.fixed$prec.intercept
+      1, control$control.fixed$prec.intercept
     )
 
     file_fingerprint <- sha1(
@@ -159,10 +140,10 @@ setMethod(
 
     if (length(parent) == 0) {
       analysis_relation <- data.frame(
-        Analysis = character(0),
-        ParentAnalysis = character(0),
-        ParentStatusFingerprint = character(0),
-        ParentStatus = character(0),
+        analysis = character(0),
+        parent_analysis = character(0),
+        parentstatus_fingerprint = character(0),
+        parent_status = character(0),
         stringsAsFactors = FALSE
       )
     } else {
@@ -174,18 +155,16 @@ setMethod(
         assert_that(is.string(parent_statusfingerprint))
       }
       analysis_relation <- data.frame(
-        Analysis = file_fingerprint,
-        ParentAnalysis = parent,
-        ParentStatusFingerprint = parent_statusfingerprint,
-        ParentStatus = parent_status,
-        stringsAsFactors = FALSE
+        analysis = file_fingerprint, parent_analysis = parent,
+        parentstatus_fingerprint = parent_statusfingerprint,
+        parent_status = parent_status, stringsAsFactors = FALSE
       )
     }
     version <- get_analysis_version(sessionInfo())
     status_fingerprint <- sha1(
       list(
         file_fingerprint, status, NULL,
-        version@AnalysisVersion$Fingerprint, version@AnalysisVersion,
+        version@AnalysisVersion$fingerprint, version@AnalysisVersion,
         version@RPackage,  version@AnalysisVersionRPackage, analysis_relation,
         NULL
       ),
@@ -198,23 +177,16 @@ setMethod(
       RPackage = version@RPackage,
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
       AnalysisMetadata = data.frame(
-        ResultDatasourceID = result_datasource_id,
-        SchemeID = scheme_id,
-        SpeciesGroupID = species_group_id,
-        LocationGroupID = location_group_id,
-        ModelType = model_type,
-        Formula = formula,
-        FirstImportedYear = first_imported_year,
-        LastImportedYear = last_imported_year,
-        Duration = duration,
-        LastAnalysedYear = last_analysed_year,
-        AnalysisDate = analysis_date,
-        Seed = seed,
-        Status = status,
-        AnalysisVersion = version@AnalysisVersion$Fingerprint,
-        FileFingerprint = file_fingerprint,
-        StatusFingerprint = status_fingerprint,
-        stringsAsFactors = FALSE
+        result_datasource_id = result_datasource_id, scheme_id = scheme_id,
+        species_group_id = species_group_id,
+        location_group_id = location_group_id, model_type = model_type,
+        formula = formula, first_imported_year = first_imported_year,
+        last_imported_year = last_imported_year, duration = duration,
+        last_analysed_year = last_analysed_year, analysis_date = analysis_date,
+        seed = seed, status = status,
+        analysis_version = version@AnalysisVersion$fingerprint,
+        file_fingerprint = file_fingerprint,
+        status_fingerprint = status_fingerprint, stringsAsFactors = FALSE
       ),
       AnalysisFormula = list(as.formula(formula)),
       AnalysisRelation = analysis_relation,
@@ -249,18 +221,18 @@ setMethod(
   ) {
     assert_that(is.string(status))
     data@Model <- model_fit
-    data@AnalysisMetadata$Status <- status
+    data@AnalysisMetadata$status <- status
     version <- get_analysis_version(sessionInfo())
     new_version <- union(data, version)
     data@AnalysisVersion <- new_version$Union@AnalysisVersion
     data@RPackage <- new_version$Union@RPackage
     data@AnalysisVersionRPackage <- new_version$Union@AnalysisVersionRPackage
-    data@AnalysisMetadata$AnalysisVersion <- new_version$UnionFingerprint
+    data@AnalysisMetadata$analysis_version <- new_version$Unionfingerprint
     data@RawImputed <- raw_imputed
-    data@AnalysisMetadata$StatusFingerprint <- sha1(
+    data@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        data@AnalysisMetadata$FileFingerprint, data@AnalysisMetadata$Status,
-        data@Model, data@AnalysisMetadata$AnalysisVersion,
+        data@AnalysisMetadata$file_fingerprint, data@AnalysisMetadata$status,
+        data@Model, data@AnalysisMetadata$analysis_version,
         data@AnalysisVersion, data@RPackage, data@AnalysisVersionRPackage,
         data@AnalysisRelation, data@RawImputed
       ),

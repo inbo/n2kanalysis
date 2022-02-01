@@ -14,22 +14,16 @@ setClass(
   ),
   prototype = prototype(
     Contrast = data.frame(
-      Fingerprint = character(0),
-      Description = character(0),
-      Analysis = character(0),
-      stringsAsFactors = FALSE
+      fingerprint = character(0), description = character(0),
+      analysis = character(0), stringsAsFactors = FALSE
     ),
     ContrastCoefficient = data.frame(
-      Contrast = character(0),
-      Parameter = character(0),
-      Coefficient = numeric(0),
-      stringsAsFactors = FALSE
+      contrast = character(0), parameter = character(0),
+      coefficient = numeric(0), stringsAsFactors = FALSE
     ),
     ContrastEstimate = data.frame(
-      Contrast = character(0),
-      Estimate = numeric(0),
-      LowerConfidenceLimit = numeric(0),
-      UpperConfidenceLimit = numeric(0),
+      contrast = character(0), estimate = numeric(0),
+      lower_confidence_limit = numeric(0), upper_confidence_limit = numeric(0),
       stringsAsFactors = FALSE
     )
   )
@@ -42,50 +36,50 @@ setValidity(
   function(object) {
     check_dataframe_variable(
       df = object@Contrast,
-      variable = c("Fingerprint", "Description", "Analysis"),
+      variable = c("fingerprint", "description", "analysis"),
       name = "Contrast"
     )
     check_dataframe_variable(
       df = object@ContrastCoefficient,
-      variable = c("Contrast", "Parameter", "Coefficient"),
+      variable = c("contrast", "parameter", "coefficient"),
       name = "ContrastCoefficient"
     )
     check_dataframe_variable(
       df = object@ContrastEstimate,
       variable = c(
-        "Contrast", "Estimate", "LowerConfidenceLimit",
-        "UpperConfidenceLimit"
+        "contrast", "estimate", "lower_confidence_limit",
+        "upper_confidence_limit"
       ),
       name = "ContrastEstimate"
     )
     if (!all(
-      na.omit(object@ContrastCoefficient$Contrast) %in%
-        object@Contrast$Fingerprint
+      na.omit(object@ContrastCoefficient$contrast) %in%
+        object@Contrast$fingerprint
     )) {
-      stop("Some Contrast in 'ConstrastCoefficient' slot not found")
+      stop("Some contrast in 'ConstrastCoefficient' slot not found")
     }
     if (!all(
-      na.omit(object@ContrastEstimate$Contrast) %in%
-      object@Contrast$Fingerprint
+      na.omit(object@ContrastEstimate$contrast) %in%
+      object@Contrast$fingerprint
     )) {
-      stop("Some Contrast in 'ConstrastEstimate' slot not found")
+      stop("Some contrast in 'ConstrastEstimate' slot not found")
     }
 
-    if (anyDuplicated(object@Contrast$Fingerprint)) {
-      stop("Duplicated Fingerprint in 'Contrast' slot")
+    if (anyDuplicated(object@Contrast$fingerprint)) {
+      stop("Duplicated fingerprint in 'Contrast' slot")
     }
     if (anyDuplicated(
-      object@Contrast[, c("Description", "Analysis")]
+      object@Contrast[, c("description", "analysis")]
     )) {
       stop("Duplicated rows in 'Contrast' slot")
     }
     if (anyDuplicated(
-      object@ContrastCoefficient[, c("Contrast", "Parameter")]
+      object@ContrastCoefficient[, c("contrast", "parameter")]
     )) {
       stop("Duplicated rows in 'ContrastCoefficient' slot")
     }
-    if (anyDuplicated(object@ContrastEstimate$Contrast)) {
-      stop("Duplicated Contrast in 'ContrastEstimate' slot")
+    if (anyDuplicated(object@ContrastEstimate$contrast)) {
+      stop("Duplicated contrast in 'ContrastEstimate' slot")
     }
     return(TRUE)
   }

@@ -7,8 +7,7 @@ test_that("fit_model() on INLA based objects", {
   this_species_group_id <- sha1(letters)
   this_location_group_id <- sha1(letters)
   this_model_type <- "inla poisson: A + B + C + D"
-  this_formula <-
-    "Count ~ A * (B + C) + C * D + f(E, model = 'iid')"
+  this_formula <- "Count ~ A * (B + C) + C * D + f(E, model = 'iid')"
   this_first_imported_year <- 1990L
   this_last_imported_year <- 2015L
   this_last_analysed_year <- 2014L
@@ -24,84 +23,55 @@ test_that("fit_model() on INLA based objects", {
   rownames(lin_comb_list2[[1]]) <- seq_along(unique(dataset$E))
   object <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    model_type = this_model_type,
-    formula = this_formula,
-    first_imported_year = this_first_imported_year,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = this_formula, first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset
+    analysis_date = this_analysis_date, data = dataset
   )
   object_lc <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    model_type = this_model_type,
-    formula = this_formula,
-    first_imported_year = this_first_imported_year,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = this_formula, first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset,
-    lin_comb = lin_comb
+    analysis_date = this_analysis_date, data = dataset, lin_comb = lin_comb
   )
   object_lc_list <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    model_type = this_model_type,
-    formula = this_formula,
-    first_imported_year = this_first_imported_year,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = this_formula, first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset,
-    lin_comb = lin_comb_list
+    analysis_date = this_analysis_date, data = dataset, lin_comb = lin_comb_list
   )
   object_lc_list2 <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    model_type = this_model_type,
-    formula = this_formula,
-    first_imported_year = this_first_imported_year,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = this_formula, first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset,
+    analysis_date = this_analysis_date, data = dataset,
     lin_comb = lin_comb_list2
   )
   object_badlc <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    model_type = this_model_type,
-    formula = this_formula,
-    first_imported_year = this_first_imported_year,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = this_formula, first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset,
-    lin_comb = bad_lin_comb
+    analysis_date = this_analysis_date, data = dataset, lin_comb = bad_lin_comb
   )
   object_imp <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    model_type = this_model_type,
-    formula = this_formula,
-    first_imported_year = this_first_imported_year,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = this_formula, first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    imputation.size = 10,
-    data = dataset
+    analysis_date = this_analysis_date, imputation.size = 10, data = dataset
   )
   timeout_object <- fit_model(object, timeout = 0.001)
   expect_identical(status(timeout_object), "time-out")
-  Sys.sleep(1)
   object_fit <- fit_model(object)
   object_lc_fit <- fit_model(object_lc)
   object_lc_list_fit <- fit_model(object_lc_list)
@@ -117,29 +87,26 @@ test_that("fit_model() on INLA based objects", {
     sep = ""
   )
   # 64-bit linux
-  object_file <- "6505d397cf88080e781d7f018892a5e15c0d1aa2"
-  object_lc_file <- "0983ebf99495a56bd6cfcd40a63ad84304041bcb"
-  object_lc_list_file <- "ec489ba34df1b0e6850a63d4fa9e2fa54baf55a6"
-  object_lc_list2_file <- "e188f514a43ed83ac511c65de910365e9c0f1e9e"
-  object_badlc_file <- "8b1d468d373b3357794f14ba679dc2bcf7b9cbe4"
+  object_file <- "2447e940664f9095fd41e36e2859e0382dd05771"
+  object_lc_file <- "6bd732036a5ab731f772fb90afe63cc27c9b3f60"
+  object_lc_list_file <- "cf92c639b79452f89816744a5206811a8a94c390"
+  object_lc_list2_file <- "9337c4921392163d90810c8d5bbca767d72b99ca"
+  object_badlc_file <- "c71e8b93c05c98a1496fec9da86583f65a22b894"
 
   # returns the same file fingerprints on 32-bit and 64-bit
   expect_identical(object_file, get_file_fingerprint(object))
   expect_identical(object_lc_file, get_file_fingerprint(object_lc))
   expect_identical(object_lc_list_file, get_file_fingerprint(object_lc_list))
   expect_identical(
-    object_lc_list2_file,
-    get_file_fingerprint(object_lc_list2)
+    object_lc_list2_file, get_file_fingerprint(object_lc_list2)
   )
   expect_identical(object_badlc_file, get_file_fingerprint(object_badlc))
   # doesn't alter the file fingerprint when fitting a model
   expect_identical(
-    get_file_fingerprint(object),
-    get_file_fingerprint(object_fit)
+    get_file_fingerprint(object), get_file_fingerprint(object_fit)
   )
   expect_identical(
-    get_file_fingerprint(object_lc),
-    get_file_fingerprint(object_lc_fit)
+    get_file_fingerprint(object_lc), get_file_fingerprint(object_lc_fit)
   )
 
   # returns valid objects
@@ -149,26 +116,23 @@ test_that("fit_model() on INLA based objects", {
   # works with objects saved in rds files
   analysis <- object
   filename <- store_model(analysis, base = temp_dir, project = "fit_model")
-  expect_identical(status(filename)$Status, "new")
+  expect_identical(status(filename)$status, "new")
   suppressWarnings(suppressMessages(fit_model(filename)))
   filename <- gsub("new", "converged", filename)
-  expect_identical(status(filename)$Status, "converged")
+  expect_identical(status(filename)$status, "converged")
   analysis <- object_lc
   filename <- store_model(analysis, base = temp_dir, project = "fit_model")
-  expect_identical(status(filename)$Status, "new")
+  expect_identical(status(filename)$status, "new")
   suppressWarnings(suppressMessages(fit_model(filename)))
   filename <- gsub("new", "converged", filename)
-  expect_identical(status(filename)$Status, "converged")
+  expect_identical(status(filename)$status, "converged")
 
   # doesn't refit converged models with the default status
   expect_identical(fit_model(object_fit), object_fit)
   expect_identical(fit_model(object_lc_fit), object_lc_fit)
 
   # returns an error when the linear combination is not valid
-  expect_identical(
-    status(object_badlc_fit),
-    "error"
-  )
+  expect_identical(status(object_badlc_fit), "error")
 
   # clean temp files
   file.remove(list.files(temp_dir, recursive = TRUE, full.names = TRUE))
@@ -190,55 +154,43 @@ test_that("fit_model() works on n2kInlaComparison", {
 
   analysis <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    model_type = this_model_type,
-    formula = "Count ~ A",
-    first_imported_year = this_first_imported_year,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = "Count ~ A", first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset
+    analysis_date = this_analysis_date, data = dataset
   )
   p1 <- get_file_fingerprint(analysis)
   filename1 <- store_model(analysis, base = temp_dir, project = "fit_model")
   analysis <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    model_type = this_model_type,
-    formula = "Count ~ A * B",
-    first_imported_year = this_first_imported_year,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = "Count ~ A * B", first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset
+    analysis_date = this_analysis_date, data = dataset
   )
   p2 <- get_file_fingerprint(analysis)
   filename2 <- store_model(analysis, base = temp_dir, project = "fit_model")
 
   analysis <- n2k_inla_comparison(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    formula = "~B", #nolint
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, formula = "~B",
     model_type = "inla comparison: A*B",
     first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
     analysis_date = this_analysis_date,
     parent_status = status(temp_dir) %>%
       select(
-        ParentAnalysis = "FileFingerprint",
-        ParentStatus = "Status",
-        ParentStatusFingerprint = "StatusFingerprint"
+        parent_analysis = "file_fingerprint",
+        parent_status = "status",
+        parentstatus_fingerprint = "status_fingerprint"
       )
   )
   filename3 <- store_model(analysis, base = temp_dir, project = "fit_model")
   fit_model(
-    get_file_fingerprint(analysis),
-    base = temp_dir,
-    project = "fit_model",
+    get_file_fingerprint(analysis), base = temp_dir, project = "fit_model",
     verbose = FALSE
   )
 
@@ -248,10 +200,7 @@ test_that("fit_model() works on n2kInlaComparison", {
   fit_model(filename2, verbose = FALSE)
   fit_model(filename3, verbose = FALSE)
   filename3 <- gsub("waiting", "converged", filename3)
-  expect_identical(
-    fit_model(filename3, verbose = FALSE),
-    NULL
-  )
+  expect_null(fit_model(filename3, verbose = FALSE))
 
   # clean temp files
   file.remove(list.files(temp_dir, recursive = TRUE, full.names = TRUE))
@@ -273,48 +222,38 @@ test_that("fit_model() works on n2kInlaComposite", {
 
   analysis <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    model_type = this_model_type,
-    formula = "Count ~ A",
-    first_imported_year = this_first_imported_year,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = "Count ~ A", first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset
+    analysis_date = this_analysis_date, data = dataset
   )
   p1 <- get_file_fingerprint(analysis)
   filename1 <- store_model(analysis, base = temp_dir, project = "fit_model")
   analysis <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    model_type = this_model_type,
-    formula = "Count ~ A + B",
-    first_imported_year = this_first_imported_year,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = "Count ~ A + B", first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset
+    analysis_date = this_analysis_date, data = dataset
   )
   p2 <- get_file_fingerprint(analysis)
   filename2 <- store_model(analysis, base = temp_dir, project = "fit_model")
 
   analysis <- n2k_composite(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    formula = "~B", #nolint
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, formula = "~B",
     model_type = "inla comparison: A*B",
     first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
     analysis_date = this_analysis_date,
     parent_status = status(temp_dir) %>%
       select(
-        ParentAnalysis = "FileFingerprint",
-        ParentStatus = "Status",
-        ParentStatusFingerprint = "StatusFingerprint"
+        parent_analysis = "file_fingerprint",
+        parent_status = "status",
+        parentstatus_fingerprint = "status_fingerprint"
       ),
     extractor = function(model) {
       relevant <- grep("^A", rownames(model$summary.fixed))
@@ -329,9 +268,7 @@ test_that("fit_model() works on n2kInlaComposite", {
 
   filename3 <- store_model(analysis, base = temp_dir, project = "fit_model")
   fit_model(
-    get_file_fingerprint(analysis),
-    base = temp_dir,
-    project = "fit_model",
+    get_file_fingerprint(analysis), base = temp_dir, project = "fit_model",
     verbose = FALSE
   )
 
@@ -341,10 +278,7 @@ test_that("fit_model() works on n2kInlaComposite", {
   fit_model(filename2, verbose = FALSE)
   fit_model(filename3, verbose = FALSE)
   filename3 <- gsub("waiting", "converged", filename3)
-  expect_identical(
-    fit_model(filename3, verbose = FALSE),
-    NULL
-  )
+  expect_null(fit_model(filename3, verbose = FALSE))
 
   # clean temp files
   file.remove(list.files(temp_dir, recursive = TRUE, full.names = TRUE))

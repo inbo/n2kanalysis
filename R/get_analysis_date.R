@@ -21,6 +21,6 @@ setMethod(
   f = "get_analysis_date",
   signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x) {
-    return(x@AnalysisMetadata$AnalysisDate)
+    return(x@AnalysisMetadata$analysis_date)
   }
 )

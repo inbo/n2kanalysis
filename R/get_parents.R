@@ -6,11 +6,11 @@
 get_parents <- function(child, base, project) {
   assert_that(inherits(child, "n2kModel"))
   output <- lapply(
-    child@AnalysisRelation$ParentAnalysis,
+    child@AnalysisRelation$parent_analysis,
     read_model,
     base = base,
     project = project
   )
-  names(output) <- child@AnalysisRelation$ParentAnalysis
+  names(output) <- child@AnalysisRelation$parent_analysis
   return(output)
 }

@@ -21,6 +21,6 @@ setMethod(
   f = "get_species_group_id",
   signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x) {
-    return(x@AnalysisMetadata$SpeciesGroupID)
+    return(x@AnalysisMetadata$species_group_id)
   }
 )

@@ -38,8 +38,8 @@ A random seed will be inserted when missing.
 \itemize{
 \item \code{fun}: The function to apply when aggregating.
 \item \code{filter}: An optional list for the \code{filter} argument of
-\code{\link[multimput]{aggregate_impute}}.
-\item \code{join}: An optional list for the \code{join} argument of
-\code{\link[multimput]{aggregate_impute}}.
+\code{\link[multimput:aggregate_impute]{multimput::aggregate_impute()}}.
+\item \code{join}: An optional list for the\code{join} argument of
+\code{\link[multimput:aggregate_impute]{multimput::aggregate_impute()}}.
 }
 }

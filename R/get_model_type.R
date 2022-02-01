@@ -21,6 +21,6 @@ setMethod(
   f = "get_model_type",
   signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x) {
-    return(x@AnalysisMetadata$ModelType)
+    return(x@AnalysisMetadata$model_type)
   }
 )

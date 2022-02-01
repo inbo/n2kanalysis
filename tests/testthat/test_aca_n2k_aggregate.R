@@ -16,29 +16,22 @@ test_that("prepare a n2kAggregate object", {
   dataset <- test_data()
   object <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id,
-    model_type = this_model_type,
-    formula = this_formula,
-    first_imported_year = this_first_imported_year,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = this_formula, first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date,
-    data = dataset
+    analysis_date = this_analysis_date, data = dataset
   )
   object <- fit_model(object)
   expect_is(
     child <- n2k_aggregate(
       result_datasource_id = this_result_datasource_id,
-      scheme_id = this_scheme_id,
-      species_group_id = this_species_group_id,
+      scheme_id = this_scheme_id, species_group_id = this_species_group_id,
       location_group_id = this_location_group_id,
-      model_type = this_model_type,
-      formula = this_formula,
+      model_type = this_model_type, formula = this_formula,
       first_imported_year = this_first_imported_year,
       last_imported_year = this_last_imported_year,
-      analysis_date = this_analysis_date,
-      parent = get_file_fingerprint(object),
+      analysis_date = this_analysis_date, parent = get_file_fingerprint(object),
       fun = sum
     ),
     "n2kAggregate"

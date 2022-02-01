@@ -21,6 +21,6 @@ setMethod(
   f = "get_seed",
   signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x) {
-    return(x@AnalysisMetadata$Seed)
+    return(x@AnalysisMetadata$seed)
   }
 )

@@ -40,7 +40,7 @@ test_that("elaborate comparison of sha1() on 32-bit and 64 bit", {
   cat(")\n")
   # 64-bit Ubuntu 20.04
   correct <- c(
-    "9ceeae85decb5c480a115feac0686f39493f9110",
+    "4a665857664d4694ed546aa43ac0715f95aa1d57",
     "70095252e47ccdbabc7bcd32ea13c5057a9776dc",
     "49c22e6e1d9b2f48a4478975f0b14f9911c8499a",
     "b17832f39416892d8b44d09e4b14994fa603b5dd",

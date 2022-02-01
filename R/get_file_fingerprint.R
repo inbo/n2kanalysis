@@ -21,7 +21,7 @@ setMethod(
   f = "get_file_fingerprint",
   signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x) {
-    return(x@AnalysisMetadata$FileFingerprint)
+    return(x@AnalysisMetadata$file_fingerprint)
   }
 )
 

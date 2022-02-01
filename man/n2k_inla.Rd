@@ -50,7 +50,7 @@ n2k_inla(data, ..., model_fit)
 \item{status}{A single character indicating the status of the model.
 Defaults to \code{"waiting"}.}
 
-\item{result_datasource_id}{The id of the results datasource.}
+\item{result_datasource_id}{A string identifying the datasource.}
 
 \item{scheme_id}{A single integer holding the id of the scheme.}
 
@@ -58,9 +58,9 @@ Defaults to \code{"waiting"}.}
 
 \item{formula}{A single character identifying the comparison.}
 
-\item{species_group_id}{A single integer identifing the species group.}
+\item{species_group_id}{A string identifying the species group.}
 
-\item{location_group_id}{A single integer identifing the location group.}
+\item{location_group_id}{A string identifying the location group.}
 
 \item{model_type}{The type of the models.
 Must start with \code{"inla comparison:"}.}
@@ -95,7 +95,7 @@ Defaults to an empty list.
 Used in case of \code{f(X, ..., replicate = Z)}.
 Should be a named list like e.g. \code{list(X = c("a", "b", "c"))}.}
 
-\item{control}{A named list passed to \code{\link[INLA]{inla}} when fitting
+\item{control}{A named list passed to \code{\link[INLA:inla]{INLA::inla()}} when fitting
 the model.}
 
 \item{parent_status}{The status of the parent analysis.}

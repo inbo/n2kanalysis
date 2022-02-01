@@ -21,6 +21,6 @@ setMethod(
   f = "get_status_fingerprint",
   signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x) {
-    return(x@AnalysisMetadata$StatusFingerprint)
+    return(x@AnalysisMetadata$status_fingerprint)
   }
 )

@@ -18,16 +18,16 @@ setValidity(
   "n2kResult",
   function(object) {
     if (!all(
-      object@AnalysisMetadata$AnalysisVersion %in%
-        object@AnalysisVersion$Fingerprint
+      object@AnalysisMetadata$analysis_version %in%
+        object@AnalysisVersion$fingerprint
     )) {
       stop(
-"Some AnalysisVersion in 'AnalysisMetadata' slot are not present in
+"Some analysis_version in 'AnalysisMetadata' slot are not present in
 'AnalysisVersion' slot"
       )
     }
     if (!all(
-object@ParameterEstimate$Analysis %in% object@AnalysisMetadata$FileFingerprint
+object@ParameterEstimate$analysis %in% object@AnalysisMetadata$file_fingerprint
     )) {
       stop(
 "Some Analysis in 'ParameterEstimate' slot are not present in 'AnalysisMetadata'
@@ -35,14 +35,14 @@ slot"
       )
     }
     if (!all(
-      object@Anomaly$Analysis %in% object@AnalysisMetadata$FileFingerprint
+      object@Anomaly$analysis %in% object@AnalysisMetadata$file_fingerprint
     )) {
       stop(
 "Some Analysis in 'Anomaly' slot are not present in 'AnalysisMetadata' slot"
       )
     }
     if (!all(
-      object@ContrastCoefficient$Parameter %in% object@Parameter$Fingerprint
+      object@ContrastCoefficient$parameter %in% object@Parameter$fingerprint
     )) {
       stop(
 "Some Parameter in 'ContrastCoefficient' slot are not present in 'Parameter'
@@ -50,7 +50,7 @@ slot"
       )
     }
     if (!all(
-      object@Contrast$Analysis %in% object@AnalysisMetadata$FileFingerprint
+      object@Contrast$analysis %in% object@AnalysisMetadata$file_fingerprint
     )) {
       stop(
 "Some Analysis in 'Contrast' slot are not present in 'AnalysisMetadata' slot"

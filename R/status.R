@@ -23,7 +23,7 @@ setMethod(
   f = "status",
   signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x) {
-    return(x@AnalysisMetadata$Status)
+    return(x@AnalysisMetadata$status)
   }
 )
 
@@ -62,9 +62,9 @@ setMethod(
     return(
       data.frame(
         Filename = x,
-        FileFingerprint = analysis@AnalysisMetadata$FileFingerprint,
-        StatusFingerprint = analysis@AnalysisMetadata$StatusFingerprint,
-        Status = analysis@AnalysisMetadata$Status,
+        file_fingerprint = analysis@AnalysisMetadata$file_fingerprint,
+        status_fingerprint = analysis@AnalysisMetadata$status_fingerprint,
+        status = analysis@AnalysisMetadata$status,
         stringsAsFactors = FALSE
       )
     )
@@ -95,11 +95,11 @@ setReplaceMethod(
   "status",
   "n2kInla",
   function(x, value) {
-    x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- sha1(
+    x@AnalysisMetadata$status <- value
+    x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Model,
-        x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
+        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status, x@Model,
+        x@AnalysisMetadata$analysis_version, x@AnalysisVersion, x@RPackage,
         x@AnalysisVersionRPackage, x@AnalysisRelation, x@RawImputed
       ),
       digits = 6L
@@ -117,11 +117,11 @@ setReplaceMethod(
   "status",
   "n2kComposite",
   function(x, value) {
-    x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- sha1(
+    x@AnalysisMetadata$status <- value
+    x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        x@Parameter, x@Index, x@AnalysisMetadata$AnalysisVersion,
+        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status,
+        x@Parameter, x@Index, x@AnalysisMetadata$analysis_version,
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
       ),
@@ -140,11 +140,11 @@ setReplaceMethod(
   "status",
   "n2kInlaComparison",
   function(x, value) {
-    x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- sha1(
+    x@AnalysisMetadata$status <- value
+    x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        x@WAIC, x@AnalysisMetadata$AnalysisVersion,
+        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status,
+        x@WAIC, x@AnalysisMetadata$analysis_version,
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
       ),
@@ -163,11 +163,11 @@ setReplaceMethod(
   "status",
   "n2kAggregate",
   function(x, value) {
-    x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- sha1(
+    x@AnalysisMetadata$status <- value
+    x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
+        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status,
+        x@AnalysisMetadata$analysis_version, x@AnalysisVersion, x@RPackage,
         x@AnalysisVersionRPackage, x@AnalysisRelation, x@RawImputed,
         x@AggregatedImputed
       ),
@@ -186,11 +186,11 @@ setReplaceMethod(
   "status",
   "n2kModelImputed",
   function(x, value) {
-    x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- sha1(
+    x@AnalysisMetadata$status <- value
+    x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
+        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status,
+        x@AnalysisMetadata$analysis_version, x@AnalysisVersion, x@RPackage,
         x@AnalysisVersionRPackage, x@AnalysisRelation, x@AggregatedImputed,
         x@Results
       ),

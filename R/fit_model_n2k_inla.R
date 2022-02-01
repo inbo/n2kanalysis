@@ -62,10 +62,9 @@ setMethod(
         }, silent = TRUE)
     # handle error in model fit
     if (inherits(model, "try-error")) {
-      status(x) <- "error"
-      if (grepl("reached .* time limit", model)) {
-        status(x) <- "time-out"
-      }
+      status(x) <- ifelse(
+        grepl("reached .* time limit", model), "time-out", "error"
+      )
       return(x)
     }
     # return fitted model when no imputation is required

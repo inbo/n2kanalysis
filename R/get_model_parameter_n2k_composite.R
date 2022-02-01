@@ -5,34 +5,34 @@ setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kComposite"),
   definition = function(analysis, ...) {
-    if (analysis@AnalysisMetadata$Status != "converged") {
+    if (analysis@AnalysisMetadata$status != "converged") {
       return(new("n2kParameter"))
     }
 
     parameter <- data.frame(
-      Description = "Composite index",
-      Parent = NA_character_,
+      description = "Composite index",
+      parent = NA_character_,
       stringsAsFactors = FALSE
     )
-    parameter$Fingerprint <- apply(parameter, 1, sha1)
+    parameter$fingerprint <- apply(parameter, 1, sha1)
 
     parameter_estimate <- cbind(
-      Analysis = analysis@AnalysisMetadata$FileFingerprint,
+      Analysis = analysis@AnalysisMetadata$file_fingerprint,
       analysis@Index,
       stringsAsFactors = FALSE
     )
-    colnames(parameter_estimate)[2] <- "Parameter"
+    colnames(parameter_estimate)[2] <- "parameter"
     row.names(parameter_estimate) <- NULL
 
     extra <- data.frame(
-      Description = parameter_estimate$Parameter,
-      Parent = parameter$Fingerprint,
+      description = parameter_estimate$parameter,
+      parent = parameter$fingerprint,
       stringsAsFactors = FALSE
     )
-    extra$Fingerprint <- apply(extra, 1, sha1)
+    extra$fingerprint <- apply(extra, 1, sha1)
     parameter <- rbind(parameter, extra)
 
-    parameter_estimate$Parameter <- extra$Fingerprint
+    parameter_estimate$parameter <- extra$fingerprint
 
     new(
       "n2kParameter",
