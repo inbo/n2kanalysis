@@ -10,10 +10,7 @@ setMethod(
   signature = signature(x = "n2kComposite"),
   definition = function(x, base, project, status = "new", ...) {
     validObject(x)
-    assert_that(
-      is.character(status),
-      length(status) >= 1
-    )
+    assert_that(is.character(status), length(status) >= 1)
     if (!(status(x) %in% status)) {
       return(x)
     }
@@ -51,7 +48,16 @@ setMethod(
       pull("parent_analysis") -> todo
 
     for (this_parent in todo) {
-      model <- read_model(x = this_parent, base = base, project = project)
+      model <- try(
+        read_model(x = this_parent, base = base, project = project),
+        silent = TRUE
+      )
+      if (inherits(model, "try-error")) {
+        parent_status[
+          parent_status$parent_analysis == this_parent, "parent_status"
+        ] <- "error"
+        next
+      }
       parent_status[
         parent_status$parent_analysis == this_parent, "parent_status"
       ] <- status(model)

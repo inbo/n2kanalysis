@@ -23,12 +23,11 @@ setMethod(
     assert_that(is.string(x))
     display(verbose, x)
     manifest <- grepl("\\.manifest$", x)
-    if (manifest) {
-      pattern <- "(.*\\/)?(.*)\\/+manifest\\/([[:xdigit:]]{40})\\.manifest"
-    } else {
-      pattern <-
-        "(.*\\/)?(.*)\\/+[[:xdigit:]]{4}\\/.*\\/([[:xdigit:]]{40})\\.rds$"
-    }
+    pattern <- ifelse(
+      manifest,
+      "(.*\\/)?(.*)\\/+manifest\\/([[:xdigit:]]{40})\\.manifest",
+      "(.*\\/)?(.*)\\/+[[:xdigit:]]{4}\\/.*\\/([[:xdigit:]]{40})\\.rds$"
+    )
     if (missing(project)) {
       project <- gsub(pattern = pattern, replacement = "\\2", x = x)
     }
