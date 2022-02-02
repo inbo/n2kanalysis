@@ -16,8 +16,7 @@ setClassUnion("maybeRawImputed", c("rawImputed", "aggregatedImputed", "NULL"))
 #'    \item{\code{Model}}{Either NULL or the resulting INLA model.}
 #'    \item{\code{Family}}{The family of the INLA model}
 #'    \item{\code{Control}}{
-#'    A named list with options passed to the arguments of
-#'    \code{\link[INLA]{inla}}.
+#'    A named list with options passed to the arguments of [INLA::inla()].
 #'    }
 #'    \item{\code{ImputationSize}}{The number of multiple imputations.
 #'    Defaults to \code{0}, indication no multiple imputation.}
@@ -54,10 +53,13 @@ setClass(
 #' @importFrom digest sha1
 #' @importFrom assertthat assert_that has_name
 #' @importFrom purrr walk
-#' @importFrom INLA inla.models
 setValidity(
   "n2kInla",
   function(object) {
+    assert_that(
+      requireNamespace("INLA", quietly = TRUE),
+      msg = "INLA package required but not installed."
+    )
     assert_that(object@ImputationSize >= 0, msg = "negative ImputationSize")
     c(
       all.vars(object@AnalysisFormula[[1]]),
@@ -77,7 +79,7 @@ setValidity(
     )
 
     assert_that(
-      all(object@Family %in% names(inla.models()$likelihood)),
+      all(object@Family %in% names(INLA::inla.models()$likelihood)),
       msg = paste(object@Family, "is not an INLA likelihood")
     )
     rg <- paste("inla", paste(object@Family, collapse = "-"))

@@ -30,14 +30,14 @@ object <- n2k_inla(
   analysis_date = this_analysis_date,
   data = dataset
 )
-model_object <- inla(
+model_object <- INLA::inla(
   Count ~ A * (B + C) + C:D +
     f(E, model = "rw1", replicate = as.integer(A)) +
     f(G, model = "iid"),
   data = object@Data,
   family = "poisson"
 )
-model_truth <- inla(
+model_truth <- INLA::inla(
   Count ~ A * (B + C) + C:D +
     f(E, model = "rw1", replicate = as.integer(A)) +
     f(G, model = "iid"),

@@ -2,7 +2,6 @@
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.number
 #' @importMethodsFrom multimput impute
-#' @importFrom INLA inla inla.make.lincombs
 #' @include n2k_inla_class.R
 #' @param timeout the optional number of second until the model will time out
 #' @inheritParams multimput::impute
@@ -13,6 +12,10 @@ setMethod(
     x, status = "new", ..., timeout = NULL, seed = 0L, num_threads = NULL,
     parallel_configs = TRUE
   ) {
+    assert_that(
+      requireNamespace("INLA", quietly = TRUE),
+      msg = "INLA package required but not installed."
+    )
     validObject(x)
     assert_that(is.character(status), length(status) >= 1)
 
@@ -35,10 +38,10 @@ setMethod(
         lc <- lincomb %>%
           as.data.frame() %>%
           as.list() %>%
-          inla.make.lincombs()
+          INLA::inla.make.lincombs()
         names(lc) <- rownames(lincomb)
       } else {
-        lc <- inla.make.lincombs(lincomb)
+        lc <- INLA::inla.make.lincombs(lincomb)
         if (is.matrix(lincomb[[1]])) {
           names(lc) <- rownames(lincomb[[1]])
         } else {
@@ -58,7 +61,7 @@ setMethod(
           assert_that(is.number(timeout), timeout > 0)
           setTimeLimit(cpu = timeout, elapsed = timeout)
         }
-        do.call(inla, control)
+        do.call(INLA::inla, control)
         }, silent = TRUE)
     # handle error in model fit
     if (inherits(model, "try-error")) {

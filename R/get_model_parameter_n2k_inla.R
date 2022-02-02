@@ -6,7 +6,6 @@
 #' @importFrom rlang .data
 #' @importFrom purrr map_chr map2_chr map_df
 #' @importFrom digest sha1
-#' @importFrom INLA inla.tmarginal inla.qmarginal
 #' @importFrom stats terms
 #' @include n2k_inla_class.R
 #' @include n2k_parameter_class.R

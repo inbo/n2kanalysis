@@ -150,7 +150,7 @@ describe("illegal changes in the status fingerprint", {
 
 
   it("detects changes in Model", {
-    model_object <- inla(
+    model_object <- INLA::inla(
       Count ~ B,
       data = object@Data,
       family = "poisson"
@@ -158,7 +158,7 @@ describe("illegal changes in the status fingerprint", {
     object_model <- n2k_inla(
       data = object, model_fit = model_object, status = "converged"
     )
-    change_model <- inla(
+    change_model <- INLA::inla(
       Count ~ C,
       data = object@Data,
       family = "poisson"

@@ -8,7 +8,7 @@ test_that("get_model() handles n2kInla objects", {
     analysis_date = as.POSIXct("2000-01-01 12:13:14", tz = "UTC"),
     data = dataset
   )
-  model_object <- inla( Count ~ A, data = object@Data, family = "poisson")
+  model_object <- INLA::inla( Count ~ A, data = object@Data, family = "poisson")
   object_model <- n2k_inla(
     data = object, model_fit = model_object, status = "converged"
   )
