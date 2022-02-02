@@ -77,7 +77,7 @@ test_that("n2kAnomaly", {
     anomaly_type = anomalytype$fingerprint,
     analysis = metadata$file_fingerprint,
     parameter = sample(parameter$fingerprint, min(5, nrow(parameter))),
-    data_field_id = datafieldid, observation = "1", stringsAsFactors = FALSE
+    datafield_id = datafieldid, observation = "1", stringsAsFactors = FALSE
   ) %>%
     mutate(estimate = seq_along(.data$analysis))
   expect_is(

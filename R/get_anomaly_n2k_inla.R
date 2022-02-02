@@ -98,7 +98,7 @@ setMethod(
         log_ratio = log(.data$response / .data$expected),
         analysis = get_file_fingerprint(analysis),
         observation = as.character(.data$observation_id),
-        datafield = as.character(.data$data_field_id)
+        datafield = as.character(.data$datafield_id)
       ) -> data
 
     parameter_id <- parameter@Parameter %>%

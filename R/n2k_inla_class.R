@@ -61,18 +61,18 @@ setValidity(
     assert_that(object@ImputationSize >= 0, msg = "negative ImputationSize")
     c(
       all.vars(object@AnalysisFormula[[1]]),
-      "observation_id", "data_field_id"
+      "observation_id", "datafield_id"
     ) %>%
       walk(~assert_that(has_name(object@Data, .x)))
     assert_that(
       noNA(object@Data$observation_id), msg = "observation_id cannot be NA"
     )
     assert_that(
-      noNA(object@Data$data_field_id), msg = "data_field_id cannot be NA"
+      noNA(object@Data$datafield_id), msg = "datafield_id cannot be NA"
     )
 
     assert_that(
-      all(table(object@Data$observation_id, object@Data$data_field_id) <= 1),
+      all(table(object@Data$observation_id, object@Data$datafield_id) <= 1),
       msg = "Duplicated observation_id"
     )
 
