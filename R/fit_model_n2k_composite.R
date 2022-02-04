@@ -22,19 +22,19 @@ setMethod(
         return(x)
       }
       x@Parameter %>%
-        filter(!is.na(.data$Estimate), !is.na(.data$Variance)) %>%
-        group_by(.data$Value) %>%
+        filter(!is.na(.data$estimate), !is.na(.data$variance)) %>%
+        group_by(.data$value) %>%
         summarise(
-          Estimate = mean(.data$Estimate),
-          SE = sqrt(sum(.data$Variance)) / n()
+          estimate = mean(.data$estimate),
+          se = sqrt(sum(.data$variance)) / n()
         ) %>%
         transmute(
-          .data$Value,
-          .data$Estimate,
-          LowerConfidenceLimit =
-            qnorm(0.025, mean = .data$Estimate, sd = .data$SE),
-          UpperConfidenceLimit =
-            qnorm(0.975, mean = .data$Estimate, sd = .data$SE)
+          .data$value,
+          .data$estimate,
+          lower_confidence_limit =
+            qnorm(0.025, mean = .data$estimate, sd = .data$se),
+          upper_confidence_limit =
+            qnorm(0.975, mean = .data$estimate, sd = .data$se)
         ) %>%
         as.data.frame() -> x@Index
       status(x) <- "converged"

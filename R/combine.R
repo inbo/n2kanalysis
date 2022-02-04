@@ -45,7 +45,9 @@ setMethod(
       )
     ))
     r_package <- r_package[order(r_package$description, r_package$version), ]
-    analysis_version_r_package <- lapply(dots,slot, "AnalysisVersionRPackage") %>%
+    analysis_version_r_package <- lapply(
+      dots, slot, "AnalysisVersionRPackage"
+    ) %>%
       bind_rows() %>%
       distinct()
     analysis_version_r_package <- analysis_version_r_package %>%
