@@ -10,10 +10,20 @@ inla_inverse <- function(marginal) {
     requireNamespace("INLA", quietly = TRUE),
     msg = "INLA package required but not installed."
   )
-  inverse <- INLA::inla.tmarginal(fun = function(x) { 1 / x }, marginal)
+  inverse <- INLA::inla.tmarginal(
+    marginal,
+    fun = function(x) {
+      1 / x
+    }
+  )
   tibble(
-    estimate = INLA::inla.emarginal(function(x) { x }, inverse),
-    lower_confidence_lLimit = INLA::inla.qmarginal(0.025, inverse),
+    estimate = INLA::inla.emarginal(
+      inverse,
+      fun = function(x) {
+        x
+      }
+    ),
+    lower_confidence_limit = INLA::inla.qmarginal(0.025, inverse),
     upper_confidence_limit = INLA::inla.qmarginal(0.975, inverse)
   )
 }

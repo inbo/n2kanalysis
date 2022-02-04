@@ -10,8 +10,8 @@ test_that("n2kimport", {
   last_imported_year <- 10
   analysis_date <- Sys.time()
   dataset <- data.frame(
-    filename = "filename", fingerprint = "fingerprint", import_date = Sys.time(),
-    stringsAsFactors = TRUE
+    filename = "filename", fingerprint = "fingerprint",
+    import_date = Sys.time(), stringsAsFactors = TRUE
   )
   expect_is(
     junk <- n2k_import(

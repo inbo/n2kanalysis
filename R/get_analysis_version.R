@@ -22,7 +22,7 @@ setMethod(
   signature = signature(version = "data.frame"),
   definition = function(version) {
     check_dataframe_variable(
-      df = version,name = "version",
+      df = version, name = "version",
       variable = c("description", "version", "origin", "fingerprint")
     )
     assert_that(

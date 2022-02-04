@@ -303,8 +303,8 @@ test_that("n2k_inla() checks that last_imported_year is from the past", {
   )
 })
 test_that(
-  "n2k_inla() checks that last_imported_year is not earlier that first_imported_year
-  ", {
+  "n2k_inla() checks that last_imported_year is not earlier than
+  first_imported_year ", {
   expect_that(
     n2k_inla(
       data = dataset,
@@ -408,7 +408,7 @@ last_imported_year ranges", {
       scheme_id = this_scheme_id
     ),
     throws_error(
-"duration longer than the interval from first_imported_year to last_imported_year"
+      "duration longer than the interval from first_imported_year to"
     )
   )
   expect_that(
@@ -536,10 +536,7 @@ test_that("n2k_inla() checks that last_analysed_year is within the range", {
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
     ),
-    throws_error(
-"last_analysed_year smaller than first_imported_year \\+ duration \\- 1\\. Window
-outside imported range\\."
-    )
+    throws_error("last_analysed_year smaller than first_imported_year")
   )
 })
 

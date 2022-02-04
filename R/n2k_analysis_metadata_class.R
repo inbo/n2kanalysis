@@ -126,7 +126,10 @@ setValidity(
         object@AnalysisMetadata$first_imported_year + 1
     )) {
       stop(
-"duration longer than the interval from first_imported_year to last_imported_year"
+        paste(
+          "duration longer than the interval from first_imported_year to",
+          "last_imported_year"
+        )
       )
     }
 

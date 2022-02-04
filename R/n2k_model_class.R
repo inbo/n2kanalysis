@@ -29,7 +29,7 @@ setValidity(
           object@AnalysisMetadata$file_fingerprint
       )) {
         stop(
-          "Some Analysis in 'AnalysisRelation' slot don't match file_fingerprint"
+        "Some Analysis in 'AnalysisRelation' slot don't match file_fingerprint"
         )
       }
     }

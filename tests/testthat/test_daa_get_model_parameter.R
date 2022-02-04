@@ -85,10 +85,11 @@ test_that(
   this_duration <- this_last_imported_year - this_first_imported_year + 1
   analysis <- n2k_inla(
     formula = "Count ~ 0 + A * C + A * B + f(E, model = \"iid\")",
-    result_datasource_id = this_result_datasource_id, scheme_id = this_scheme_id,
-    species_group_id = this_species_group_id,
+    result_datasource_id = this_result_datasource_id,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
     location_group_id = this_location_group_id, family = "nbinomial",
-    model_type = this_model_type, first_imported_year = this_first_imported_year,
+    model_type = this_model_type,
+    first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
     last_analysed_year = this_last_analysed_year,
     analysis_date = this_analysis_date, seed = this_seed, data = dataset,

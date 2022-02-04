@@ -110,7 +110,8 @@ setMethod(
     parent_status$analysis <- file_fingerprint
     parent_status <- parent_status %>%
       select(
-        "analysis", "parent_analysis", "parentstatus_fingerprint", "parent_status"
+        "analysis", "parent_analysis", "parentstatus_fingerprint",
+        "parent_status"
       )
     version <- get_analysis_version(sessionInfo())
     status_fingerprint <- sha1(

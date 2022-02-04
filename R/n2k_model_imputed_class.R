@@ -83,7 +83,8 @@ setValidity(
 
     status_fingerprint <- sha1(
       list(
-        object@AnalysisMetadata$file_fingerprint, object@AnalysisMetadata$status,
+        object@AnalysisMetadata$file_fingerprint,
+        object@AnalysisMetadata$status,
         object@AnalysisMetadata$analysis_version, object@AnalysisVersion,
         object@RPackage, object@AnalysisVersionRPackage,
         object@AnalysisRelation, object@AggregatedImputed, object@Results

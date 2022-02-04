@@ -1,5 +1,5 @@
 #' @importFrom methods setClassUnion
-#' @importClassesFrom multimput inla rawImputed
+#' @importClassesFrom multimput aggregatedImputed inla rawImputed
 setClassUnion("maybeMatrix", c("matrix", "list", "NULL"))
 setClassUnion("maybeInla", c("inla", "NULL"))
 setClassUnion("maybeRawImputed", c("rawImputed", "aggregatedImputed", "NULL"))

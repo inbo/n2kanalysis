@@ -39,7 +39,7 @@ setMethod(
     if (inherits(base, "character")) {
       assert_that(is.dir(base))
       manifest <- data.frame(
-        filename = paste( base, project, sep = "/") %>%
+        filename = paste(base, project, sep = "/") %>%
           list.files(recursive = TRUE, full.names = TRUE),
         stringsAsFactors = FALSE
       ) %>%
