@@ -6,6 +6,16 @@
 \usage{
 display(verbose, message, linefeed = TRUE)
 }
+\arguments{
+\item{verbose}{A logical.
+When \code{TRUE} print the message.
+When \code{FALSE} do nothing.}
+
+\item{message}{a vector passed to \code{\link[=message]{message()}}.}
+
+\item{linefeed}{A logical.
+When \code{TRUE} append a newline character at the end of the message.}
+}
 \description{
 This is a short cut for \code{if(verbose) message(x)}.
 }
