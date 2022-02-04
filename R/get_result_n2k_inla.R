@@ -4,7 +4,7 @@
 #' semi_join tibble transmute
 #' @importFrom rlang .data
 #' @importFrom digest sha1
-#' @importFrom tidyr gather_
+#' @importFrom tidyr pivot_longer
 #' @importFrom stats as.formula
 #' @include n2k_result_class.R
 #' @include n2k_inla_class.R
@@ -122,13 +122,12 @@ setMethod(
       contrast_coefficient <- contrast_coefficient %>%
         as.data.frame() %>%
         rownames_to_column("description") %>%
-        gather_(
-          "parameter_id",
-          "coefficient",
+        pivot_longer(
+          names_to = "parameter_id", values_to = "coefficient",
           colnames(contrast_coefficient)[
             !grepl("description", colnames(contrast_coefficient))
           ],
-          na.rm = TRUE
+          values_drop_na = TRUE
         ) %>%
         inner_join(
           contrast %>%
@@ -180,10 +179,10 @@ setMethod(
             if (anyDuplicated(x@Model$summary.random[[y]]$ID) == 0) {
               lc %>%
                 mutate(contrast = contrast$fingerprint) %>%
-                gather_(
-                  "description", "coefficient",
+                pivot_longer(
+                  names_to = "description", values_to = "coefficient",
                   colnames(lc)[!grepl("contrast", colnames(lc))],
-                  na.rm = TRUE, factor_key = TRUE
+                  values_drop_na = TRUE, names_transform = factor
                 ) %>%
                 mutate(
                   description = as.character(
@@ -195,10 +194,10 @@ setMethod(
             } else {
               lc %>%
                 mutate(contrast = contrast$fingerprint) %>%
-                gather_(
-                  "description", "coefficient",
+                pivot_longer(
+                  names_to = "description", values_to = "coefficient",
                   colnames(lc)[!grepl("contrast", colnames(lc))],
-                  na.rm = TRUE
+                  values_drop_na = TRUE
                 ) %>%
                 inner_join(
                   anomaly@Parameter %>%

@@ -73,7 +73,7 @@ setMethod(
             x@Parameter %>%
               filter(.data$parent != this_parent)
           ) %>%
-          arrange(.data$parent, .data$Value) -> x@Parameter
+          arrange(.data$parent, .data$value) -> x@Parameter
       }
     }
     if (all(parent_status$parent_status == "converged")) {

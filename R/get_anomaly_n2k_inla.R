@@ -179,18 +179,18 @@ setMethod(
       select(.data$anomaly_type, parameter = .data$fingerprint) %>%
       inner_join(
         parameter@ParameterEstimate %>%
-          filter(abs(.data$Estimate) > random_threshold) %>%
-          select("analysis", "parameter", "Estimate"),
+          filter(abs(.data$estimate) > random_threshold) %>%
+          select("analysis", "parameter", "estimate"),
         by = "parameter"
       )
     if (nrow(re_anomaly) > 0) {
       re_anomaly <- re_anomaly %>%
-        mutate(Sign = sign(.data$Estimate)) %>%
-        arrange(desc(abs(.data$Estimate))) %>%
-        group_by(.data$anomaly_type, .data$Sign) %>%
+        mutate(sign = sign(.data$estimate)) %>%
+        arrange(desc(abs(.data$estimate))) %>%
+        group_by(.data$anomaly_type, .data$sign) %>%
         slice(seq_len(n)) %>%
         ungroup() %>%
-        select(-"Sign", -"Estimate")
+        select(-"sign", -"estimate")
       anomaly_type <- re_anomaly %>%
         distinct(.data$anomaly_type) %>%
         select(description = "anomaly_type") %>%

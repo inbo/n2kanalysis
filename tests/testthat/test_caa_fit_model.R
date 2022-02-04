@@ -87,11 +87,11 @@ test_that("fit_model() on INLA based objects", {
     sep = ""
   )
   # 64-bit linux
-  object_file <- "2447e940664f9095fd41e36e2859e0382dd05771"
-  object_lc_file <- "6bd732036a5ab731f772fb90afe63cc27c9b3f60"
-  object_lc_list_file <- "cf92c639b79452f89816744a5206811a8a94c390"
-  object_lc_list2_file <- "9337c4921392163d90810c8d5bbca767d72b99ca"
-  object_badlc_file <- "c71e8b93c05c98a1496fec9da86583f65a22b894"
+  object_file <- "2774e9be02ef2fabef43967c36626891cdfd8d56"
+  object_lc_file <- "5d0c64555c3588002ddb526918ed4a21882c9882"
+  object_lc_list_file <- "8631c63afc8c32d2bf4363497144180a97cad685"
+  object_lc_list2_file <- "342daede65a8817ff76ddb76cd2efb1813c667eb"
+  object_badlc_file <- "6e33396f9013b908b774ff7a11adc55b4eb293b9"
 
   # returns the same file fingerprints on 32-bit and 64-bit
   expect_identical(object_file, get_file_fingerprint(object))
@@ -258,11 +258,11 @@ test_that("fit_model() works on n2kInlaComposite", {
     extractor = function(model) {
       relevant <- grep("^A", rownames(model$summary.fixed))
       model$summary.fixed[relevant, c("mean", "sd")] %>%
-        rownames_to_column("Value") %>%
+        rownames_to_column("value") %>%
         transmute(
-          .data$Value,
-          Estimate = .data$mean,
-          Variance = .data$sd ^ 2)
+          .data$value,
+          estimate = .data$mean,
+          variance = .data$sd ^ 2)
     }
   )
 

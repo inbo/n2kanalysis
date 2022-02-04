@@ -796,12 +796,11 @@ test_that("n2k_inla() stores the new status", {
     throws_error("status must be one of the following")
   )
 })
-model_other <- inla(
+model_other <- INLA::inla(
   Count ~ A * (B + C) + C:D +
     f(E, model = "rw1", replicate = as.integer(A)) +
     f(G, model = "iid"),
-  data = object@Data,
-  family = "nbinomial"
+  data = object@Data, family = "nbinomial"
 )
 test_that("n2k_inla() checks if the family matches", {
   expect_that(

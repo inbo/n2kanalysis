@@ -328,11 +328,8 @@ setMethod(
           by = c("observation_id" = "description")
         ) %>%
         select(
-          "analysis",
-          "Estimate",
-          "LowerConfidenceLimit",
-          "UpperConfidenceLimit",
-          parameter = "fingerprint"
+          "analysis", "estimate", "lower_confidence_limit",
+          "upper_confidence_limit", parameter = "fingerprint"
         ) %>%
         bind_rows(parameter_estimate)
     }
