@@ -35,24 +35,15 @@ setMethod(
       )
       if (
         analysis@Model$.args$family %in% c(
-          "poisson", "zeroinflatedpoisson1",
-          "nbinomial", "zeroinflatednbinomial1"
+          "poisson", "zeroinflatedpoisson0", "zeroinflatedpoisson1",
+          "nbinomial", "zeroinflatednbinomial0", "zeroinflatednbinomial1"
         )
       ) {
-        assert_that(
-          is.number(expected_ratio),
-          expected_ratio > 1
-        )
+        assert_that(is.number(expected_ratio), expected_ratio > 1)
         log_expected_ratio <- log(expected_ratio)
-        assert_that(
-          is.number(expected_absent),
-          expected_absent > 1
-        )
+        assert_that(is.number(expected_absent), expected_absent > 1)
         log_expected_absent <- log(expected_absent)
-        assert_that(
-          is.number(random_threshold),
-          random_threshold > 1
-        )
+        assert_that(is.number(random_threshold), random_threshold > 1)
         random_threshold <- log(random_threshold)
       } else {
         stop(analysis@Model$.args$family, " not handled yet")
