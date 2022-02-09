@@ -10,15 +10,13 @@ setMethod(
     }
 
     parameter <- data.frame(
-      description = "Composite index",
-      parent = NA_character_,
+      description = "Composite index", parent = NA_character_,
       stringsAsFactors = FALSE
     )
     parameter$fingerprint <- apply(parameter, 1, sha1)
 
     parameter_estimate <- cbind(
-      Analysis = analysis@AnalysisMetadata$file_fingerprint,
-      analysis@Index,
+      analysis = analysis@AnalysisMetadata$file_fingerprint, analysis@Index,
       stringsAsFactors = FALSE
     )
     colnames(parameter_estimate)[2] <- "parameter"
@@ -26,8 +24,7 @@ setMethod(
 
     extra <- data.frame(
       description = parameter_estimate$parameter,
-      parent = parameter$fingerprint,
-      stringsAsFactors = FALSE
+      parent = parameter$fingerprint, stringsAsFactors = FALSE
     )
     extra$fingerprint <- apply(extra, 1, sha1)
     parameter <- rbind(parameter, extra)
@@ -35,8 +32,7 @@ setMethod(
     parameter_estimate$parameter <- extra$fingerprint
 
     new(
-      "n2kParameter",
-      Parameter = parameter,
+      "n2kParameter", Parameter = parameter,
       ParameterEstimate = parameter_estimate
     )
   }

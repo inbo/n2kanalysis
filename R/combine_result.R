@@ -64,11 +64,11 @@ setMethod(
     contrast_coefficient <- lapply(dots, slot, "ContrastCoefficient") %>%
       do.call(what = rbind) %>%
       distinct() %>%
-      arrange(.data$Contrast, .data$parameter)
+      arrange(.data$contrast, .data$parameter)
     contrast_estimate <- lapply(dots, slot, "ContrastEstimate") %>%
       do.call(what = rbind) %>%
       distinct() %>%
-      arrange(.data$Contrast)
+      arrange(.data$contrast)
 
     new(
       "n2kResult",
