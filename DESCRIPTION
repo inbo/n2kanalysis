@@ -36,7 +36,7 @@ Suggests:
     sn,
     testthat (>= 2.0.1)
 Additional_repositories: https://inla.r-inla-download.org/R/testing,
-    https://inbo.r-universe.org
+    https://inbo.r-universe.dev
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

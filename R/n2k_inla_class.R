@@ -1,7 +1,6 @@
 #' @importFrom methods setClassUnion
-#' @importClassesFrom multimput aggregatedImputed inla rawImputed
+#' @importClassesFrom multimput aggregatedImputed rawImputed
 setClassUnion("maybeMatrix", c("matrix", "list", "NULL"))
-setClassUnion("maybeInla", c("inla", "NULL"))
 setClassUnion("maybeRawImputed", c("rawImputed", "aggregatedImputed", "NULL"))
 
 #' The n2kInla class
@@ -30,6 +29,7 @@ setClassUnion("maybeRawImputed", c("rawImputed", "aggregatedImputed", "NULL"))
 #' @exportClass n2kInla
 #' @aliases n2kInla-class
 #' @importFrom methods setClass
+#' @importClassesFrom multimput maybeInla
 #' @docType class
 #' @include n2k_model_class.R
 setClass(
