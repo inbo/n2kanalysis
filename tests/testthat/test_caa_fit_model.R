@@ -1,5 +1,6 @@
 test_that("fit_model() on INLA based objects", {
-  temp_dir <- tempdir()
+  temp_dir <- tempfile("fit_inla")
+  dir.create(temp_dir)
   dataset <- test_data(missing = 0.2)
   this_analysis_date <- as.POSIXct("2015-01-01 12:13:14", tz = "UTC")
   this_result_datasource_id <- sha1(letters)
@@ -133,9 +134,6 @@ test_that("fit_model() on INLA based objects", {
 
   # returns an error when the linear combination is not valid
   expect_identical(status(object_badlc_fit), "error")
-
-  # clean temp files
-  file.remove(list.files(temp_dir, recursive = TRUE, full.names = TRUE))
 })
 
 test_that("fit_model() works on n2kInlaComparison", {
@@ -150,7 +148,8 @@ test_that("fit_model() works on n2kInlaComparison", {
   this_last_analysed_year <- 2014L
   this_duration <- 1L
   dataset <- test_data()
-  temp_dir <- tempdir()
+  temp_dir <- tempfile("fit_inla_comparison")
+  dir.create(temp_dir)
 
   analysis <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
@@ -201,9 +200,6 @@ test_that("fit_model() works on n2kInlaComparison", {
   fit_model(filename3, verbose = FALSE)
   filename3 <- gsub("waiting", "converged", filename3)
   expect_null(fit_model(filename3, verbose = FALSE))
-
-  # clean temp files
-  file.remove(list.files(temp_dir, recursive = TRUE, full.names = TRUE))
 })
 
 test_that("fit_model() works on n2kInlaComposite", {
@@ -218,7 +214,8 @@ test_that("fit_model() works on n2kInlaComposite", {
   this_last_analysed_year <- 2014L
   this_duration <- 1L
   dataset <- test_data()
-  temp_dir <- tempdir()
+  temp_dir <- tempfile("fit_inla_composite")
+  dir.create(temp_dir)
 
   analysis <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
@@ -279,7 +276,4 @@ test_that("fit_model() works on n2kInlaComposite", {
   fit_model(filename3, verbose = FALSE)
   filename3 <- gsub("waiting", "converged", filename3)
   expect_null(fit_model(filename3, verbose = FALSE))
-
-  # clean temp files
-  file.remove(list.files(temp_dir, recursive = TRUE, full.names = TRUE))
 })
