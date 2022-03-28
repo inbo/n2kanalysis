@@ -35,9 +35,10 @@ Suggests:
     parallel,
     sn,
     testthat (>= 2.0.1)
-Additional_repositories: https://inla.r-inla-download.org/R/testing,
+Additional_repositories: https://inla.r-inla-download.org/R/stable,
     https://inbo.r-universe.dev
 Encoding: UTF-8
+Language: en-GB
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
