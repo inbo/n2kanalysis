@@ -186,8 +186,7 @@ test_that(
   this_duration <- this_last_imported_year - this_first_imported_year + 1
   analysis <- n2k_inla(
     formula = "Count ~ C * D +
-    f(E, model = \"rw1\", replicate = as.integer(A)) +
-    f(G, model = \"iid\")",
+    f(E, model = \"rw1\", replicate = as.integer(A))",
     result_datasource_id = this_result_datasource_id,
     scheme_id = this_scheme_id, species_group_id = this_species_group_id,
     location_group_id = this_location_group_id, family = "nbinomial",
@@ -211,7 +210,7 @@ test_that(
       ) %>%
       inner_join(param@Parameter, by = c("fingerprint" = "parent")) %>%
      nrow(),
-    2L
+    1L
   )
   fixed <- param@Parameter %>%
     semi_join(
@@ -261,7 +260,7 @@ test_that(
         n1 = n(), n2 = mean(.data$n), missing = mean(.data$missing),
         .groups = "drop"
       ),
-    tibble(main = c("E", "G"), n1 = 3L, n2 = c(10, 1), missing = c(0, 1))
+    tibble(main = "E", n1 = 3L, n2 = 10, missing = 0)
   )
   expect_identical(
     param@ParameterEstimate %>%
