@@ -2,14 +2,14 @@ description: Configuration file for checklist::check_pkg()
 package: yes
 allowed:
   warnings:
-  - motivation: n2kanalysis required a set of non CRAN packages
+  - motivation: n2kanalysis requires a set of non CRAN packages
     value: "checking CRAN incoming feasibility ... WARNING\nMaintainer: 'Thierry Onkelinx
       <thierry.onkelinx@inbo.be>'\n\nNew submission\n\nStrong dependencies not in
       mainstream repositories:\n  multimput, n2khelper\nSuggests or Enhances not in
       mainstream repositories:\n  INLA\nAvailability using Additional_repositories
-      specification:\n  multimput   yes   https://inbo.r-universe.dev               \n
-      \ n2khelper   yes   https://inbo.r-universe.dev               \n  INLA        yes
-      \  https://inla.r-inla-download.org/R/testing"
+      specification:\n  multimput   yes   https://inbo.r-universe.dev              \n
+      \ n2khelper   yes   https://inbo.r-universe.dev              \n  INLA        yes
+      \  https://inla.r-inla-download.org/R/stable"
   notes: []
 citation_roles:
 - aut
