@@ -1,11 +1,11 @@
-#' Store a n2kModel object
-#' @param x The n2kModel.
+#' Store an `n2kModel` object
+#' @param x The `n2kModel`.
 #' @param base The base location to store the model.
 #' @param project Will be a relative path within the base location.
 #' @param overwrite Should an existing object be overwritten?
-#' Defaults to TRUE.
+#' Defaults to `TRUE`.
 #' @param validate Check that the object is valid before storing it.
-#' Defaults to TRUE.
+#' Defaults to `TRUE`.
 #' @name store_model
 #' @rdname store_model
 #' @exportMethod store_model

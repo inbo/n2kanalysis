@@ -5,18 +5,18 @@
 \alias{session_package}
 \alias{session_package,sessionInfo-method}
 \alias{session_package,sessionInfo-methods}
-\title{Convert a sessionInfo() to a data.frame of packages}
+\title{Convert a \code{sessionInfo()} to a data.frame of packages}
 \usage{
 session_package(session)
 
 \S4method{session_package}{sessionInfo}(session)
 }
 \arguments{
-\item{session}{The output of sessionInfo()}
+\item{session}{The output of \code{sessionInfo()}}
 }
 \value{
-a data.frame with the packages of a sessionInfo()
+a data.frame with the packages of a \code{sessionInfo()}
 }
 \description{
-Convert a sessionInfo() to a data.frame of packages
+Convert a \code{sessionInfo()} to a data.frame of packages
 }

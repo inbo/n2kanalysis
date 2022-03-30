@@ -5,7 +5,7 @@
 \alias{delete_model}
 \alias{delete_model,ANY,character-method}
 \alias{delete_model,ANY,s3_bucket-method}
-\title{Delete a n2kModel object}
+\title{Delete an \code{n2kModel} object}
 \usage{
 delete_model(x, base, project)
 
@@ -14,12 +14,12 @@ delete_model(x, base, project)
 \S4method{delete_model}{ANY,s3_bucket}(x, base, project)
 }
 \arguments{
-\item{x}{the file fingerprint of the n2kModel}
+\item{x}{the file fingerprint of the \code{n2kModel}}
 
 \item{base}{the base location}
 
 \item{project}{will be a relative path within the base location}
 }
 \description{
-Delete a n2kModel object
+Delete an \code{n2kModel} object
 }

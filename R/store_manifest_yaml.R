@@ -1,7 +1,7 @@
-#' Store a docker configuration
+#' Store a Docker configuration
 #' @inheritParams store_manifest
 #' @param docker the docker image to use
-#' @param dependencies extra github package to install
+#' @param dependencies extra GitHub packages to install
 #' @name store_manifest_yaml
 #' @rdname store_manifest_yaml
 #' @exportMethod store_manifest_yaml

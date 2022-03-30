@@ -1,5 +1,5 @@
-#' Get the seed of a n2kModel object
-#' @param x the n2kModel object
+#' Get the seed of an `n2kModel` object
+#' @param x the `n2kModel` object
 #' @return the seed of the object
 #' @name get_seed
 #' @rdname get_seed

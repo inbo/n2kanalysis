@@ -1,5 +1,5 @@
-#' Get the model of a n2kModel object
-#' @param x the n2kModel object
+#' Get the model of a `n2kModel` object
+#' @param x the `n2kModel` object
 #' @return the model of the object
 #' @name get_model
 #' @rdname get_model

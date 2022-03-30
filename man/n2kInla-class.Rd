@@ -3,9 +3,9 @@
 \docType{class}
 \name{n2kInla-class}
 \alias{n2kInla-class}
-\title{The n2kInla class}
+\title{The \code{n2kInla} class}
 \description{
-It hold analysis data based on an INLA poisson model
+It hold analysis data based on an INLA Poisson model
 }
 \section{Slots}{
 

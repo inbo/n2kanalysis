@@ -18,7 +18,7 @@ extract(extractor, object, base, project)
 \arguments{
 \item{extractor}{the extractor function}
 
-\item{object}{the n2kModel object}
+\item{object}{the \code{n2kModel} object}
 
 \item{base}{the optional base location of the object}
 

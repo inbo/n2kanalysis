@@ -15,7 +15,7 @@
 \alias{fit_model,n2kManifest-method}
 \alias{fit_model,n2kModelImputed-method}
 \alias{fit_model,s3_object-method}
-\title{Fit a n2kModel object}
+\title{Fit an \code{n2kModel} object}
 \usage{
 fit_model(x, ...)
 
@@ -61,9 +61,10 @@ fit_model(x, ...)
 \S4method{fit_model}{s3_object}(x, ...)
 }
 \arguments{
-\item{x}{the n2kModel}
+\item{x}{the \code{n2kModel}}
 
-\item{...}{other arguments. See details}
+\item{...}{other arguments.
+See details}
 
 \item{base}{The root of a project. Can be either a directory on a file system
 or an AWS S3 bucket object.
@@ -112,7 +113,7 @@ downloaded.}
 This will release the memory.}
 }
 \description{
-Fit a n2kModel object
+Fit an \code{n2kModel} object
 }
 \details{
 \itemize{

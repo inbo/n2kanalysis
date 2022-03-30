@@ -5,18 +5,18 @@
 \alias{get_scheme_id}
 \alias{get_scheme_id,n2kAnalysisMetadata-method}
 \alias{get_scheme_id,n2kAnalysisMetadata-methods}
-\title{Get the scheme_id of a n2kModel object}
+\title{Get the \code{scheme_id} of an \code{n2kModel} object}
 \usage{
 get_scheme_id(x)
 
 \S4method{get_scheme_id}{n2kAnalysisMetadata}(x)
 }
 \arguments{
-\item{x}{the n2kModel object}
+\item{x}{the \code{n2kModel} object}
 }
 \value{
-the scheme_id of the object
+the \code{scheme_id} of the object
 }
 \description{
-Get the scheme_id of a n2kModel object
+Get the \code{scheme_id} of an \code{n2kModel} object
 }

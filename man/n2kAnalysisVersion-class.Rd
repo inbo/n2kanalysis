@@ -3,7 +3,7 @@
 \docType{class}
 \name{n2kAnalysisVersion-class}
 \alias{n2kAnalysisVersion-class}
-\title{The n2kAnalysisVersion class}
+\title{The \code{n2kAnalysisVersion} class}
 \description{
-The n2kAnalysisVersion class
+The \code{n2kAnalysisVersion} class
 }

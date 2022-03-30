@@ -1,4 +1,4 @@
-#' Create a n2kModelImputed object
+#' Create an `n2kModelImputed` object
 #' @inheritParams n2k_inla
 #' @template analysis_metadata
 #' @details
@@ -30,7 +30,7 @@ setGeneric(
   }
 )
 
-#' @description A new n2kModelImputed model.
+#' @description A new `n2kModelImputed` model.
 #' @rdname n2k_model_imputed
 #' @aliases n2k_model_imputed,n2kModelImputed-methods
 #' @importFrom methods setMethod new

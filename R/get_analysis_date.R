@@ -1,5 +1,5 @@
-#' Get the analysis date of a n2kModel object
-#' @param x the n2kModel object
+#' Get the analysis date of an `n2kModel` object
+#' @param x the `n2kModel` object
 #' @return the analysis date of the object
 #' @name get_analysis_date
 #' @rdname get_analysis_date

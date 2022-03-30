@@ -6,7 +6,7 @@
 \alias{n2k_inla,data.frame,ANY-method}
 \alias{n2k_inla,n2kInla-methods}
 \alias{n2k_inla,n2kInla,inla-method}
-\title{Create a n2kInla object}
+\title{Create an \code{n2kInla} object}
 \usage{
 n2k_inla(data, ..., model_fit)
 
@@ -41,7 +41,7 @@ n2k_inla(data, ..., model_fit)
 \S4method{n2k_inla}{n2kInla,inla}(data, status, raw_imputed = NULL, ..., model_fit)
 }
 \arguments{
-\item{data}{a data.frame with the data to analyse}
+\item{data}{a \code{data.frame} with the data to analyse}
 
 \item{...}{other arguments. See below}
 
@@ -50,7 +50,7 @@ n2k_inla(data, ..., model_fit)
 \item{status}{A single character indicating the status of the model.
 Defaults to \code{"waiting"}.}
 
-\item{result_datasource_id}{A string identifying the datasource.}
+\item{result_datasource_id}{A string identifying the data source.}
 
 \item{scheme_id}{A single integer holding the id of the scheme.}
 
@@ -75,8 +75,8 @@ Defaults to the \code{last_imported_year - first_imported_year + 1}.}
 \item{last_analysed_year}{Most recent year in the window.
 Defaults to \code{last_imported_year}.}
 
-\item{analysis_date}{A POSIXct date indicating the date that the dataset was
-imported.}
+\item{analysis_date}{A \code{POSIXct} date indicating the date that the dataset
+was imported.}
 
 \item{lin_comb}{A model matrix to calculate linear combinations.}
 
@@ -100,12 +100,13 @@ the model.}
 
 \item{parent_status}{The status of the parent analysis.}
 
-\item{parent_statusfingerprint}{The statusfingerprint of the parent analysis.}
+\item{parent_statusfingerprint}{The status fingerprint of the parent
+analysis.}
 
-\item{raw_imputed}{the optional RawImputed object}
+\item{raw_imputed}{the optional \code{rawImputed} object}
 }
 \description{
-A new n2kInla model is created when \code{data} is a data.frame.
+A new \code{n2kInla} model is created when \code{data} is a \code{data.frame}.
 
 In case \code{data} is an \code{n2kInla} object, then only the model and
 status are updated.

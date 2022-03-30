@@ -1,4 +1,4 @@
-#' The n2kAnalysisMetadata class
+#' The `n2kAnalysisMetadata` class
 #' @name n2kAnalysisMetadata-class
 #' @rdname n2kAnalysisMetadata-class
 #' @exportClass n2kAnalysisMetadata

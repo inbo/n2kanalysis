@@ -5,7 +5,7 @@
 \alias{n2k_composite}
 \alias{n2k_composite,data.frame-method}
 \alias{n2k_composite,n2kComposite-methods}
-\title{Create a n2kComposite object}
+\title{Create an \code{n2kComposite} object}
 \usage{
 n2k_composite(parent_status, ...)
 
@@ -39,7 +39,7 @@ and \code{parent_status} (the status of the parent).}
 \item{status}{A single character indicating the status of the model.
 Defaults to \code{"waiting"}.}
 
-\item{result_datasource_id}{A string identifying the datasource.}
+\item{result_datasource_id}{A string identifying the data source.}
 
 \item{scheme_id}{A single integer holding the id of the scheme.}
 
@@ -62,8 +62,8 @@ Defaults to the \code{last_imported_year - first_imported_year + 1}.}
 \item{last_analysed_year}{Most recent year in the window.
 Defaults to \code{last_imported_year}.}
 
-\item{analysis_date}{A POSIXct date indicating the date that the dataset was
-imported.}
+\item{analysis_date}{A \code{POSIXct} date indicating the date that the dataset
+was imported.}
 
 \item{extractor}{a function to extract the relevant parameters from the model}
 

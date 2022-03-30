@@ -1,4 +1,4 @@
-#' Get the object of the parent analyses of a n2kModel object
+#' Get the object of the parent analyses of an `n2kModel` object
 #' @param child the child object
 #' @inheritParams read_model
 #' @importFrom assertthat assert_that

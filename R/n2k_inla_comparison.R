@@ -1,4 +1,4 @@
-#' Create a n2kInlaComparison object
+#' Create an `n2kInlaComparison` object
 #' @param parent_status A `data.frame` with columns
 #' `parent_analysis` (the file fingerprint of the parent),
 #' `parentstatus_fingerprint` (the status fingerprint of the parent),
@@ -30,7 +30,7 @@ setGeneric(
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
 #' @include n2k_inla_comparison_class.R
-#' @param result_datasource_id A string identifying the datasource.
+#' @param result_datasource_id A string identifying the data source.
 #' @param status A single character indicating the status of the model.
 #' Defaults to `"waiting"`.
 #' @param scheme_id A single integer holding the id of the scheme.
@@ -45,8 +45,8 @@ setGeneric(
 #' Defaults to the `last_imported_year - first_imported_year + 1`.
 #' @param last_analysed_year Most recent year in the window.
 #' Defaults to `last_imported_year`.
-#' @param analysis_date A POSIXct date indicating the date that the dataset was
-#' imported.
+#' @param analysis_date A `POSIXct` date indicating the date that the dataset
+#' was imported.
 #' @param seed A single integer used as a seed for all calculations.
 #' A random seed will be inserted when missing.
 setMethod(

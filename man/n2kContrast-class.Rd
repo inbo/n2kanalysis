@@ -3,7 +3,7 @@
 \docType{class}
 \name{n2kContrast-class}
 \alias{n2kContrast-class}
-\title{The n2kContrast class}
+\title{The \code{n2kContrast} class}
 \description{
-The n2kContrast class
+The \code{n2kContrast} class
 }

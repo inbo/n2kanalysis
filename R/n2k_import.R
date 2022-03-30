@@ -1,4 +1,4 @@
-#' Create a n2kImport object
+#' Create an `n2kImport` object
 #' @inheritParams n2k_inla
 #' @template analysis_metadata
 #' @details
@@ -18,7 +18,7 @@ setGeneric(
   }
 )
 
-#' @description A new n2kImport model.
+#' @description A new `n2kImport` model.
 #' @rdname n2k_import
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.count is.string is.time

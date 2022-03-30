@@ -3,7 +3,7 @@
 \docType{class}
 \name{n2kModelImputed-class}
 \alias{n2kModelImputed-class}
-\title{The n2kModelImputed class}
+\title{The \code{n2kModelImputed} class}
 \description{
 It holds the model of aggregated imputed data
 }

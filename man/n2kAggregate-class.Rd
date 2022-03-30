@@ -3,7 +3,7 @@
 \docType{class}
 \name{n2kAggregate-class}
 \alias{n2kAggregate-class}
-\title{The n2kAggregate class}
+\title{The \code{n2kAggregate} class}
 \description{
 It holds analysis data based on an aggregated imputation
 }

@@ -1,4 +1,4 @@
-#' The n2kParameter class
+#' The `n2kParameter` class
 #' @name n2kParameter-class
 #' @rdname n2kParameter-class
 #' @exportClass n2kParameter

@@ -1,5 +1,5 @@
-#' Delete a n2kModel object
-#' @param x the file fingerprint of the n2kModel
+#' Delete an `n2kModel` object
+#' @param x the file fingerprint of the `n2kModel`
 #' @param base the base location
 #' @param project will be a relative path within the base location
 #' @name delete_model

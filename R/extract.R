@@ -1,6 +1,6 @@
 #' Extract the relevant coefficients
 #' @param extractor the extractor function
-#' @param object the n2kModel object
+#' @param object the `n2kModel` object
 #' @param base the optional base location of the object
 #' @param project the optional subdirectory
 #' @return the relevant coefficients

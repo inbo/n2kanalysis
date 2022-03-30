@@ -1,4 +1,4 @@
-#' Create a n2kComposite object
+#' Create an `n2kComposite` object
 #' @name n2k_composite
 #' @rdname n2k_composite
 #' @exportMethod n2k_composite

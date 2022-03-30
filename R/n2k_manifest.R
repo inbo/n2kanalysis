@@ -1,5 +1,5 @@
-#' Create a n2kManifest object
-#' @param manifest a data.frame with the manifest content
+#' Create an `n2kManifest` object
+#' @param manifest a `data.frame` with the manifest content
 #' @name n2k_manifest
 #' @rdname n2k_manifest
 #' @exportMethod n2k_manifest
@@ -14,7 +14,7 @@ setGeneric(
   }
 )
 
-#' @description A new n2kManifest object is created when `manifest` is a
+#' @description A new `n2kManifest` object is created when `manifest` is a
 #' `data.frame`.
 #' @rdname n2k_manifest
 #' @aliases n2k_manifest,n2kManifest-methods

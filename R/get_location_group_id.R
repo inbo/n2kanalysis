@@ -1,5 +1,5 @@
-#' Get the location group id of a n2kModel object
-#' @param x the n2kModel object
+#' Get the location group id of an `n2kModel` object
+#' @param x the `n2kModel` object
 #' @return the location group id of the object
 #' @name get_location_group_id
 #' @rdname get_location_group_id

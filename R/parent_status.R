@@ -1,5 +1,5 @@
-#' Get the parent status of a n2kModel
-#' @param x the n2kModel object
+#' Get the parent status of an `n2kModel`
+#' @param x the `n2kModel` object
 #' @return the parent status of the object
 #' @name parent_status
 #' @rdname parent_status
@@ -25,8 +25,8 @@ setMethod(
   }
 )
 
-#' Overwrite the status of a n2kAnalysisMetadata
-#' @param x the n2kAnalysisMetadata object
+#' Overwrite the status of an `n2kAnalysisMetadata`
+#' @param x the `n2kAnalysisMetadata` object
 #' @param value the new values for the status
 #' @name parent_status<-
 #' @rdname parent.status.change

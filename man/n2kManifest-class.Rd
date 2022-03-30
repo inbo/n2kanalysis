@@ -3,7 +3,7 @@
 \docType{class}
 \name{n2kManifest-class}
 \alias{n2kManifest-class}
-\title{The n2kManifest class}
+\title{The \code{n2kManifest} class}
 \description{
-The n2kManifest class
+The \code{n2kManifest} class
 }

@@ -3,7 +3,7 @@
 \docType{class}
 \name{n2kComposite-class}
 \alias{n2kComposite-class}
-\title{The n2kComposite class}
+\title{The \code{n2kComposite} class}
 \description{
 Calculate composite indices from multiple analysis
 }

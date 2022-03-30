@@ -1,4 +1,4 @@
-#' Create a n2kAggregate object
+#' Create an `n2kAggregate` object
 #' @inheritParams n2k_inla
 #' @template analysis_metadata
 #' @details
@@ -21,7 +21,7 @@ setGeneric(
   }
 )
 
-#' @description A new n2kAggregate model.
+#' @description A new `n2kAggregate` model.
 #' @rdname n2k_aggregate
 #' @aliases n2k_aggregate,n2kAggregate-methods
 #' @importFrom methods setMethod new

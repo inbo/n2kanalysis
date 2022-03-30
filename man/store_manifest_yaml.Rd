@@ -5,7 +5,7 @@
 \alias{store_manifest_yaml}
 \alias{store_manifest_yaml,ANY,s3_bucket-method}
 \alias{store_manifest_yaml,ANY,character-method}
-\title{Store a docker configuration}
+\title{Store a Docker configuration}
 \usage{
 store_manifest_yaml(x, base, project, docker, dependencies)
 
@@ -14,7 +14,7 @@ store_manifest_yaml(x, base, project, docker, dependencies)
 \S4method{store_manifest_yaml}{ANY,character}(x, base, project, docker, dependencies)
 }
 \arguments{
-\item{x}{the n2kManifest}
+\item{x}{the \code{n2kManifest}}
 
 \item{base}{the base location to store the manifest}
 
@@ -22,8 +22,8 @@ store_manifest_yaml(x, base, project, docker, dependencies)
 
 \item{docker}{the docker image to use}
 
-\item{dependencies}{extra github package to install}
+\item{dependencies}{extra GitHub packages to install}
 }
 \description{
-Store a docker configuration
+Store a Docker configuration
 }

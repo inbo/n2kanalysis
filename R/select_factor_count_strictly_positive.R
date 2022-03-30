@@ -1,13 +1,13 @@
-#' Select data based on the number of prescences per category
+#' Select data based on the number of presences per category
 #'
-#' Prescences have \eqn{Count > 0}.
+#' Presences have `Count > 0`.
 #' @inheritParams select_factor_threshold
-#' @param dimension Indicates which element of \code{variable} is used for the
+#' @param dimension Indicates which element of `variable` is used for the
 #' final aggregation.
-#' @param relative When FALSE the threshold is the number of non-zero
+#' @param relative When `FALSE` the threshold is the number of non-zero
 #' observations.
-#' When TRUE the threshold is the proportion of non-zero observations.
-#' Defaults to FALSE.
+#' When `TRUE` the threshold is the proportion of non-zero observations.
+#' Defaults to `FALSE`.
 #' @export
 #' @importFrom n2khelper check_character
 #' @importFrom assertthat assert_that is.count is.flag is.number has_name noNA

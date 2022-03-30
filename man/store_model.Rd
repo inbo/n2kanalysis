@@ -5,7 +5,7 @@
 \alias{store_model}
 \alias{store_model,ANY,character-method}
 \alias{store_model,ANY,s3_bucket-method}
-\title{Store a n2kModel object}
+\title{Store an \code{n2kModel} object}
 \usage{
 store_model(x, base, project, overwrite = TRUE, validate = TRUE)
 
@@ -14,18 +14,18 @@ store_model(x, base, project, overwrite = TRUE, validate = TRUE)
 \S4method{store_model}{ANY,s3_bucket}(x, base, project, overwrite = TRUE, validate = TRUE)
 }
 \arguments{
-\item{x}{The n2kModel.}
+\item{x}{The \code{n2kModel}.}
 
 \item{base}{The base location to store the model.}
 
 \item{project}{Will be a relative path within the base location.}
 
 \item{overwrite}{Should an existing object be overwritten?
-Defaults to TRUE.}
+Defaults to \code{TRUE}.}
 
 \item{validate}{Check that the object is valid before storing it.
-Defaults to TRUE.}
+Defaults to \code{TRUE}.}
 }
 \description{
-Store a n2kModel object
+Store an \code{n2kModel} object
 }

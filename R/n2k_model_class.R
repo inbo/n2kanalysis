@@ -1,4 +1,4 @@
-#' The n2kModel class
+#' The `n2kModel` class
 #'
 #' A virtual superclass to contain the analysis models
 #' @name n2kModel-class

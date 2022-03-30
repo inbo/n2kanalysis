@@ -1,5 +1,5 @@
-#' Get the status of a n2kModel
-#' @param x the n2kModel object
+#' Get the status of an `n2kModel`
+#' @param x the `n2kModel` object
 #' @return the status of the object
 #' @name status
 #' @rdname status
@@ -71,8 +71,8 @@ setMethod(
   }
 )
 
-#' Overwrite the status of a n2kAnalysisMetadata
-#' @param x the n2kAnalysisMetadata object
+#' Overwrite the status of an `n2kAnalysisMetadata`
+#' @param x the `n2kAnalysisMetadata` object
 #' @param value the new values for the status
 #' @name status<-
 #' @rdname status.change

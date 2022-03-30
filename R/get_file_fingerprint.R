@@ -1,5 +1,5 @@
-#' Get the file fingerprint of a n2kModel object
-#' @param x the n2kModel object
+#' Get the file fingerprint of an `n2kModel` object
+#' @param x the `n2kModel` object
 #' @return the file fingerprint of the object
 #' @name get_file_fingerprint
 #' @rdname get_file_fingerprint

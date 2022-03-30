@@ -1,5 +1,5 @@
-#' Get the status fingerprint of a n2kModel object
-#' @param x the n2kModel object
+#' Get the status fingerprint of an `n2kModel` object
+#' @param x the `n2kModel` object
 #' @return the status fingerprint of the object
 #' @name get_status_fingerprint
 #' @rdname get_status_fingerprint

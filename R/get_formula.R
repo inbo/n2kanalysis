@@ -1,5 +1,5 @@
-#' Get the formula of a n2kModel object
-#' @param x the n2kModel object
+#' Get the formula of an `n2kModel` object
+#' @param x the `n2kModel` object
 #' @return the formula of the object
 #' @name get_formula
 #' @rdname get_formula

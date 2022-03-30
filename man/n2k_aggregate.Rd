@@ -5,7 +5,7 @@
 \alias{n2k_aggregate}
 \alias{n2k_aggregate,ANY-method}
 \alias{n2k_aggregate,n2kAggregate-methods}
-\title{Create a n2kAggregate object}
+\title{Create an \code{n2kAggregate} object}
 \usage{
 n2k_aggregate(...)
 
@@ -15,21 +15,21 @@ n2k_aggregate(...)
 \item{...}{other arguments. See below}
 }
 \description{
-A new n2kAggregate model.
+A new \code{n2kAggregate} model.
 }
 \details{
 \itemize{
-\item \code{scheme.id}: a string holding the id of the scheme.
-\item \code{species.group.id}: a string identifing the species group.
-\item \code{location.group.id}: a string identifing the location group.
-\item \code{model.type}: a string identifying the type of model to fit to the data.
-\item \code{first.imported.year}: Oldest year considered in the data.
-\item \code{last.imported.year}: Most recent year considered in the data.
+\item \code{scheme_id}: a string holding the id of the scheme.
+\item \code{species_group_id}: a string identifying the species group.
+\item \code{location_group_id}: a string identifying the location group.
+\item \code{model_type}: a string identifying the type of model to fit to the data.
+\item \code{first_imported_year}: Oldest year considered in the data.
+\item \code{last_imported_year}: Most recent year considered in the data.
 \item \code{duration}: The width of the moving window.
-Defaults to the \code{last.imported.year - first.imported.year + 1}.
-\item \code{last.analysed.year}: Most recent year in the window.
-Defaults to \code{last.imported.year}.
-\item \code{analysis.date}: A POSIXct date indicating the date that the dataset was
+Defaults to the \code{last_imported_year - first_imported_year + 1}.
+\item \code{last_analysed_year}: Most recent year in the window.
+Defaults to \code{last_imported_year}.
+\item \code{analysis_date}: A \code{POSIXct} date indicating the date that the dataset was
 imported.
 \item \code{seed}: A single integer used as a seed for all calculations.
 A random seed will be inserted when missing.

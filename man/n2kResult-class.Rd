@@ -3,7 +3,7 @@
 \docType{class}
 \name{n2kResult-class}
 \alias{n2kResult-class}
-\title{The n2kResult class}
+\title{The \code{n2kResult} class}
 \description{
-The n2kResult class
+The \code{n2kResult} class
 }

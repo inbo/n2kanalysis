@@ -5,18 +5,18 @@
 \alias{get_seed}
 \alias{get_seed,n2kAnalysisMetadata-method}
 \alias{get_seed,n2kAnalysisMetadata-methods}
-\title{Get the seed of a n2kModel object}
+\title{Get the seed of an \code{n2kModel} object}
 \usage{
 get_seed(x)
 
 \S4method{get_seed}{n2kAnalysisMetadata}(x)
 }
 \arguments{
-\item{x}{the n2kModel object}
+\item{x}{the \code{n2kModel} object}
 }
 \value{
 the seed of the object
 }
 \description{
-Get the seed of a n2kModel object
+Get the seed of an \code{n2kModel} object
 }

@@ -5,16 +5,16 @@
 \alias{n2k_manifest}
 \alias{n2k_manifest,data.frame-method}
 \alias{n2k_manifest,n2kManifest-methods}
-\title{Create a n2kManifest object}
+\title{Create an \code{n2kManifest} object}
 \usage{
 n2k_manifest(manifest)
 
 \S4method{n2k_manifest}{data.frame}(manifest)
 }
 \arguments{
-\item{manifest}{a data.frame with the manifest content}
+\item{manifest}{a \code{data.frame} with the manifest content}
 }
 \description{
-A new n2kManifest object is created when \code{manifest} is a
+A new \code{n2kManifest} object is created when \code{manifest} is a
 \code{data.frame}.
 }

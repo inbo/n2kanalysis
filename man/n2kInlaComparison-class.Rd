@@ -3,7 +3,7 @@
 \docType{class}
 \name{n2kInlaComparison-class}
 \alias{n2kInlaComparison-class}
-\title{The n2kInlaComparison class}
+\title{The \code{n2kInlaComparison} class}
 \description{
 Compare multiple models using the WAIC criterion
 }

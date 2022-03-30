@@ -3,7 +3,7 @@
 \docType{class}
 \name{n2kAnalysisMetadata-class}
 \alias{n2kAnalysisMetadata-class}
-\title{The n2kAnalysisMetadata class}
+\title{The \code{n2kAnalysisMetadata} class}
 \description{
-The n2kAnalysisMetadata class
+The \code{n2kAnalysisMetadata} class
 }

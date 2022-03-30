@@ -1,4 +1,4 @@
-#' The n2kAnalysisVersion class
+#' The `n2kAnalysisVersion` class
 #' @name n2kAnalysisVersion-class
 #' @rdname n2kAnalysisVersion-class
 #' @exportClass n2kAnalysisVersion

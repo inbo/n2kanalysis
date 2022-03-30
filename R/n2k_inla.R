@@ -1,5 +1,5 @@
-#' Create a n2kInla object
-#' @param data a data.frame with the data to analyse
+#' Create an `n2kInla` object
+#' @param data a `data.frame` with the data to analyse
 #' @param model_fit The fitted model
 #' @param ... other arguments. See below
 #' @name n2k_inla
@@ -16,7 +16,7 @@ setGeneric(
   }
 )
 
-#' @description A new n2kInla model is created when \code{data} is a data.frame.
+#' @description A new `n2kInla` model is created when `data` is a `data.frame`.
 #' @rdname n2k_inla
 #' @aliases n2k_inla,n2kInla-methods
 #' @importFrom methods setMethod new
@@ -39,7 +39,8 @@ setGeneric(
 #' Only relevant in case of multiple imputation.
 #' @param parent The file fingerprint of the optional parent analysis.
 #' @param parent_status The status of the parent analysis.
-#' @param parent_statusfingerprint The statusfingerprint of the parent analysis.
+#' @param parent_statusfingerprint The status fingerprint of the parent
+#' analysis.
 setMethod(
   f = "n2k_inla",
   signature = signature(data = "data.frame"),
@@ -212,7 +213,7 @@ setMethod(
 #' @importFrom digest sha1
 #' @importFrom utils sessionInfo
 #' @include n2k_inla_class.R
-#' @param raw_imputed the optional RawImputed object
+#' @param raw_imputed the optional `rawImputed` object
 setMethod(
   f = "n2k_inla",
   signature = signature(data = "n2kInla", model_fit = "inla"),

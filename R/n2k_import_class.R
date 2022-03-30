@@ -1,4 +1,4 @@
-#' The n2kImport class
+#' The `n2kImport` class
 #'
 #' It hold the imported datasets
 #' @section Slots:

@@ -3,9 +3,9 @@
 setClassUnion("maybeMatrix", c("matrix", "list", "NULL"))
 setClassUnion("maybeRawImputed", c("rawImputed", "aggregatedImputed", "NULL"))
 
-#' The n2kInla class
+#' The `n2kInla` class
 #'
-#' It hold analysis data based on an INLA poisson model
+#' It hold analysis data based on an INLA Poisson model
 #' @section Slots:
 #'   \describe{
 #'    \item{\code{Data}}{A \code{data.frame} with the data.}

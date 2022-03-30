@@ -1,6 +1,6 @@
-#' Get the scheme_id of a n2kModel object
-#' @param x the n2kModel object
-#' @return the scheme_id of the object
+#' Get the `scheme_id` of an `n2kModel` object
+#' @param x the `n2kModel` object
+#' @return the `scheme_id` of the object
 #' @name get_scheme_id
 #' @rdname get_scheme_id
 #' @exportMethod get_scheme_id

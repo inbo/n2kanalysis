@@ -3,7 +3,7 @@
 \docType{class}
 \name{n2kParameter-class}
 \alias{n2kParameter-class}
-\title{The n2kParameter class}
+\title{The \code{n2kParameter} class}
 \description{
-The n2kParameter class
+The \code{n2kParameter} class
 }

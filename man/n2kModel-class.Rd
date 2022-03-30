@@ -3,7 +3,7 @@
 \docType{class}
 \name{n2kModel-class}
 \alias{n2kModel-class}
-\title{The n2kModel class}
+\title{The \code{n2kModel} class}
 \description{
 A virtual superclass to contain the analysis models
 }

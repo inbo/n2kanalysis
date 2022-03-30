@@ -1,5 +1,5 @@
-#' Store a n2kManifest object
-#' @param x the n2kManifest
+#' Store an `n2kManifest` object
+#' @param x the `n2kManifest`
 #' @param base the base location to store the manifest
 #' @param project will be a relative path within the base location
 #' @name store_manifest

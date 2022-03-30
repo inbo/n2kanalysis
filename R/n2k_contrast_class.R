@@ -1,4 +1,4 @@
-#' The n2kContrast class
+#' The `n2kContrast` class
 #' @name n2kContrast-class
 #' @rdname n2kContrast-class
 #' @exportClass n2kContrast

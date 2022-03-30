@@ -1,7 +1,7 @@
 #' @importFrom methods setClassUnion
 setClassUnion("maybeDataFrame", c("data.frame", "NULL"))
 
-#' The n2kInlaComparison class
+#' The `n2kInlaComparison` class
 #'
 #' Compare multiple models using the WAIC criterion
 #' @section Slots:

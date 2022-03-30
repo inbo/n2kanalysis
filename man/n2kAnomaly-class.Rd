@@ -3,7 +3,7 @@
 \docType{class}
 \name{n2kAnomaly-class}
 \alias{n2kAnomaly-class}
-\title{The n2kAnomaly class}
+\title{The \code{n2kAnomaly} class}
 \description{
-The n2kAnomaly class
+The \code{n2kAnomaly} class
 }

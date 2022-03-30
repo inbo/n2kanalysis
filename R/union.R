@@ -1,5 +1,5 @@
-#' Make a union of AnalysisVersions
-#' @param ... the n2kAnalysisVersions to union
+#' Make a union of `AnalysisVersions`
+#' @param ... the `n2kAnalysisVersions` to union
 #' @importFrom digest sha1
 #' @export
 union <- function(...) {

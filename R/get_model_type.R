@@ -1,5 +1,5 @@
-#' Get the model type of a n2kModel object
-#' @param x the n2kModel object
+#' Get the model type of an `n2kModel` object
+#' @param x the `n2kModel` object
 #' @return the model type of the object
 #' @name get_model_type
 #' @rdname get_model_type

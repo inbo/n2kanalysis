@@ -1,4 +1,4 @@
-#' The n2kComposite class
+#' The `n2kComposite` class
 #'
 #' Calculate composite indices from multiple analysis
 #' @section Slots:

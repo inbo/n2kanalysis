@@ -1,6 +1,6 @@
-#' Convert a sessionInfo() to a data.frame of packages
-#' @param session The output of sessionInfo()
-#' @return a data.frame with the packages of a sessionInfo()
+#' Convert a `sessionInfo()` to a data.frame of packages
+#' @param session The output of `sessionInfo()`
+#' @return a data.frame with the packages of a `sessionInfo()`
 #' @name session_package
 #' @rdname session_package
 #' @exportMethod session_package

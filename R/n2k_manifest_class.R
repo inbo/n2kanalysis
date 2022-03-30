@@ -1,4 +1,4 @@
-#' The n2kManifest class
+#' The `n2kManifest` class
 #' @name n2kManifest-class
 #' @rdname n2kManifest-class
 #' @exportClass n2kManifest

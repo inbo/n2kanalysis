@@ -2,7 +2,7 @@
 % Please edit documentation in R/select_factor_count_strictly_positive.R
 \name{select_factor_count_strictly_positive}
 \alias{select_factor_count_strictly_positive}
-\title{Select data based on the number of prescences per category}
+\title{Select data based on the number of presences per category}
 \usage{
 select_factor_count_strictly_positive(
   observation,
@@ -19,16 +19,16 @@ select_factor_count_strictly_positive(
 
 \item{threshold}{the minimal threshold}
 
-\item{relative}{When FALSE the threshold is the number of non-zero
+\item{relative}{When \code{FALSE} the threshold is the number of non-zero
 observations.
-When TRUE the threshold is the proportion of non-zero observations.
-Defaults to FALSE.}
+When \code{TRUE} the threshold is the proportion of non-zero observations.
+Defaults to \code{FALSE}.}
 
 \item{dimension}{Indicates which element of \code{variable} is used for the
 final aggregation.}
 }
 \description{
-Prescences have \eqn{Count > 0}.
+Presences have \code{Count > 0}.
 }
 \examples{
 observation <- data.frame(

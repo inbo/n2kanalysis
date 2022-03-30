@@ -1,4 +1,4 @@
-#' The n2kModelImputed class
+#' The `n2kModelImputed` class
 #'
 #' It holds the model of aggregated imputed data
 #' @section Slots:

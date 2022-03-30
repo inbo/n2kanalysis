@@ -5,18 +5,18 @@
 \alias{get_analysis_date}
 \alias{get_analysis_date,n2kAnalysisMetadata-method}
 \alias{get_analysis_date,n2kModel-methods}
-\title{Get the analysis date of a n2kModel object}
+\title{Get the analysis date of an \code{n2kModel} object}
 \usage{
 get_analysis_date(x)
 
 \S4method{get_analysis_date}{n2kAnalysisMetadata}(x)
 }
 \arguments{
-\item{x}{the n2kModel object}
+\item{x}{the \code{n2kModel} object}
 }
 \value{
 the analysis date of the object
 }
 \description{
-Get the analysis date of a n2kModel object
+Get the analysis date of an \code{n2kModel} object
 }

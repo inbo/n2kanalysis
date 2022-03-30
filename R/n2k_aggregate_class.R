@@ -3,7 +3,7 @@
 #' @include n2k_inla_class.R
 setClassUnion("maybeAggregatedImputed", c("aggregatedImputed", "NULL"))
 
-#' The n2kAggregate class
+#' The `n2kAggregate` class
 #'
 #' It holds analysis data based on an aggregated imputation
 #' @section Slots:

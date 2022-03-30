@@ -1,4 +1,4 @@
-#' The n2kResult class
+#' The `n2kResult` class
 #' @name n2kResult-class
 #' @rdname n2kResult-class
 #' @exportClass n2kResult

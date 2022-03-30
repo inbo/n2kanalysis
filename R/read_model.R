@@ -1,5 +1,5 @@
-#' Read a n2kModel object
-#' @param x the file fingerprint of the n2kModel
+#' Read an `n2kModel` object
+#' @param x the file fingerprint of the `n2kModel`
 #' @param base the base location to read the model
 #' @param project will be a relative path within the base location
 #' @name read_model

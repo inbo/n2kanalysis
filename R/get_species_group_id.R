@@ -1,5 +1,5 @@
-#' Get the species group id of a n2kModel object
-#' @param x the n2kModel object
+#' Get the species group id of an `n2kModel` object
+#' @param x the `n2kModel` object
 #' @return the species group id of the object
 #' @name get_species_group_id
 #' @rdname get_species_group_id

@@ -1,5 +1,5 @@
-#' Get the data of a n2kModel object
-#' @param x the n2kModel object
+#' Get the data of an `n2kModel` object
+#' @param x the `n2kModel` object
 #' @return the data of the object
 #' @name get_data
 #' @rdname get_data

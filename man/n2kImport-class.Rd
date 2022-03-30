@@ -3,7 +3,7 @@
 \docType{class}
 \name{n2kImport-class}
 \alias{n2kImport-class}
-\title{The n2kImport class}
+\title{The \code{n2kImport} class}
 \description{
 It hold the imported datasets
 }

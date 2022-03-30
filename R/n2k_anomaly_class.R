@@ -1,4 +1,4 @@
-#' The n2kAnomaly class
+#' The `n2kAnomaly` class
 #' @name n2kAnomaly-class
 #' @rdname n2kAnomaly-class
 #' @exportClass n2kAnomaly
