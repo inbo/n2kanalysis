@@ -119,13 +119,17 @@ test_that("fit_model() on INLA based objects", {
   filename <- store_model(analysis, base = temp_dir, project = "fit_model")
   expect_identical(status(filename)$status, "new")
   suppressWarnings(suppressMessages(fit_model(filename)))
-  filename <- gsub("new", "converged", filename)
+  filename <- list.files(
+    temp_dir, pattern = basename(filename), recursive = TRUE, full.names = TRUE
+  )
   expect_identical(status(filename)$status, "converged")
   analysis <- object_lc
   filename <- store_model(analysis, base = temp_dir, project = "fit_model")
   expect_identical(status(filename)$status, "new")
   suppressWarnings(suppressMessages(fit_model(filename)))
-  filename <- gsub("new", "converged", filename)
+  filename <- list.files(
+    temp_dir, pattern = basename(filename), recursive = TRUE, full.names = TRUE
+  )
   expect_identical(status(filename)$status, "converged")
 
   # doesn't refit converged models with the default status
