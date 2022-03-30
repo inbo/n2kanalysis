@@ -18,6 +18,7 @@ test_that("read_model() handles exceptions on characters", {
 })
 
 test_that("read_model() works with S3 buckets", {
+  skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
   base <- get_bucket("n2kmonitoring", max = 1)
   project <- "unittest_read_model"
   s3saveRDS(

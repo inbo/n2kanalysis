@@ -43,6 +43,7 @@ test_that("read_manifest reads the manifest on a local file system", {
 })
 
 test_that("read_manifest reads the manifest on an S3 bucket", {
+  skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
   bucket <- get_bucket("n2kmonitoring")
   project <- "unittest_read_manifest"
   object <- n2k_manifest(
