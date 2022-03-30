@@ -57,7 +57,7 @@ test_that("n2k_inla() adds the data as a data.frame", {
   expect_equal(
     model_object$summary.random,
     model_truth$summary.random,
-    tolerance = 1e-3
+    tolerance = 1e-2
   )
 })
 test_that("n2k_inla(), uses 'new' as default status", {
@@ -637,7 +637,7 @@ test_that("n2k_inla() keeps the objects", {
   expect_equal(
     object_model@Model$summary.random,
     model_truth$summary.random,
-    tolerance = 1e-3
+    tolerance = 1e-2
   )
   expect_that(
     object_model@Model,
