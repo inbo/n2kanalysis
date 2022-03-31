@@ -52,7 +52,7 @@ test_that("n2k_inla() adds the data as a data.frame", {
   expect_equal(
     model_object$summary.fixed,
     model_truth$summary.fixed,
-    tolerance = 1e-5
+    tolerance = 1e-3
   )
   expect_equal(
     model_object$summary.random,
@@ -632,7 +632,7 @@ test_that("n2k_inla() keeps the objects", {
   expect_equal(
     object_model@Model$summary.fixed,
     model_truth$summary.fixed,
-    tolerance = 1e-5
+    tolerance = 1e-3
   )
   expect_equal(
     object_model@Model$summary.random,
