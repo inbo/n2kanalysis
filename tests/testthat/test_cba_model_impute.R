@@ -11,7 +11,8 @@ test_that("model imputation works", {
   this_last_analysed_year <- 2014L
   this_duration <- 1L
   dataset <- test_data(missing = 0.2)
-  base <- tempdir()
+  base <- tempfile("imputation")
+  dir.create(base)
   project <- "imputation"
 
   imputation <- n2k_inla(

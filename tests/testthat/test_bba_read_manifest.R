@@ -1,5 +1,6 @@
 test_that("read_manifest reads the manifest on a local file system", {
-  temp_dir <- tempdir()
+  temp_dir <- tempfile("read_manifest")
+  dir.create(temp_dir)
   object <- n2k_manifest(
     data.frame(
       fingerprint = "1", parent = NA_character_, stringsAsFactors = FALSE

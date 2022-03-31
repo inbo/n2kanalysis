@@ -36,7 +36,10 @@ test_that("n2kanalysis objects", {
   t2@x <- 1:20
   expect_error(validObject(t2))
 
-  temp_dir <- normalizePath(tempdir(), winslash = "/", mustWork = FALSE)
+  temp_dir <- normalizePath(
+    tempfile("n2kanalysis"), winslash = "/", mustWork = FALSE
+  )
+  dir.create(temp_dir)
   dir.create(paste(temp_dir, "sub", sep = "/"))
   good_file <- paste(temp_dir, "good.rda", sep = "/")
   bad_file <- paste(temp_dir, "sub", "bad.rda", sep = "/")

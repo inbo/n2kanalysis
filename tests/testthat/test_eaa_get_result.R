@@ -4,7 +4,8 @@ test_that("get_result on n2kInla", {
     "'x' is neither an existing file, neither an existing directory"
   )
 
-  temp_dir <- tempdir()
+  temp_dir <- tempfile("get_result_n2kInla")
+  dir.create(temp_dir)
   this_result_datasource_id <- sha1(sample(letters))
   this_scheme_id <- sha1(sample(letters))
   this_species_group_id <- sha1(sample(letters))

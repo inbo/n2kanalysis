@@ -1,5 +1,6 @@
 test_that("store_model stores the model on a local file system", {
-  base <- tempdir()
+  base <- tempfile("store_model")
+  dir.create(base)
   project <- "store_model"
   this_result_datasource_id <- sha1(sample(letters))
   this_scheme_id <- sha1(sample(letters))

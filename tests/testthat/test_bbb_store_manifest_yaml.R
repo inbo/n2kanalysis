@@ -48,7 +48,8 @@ test_that("store_manifest_yaml stores the manifest on an S3 bucket", {
 })
 
 test_that("store_manifest_yaml stores the manifest on a file system", {
-  base <- tempdir()
+  base <- tempfile("store_manifest_yaml")
+  dir.create(base)
   object <- n2k_manifest(
     data.frame(
       fingerprint = "1", parent = NA_character_, stringsAsFactors = FALSE

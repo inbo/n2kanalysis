@@ -24,7 +24,8 @@ test_that("it handles a manifest", {
   )
 
   # works with local file
-  base <- tempdir()
+  base <- tempfile("fit_model_manifest")
+  dir.create(base)
   store_model(object, base = base, project = project)
   store_model(object2, base = base, project = project)
   store_model(object3, base = base, project = project)

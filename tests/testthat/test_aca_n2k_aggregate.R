@@ -36,7 +36,8 @@ test_that("prepare a n2kAggregate object", {
     ),
     "n2kAggregate"
   )
-  base <- tempdir()
+  base <- tempfile("n2kaggregate")
+  dir.create(base)
   project <- "n2kaggregate"
   expect_is(store_model(object, base = base, project = project), "character")
   expect_is(

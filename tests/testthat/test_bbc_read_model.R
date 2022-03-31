@@ -1,5 +1,6 @@
 test_that("read_model() handles exceptions on characters", {
-  base <- tempdir()
+  base <- tempfile("read_model")
+  dir.create(base)
   project <- "read_model"
   dir.create(file.path(base, project, "test"), recursive = TRUE)
   writeLines("junk", file.path(base, project, "test", "test1.rds"))
