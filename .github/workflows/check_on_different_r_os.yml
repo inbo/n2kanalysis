@@ -72,6 +72,12 @@ jobs:
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
 
+      - name: Reinstall n2khelper
+        if: runner.os == 'Linux'
+        run: |
+          install.packages(c("git2r", "n2khelper"))
+        shell: Rscript {0}
+
       - name: Session info
         run: |
           options(width = 100)
