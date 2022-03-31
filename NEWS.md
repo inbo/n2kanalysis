@@ -8,5 +8,6 @@
 
 ## Other changes
 
-* Suggest `INLA` instead of importing it to make `n2kanalysis` build on [R-universe](https://inbo.r-universe.dev).
+* Suggest `INLA` instead of importing it to make `n2kanalysis` build on
+  [R-universe](https://inbo.r-universe.dev).
 * Added a `NEWS.md` file to track changes to the package.

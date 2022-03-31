@@ -75,7 +75,8 @@ jobs:
       - name: Reinstall n2khelper
         if: runner.os == 'Linux'
         run: |
-          install.packages(c("git2r", "n2khelper"))
+          install.packages("git2r", repos = "https://cloud.r-project.org/")
+          install.packages("n2khelper", repos = "https://inbo.r-universe.dev")
         shell: Rscript {0}
 
       - name: Session info

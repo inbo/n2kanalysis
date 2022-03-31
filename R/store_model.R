@@ -52,7 +52,8 @@ setMethod(
       list.files(
         pattern = sprintf("%s.rds$", fingerprint),
         full.names = TRUE, recursive = TRUE
-      )
+      ) %>%
+      normalizePath(winslash = "/", mustWork = FALSE)
     filename <- file.path(dir, sprintf("%s.rds", fingerprint)) %>%
       normalizePath(winslash = "/", mustWork = FALSE)
 

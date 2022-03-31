@@ -71,7 +71,7 @@ test_that("fit_model() on INLA based objects", {
     last_imported_year = this_last_imported_year,
     analysis_date = this_analysis_date, imputation.size = 10, data = dataset
   )
-  timeout_object <- fit_model(object, timeout = 0.001)
+  timeout_object <- fit_model(object_lc_list2, timeout = 0.0001)
   expect_identical(status(timeout_object), "time-out")
   object_fit <- fit_model(object)
   object_lc_fit <- fit_model(object_lc)
