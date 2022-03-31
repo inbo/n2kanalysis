@@ -43,11 +43,11 @@ setMethod(
         full.names = TRUE
       )
     if (length(filename) > 0) {
-      return(filename)
+      return(normalizePath(filename, winslash = "/"))
     }
     filename <- file.path(dir, sprintf("%s.manifest", fingerprint))
     write.table(x@Manifest, file = filename, row.names = FALSE, sep = "\t")
-    return(filename)
+    return(normalizePath(filename, winslash = "/"))
   }
 )
 
