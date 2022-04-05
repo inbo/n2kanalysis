@@ -52,10 +52,10 @@ test_that("it handles a manifest", {
   # works with an S3 bucket
   skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
   bucket <- "n2kmonitoring"
-  base <- get_bucket(bucket)
-  store_model(object, base = base, project = project)
-  store_model(object2, base = base, project = project)
-  store_model(object3, base = base, project = project)
+  aws_base <- get_bucket(bucket)
+  store_model(object, base = aws_base, project = project)
+  store_model(object2, base = aws_base, project = project)
+  store_model(object3, base = aws_base, project = project)
   x <- data.frame(
     fingerprint = c(
       get_file_fingerprint(object), get_file_fingerprint(object2),
@@ -67,14 +67,14 @@ test_that("it handles a manifest", {
     stringsAsFactors = FALSE
   ) %>%
     n2k_manifest()
-  expect_null(fit_model(x, base = base, project = project, verbose = TRUE))
+  expect_null(fit_model(x, base = aws_base, project = project, verbose = TRUE))
 
-  x <- store_manifest(x, base = base, project = project)
+  x <- store_manifest(x, base = aws_base, project = project)
   expect_null(fit_model(x$Contents))
 
-  expect_null(fit_model(x$Contents$Key, base = base, project = project))
+  expect_null(fit_model(x$Contents$Key, base = aws_base, project = project))
 
-  available <- get_bucket(base, prefix = project) %>%
+  available <- get_bucket(aws_base, prefix = project) %>%
     sapply("[[", "Key")
-  expect_true(all(sapply(available, delete_object, bucket = base)))
+  expect_true(all(sapply(available, delete_object, bucket = aws_base)))
 })

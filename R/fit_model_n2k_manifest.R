@@ -96,27 +96,28 @@ setMethod(
     }
     display(verbose, "Downloading objects")
     if (missing(local)) {
-      local <- tempdir()
+      local <- tempfile("fit_model")
+      dir.create(local, showWarnings = FALSE)
     }
     file.path(local, project) %>%
-      list.files(recursive = TRUE) -> local_files
+      list.files(recursive = TRUE, full.names = TRUE) -> local_files
     manifest %>%
       mutate(
-        local = map_lgl(
+        is_local = map_lgl(
           .data$fingerprint,
           function(h) {
             any(grepl(h, local_files))
           }
         ),
         local_filename = pmap_chr(
-          list(.data$local, .data$fingerprint, .data$filename),
+          list(.data$is_local, .data$fingerprint, .data$filename),
           function(l, h, f) {
-            ifelse(l, local_files[grep(h, local_files)], f)
+            ifelse(l, local_files[grep(h, local_files)], file.path(local, f))
           }
         )
       ) -> manifest
     walk(
-      which(!manifest$local),
+      which(!manifest$is_local),
       function(i) {
         display(verbose, manifest$local_filename[i])
         dir.create(
