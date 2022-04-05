@@ -89,7 +89,7 @@ setMethod(
          project = project, hash = basename(stored)) -> yaml
     filename <- gsub("\\.manifest", ".yaml", stored) %>%
       gsub(pattern = "(.*/)manifest(/.*)", replacement = "\\1yaml\\2") %>%
-      normalizePath(winslash = "/")
+      normalizePath(winslash = "/", mustWork = FALSE)
     if (file.exists(filename)) {
       return(filename)
     }
