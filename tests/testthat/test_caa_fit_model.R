@@ -71,8 +71,19 @@ test_that("fit_model() on INLA based objects", {
     last_imported_year = this_last_imported_year,
     analysis_date = this_analysis_date, imputation.size = 10, data = dataset
   )
-  expect_identical(status(object_lc_list2), "new")
-  timeout_object <- fit_model(object_lc_list2, timeout = 0.0001)
+  object_long <- n2k_inla(
+    result_datasource_id = this_result_datasource_id,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = this_formula, first_imported_year = this_first_imported_year,
+    last_imported_year = this_last_imported_year,
+    analysis_date = this_analysis_date, lin_comb = lin_comb,
+    data = list(dataset) %>%
+      rep(10) %>%
+      bind_rows() %>%
+      mutate(observation_id = seq_along(.data$observation_id))
+  )
+  timeout_object <- fit_model(object_long, timeout = 0.0001)
   expect_identical(status(timeout_object), "time-out")
   object_fit <- fit_model(object)
   object_lc_fit <- fit_model(object_lc)

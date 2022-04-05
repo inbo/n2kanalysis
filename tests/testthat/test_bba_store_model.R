@@ -40,7 +40,8 @@ test_that("store_model stores the model on a local file system", {
   fitted <- fit_model(filename, base, project)
   expect_identical(
     file.path(base, project) %>%
-      list.files(recursive = TRUE, full.names = TRUE),
+      list.files(recursive = TRUE, full.names = TRUE) %>%
+      normalizePath(winslash = "/", mustWork = TRUE),
     gsub("new", "converged", filename)
   )
   expect_is(
