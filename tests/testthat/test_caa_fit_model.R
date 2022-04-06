@@ -83,7 +83,7 @@ test_that("fit_model() on INLA based objects", {
       bind_rows() %>%
       mutate(observation_id = seq_along(.data$observation_id))
   )
-  timeout_object <- fit_model(object_long, timeout = 0.0001)
+  timeout_object <- fit_model(object_long, timeout = 1)
   expect_identical(status(timeout_object), "time-out")
   object_fit <- fit_model(object)
   object_lc_fit <- fit_model(object_lc)

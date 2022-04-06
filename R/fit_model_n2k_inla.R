@@ -60,6 +60,7 @@ setMethod(
         if (!is.null(timeout)) {
           assert_that(is.number(timeout), timeout > 0)
           setTimeLimit(cpu = timeout, elapsed = timeout)
+          control$safe <- FALSE
         }
         do.call(INLA::inla, control)
         }, silent = TRUE)
