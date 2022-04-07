@@ -1,7 +1,8 @@
 #' @rdname get_model_parameter
 #' @importFrom methods setMethod new
-#' @importFrom dplyr mutate_all funs select transmute mutate rename distinct
+#' @importFrom dplyr across distinct mutate rename select transmute
 #' @importFrom purrr map2_chr
+#' @importFrom rlang .data !!
 #' @importFrom stats quantile
 #' @include n2k_aggregate_class.R
 #' @include n2k_parameter_class.R
@@ -19,13 +20,15 @@ setMethod(
       stringsAsFactors = FALSE
     )
     observations <- analysis@AggregatedImputed@Covariate %>%
-      mutate_all(funs("as.character")) %>%
-      mutate(parent = .data$parameter$fingerprint)
+      mutate(
+        across(.fns = as.character),
+        parent = parameter$fingerprint
+      )
     for (i in colnames(analysis@AggregatedImputed@Covariate)) {
       extra <- observations %>%
         distinct(.data$parent) %>%
-        mutate(description = i) %>%
         mutate(
+          description = i,
           fingerprint = map2_chr(
             .data$description, .data$parent,
             ~sha1(c(description = .x, parent = .y))
@@ -37,13 +40,11 @@ setMethod(
             select(.data$parent, .data$fingerprint),
           by = "parent"
         ) %>%
-        rename(Parent = "fingerprint")
+        select(-.data$parent, parent = .data$fingerprint)
       parameter <- bind_rows(parameter, extra)
       extra <- observations %>%
-        distinct(.data$parent, i) %>%
-        transmute(
-          .data$parent, description = i
-        ) %>%
+        select(.data$parent, description = !!i) %>%
+        distinct() %>%
         mutate(
           fingerprint = map2_chr(
             .data$description, .data$parent,
@@ -54,7 +55,7 @@ setMethod(
       names(link) <- c("parent", i)
       observations <- observations %>%
         inner_join(extra, by = link) %>%
-        rename(parent = "fingerprint")
+        select(-.data$parent, parent = .data$fingerprint)
       parameter <- bind_rows(parameter, extra)
     }
     new(
