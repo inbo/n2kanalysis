@@ -8,18 +8,21 @@ setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kModelImputed"),
   definition = function(analysis, ...) {
+    if (is.null(analysis@Results)) {
+      return(new("n2kParameter"))
+    }
     parent <- data.frame(
       description = "ModelImputed", parent = NA_character_,
       fingerprint = sha1(c("ModelImputed", NA_character_)),
       stringsAsFactors = FALSE
     )
     parameter <- data.frame(
-      description = as.character(analysis@Results$parameter),
+      description = as.character(analysis@Results$Parameter),
       parent = parent$fingerprint,
       stringsAsFactors = FALSE
     ) %>%
       mutate(fingerprint = map2_chr(
-        .data$description, .data$parent, ~sha1(c(description, parent)))
+        .data$parent, .data$description, ~sha1(c(.x, .y)))
       )
     new(
       "n2kParameter",
@@ -27,15 +30,14 @@ setMethod(
       ParameterEstimate = parameter %>%
         inner_join(
           analysis@Results %>%
-            mutate(parameter = as.character(.data$parameter)),
-          by = c("description" = "parameter")
+            mutate(
+              Parameter = as.character(.data$Parameter)),
+          by = c("description" = "Parameter")
         ) %>%
         transmute(
           analysis = get_file_fingerprint(analysis),
-          parameter = .data$fingerprint,
-          .data$estimate,
-          lower_confidence_limit = .data$LCL,
-          upper_confidence_limit = .data$UCL
+          parameter = .data$fingerprint, estimate = .data$Estimate,
+          lower_confidence_limit = .data$LCL, upper_confidence_limit = .data$UCL
         ) %>%
         as.data.frame()
     )
