@@ -78,35 +78,35 @@ test_that("get_result on n2kInla", {
     analysis_date = this_analysis_date, data = dataset, lin_comb = lin_comb,
     parent = this_parent
   )
-  result <- get_result(
+  result2 <- get_result(
     analysis, datasource_id = this_datasource, verbose = FALSE
   )
-  expect_is(result, "n2kResult")
-  expect_identical(nrow(result@Parameter), 0L)
-  expect_identical(nrow(result@Contrast), nrow(lin_comb))
-  expect_identical(nrow(result@ContrastCoefficient), 0L)
-  expect_identical(nrow(result@ContrastEstimate), 0L)
-  expect_identical(nrow(result@Anomaly), 0L)
+  expect_is(result2, "n2kResult")
+  expect_identical(nrow(result2@Parameter), 0L)
+  expect_identical(nrow(result2@Contrast), nrow(lin_comb))
+  expect_identical(nrow(result2@ContrastCoefficient), 0L)
+  expect_identical(nrow(result2@ContrastEstimate), 0L)
+  expect_identical(nrow(result2@Anomaly), 0L)
 
   filename <- store_model(analysis, base = temp_dir, project = "get_result")
   expect_equal(
     get_result(filename, datasource_id = this_datasource, verbose = FALSE),
-    result
+    result2
   )
   fit_model(filename, verbose = FALSE)
   filename <- gsub(pattern = "new", replacement = "converged", filename)
-  result <- get_result(
+  result2 <- get_result(
     readRDS(filename), datasource_id = this_datasource, verbose = FALSE
   )
-  expect_is(result, "n2kResult")
-  expect_lt(0, nrow(result@Parameter))
-  expect_identical(nrow(result@Contrast), nrow(lin_comb))
-  expect_lt(0, nrow(result@ContrastCoefficient))
-  expect_lt(0, nrow(result@ContrastEstimate))
-  expect_lt(0, nrow(result@Anomaly))
+  expect_is(result2, "n2kResult")
+  expect_lt(0, nrow(result2@Parameter))
+  expect_identical(nrow(result2@Contrast), nrow(lin_comb))
+  expect_lt(0, nrow(result2@ContrastCoefficient))
+  expect_lt(0, nrow(result2@ContrastEstimate))
+  expect_lt(0, nrow(result2@Anomaly))
   expect_equal(
     get_result(filename, datasource_id = this_datasource, verbose = FALSE),
-    result
+    result2
   )
 
   # with linear combination as list of vectors
@@ -122,34 +122,34 @@ test_that("get_result on n2kInla", {
     analysis_date = this_analysis_date, data = dataset, lin_comb = lin_comb,
     parent = this_parent
   )
-  result <- get_result(
+  result3 <- get_result(
     analysis, datasource_id = this_datasource, verbose = FALSE
   )
-  expect_is(result, "n2kResult")
-  expect_identical(nrow(result@Parameter), 0L)
-  expect_identical(nrow(result@Contrast), length(lin_comb[[1]]))
-  expect_identical(nrow(result@ContrastCoefficient), 0L)
-  expect_identical(nrow(result@ContrastEstimate), 0L)
-  expect_identical(nrow(result@Anomaly), 0L)
+  expect_is(result3, "n2kResult")
+  expect_identical(nrow(result3@Parameter), 0L)
+  expect_identical(nrow(result3@Contrast), length(lin_comb[[1]]))
+  expect_identical(nrow(result3@ContrastCoefficient), 0L)
+  expect_identical(nrow(result3@ContrastEstimate), 0L)
+  expect_identical(nrow(result3@Anomaly), 0L)
   filename <- store_model(analysis, base = temp_dir, project = "get_result")
   expect_equal(
     get_result(filename, datasource_id = this_datasource, verbose = FALSE),
-    result
+    result3
   )
   fit_model(filename, verbose = FALSE)
   filename <- gsub(pattern = "new", replacement = "converged", filename)
-  result <- get_result(
+  result3 <- get_result(
     readRDS(filename), datasource_id = this_datasource, verbose = FALSE
   )
-  expect_is(result, "n2kResult")
-  expect_lt(0, nrow(result@Parameter))
-  expect_identical(nrow(result@Contrast), length(lin_comb[[1]]))
-  expect_lt(0, nrow(result@ContrastCoefficient))
-  expect_lt(0, nrow(result@ContrastEstimate))
-  expect_lt(0, nrow(result@Anomaly))
+  expect_is(result3, "n2kResult")
+  expect_lt(0, nrow(result3@Parameter))
+  expect_identical(nrow(result3@Contrast), length(lin_comb[[1]]))
+  expect_lt(0, nrow(result3@ContrastCoefficient))
+  expect_lt(0, nrow(result3@ContrastEstimate))
+  expect_lt(0, nrow(result3@Anomaly))
   expect_equal(
     get_result(filename, datasource_id = this_datasource, verbose = FALSE),
-    result
+    result3
   )
 
 
@@ -183,34 +183,46 @@ test_that("get_result on n2kInla", {
     replicate_name = list(E = levels(dataset$A)),
     parent = this_parent
   )
-  result <- get_result(
+  result4 <- get_result(
     analysis, datasource_id = this_datasource, verbose = FALSE
   )
-  expect_is(result, "n2kResult")
-  expect_identical(nrow(result@Parameter), 0L)
-  expect_identical(nrow(result@Contrast), nrow(lin_comb[[1]]))
-  expect_identical(nrow(result@ContrastCoefficient), 0L)
-  expect_identical(nrow(result@ContrastEstimate), 0L)
-  expect_identical(nrow(result@Anomaly), 0L)
+  expect_is(result4, "n2kResult")
+  expect_identical(nrow(result4@Parameter), 0L)
+  expect_identical(nrow(result4@Contrast), nrow(lin_comb[[1]]))
+  expect_identical(nrow(result4@ContrastCoefficient), 0L)
+  expect_identical(nrow(result4@ContrastEstimate), 0L)
+  expect_identical(nrow(result4@Anomaly), 0L)
   filename <- store_model(analysis, base = temp_dir, project = "get_result")
   expect_equal(
     get_result(filename, datasource_id = this_datasource, verbose = FALSE),
-    result
+    result4
   )
   fit_model(filename, verbose = FALSE)
   filename <- gsub(pattern = "new", replacement = "converged", filename)
-  result <- get_result(
+  result4 <- get_result(
     readRDS(filename), datasource_id = this_datasource, verbose = FALSE
   )
-  expect_is(result, "n2kResult")
-  expect_lt(0, nrow(result@Parameter))
-  expect_identical(nrow(result@Contrast), nrow(lin_comb[[1]]))
-  expect_lt(0, nrow(result@ContrastCoefficient))
-  expect_lt(0, nrow(result@ContrastEstimate))
-  expect_lt(0, nrow(result@Anomaly))
+  expect_is(result4, "n2kResult")
+  expect_lt(0, nrow(result4@Parameter))
+  expect_identical(nrow(result4@Contrast), nrow(lin_comb[[1]]))
+  expect_lt(0, nrow(result4@ContrastCoefficient))
+  expect_lt(0, nrow(result4@ContrastEstimate))
+  expect_lt(0, nrow(result4@Anomaly))
   expect_equal(
     get_result(filename, datasource_id = this_datasource, verbose = FALSE),
-    result
+    result4
+  )
+
+  expect_is(
+    combined_result <- combine(result, result2, result3, result4),
+    "n2kResult"
+  )
+  expect_identical(
+    get_file_fingerprint(combined_result),
+    sort(c(
+      get_file_fingerprint(result), get_file_fingerprint(result2),
+      get_file_fingerprint(result3), get_file_fingerprint(result4)
+    ))
   )
   # clean temp files
   file.remove(list.files(temp_dir, recursive = TRUE, full.names = TRUE))
