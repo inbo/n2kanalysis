@@ -275,3 +275,75 @@ test_that(
     nrow(random)
   )
 })
+
+test_that("imputation and aggregation", {
+  set.seed(20191213)
+  this_result_datasource_id <- sha1(letters)
+  this_scheme_id <- sha1(letters)
+  this_species_group_id <- sha1(letters)
+  this_location_group_id <- sha1(letters)
+  this_analysis_date <- Sys.time()
+  this_model_type <- "inla poisson: A * (B + C) + C:D"
+  this_first_imported_year <- 1990L
+  this_last_imported_year <- 2015L
+  this_last_analysed_year <- 2014L
+  this_duration <- 1L
+  dataset <- test_data(missing = 0.2)
+  base <- tempfile("imputation")
+  dir.create(base)
+  project <- "imputation"
+
+  imputation <- n2k_inla(
+    data = dataset, scheme_id = this_scheme_id,
+    result_datasource_id = this_result_datasource_id,
+    species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    first_imported_year = this_first_imported_year, imputation_size = 3,
+    last_imported_year = this_last_imported_year, family = "poisson",
+    last_analyses_year = this_last_analysed_year, duration = this_duration,
+    formula = "Count ~ A + f(E, model = \"iid\")", analysis_date = Sys.time(),
+  )
+  aggregation <- n2k_aggregate(
+    scheme_id = this_scheme_id,
+    result_datasource_id = this_result_datasource_id, formula = "~ A + B",
+    species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    first_imported_year = this_first_imported_year, analysis_date = Sys.time(),
+    last_imported_year = this_last_imported_year, fun = sum,
+    last_analyses_year = this_last_analysed_year, duration = this_duration,
+    parent = get_file_fingerprint(imputation)
+  )
+  expect_is(result <- get_model_parameter(imputation), "n2kParameter")
+  expect_equal(nrow(result@Parameter), 0L)
+  expect_is(result <- get_model_parameter(aggregation), "n2kParameter")
+  expect_equal(nrow(result@Parameter), 0L)
+
+  imputation <- fit_model(imputation, parallel_configs = FALSE)
+  store_model(imputation, base = base, project = project)
+  aggregation <- fit_model(aggregation, base = base, project = project)
+  expect_is(result <- get_model_parameter(imputation), "n2kParameter")
+  expect_equal(nrow(result@Parameter), 1956L)
+  expect_is(result <- get_model_parameter(aggregation), "n2kParameter")
+  expect_equal(nrow(result@Parameter), 14L)
+
+  store_model(aggregation, base = base, project = project)
+  extractor <- function(model) {
+    model$summary.fixed[, c("mean", "sd")]
+  }
+  mi <- n2k_model_imputed(
+    scheme_id = this_scheme_id, model_args = list(family = "poisson"),
+    result_datasource_id = this_result_datasource_id, model_fun = INLA::inla,
+    species_group_id = this_species_group_id, extractor = extractor,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    first_imported_year = this_first_imported_year, analysis_date = Sys.time(),
+    last_imported_year = this_last_imported_year, formula = "~ A",
+    last_analyses_year = this_last_analysed_year, duration = this_duration,
+    parent = get_file_fingerprint(aggregation)
+  )
+  expect_is(result <- get_model_parameter(mi), "n2kParameter")
+  expect_equal(nrow(result@Parameter), 0L)
+
+  mi <- fit_model(mi, base = base, project = project)
+  expect_is(result <- get_model_parameter(mi), "n2kParameter")
+  expect_equal(nrow(result@Parameter), 4L)
+})
