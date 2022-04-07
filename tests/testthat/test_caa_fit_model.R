@@ -71,20 +71,6 @@ test_that("fit_model() on INLA based objects", {
     last_imported_year = this_last_imported_year,
     analysis_date = this_analysis_date, imputation.size = 10, data = dataset
   )
-  object_long <- n2k_inla(
-    result_datasource_id = this_result_datasource_id,
-    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
-    location_group_id = this_location_group_id, model_type = this_model_type,
-    formula = this_formula, first_imported_year = this_first_imported_year,
-    last_imported_year = this_last_imported_year,
-    analysis_date = this_analysis_date, lin_comb = lin_comb,
-    data = list(dataset) %>%
-      rep(10) %>%
-      bind_rows() %>%
-      mutate(observation_id = seq_along(.data$observation_id))
-  )
-  timeout_object <- fit_model(object_long, timeout = 1)
-  expect_identical(status(timeout_object), "time-out")
   object_fit <- fit_model(object)
   object_lc_fit <- fit_model(object_lc)
   object_lc_list_fit <- fit_model(object_lc_list)
@@ -150,6 +136,23 @@ test_that("fit_model() on INLA based objects", {
 
   # returns an error when the linear combination is not valid
   expect_identical(status(object_badlc_fit), "error")
+
+  # test time-out
+  skip_on_os("windows")
+  object_long <- n2k_inla(
+    result_datasource_id = this_result_datasource_id,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    formula = this_formula, first_imported_year = this_first_imported_year,
+    last_imported_year = this_last_imported_year,
+    analysis_date = this_analysis_date, lin_comb = lin_comb,
+    data = list(dataset) %>%
+      rep(10) %>%
+      bind_rows() %>%
+      mutate(observation_id = seq_along(.data$observation_id))
+  )
+  timeout_object <- fit_model(object_long, timeout = 1)
+  expect_identical(status(timeout_object), "time-out")
 })
 
 test_that("fit_model() works on n2kInlaComparison", {
