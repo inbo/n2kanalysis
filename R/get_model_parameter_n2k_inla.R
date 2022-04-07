@@ -1,12 +1,12 @@
 #' @rdname get_model_parameter
-#' @importFrom methods setMethod new
-#' @importFrom tibble tibble rownames_to_column
+#' @importFrom digest sha1
 #' @importFrom dplyr %>% bind_rows distinct filter left_join mutate n n_distinct
 #' pull select semi_join transmute
-#' @importFrom rlang .data
+#' @importFrom methods setMethod new
 #' @importFrom purrr map_chr map2_chr map_df
-#' @importFrom digest sha1
+#' @importFrom rlang .data !!
 #' @importFrom stats terms
+#' @importFrom tibble tibble rownames_to_column
 #' @include n2k_inla_class.R
 #' @include n2k_parameter_class.R
 #' @inheritParams get_result
@@ -294,10 +294,10 @@ setMethod(
     if (!is.null(analysis@RawImputed)) {
       ri <- analysis@RawImputed
       extra <- ri@Data %>%
-        mutate(response = ri@Response) %>%
+        select(response = !!ri@Response, .data$observation_id) %>%
         filter(is.na(.data$response)) %>%
-        select(.data$observation_id) %>%
-        mutate(
+        transmute(
+          observation_id = as.character(.data$observation_id),
           analysis = get_file_fingerprint(analysis),
           estimate = apply(ri@Imputation, 1, quantile, probs = 0.500),
           lower_confidence_limit =
@@ -311,21 +311,16 @@ setMethod(
         distinct(.data$observation_id) %>%
         transmute(
           parent = parent$fingerprint,
-          description = .data$observation_id
-        ) %>%
-        mutate(
+          description = .data$observation_id,
           fingerprint = map2_chr(
-            .data$description,
-            .data$parent,
+            .data$description, .data$parent,
             ~sha1(c(description = .x, parent = .y))
           )
         )
-      parameter <- parameter %>%
-        bind_rows(impute_parameter)
+      parameter <- bind_rows(parameter, impute_parameter)
       parameter_estimate <- extra %>%
         inner_join(
-          impute_parameter,
-          by = c("observation_id" = "description")
+          impute_parameter, by = c("observation_id" = "description")
         ) %>%
         select(
           "analysis", "estimate", "lower_confidence_limit",
