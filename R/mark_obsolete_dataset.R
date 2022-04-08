@@ -2,7 +2,7 @@
 #'
 #' A dataset is obsolete when a newer version is available
 #' @export
-#' @param channel An open ODBC channl
+#' @param channel An open ODBC channel
 #' @importFrom RODBC sqlQuery
 #' @importFrom n2khelper check_dbtable_variable
 mark_obsolete_dataset <- function(channel) {
@@ -37,6 +37,5 @@ mark_obsolete_dataset <- function(channel) {
       Obsolete = 0 AND
       ImportDate < MostRecent
   "
-  sql.status <- sqlQuery(channel = channel, query = sql)
-  return(sql.status)
+  sqlQuery(channel = channel, query = sql)
 }

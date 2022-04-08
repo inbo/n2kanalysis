@@ -7,7 +7,7 @@
 mark_obsolete_dataset(channel)
 }
 \arguments{
-\item{channel}{An open ODBC channl}
+\item{channel}{An open ODBC channel}
 }
 \description{
 A dataset is obsolete when a newer version is available

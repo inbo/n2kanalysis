@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_parents.R
 \name{get_parents}
 \alias{get_parents}
-\title{Get the object of the parent analyses of a n2kModel object}
+\title{Get the object of the parent analyses of an \code{n2kModel} object}
 \usage{
 get_parents(child, base, project)
 }
@@ -14,5 +14,5 @@ get_parents(child, base, project)
 \item{project}{will be a relative path within the base location}
 }
 \description{
-Get the object of the parent analyses of a n2kModel object
+Get the object of the parent analyses of an \code{n2kModel} object
 }

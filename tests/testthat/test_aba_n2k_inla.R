@@ -1,952 +1,885 @@
-context("prepare a n2kInla object")
-this.result.datasource.id <- sha1(sample(letters))
-this.scheme.id <- sha1(sample(letters))
-this.species.group.id <- sha1(sample(letters))
-this.location.group.id <- sha1(sample(letters))
-this.analysis.date <- Sys.time()
-this.model.type <- "inla poisson: A * (B + C) + C:D"
-this.formula <-
+this_result_datasource_id <- sha1(sample(letters))
+this_scheme_id <- sha1(sample(letters))
+this_species_group_id <- sha1(sample(letters))
+this_location_group_id <- sha1(sample(letters))
+this_analysis_date <- Sys.time()
+this_model_type <- "inla poisson: A * (B + C) + C:D"
+this_formula <-
   "Count ~ A * (B + C) + C:D +
     f(E, model = \"rw1\", replicate = as.integer(A)) +
-    f(F, model = \"iid\")"
-this.first.imported.year <- 1990L
-this.last.imported.year <- 2015L
-this.last.analysed.year <- 2014L
-this.duration <- 1L
+    f(G, model = \"iid\")"
+this_first_imported_year <- 1990L
+this_last_imported_year <- 2015L
+this_last_analysed_year <- 2014L
+this_duration <- 1L
 dataset <- test_data()
-this.lc <- dataset %>%
+this_lc <- dataset %>%
   select(.data$A, .data$B, .data$C, .data$D) %>%
   filter(.data$C == max(.data$C), .data$D == max(.data$D)) %>%
   distinct() %>%
   model.matrix(object = ~A * (B + C) + C:D)
 object <- n2k_inla(
-  result.datasource.id = this.result.datasource.id,
-  scheme.id = this.scheme.id,
-  species.group.id = this.species.group.id,
-  location.group.id = this.location.group.id,
-  model.type = this.model.type,
-  formula = this.formula,
-  first.imported.year = this.first.imported.year,
-  last.imported.year = this.last.imported.year,
-  analysis.date = this.analysis.date,
+  result_datasource_id = this_result_datasource_id,
+  scheme_id = this_scheme_id,
+  species_group_id = this_species_group_id,
+  location_group_id = this_location_group_id,
+  model_type = this_model_type,
+  formula = this_formula,
+  first_imported_year = this_first_imported_year,
+  last_imported_year = this_last_imported_year,
+  analysis_date = this_analysis_date,
   data = dataset
 )
-model.object <- inla(
+model_object <- INLA::inla(
   Count ~ A * (B + C) + C:D +
     f(E, model = "rw1", replicate = as.integer(A)) +
-    f(F, model = "iid"),
+    f(G, model = "iid"),
   data = object@Data,
   family = "poisson"
 )
-model.truth <- inla(
+model_truth <- INLA::inla(
   Count ~ A * (B + C) + C:D +
     f(E, model = "rw1", replicate = as.integer(A)) +
-    f(F, model = "iid"),
+    f(G, model = "iid"),
   data = dataset,
   family = "poisson"
 )
-describe("n2k_inla", {
-  it("adds the data as a data.frame", {
-    expect_that(
-      object@Data,
-      is_identical_to(dataset)
-    )
-    expect_equal(
-      model.object$summary.fixed,
-      model.truth$summary.fixed,
-      tolerance = 1e-5
-    )
-    expect_equal(
-      model.object$summary.random,
-      model.truth$summary.random,
-      tolerance = 1e-3
-    )
-  })
-  it("uses 'new' as default status", {
-    expect_that(
-      object@AnalysisMetadata$Status,
-      is_identical_to("new")
-    )
-  })
-  it("requires a correct status", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        scheme.id = this.scheme.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        status = "junk"
-      ),
-      throws_error("Status must be one of the following")
-    )
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        scheme.id = this.scheme.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        status = NA_character_
-      ),
-      throws_error("Status must be one of the following")
-    )
-  })
-  it("checks the model type", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        scheme.id = this.scheme.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = "junk",
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date
-      ),
-      throws_error("ModelType should be 'inla poisson'")
-    )
-  })
-  it("sets the correct seed", {
-    this.seed <- 12345L
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        scheme.id = this.scheme.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        seed = this.seed
-      )@AnalysisMetadata$Seed,
-      is_identical_to(this.seed)
-    )
-  })
-  it("converts numeric seed, when possible", {
-    this.seed <- 12345
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        scheme.id = this.scheme.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        seed = this.seed
-      )@AnalysisMetadata$Seed,
-      is_identical_to(as.integer(this.seed))
-    )
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        scheme.id = this.scheme.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        seed = this.seed + 0.1
-      ),
-      throws_error("seed is not a count \\(a single positive integer\\)")
-    )
-  })
-  it("sets a random seed when not provided", {
-    expect_that(
-      object@AnalysisMetadata$Seed,
-      is_a("integer")
-    )
-  })
-
-  it("sets the correct SchemeID", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$SchemeID,
-      is_identical_to(this.scheme.id)
-    )
-  })
-
-  it("sets the correct SpeciesGroupID", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        formula = this.formula,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$SpeciesGroupID,
-      is_identical_to(this.species.group.id)
-    )
-  })
-
-  it("sets the correct LocationGroupID", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$LocationGroupID,
-      is_identical_to(this.location.group.id)
-    )
-  })
-
-  it("sets the correct FirstImportedYear", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$FirstImportedYear,
-      is_identical_to(this.first.imported.year)
-    )
-  })
-  it("checks that FirstImportedYear is from the past", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = as.integer(format(Sys.time(), "%Y")) + 1,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error("FirstImportedYear cannot exceed LastImportedYear")
-    )
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = as.integer(format(Sys.time(), "%Y")),
-        last.imported.year = as.integer(format(Sys.time(), "%Y")),
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      is_a("n2kInla")
-    )
-  })
-
-  it("sets the correct LastImportedYear", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$LastImportedYear,
-      is_identical_to(this.last.imported.year)
-    )
-  })
-  it("converts numeric last.imported.year, when possible", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = as.numeric(this.last.imported.year),
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$LastImportedYear,
-      is_identical_to(this.last.imported.year)
-    )
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year + 0.1,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error(
-        "last.imported.year is not a count \\(a single positive integer\\)"
-      )
-    )
-  })
-  it("checks that LastImportedYear is from the past", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = as.integer(format(Sys.time(), "%Y")) + 1,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error("LastImportedYear from the future")
-    )
-  })
-  it("checks that LastImportedYear is not earlier that FirstImportedYear", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = 2000,
-        last.imported.year = 1999,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error("FirstImportedYear cannot exceed LastImportedYear")
-    )
-  })
-
-  it("sets the correct Duration", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        duration = this.duration,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$Duration,
-      is_identical_to(this.duration)
-    )
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$Duration,
-      is_identical_to(this.last.imported.year - this.first.imported.year + 1L)
-    )
-  })
-  it("converts numeric duration, when possible", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        last.analysed.year = this.last.analysed.year,
-        duration = as.numeric(this.duration),
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$Duration,
-      is_identical_to(this.duration)
-    )
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        duration = this.duration + 0.1,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error("duration is not a count \\(a single positive integer\\)")
-    )
-  })
-  it(
-"checks that Duration is not outside the FirstImportYear - LastImportedYear
-ranges"
-  , {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = 1999,
-        last.imported.year = 1999,
-        duration = 2,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error(
-"Duration longer than the interval from FirstImportedYear to LastImportedYear"
-      )
-    )
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = 1999,
-        last.imported.year = 1999,
-        duration = 0,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error(
-        "duration is not a count \\(a single positive integer\\)"
-      )
-    )
-  })
-
-  it("sets the correct LastAnalysedYear", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        last.analysed.year = this.last.analysed.year,
-        duration = 1L,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$LastAnalysedYear,
-      is_identical_to(this.last.analysed.year)
-    )
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$LastAnalysedYear,
-      is_identical_to(this.last.imported.year)
-    )
-  })
-  it("converts numeric last.analysed.year, when possible", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        last.analysed.year = as.numeric(this.last.analysed.year),
-        duration = 1,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      )@AnalysisMetadata$LastAnalysedYear,
-      is_identical_to(this.last.analysed.year)
-    )
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        duration = 1,
-        last.analysed.year = this.last.analysed.year + 0.1,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error(
-        "last.analysed.year is not a count \\(a single positive integer\\)"
-      )
-    )
-  })
-  it("checks that LastAnalysedYear is within the range", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        duration = 1,
-        last.analysed.year = this.last.imported.year + 1,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error("LastAnalysedYear cannot exceed LastImportedYear")
-    )
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        last.analysed.year = this.first.imported.year + this.duration - 2,
-        duration = this.duration,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error(
-"LastAnalysedYear smaller than FirstImportedYear \\+ Duration \\- 1\\. Window
-outside imported range\\."
-      )
-    )
-  })
-
-  it("checks if analysis date is from the past", {
-    expect_that(
-      n2k_inla(
-        data = dataset,
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = Sys.time() + 24 * 60 * 60,
-        scheme.id = this.scheme.id
-      ),
-      throws_error("AnalysisDate must be in the past")
-    )
-  })
-  it("checks if all variable in formula are available in the data", {
-    expect_that(
-      n2k_inla(
-        data = dataset[, c("A", "B", "C", "D", "E", "F")],
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error("object@Data does not have .*name.*Count")
-    )
-    expect_that(
-      n2k_inla(
-        data = dataset[, c("Count", "B", "C", "D", "E", "F")],
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error("object@Data does not have .*name.*A")
-    )
-    expect_that(
-      n2k_inla(
-        data = dataset[, c("Count", "A", "B", "C", "D", "E")],
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error("object@Data does not have .*name.*F")
-    )
-    expect_that(
-      n2k_inla(
-        data = dataset[, c("A", "B", "C", "Count", "E", "F")],
-        result.datasource.id = this.result.datasource.id,
-        species.group.id = this.species.group.id,
-        location.group.id = this.location.group.id,
-        model.type = this.model.type,
-        formula = this.formula,
-        first.imported.year = this.first.imported.year,
-        last.imported.year = this.last.imported.year,
-        analysis.date = this.analysis.date,
-        scheme.id = this.scheme.id
-      ),
-      throws_error("object@Data does not have .*name.*D")
-    )
-  })
+test_that("n2k_inla() adds the data as a data.frame", {
+  expect_that(
+    object@Data,
+    is_identical_to(dataset)
+  )
+  expect_equal(
+    model_object$summary.fixed,
+    model_truth$summary.fixed,
+    tolerance = 1e-3
+  )
+  expect_equal(
+    model_object$summary.random,
+    model_truth$summary.random,
+    tolerance = 1e-2
+  )
+})
+test_that("n2k_inla(), uses 'new' as default status", {
+  expect_that(
+    object@AnalysisMetadata$status,
+    is_identical_to("new")
+  )
+})
+test_that("n2k_inla() requires a correct status", {
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      scheme_id = this_scheme_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date,
+      status = "junk"
+    ),
+    throws_error("status must be one of the following")
+  )
+  expect_that(
+    n2k_inla(
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      formula = this_formula, first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date, status = NA_character_
+    ),
+    throws_error("status must be one of the following")
+  )
+})
+test_that("n2k_inla() checks the model type", {
+  expect_that(
+    n2k_inla(
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = "junk",
+      formula = this_formula, first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date
+    ),
+    throws_error("model_type should be 'inla poisson'")
+  )
+})
+test_that("n2k_inla() sets the correct seed", {
+  this_seed <- 12345L
+  expect_that(
+    n2k_inla(
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      formula = this_formula, first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date, seed = this_seed
+    )@AnalysisMetadata$seed,
+    is_identical_to(this_seed)
+  )
+})
+test_that("n2k_inla() converts numeric seed, when possible", {
+  this_seed <- 12345
+  expect_that(
+    n2k_inla(
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      formula = this_formula, first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date, seed = this_seed
+    )@AnalysisMetadata$seed,
+    is_identical_to(as.integer(this_seed))
+  )
+  expect_that(
+    n2k_inla(
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date, seed = this_seed + 0.1
+    ),
+    throws_error("seed is not a count")
+  )
+})
+test_that("n2k_inla() sets a random seed when not provided", {
+  expect_is(object@AnalysisMetadata$seed, "integer")
 })
 
-
-
-
-
-
-
-
-
-
-
-
-describe("add a model to a n2kInla object", {
-  object.model <- n2k_inla(
-    data = object, model.fit = model.object, status = "converged"
+test_that("n2k_inla() sets the correct scheme_id", {
+  expect_identical(
+    n2k_inla(
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      formula = this_formula, first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date, scheme_id = this_scheme_id
+    )@AnalysisMetadata$scheme_id,
+    this_scheme_id
   )
-  it("keeps the objects", {
-    expect_that(
-      object.model@Data,
-      is_identical_to(dataset)
-    )
-    expect_equal(
-      object.model@Model$summary.fixed,
-      model.truth$summary.fixed,
-      tolerance = 1e-5
-    )
-    expect_equal(
-      object.model@Model$summary.random,
-      model.truth$summary.random,
-      tolerance = 1e-3
-    )
-    expect_that(
-      object.model@Model,
-      is_identical_to(model.object)
-    )
-    expect_that(
-      object.model@AnalysisMetadata$Seed,
-      is_identical_to(object@AnalysisMetadata$Seed)
-    )
-    expect_that(
-      n2k_inla(
-        data = object, model.fit = model.object, status = "converged", seed = 1
-      )@AnalysisMetadata$Seed,
-      is_identical_to(object@AnalysisMetadata$Seed)
-    )
-    expect_that(
-      object.model@AnalysisMetadata$SchemeID,
-      is_identical_to(object@AnalysisMetadata$SchemeID)
-    )
-    expect_that(
-      n2k_inla(
-        data = object,
-        model.fit = model.object,
-        status = "converged",
-        scheme.id = 999
-      )@AnalysisMetadata$SchemeID,
-      is_identical_to(object@AnalysisMetadata$SchemeID)
-    )
-    expect_that(
-      object.model@AnalysisMetadata$SpeciesGroupID,
-      is_identical_to(object@AnalysisMetadata$SpeciesGroupID)
-    )
-    expect_that(
-      n2k_inla(
-        data = object,
-        model.fit = model.object,
-        status = "converged",
-        species.group.id = sha1(LETTERS)
-      )@AnalysisMetadata$SpeciesGroupID,
-      is_identical_to(object@AnalysisMetadata$SpeciesGroupID)
-    )
-    expect_that(
-      object.model@AnalysisMetadata$LocationGroupID,
-      is_identical_to(object@AnalysisMetadata$LocationGroupID)
-    )
-    expect_that(
-      n2k_inla(
-        data = object,
-        model.fit = model.object,
-        status = "converged",
-        location.group.id = sha1(LETTERS)
-      )@AnalysisMetadata$LocationGroupID,
-      is_identical_to(object@AnalysisMetadata$LocationGroupID)
-    )
-    expect_that(
-      object.model@AnalysisMetadata$ModelType,
-      is_identical_to(object@AnalysisMetadata$ModelType)
-    )
-    expect_that(
-      n2k_inla(
-        data = object,
-        model.fit = model.object,
-        status = "converged",
-        model.type = 999
-      )@AnalysisMetadata$ModelType,
-      is_identical_to(object@AnalysisMetadata$ModelType)
-    )
-    expect_that(
-      object.model@AnalysisMetadata$Covariate,
-      is_identical_to(object@AnalysisMetadata$Covariate)
-    )
-    expect_that(
-      n2k_inla(
-        data = object,
-        model.fit = model.object,
-        status = "converged",
-        covariate = 999
-      )@AnalysisMetadata$Covariate,
-      is_identical_to(object@AnalysisMetadata$Covariate)
-    )
-    expect_that(
-      object.model@AnalysisMetadata$FirstImportedYear,
-      is_identical_to(object@AnalysisMetadata$FirstImportedYear)
-    )
-    expect_that(
-      object.model@AnalysisMetadata$Duration,
-      is_identical_to(object@AnalysisMetadata$Duration)
-    )
-    expect_that(
-      n2k_inla(
-        data = object,
-        model.fit = model.object,
-        status = "converged",
-        duration = 999
-      )@AnalysisMetadata$Duration,
-      is_identical_to(object@AnalysisMetadata$Duration)
-    )
-    expect_that(
-      n2k_inla(
-        data = object,
-        model.fit = model.object,
-        status = "converged",
-        first.imported.year = 999
-      )@AnalysisMetadata$FirstImportedYear,
-      is_identical_to(object@AnalysisMetadata$FirstImportedYear)
-    )
-    expect_that(
-      object.model@AnalysisMetadata$LastImportedYear,
-      is_identical_to(object@AnalysisMetadata$LastImportedYear)
-    )
-    expect_that(
-      n2k_inla(
-        data = object,
-        model.fit = model.object,
-        status = "converged",
-        last.imported.year = 999
-      )@AnalysisMetadata$LastImportedYear,
-      is_identical_to(object@AnalysisMetadata$LastImportedYear)
-    )
-    expect_that(
-      object.model@AnalysisMetadata$LastAnalysedYear,
-      is_identical_to(object@AnalysisMetadata$LastAnalysedYear)
-    )
-    expect_that(
-      n2k_inla(
-        data = object,
-        model.fit = model.object,
-        status = "converged",
-        last.analysed.year = 3000
-      )@AnalysisMetadata$LastAnalysedYear,
-      is_identical_to(object@AnalysisMetadata$LastAnalysedYear)
-    )
-    expect_that(
-      object.model@AnalysisMetadata$AnalysisDate,
-      is_identical_to(object@AnalysisMetadata$AnalysisDate)
-    )
-    expect_that(
-      n2k_inla(
-        data = object,
-        model.fit = model.object,
-        status = "converged",
-        analysis.data = 999
-      )@AnalysisMetadata$AnalysisDate,
-      is_identical_to(object@AnalysisMetadata$AnalysisDate)
-    )
-  })
-  it("stores the new status", {
-    expect_that(
-      object.model@AnalysisMetadata$Status,
-      is_identical_to("converged")
-    )
-    expect_that(
-      n2k_inla(
-        data = object, model.fit = model.object, status = "junk"
-      ),
-      throws_error("Status must be one of the following")
-    )
-  })
-  model.other <- inla(
-    Count ~ A * (B + C) + C:D +
-      f(E, model = "rw1", replicate = as.integer(A)) +
-      f(F, model = "iid"),
-    data = object@Data,
-    family = "nbinomial"
-  )
-  it("checks if the family matches", {
-    expect_that(
-      n2k_inla(
-        data = object, model.fit = model.other, status = "converged"
-      ),
-      throws_error("Model of the wrong family")
-    )
-  })
 })
-describe("n2kInla handles linear combinations", {
+
+test_that("n2k_inla() sets the correct species_group_id", {
+  expect_identical(
+    n2k_inla(
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date, formula = this_formula,
+      scheme_id = this_scheme_id
+    )@AnalysisMetadata$species_group_id,
+    this_species_group_id
+  )
+})
+
+test_that("n2k_inla() sets the correct location_group_id", {
+  expect_identical(
+    n2k_inla(
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      formula = this_formula, first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date, scheme_id = this_scheme_id
+    )@AnalysisMetadata$location_group_id,
+    this_location_group_id
+  )
+})
+
+test_that("n2k_inla() sets the correct first_imported_year", {
+  expect_identical(
+    n2k_inla(
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      formula = this_formula, first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date, scheme_id = this_scheme_id
+    )@AnalysisMetadata$first_imported_year,
+    this_first_imported_year
+  )
+})
+test_that("n2k_inla() checks that first_imported_year is from the past", {
   expect_error(
     n2k_inla(
-      result.datasource.id = this.result.datasource.id,
-      scheme.id = this.scheme.id,
-      species.group.id = this.species.group.id,
-      location.group.id = this.location.group.id,
-      model.type = this.model.type,
-      formula = this.formula,
-      first.imported.year = this.first.imported.year,
-      last.imported.year = this.last.imported.year,
-      analysis.date = this.analysis.date,
-      data = dataset,
-      lin.comb = "junk"
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = as.integer(format(Sys.time(), "%Y")) + 1,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date, scheme_id = this_scheme_id
     ),
-    "lin.comb must be either a list or a matrix"
+    "first_imported_year cannot exceed last_imported_year"
   )
   expect_is(
-    object <- n2k_inla(
-      result.datasource.id = this.result.datasource.id,
-      scheme.id = this.scheme.id,
-      species.group.id = this.species.group.id,
-      location.group.id = this.location.group.id,
-      model.type = this.model.type,
-      formula = this.formula,
-      first.imported.year = this.first.imported.year,
-      last.imported.year = this.last.imported.year,
-      analysis.date = this.analysis.date,
-      data = dataset,
-      lin.comb = this.lc
+    n2k_inla(
+      data = dataset, result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id, model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = as.integer(format(Sys.time(), "%Y")),
+      last_imported_year = as.integer(format(Sys.time(), "%Y")),
+      analysis_date = this_analysis_date, scheme_id = this_scheme_id
     ),
     "n2kInla"
   )
-  it("adds them to the object", {
-    expect_identical(
-      object@LinearCombination,
-      this.lc
+})
+
+test_that("n2k_inla() sets the correct last_imported_year", {
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    )@AnalysisMetadata$last_imported_year,
+    is_identical_to(this_last_imported_year)
+  )
+})
+test_that("n2k_inla() converts numeric last_imported_year, when possible", {
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = as.numeric(this_last_imported_year),
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    )@AnalysisMetadata$last_imported_year,
+    is_identical_to(this_last_imported_year)
+  )
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year + 0.1,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    ),
+    throws_error(
+      "last_imported_year is not a count \\(a single positive integer\\)" # nolint: nonportable_path_linter, line_length_linter.
     )
-  })
+  )
+})
+test_that("n2k_inla() checks that last_imported_year is from the past", {
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = as.integer(format(Sys.time(), "%Y")) + 1,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    ),
+    throws_error("last_imported_year from the future")
+  )
+})
+test_that(
+  "n2k_inla() checks that last_imported_year is not earlier than
+  first_imported_year ", {
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = 2000,
+      last_imported_year = 1999,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    ),
+    throws_error("first_imported_year cannot exceed last_imported_year")
+  )
+})
+
+test_that("n2k_inla() sets the correct duration", {
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      duration = this_duration,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    )@AnalysisMetadata$duration,
+    is_identical_to(this_duration)
+  )
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    )@AnalysisMetadata$duration,
+    is_identical_to(this_last_imported_year - this_first_imported_year + 1L)
+  )
+})
+test_that("n2k_inla() converts numeric duration, when possible", {
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      last_analysed_year = this_last_analysed_year,
+      duration = as.numeric(this_duration),
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    )@AnalysisMetadata$duration,
+    is_identical_to(this_duration)
+  )
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      duration = this_duration + 0.1,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    ),
+    throws_error("duration is not a count \\(a single positive integer\\)") # nolint: nonportable_path_linter, line_length_linter.
+  )
+})
+test_that(
+"n2k_inla() checks that duration is not outside the FirstImportYear -
+last_imported_year ranges", {
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = 1999,
+      last_imported_year = 1999,
+      duration = 2,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    ),
+    throws_error(
+      "duration longer than the interval from first_imported_year to"
+    )
+  )
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = 1999,
+      last_imported_year = 1999,
+      duration = 0,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    ),
+    throws_error(
+      "duration is not a count \\(a single positive integer\\)" # nolint: nonportable_path_linter, line_length_linter.
+    )
+  )
+})
+
+test_that("sets the correct last_analysed_year", {
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      last_analysed_year = this_last_analysed_year,
+      duration = 1L,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    )@AnalysisMetadata$last_analysed_year,
+    is_identical_to(this_last_analysed_year)
+  )
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    )@AnalysisMetadata$last_analysed_year,
+    is_identical_to(this_last_imported_year)
+  )
+})
+test_that("n2k_inla() converts numeric last_analysed_year, when possible", {
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      last_analysed_year = as.numeric(this_last_analysed_year),
+      duration = 1,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    )@AnalysisMetadata$last_analysed_year,
+    is_identical_to(this_last_analysed_year)
+  )
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      duration = 1,
+      last_analysed_year = this_last_analysed_year + 0.1,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    ),
+    throws_error(
+      "last_analysed_year is not a count \\(a single positive integer\\)" # nolint: nonportable_path_linter, line_length_linter.
+    )
+  )
+})
+test_that("n2k_inla() checks that last_analysed_year is within the range", {
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      duration = 1,
+      last_analysed_year = this_last_imported_year + 1,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    ),
+    throws_error("last_analysed_year cannot exceed last_imported_year")
+  )
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      last_analysed_year = this_first_imported_year + this_duration - 2,
+      duration = this_duration,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    ),
+    throws_error("last_analysed_year smaller than first_imported_year")
+  )
+})
+
+test_that("n2k_inla() checks if analysis date is from the past", {
+  expect_that(
+    n2k_inla(
+      data = dataset,
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = Sys.time() + 24 * 60 * 60,
+      scheme_id = this_scheme_id
+    ),
+    throws_error("analysis_date must be in the past")
+  )
+})
+test_that(
+  "n2k_inla() checks if all variable in formula are available in the data", {
+  expect_that(
+    n2k_inla(
+      data = dataset[, c("A", "B", "C", "D", "E", "G")],
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    ),
+    throws_error("Response variable is missing from data")
+  )
+  expect_that(
+    n2k_inla(
+      data = dataset[, c("Count", "B", "C", "D", "E", "G")],
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    ),
+    throws_error("object@Data does not have .*name.*A")
+  )
+  expect_that(
+    n2k_inla(
+      data = dataset[, c("Count", "A", "B", "C", "D", "E")],
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    ),
+    throws_error("object@Data does not have .*name.*G")
+  )
+  expect_that(
+    n2k_inla(
+      data = dataset[, c("A", "B", "C", "Count", "E", "G")],
+      result_datasource_id = this_result_datasource_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date,
+      scheme_id = this_scheme_id
+    ),
+    throws_error("object@Data does not have .*name.*D")
+  )
+})
+
+object_model <- n2k_inla(
+  data = object, model_fit = model_object, status = "converged"
+)
+test_that("n2k_inla() keeps the objects", {
+  expect_that(
+    object_model@Data,
+    is_identical_to(dataset)
+  )
+  expect_equal(
+    object_model@Model$summary.fixed,
+    model_truth$summary.fixed,
+    tolerance = 1e-3
+  )
+  expect_equal(
+    object_model@Model$summary.random,
+    model_truth$summary.random,
+    tolerance = 1e-2
+  )
+  expect_that(
+    object_model@Model,
+    is_identical_to(model_object)
+  )
+  expect_that(
+    object_model@AnalysisMetadata$seed,
+    is_identical_to(object@AnalysisMetadata$seed)
+  )
+  expect_that(
+    n2k_inla(
+      data = object, model_fit = model_object, status = "converged", seed = 1
+    )@AnalysisMetadata$seed,
+    is_identical_to(object@AnalysisMetadata$seed)
+  )
+  expect_that(
+    object_model@AnalysisMetadata$scheme_id,
+    is_identical_to(object@AnalysisMetadata$scheme_id)
+  )
+  expect_that(
+    n2k_inla(
+      data = object,
+      model_fit = model_object,
+      status = "converged",
+      scheme_id = 999
+    )@AnalysisMetadata$scheme_id,
+    is_identical_to(object@AnalysisMetadata$scheme_id)
+  )
+  expect_that(
+    object_model@AnalysisMetadata$species_group_id,
+    is_identical_to(object@AnalysisMetadata$species_group_id)
+  )
+  expect_that(
+    n2k_inla(
+      data = object,
+      model_fit = model_object,
+      status = "converged",
+      species_group_id = sha1(LETTERS)
+    )@AnalysisMetadata$species_group_id,
+    is_identical_to(object@AnalysisMetadata$species_group_id)
+  )
+  expect_that(
+    object_model@AnalysisMetadata$location_group_id,
+    is_identical_to(object@AnalysisMetadata$location_group_id)
+  )
+  expect_that(
+    n2k_inla(
+      data = object,
+      model_fit = model_object,
+      status = "converged",
+      location_group_id = sha1(LETTERS)
+    )@AnalysisMetadata$location_group_id,
+    is_identical_to(object@AnalysisMetadata$location_group_id)
+  )
+  expect_that(
+    object_model@AnalysisMetadata$model_type,
+    is_identical_to(object@AnalysisMetadata$model_type)
+  )
+  expect_that(
+    n2k_inla(
+      data = object,
+      model_fit = model_object,
+      status = "converged",
+      model_type = 999
+    )@AnalysisMetadata$model_type,
+    is_identical_to(object@AnalysisMetadata$model_type)
+  )
+  expect_that(
+    object_model@AnalysisMetadata$Covariate,
+    is_identical_to(object@AnalysisMetadata$Covariate)
+  )
+  expect_that(
+    n2k_inla(
+      data = object,
+      model_fit = model_object,
+      status = "converged",
+      covariate = 999
+    )@AnalysisMetadata$Covariate,
+    is_identical_to(object@AnalysisMetadata$Covariate)
+  )
+  expect_that(
+    object_model@AnalysisMetadata$first_imported_year,
+    is_identical_to(object@AnalysisMetadata$first_imported_year)
+  )
+  expect_that(
+    object_model@AnalysisMetadata$duration,
+    is_identical_to(object@AnalysisMetadata$duration)
+  )
+  expect_that(
+    n2k_inla(
+      data = object,
+      model_fit = model_object,
+      status = "converged",
+      duration = 999
+    )@AnalysisMetadata$duration,
+    is_identical_to(object@AnalysisMetadata$duration)
+  )
+  expect_that(
+    n2k_inla(
+      data = object,
+      model_fit = model_object,
+      status = "converged",
+      first_imported_year = 999
+    )@AnalysisMetadata$first_imported_year,
+    is_identical_to(object@AnalysisMetadata$first_imported_year)
+  )
+  expect_that(
+    object_model@AnalysisMetadata$last_imported_year,
+    is_identical_to(object@AnalysisMetadata$last_imported_year)
+  )
+  expect_that(
+    n2k_inla(
+      data = object,
+      model_fit = model_object,
+      status = "converged",
+      last_imported_year = 999
+    )@AnalysisMetadata$last_imported_year,
+    is_identical_to(object@AnalysisMetadata$last_imported_year)
+  )
+  expect_that(
+    object_model@AnalysisMetadata$last_analysed_year,
+    is_identical_to(object@AnalysisMetadata$last_analysed_year)
+  )
+  expect_that(
+    n2k_inla(
+      data = object,
+      model_fit = model_object,
+      status = "converged",
+      last_analysed_year = 3000
+    )@AnalysisMetadata$last_analysed_year,
+    is_identical_to(object@AnalysisMetadata$last_analysed_year)
+  )
+  expect_that(
+    object_model@AnalysisMetadata$analysis_date,
+    is_identical_to(object@AnalysisMetadata$analysis_date)
+  )
+  expect_that(
+    n2k_inla(
+      data = object,
+      model_fit = model_object,
+      status = "converged",
+      analysis.data = 999
+    )@AnalysisMetadata$analysis_date,
+    is_identical_to(object@AnalysisMetadata$analysis_date)
+  )
+})
+test_that("n2k_inla() stores the new status", {
+  expect_that(
+    object_model@AnalysisMetadata$status,
+    is_identical_to("converged")
+  )
+  expect_that(
+    n2k_inla(
+      data = object, model_fit = model_object, status = "junk"
+    ),
+    throws_error("status must be one of the following")
+  )
+})
+model_other <- INLA::inla(
+  Count ~ A * (B + C) + C:D +
+    f(E, model = "rw1", replicate = as.integer(A)) +
+    f(G, model = "iid"),
+  data = object@Data, family = "nbinomial"
+)
+test_that("n2k_inla() checks if the family matches", {
+  expect_that(
+    n2k_inla(
+      data = object, model_fit = model_other, status = "converged"
+    ),
+    throws_error("Model of the wrong family")
+  )
+})
+test_that("n2kInla handles linear combinations", {
+  expect_error(
+    n2k_inla(
+      result_datasource_id = this_result_datasource_id,
+      scheme_id = this_scheme_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date,
+      data = dataset,
+      lin_comb = "junk"
+    ),
+    "lin_comb must be either a list or a matrix"
+  )
+  expect_is(
+    object <- n2k_inla(
+      result_datasource_id = this_result_datasource_id,
+      scheme_id = this_scheme_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date,
+      data = dataset,
+      lin_comb = this_lc
+    ),
+    "n2kInla"
+  )
+  expect_identical(
+    object@LinearCombination,
+    this_lc
+  )
 
   expect_error(
     n2k_inla(
-      result.datasource.id = this.result.datasource.id,
-      scheme.id = this.scheme.id,
-      species.group.id = this.species.group.id,
-      location.group.id = this.location.group.id,
-      model.type = this.model.type,
-      formula = this.formula,
-      first.imported.year = this.first.imported.year,
-      last.imported.year = this.last.imported.year,
-      analysis.date = this.analysis.date,
+      result_datasource_id = this_result_datasource_id,
+      scheme_id = this_scheme_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date,
       data = dataset,
-      lin.comb = this.lc,
-      replicate.name = "junk"
+      lin_comb = this_lc,
+      replicate_name = "junk"
     ),
-    "replicate\\.name is not a list"
+    "replicate\\_name is not a list" # nolint: nonportable_path_linter.
   )
   expect_error(
     n2k_inla(
-      result.datasource.id = this.result.datasource.id,
-      scheme.id = this.scheme.id,
-      species.group.id = this.species.group.id,
-      location.group.id = this.location.group.id,
-      model.type = this.model.type,
-      formula = this.formula,
-      first.imported.year = this.first.imported.year,
-      last.imported.year = this.last.imported.year,
-      analysis.date = this.analysis.date,
+      result_datasource_id = this_result_datasource_id,
+      scheme_id = this_scheme_id,
+      species_group_id = this_species_group_id,
+      location_group_id = this_location_group_id,
+      model_type = this_model_type,
+      formula = this_formula,
+      first_imported_year = this_first_imported_year,
+      last_imported_year = this_last_imported_year,
+      analysis_date = this_analysis_date,
       data = dataset,
-      lin.comb = this.lc,
-      replicate.name = list("junk")
+      lin_comb = this_lc,
+      replicate_name = list("junk")
     ),
-    "replicate\\.name must have names"
+    "replicate\\_name must have names" # nolint: nonportable_path_linter.
   )
 })

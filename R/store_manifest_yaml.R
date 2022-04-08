@@ -1,7 +1,7 @@
-#' Store a docker configuration
+#' Store a Docker configuration
 #' @inheritParams store_manifest
 #' @param docker the docker image to use
-#' @param dependencies extra github package to install
+#' @param dependencies extra GitHub packages to install
 #' @name store_manifest_yaml
 #' @rdname store_manifest_yaml
 #' @exportMethod store_manifest_yaml
@@ -88,7 +88,8 @@ setMethod(
     list(github = dependencies, docker = docker, bucket = base,
          project = project, hash = basename(stored)) -> yaml
     filename <- gsub("\\.manifest", ".yaml", stored) %>%
-      gsub(pattern = "(.*/)manifest(/.*)", replacement = "\\1yaml\\2")
+      gsub(pattern = "(.*/)manifest(/.*)", replacement = "\\1yaml\\2") %>%
+      normalizePath(winslash = "/", mustWork = FALSE)
     if (file.exists(filename)) {
       return(filename)
     }

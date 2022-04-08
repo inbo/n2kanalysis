@@ -1,5 +1,5 @@
-#' Get the file fingerprint of a n2kModel object
-#' @param x the n2kModel object
+#' Get the file fingerprint of an `n2kModel` object
+#' @param x the `n2kModel` object
 #' @return the file fingerprint of the object
 #' @name get_file_fingerprint
 #' @rdname get_file_fingerprint
@@ -16,19 +16,19 @@ setGeneric(
 #' @rdname get_file_fingerprint
 #' @aliases get_file_fingerprint,n2kAnalysisMetadata-methods
 #' @importFrom methods setMethod new
-#' @include n2kAnalysisMetadata_class.R
+#' @include n2k_analysis_metadata_class.R
 setMethod(
   f = "get_file_fingerprint",
   signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x) {
-    return(x@AnalysisMetadata$FileFingerprint)
+    return(x@AnalysisMetadata$file_fingerprint)
   }
 )
 
 #' @rdname get_file_fingerprint
 #' @aliases get_file_fingerprint,n2kManifest-methods
 #' @importFrom methods setMethod new
-#' @include n2kManifest_class.R
+#' @include n2k_manifest_class.R
 setMethod(
   f = "get_file_fingerprint",
   signature = signature(x = "n2kManifest"),

@@ -13,9 +13,9 @@ select_observed_range <- function(observation, variable) {
   variable <- check_character(
     x = variable,
     name = "variable",
-    na.action = na.fail
+    na_action = na.fail
   )
-  junk <- check_dataframe_variable(
+  check_dataframe_variable(
     df = observation,
     variable = c("Count", variable),
     name = "observation",
@@ -27,11 +27,11 @@ select_observed_range <- function(observation, variable) {
     )
   }
 
-  observed.range <- range(
+  observed_range <- range(
     observation[observation$Count > 0, variable],
     na.rm = TRUE
   )
-  selection <- observed.range[1] <= observation[, variable] &
-    observation[, variable] <= observed.range[2]
+  selection <- observed_range[1] <= observation[, variable] &
+    observation[, variable] <= observed_range[2]
   return(observation[selection, ])
 }

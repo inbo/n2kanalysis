@@ -1,278 +1,155 @@
-context("get_result")
-temp.dir <- tempdir()
-this.result.datasource.id <- sha1(sample(letters))
-this.scheme.id <- sha1(sample(letters))
-this.species.group.id <- sha1(sample(letters))
-this.location.group.id <- sha1(sample(letters))
-this.analysis.date <- Sys.time()
-this.first.imported.year <- 1990L
-this.last.imported.year <- 2015L
-this.last.analysed.year <- 2014L
-this.duration <- 1L
-this.datasource <- sha1(letters)
-dataset <- test_data(this.datasource)
-describe("get_result on n2kInla", {
-  this.model.type <- "inla nbinomial: period + herd"
-  this.formula <-
+test_that("get_result on n2kInla", {
+  expect_error(
+    get_result("junk"),
+    "'x' is neither an existing file, neither an existing directory"
+  )
+
+  temp_dir <- tempfile("get_result_n2kInla")
+  dir.create(temp_dir)
+  this_result_datasource_id <- sha1(sample(letters))
+  this_scheme_id <- sha1(sample(letters))
+  this_species_group_id <- sha1(sample(letters))
+  this_location_group_id <- sha1(sample(letters))
+  this_analysis_date <- Sys.time()
+  this_first_imported_year <- 1990L
+  this_last_imported_year <- 2015L
+  this_last_analysed_year <- 2014L
+  this_duration <- 1L
+  this_datasource <- sha1(letters)
+  dataset <- test_data(this_datasource)
+
+  this_model_type <- "inla nbinomial: A * B + E"
+  this_formula <-
     "Count ~
       A * (B + C) + C:D +
       f(E, model = 'rw1', replicate = as.integer(A)) +
-      f(F, model = 'iid')"
+      f(G, model = 'iid')"
   analysis <- n2k_inla(
-    result.datasource.id = this.result.datasource.id,
-    scheme.id = this.scheme.id,
-    species.group.id = this.species.group.id,
-    location.group.id = this.location.group.id,
-    family = "nbinomial",
-    model.type = this.model.type,
-    formula = this.formula,
-    first.imported.year = this.first.imported.year,
-    last.imported.year = this.last.imported.year,
-    analysis.date = this.analysis.date,
-    data = dataset
+    result_datasource_id = this_result_datasource_id,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, family = "nbinomial",
+    model_type = this_model_type, formula = this_formula,
+    first_imported_year = this_first_imported_year,
+    last_imported_year = this_last_imported_year,
+    analysis_date = this_analysis_date, data = dataset
   )
   result <- get_result(
-    analysis,
-    datasource.id = this.datasource,
-    verbose = FALSE
+    analysis, datasource_id = this_datasource, verbose = FALSE
   )
-  it("return a n2kResult", {
-    expect_is(result, "n2kResult")
-  })
-  it("returns senbile output on unfitted objects", {
-    expect_identical(
-      nrow(result@Parameter),
-      0L
-    )
-    expect_identical(
-      nrow(result@Contrast),
-      0L
-    )
-    expect_identical(
-      nrow(result@Anomaly),
-      0L
-    )
-  })
-  filename <- store_model(analysis, base = temp.dir, project = "get_result")
+  expect_is(result, "n2kResult")
+  expect_identical(nrow(result@Parameter), 0L)
+  expect_identical(nrow(result@Contrast), 0L)
+  expect_identical(nrow(result@Anomaly), 0L)
+
+  filename <- store_model(analysis, base = temp_dir, project = "get_result")
   expect_equal(
-    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
+    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
     result
   )
   fit_model(filename, verbose = FALSE)
   filename <- gsub(pattern = "new", replacement = "converged", filename)
   result <- get_result(
-    readRDS(filename),
-    datasource.id = this.datasource,
-    verbose = FALSE
+    readRDS(filename), datasource_id = this_datasource, verbose = FALSE
   )
-  it("return a n2kResult", {
-    expect_is(result, "n2kResult")
-  })
-  it("returns senbile output on fitted objects", {
-    expect_lt(
-      0,
-      nrow(result@Parameter)
-    )
-    expect_identical(
-      nrow(result@Contrast),
-      0L
-    )
-    expect_lt(
-      0,
-      nrow(result@Anomaly)
-    )
-  })
+  expect_is(result, "n2kResult")
+  expect_lt(0, nrow(result@Parameter))
+  expect_identical(nrow(result@Contrast), 0L)
+  expect_lt(0, nrow(result@Anomaly))
   expect_equal(
-    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
+    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
     result
   )
 
   # with linear combination
-  lin.comb <- dataset %>%
-    filter(
-      .data$C == max(.data$C),
-      .data$D == max(.data$D)
-    ) %>%
+  lin_comb <- dataset %>%
+    filter(.data$C == max(.data$C), .data$D == max(.data$D)) %>%
     select("A", "B", "C", "D") %>%
     distinct() %>%
     model.matrix(object = ~A * (B + C) + C:D)
-  rownames(lin.comb) <- seq_len(nrow(lin.comb))
-  this.parent <- "abcd"
+  rownames(lin_comb) <- seq_len(nrow(lin_comb))
+  this_parent <- "abcd"
   analysis <- n2k_inla(
-    result.datasource.id = this.result.datasource.id,
-    scheme.id = this.scheme.id,
-    species.group.id = this.species.group.id,
-    location.group.id = this.location.group.id,
-    family = "nbinomial",
-    model.type = this.model.type,
-    formula = this.formula,
-    first.imported.year = this.first.imported.year,
-    last.imported.year = this.last.imported.year,
-    analysis.date = this.analysis.date,
-    data = dataset,
-    lin.comb = lin.comb,
-    parent = this.parent
+    result_datasource_id = this_result_datasource_id,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, family = "nbinomial",
+    model_type = this_model_type, formula = this_formula,
+    first_imported_year = this_first_imported_year,
+    last_imported_year = this_last_imported_year,
+    analysis_date = this_analysis_date, data = dataset, lin_comb = lin_comb,
+    parent = this_parent
   )
-  result <- get_result(
-    analysis,
-    datasource.id = this.datasource,
-    verbose = FALSE
+  result2 <- get_result(
+    analysis, datasource_id = this_datasource, verbose = FALSE
   )
-  it("return a n2kResult", {
-    expect_is(result, "n2kResult")
-  })
-  it("returns senbile output on unfitted objects", {
-    expect_identical(
-      nrow(result@Parameter),
-      0L
-    )
-    expect_identical(
-      nrow(result@Contrast),
-      nrow(lin.comb)
-    )
-    expect_identical(
-      nrow(result@ContrastCoefficient),
-      0L
-    )
-    expect_identical(
-      nrow(result@ContrastEstimate),
-      0L
-    )
-    expect_identical(
-      nrow(result@Anomaly),
-      0L
-    )
-  })
-  filename <- store_model(analysis, base = temp.dir, project = "get_result")
+  expect_is(result2, "n2kResult")
+  expect_identical(nrow(result2@Parameter), 0L)
+  expect_identical(nrow(result2@Contrast), nrow(lin_comb))
+  expect_identical(nrow(result2@ContrastCoefficient), 0L)
+  expect_identical(nrow(result2@ContrastEstimate), 0L)
+  expect_identical(nrow(result2@Anomaly), 0L)
+
+  filename <- store_model(analysis, base = temp_dir, project = "get_result")
   expect_equal(
-    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
-    result
+    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
+    result2
   )
   fit_model(filename, verbose = FALSE)
   filename <- gsub(pattern = "new", replacement = "converged", filename)
-  result <- get_result(
-    readRDS(filename),
-    datasource.id = this.datasource,
-    verbose = FALSE
+  result2 <- get_result(
+    readRDS(filename), datasource_id = this_datasource, verbose = FALSE
   )
-  it("return a n2kResult", {
-    expect_is(result, "n2kResult")
-  })
-  it("returns senbile output on fitted objects", {
-    expect_lt(
-      0,
-      nrow(result@Parameter)
-    )
-    expect_identical(
-      nrow(result@Contrast),
-      nrow(lin.comb)
-    )
-    expect_lt(
-      0,
-      nrow(result@ContrastCoefficient)
-    )
-    expect_lt(
-      0,
-      nrow(result@ContrastEstimate)
-    )
-    expect_lt(
-      0,
-      nrow(result@Anomaly)
-    )
-  })
+  expect_is(result2, "n2kResult")
+  expect_lt(0, nrow(result2@Parameter))
+  expect_identical(nrow(result2@Contrast), nrow(lin_comb))
+  expect_lt(0, nrow(result2@ContrastCoefficient))
+  expect_lt(0, nrow(result2@ContrastEstimate))
+  expect_lt(0, nrow(result2@Anomaly))
   expect_equal(
-    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
-    result
+    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
+    result2
   )
 
   # with linear combination as list of vectors
-  lin.comb <- as.list(as.data.frame(lin.comb))
-  names(lin.comb[[1]]) <- seq_along(lin.comb[[1]])
+  lin_comb <- as.list(as.data.frame(lin_comb))
+  names(lin_comb[[1]]) <- seq_along(lin_comb[[1]])
   analysis <- n2k_inla(
-    result.datasource.id = this.result.datasource.id,
-    scheme.id = this.scheme.id,
-    species.group.id = this.species.group.id,
-    location.group.id = this.location.group.id,
-    family = "nbinomial",
-    model.type = this.model.type,
-    formula = this.formula,
-    first.imported.year = this.first.imported.year,
-    last.imported.year = this.last.imported.year,
-    analysis.date = this.analysis.date,
-    data = dataset,
-    lin.comb = lin.comb,
-    parent = this.parent
+    result_datasource_id = this_result_datasource_id,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, family = "nbinomial",
+    model_type = this_model_type, formula = this_formula,
+    first_imported_year = this_first_imported_year,
+    last_imported_year = this_last_imported_year,
+    analysis_date = this_analysis_date, data = dataset, lin_comb = lin_comb,
+    parent = this_parent
   )
-  result <- get_result(
-    analysis,
-    datasource.id = this.datasource,
-    verbose = FALSE
+  result3 <- get_result(
+    analysis, datasource_id = this_datasource, verbose = FALSE
   )
-  it("return a n2kResult", {
-    expect_is(result, "n2kResult")
-  })
-  it("returns senbile output on unfitted objects", {
-    expect_identical(
-      nrow(result@Parameter),
-      0L
-    )
-    expect_identical(
-      nrow(result@Contrast),
-      length(lin.comb[[1]])
-    )
-    expect_identical(
-      nrow(result@ContrastCoefficient),
-      0L
-    )
-    expect_identical(
-      nrow(result@ContrastEstimate),
-      0L
-    )
-    expect_identical(
-      nrow(result@Anomaly),
-      0L
-    )
-  })
-  filename <- store_model(analysis, base = temp.dir, project = "get_result")
+  expect_is(result3, "n2kResult")
+  expect_identical(nrow(result3@Parameter), 0L)
+  expect_identical(nrow(result3@Contrast), length(lin_comb[[1]]))
+  expect_identical(nrow(result3@ContrastCoefficient), 0L)
+  expect_identical(nrow(result3@ContrastEstimate), 0L)
+  expect_identical(nrow(result3@Anomaly), 0L)
+  filename <- store_model(analysis, base = temp_dir, project = "get_result")
   expect_equal(
-    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
-    result
+    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
+    result3
   )
   fit_model(filename, verbose = FALSE)
   filename <- gsub(pattern = "new", replacement = "converged", filename)
-  result <- get_result(
-    readRDS(filename),
-    datasource.id = this.datasource,
-    verbose = FALSE
+  result3 <- get_result(
+    readRDS(filename), datasource_id = this_datasource, verbose = FALSE
   )
-  it("return a n2kResult", {
-    expect_is(result, "n2kResult")
-  })
-  it("returns senbile output on fitted objects", {
-    expect_lt(
-      0,
-      nrow(result@Parameter)
-    )
-    expect_identical(
-      nrow(result@Contrast),
-      length(lin.comb[[1]])
-    )
-    expect_lt(
-      0,
-      nrow(result@ContrastCoefficient)
-    )
-    expect_lt(
-      0,
-      nrow(result@ContrastEstimate)
-    )
-    expect_lt(
-      0,
-      nrow(result@Anomaly)
-    )
-  })
+  expect_is(result3, "n2kResult")
+  expect_lt(0, nrow(result3@Parameter))
+  expect_identical(nrow(result3@Contrast), length(lin_comb[[1]]))
+  expect_lt(0, nrow(result3@ContrastCoefficient))
+  expect_lt(0, nrow(result3@ContrastEstimate))
+  expect_lt(0, nrow(result3@Anomaly))
   expect_equal(
-    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
-    result
+    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
+    result3
   )
 
 
@@ -291,289 +168,62 @@ describe("get_result on n2kInla", {
     unlist() %>%
     unname()
   rownames(lc_e) <- seq_len(nrow(lc_e))
-  lin.comb <- list(
+  lin_comb <- list(
     E = lc_e,
-    F = matrix(c(1, 0, 0), byrow = TRUE, ncol = 3, nrow = nrow(lc_e))
+    G = matrix(c(1, 0, 0), byrow = TRUE, ncol = 3, nrow = nrow(lc_e))
   )
   analysis <- n2k_inla(
-    result.datasource.id = this.result.datasource.id,
-    scheme.id = this.scheme.id,
-    species.group.id = this.species.group.id,
-    location.group.id = this.location.group.id,
-    model.type = this.model.type,
-    family = "nbinomial",
-    formula = this.formula,
-    first.imported.year = this.first.imported.year,
-    last.imported.year = this.last.imported.year,
-    analysis.date = this.analysis.date,
-    data = dataset,
-    lin.comb = lin.comb,
-    replicate.name = list(
-      E = levels(dataset$A)
-    ),
-    parent = this.parent
+    result_datasource_id = this_result_datasource_id,
+    scheme_id = this_scheme_id, species_group_id = this_species_group_id,
+    location_group_id = this_location_group_id, model_type = this_model_type,
+    family = "nbinomial", formula = this_formula,
+    first_imported_year = this_first_imported_year,
+    last_imported_year = this_last_imported_year,
+    analysis_date = this_analysis_date, data = dataset, lin_comb = lin_comb,
+    replicate_name = list(E = levels(dataset$A)),
+    parent = this_parent
   )
-  result <- get_result(
-    analysis,
-    datasource.id = this.datasource,
-    verbose = FALSE
+  result4 <- get_result(
+    analysis, datasource_id = this_datasource, verbose = FALSE
   )
-  it("return a n2kResult", {
-    expect_is(result, "n2kResult")
-  })
-  it("returns senbile output on unfitted objects", {
-    expect_identical(
-      nrow(result@Parameter),
-      0L
-    )
-    expect_identical(
-      nrow(result@Contrast),
-      nrow(lin.comb[[1]])
-    )
-    expect_identical(
-      nrow(result@ContrastCoefficient),
-      0L
-    )
-    expect_identical(
-      nrow(result@ContrastEstimate),
-      0L
-    )
-    expect_identical(
-      nrow(result@Anomaly),
-      0L
-    )
-  })
-  filename <- store_model(analysis, base = temp.dir, project = "get_result")
+  expect_is(result4, "n2kResult")
+  expect_identical(nrow(result4@Parameter), 0L)
+  expect_identical(nrow(result4@Contrast), nrow(lin_comb[[1]]))
+  expect_identical(nrow(result4@ContrastCoefficient), 0L)
+  expect_identical(nrow(result4@ContrastEstimate), 0L)
+  expect_identical(nrow(result4@Anomaly), 0L)
+  filename <- store_model(analysis, base = temp_dir, project = "get_result")
   expect_equal(
-    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
-    result
+    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
+    result4
   )
   fit_model(filename, verbose = FALSE)
   filename <- gsub(pattern = "new", replacement = "converged", filename)
-  result <- get_result(
-    readRDS(filename),
-    datasource.id = this.datasource,
-    verbose = FALSE
+  result4 <- get_result(
+    readRDS(filename), datasource_id = this_datasource, verbose = FALSE
   )
-  it("return a n2kResult", {
-    expect_is(result, "n2kResult")
-  })
-  it("returns senbile output on fitted objects", {
-    expect_lt(
-      0,
-      nrow(result@Parameter)
-    )
-    expect_identical(
-      nrow(result@Contrast),
-      nrow(lin.comb[[1]])
-    )
-    expect_lt(
-      0,
-      nrow(result@ContrastCoefficient)
-    )
-    expect_lt(
-      0,
-      nrow(result@ContrastEstimate)
-    )
-    expect_lt(
-      0,
-      nrow(result@Anomaly)
-    )
-  })
+  expect_is(result4, "n2kResult")
+  expect_lt(0, nrow(result4@Parameter))
+  expect_identical(nrow(result4@Contrast), nrow(lin_comb[[1]]))
+  expect_lt(0, nrow(result4@ContrastCoefficient))
+  expect_lt(0, nrow(result4@ContrastEstimate))
+  expect_lt(0, nrow(result4@Anomaly))
   expect_equal(
-    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
-    result
+    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
+    result4
   )
+
+  expect_is(
+    combined_result <- combine(result, result2, result3, result4),
+    "n2kResult"
+  )
+  expect_identical(
+    get_file_fingerprint(combined_result),
+    sort(c(
+      get_file_fingerprint(result), get_file_fingerprint(result2),
+      get_file_fingerprint(result3), get_file_fingerprint(result4)
+    ))
+  )
+  # clean temp files
+  file.remove(list.files(temp_dir, recursive = TRUE, full.names = TRUE))
 })
-
-expect_error(
-  get_result("junk"),
-  "'x' is neither an existing file, neither an existing directory"
-)
-expect_is(
-  get_result(
-    temp.dir,
-    datasource.id = this.datasource,
-    n.cluster = 1,
-    verbose = FALSE
-  ),
-  "n2kResult"
-)
-# nolint start
-# expect_is(
-#   get_result(temp.dir, datasource.id = this.datasource, n.cluster = 2),
-#   "n2kResult"
-# )
-# expect_is(
-#   get_result(
-#     temp.dir,
-#     datasource.id = this.datasource,
-#     n.cluster = 2 * parallel::detectCores()
-#   ),
-#   "n2kResult"
-# )
-# expect_message(
-#   get_result(
-#     temp.dir,
-#     datasource.id = this.datasource,
-#     n.cluster = 2 * parallel::detectCores()
-#   ),
-#   paste(
-#     "Requesting", 2 * parallel::detectCores(), "clusters but only",
-#     parallel::detectCores(), "available."
-#   )
-# )
-# nolint end
-
-data("cake", package = "lme4")
-cake$ObservationID <- seq_len(nrow(cake))
-cake$DataFieldID <- this.datasource
-describe("get_result on n2kInla with replicated random effects", {
-  this.model.type <- "inla nbinomial: recipe + replicate + temperature"
-  this.formula <-
-"angle ~ recipe + f(replicate, model = \"iid\") +
-  f(as.integer(temperature), model = \"rw1\", replicate = as.integer(recipe))"
-  analysis <- n2k_inla(
-    result.datasource.id = this.result.datasource.id,
-    scheme.id = this.scheme.id,
-    species.group.id = this.species.group.id,
-    location.group.id = this.location.group.id,
-    family = "nbinomial",
-    model.type = this.model.type,
-    formula = this.formula,
-    first.imported.year = this.first.imported.year,
-    last.imported.year = this.last.imported.year,
-    analysis.date = this.analysis.date,
-    data = cake
-  )
-  result <- get_result(
-    analysis,
-    datasource.id = this.datasource,
-    verbose = FALSE
-  )
-  it("return a n2kResult", {
-    expect_is(result, "n2kResult")
-  })
-  it("returns senbile output on unfitted objects", {
-    expect_identical(
-      nrow(result@Parameter),
-      0L
-    )
-    expect_identical(
-      nrow(result@Contrast),
-      0L
-    )
-    expect_identical(
-      nrow(result@Anomaly),
-      0L
-    )
-  })
-  filename <- store_model(analysis, base = temp.dir, project = "get_result")
-  expect_equal(
-    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
-    result
-  )
-  fit_model(filename, verbose = FALSE)
-  filename <- gsub(pattern = "new", replacement = "converged", filename)
-  result <- get_result(
-    readRDS(filename),
-    datasource.id = this.datasource,
-    verbose = FALSE
-  )
-  it("return a n2kResult", {
-    expect_is(result, "n2kResult")
-  })
-  it("returns senbile output on fitted objects", {
-    expect_lt(
-      0,
-      nrow(result@Parameter)
-    )
-    expect_identical(
-      nrow(result@Contrast),
-      0L
-    )
-    expect_lt(
-      0,
-      nrow(result@Anomaly)
-    )
-  })
-  expect_equal(
-    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
-    result
-  )
-})
-
-describe("get_result on n2kGlmerPoisson", {
-  this.model.type <- "glmer poisson: period + herd"
-  this.formula <- "Count ~ A * (B + C) + C:D + (1|E) + (1|F)"
-  analysis <- n2k_glmer_poisson(
-    result.datasource.id = this.result.datasource.id,
-    scheme.id = this.scheme.id,
-    species.group.id = this.species.group.id,
-    location.group.id = this.location.group.id,
-    model.type = this.model.type,
-    formula = this.formula,
-    first.imported.year = this.first.imported.year,
-    last.imported.year = this.last.imported.year,
-    analysis.date = this.analysis.date,
-    data = dataset
-  )
-  result <- get_result(
-    analysis,
-    datasource.id = this.datasource,
-    verbose = FALSE
-  )
-  it("return a n2kResult", {
-    expect_is(result, "n2kResult")
-  })
-  it("returns senbile output on unfitted objects", {
-    expect_identical(
-      nrow(result@Parameter),
-      0L
-    )
-    expect_identical(
-      nrow(result@Contrast),
-      0L
-    )
-    expect_identical(
-      nrow(result@Anomaly),
-      0L
-    )
-  })
-  filename <- store_model(analysis, base = temp.dir, project = "get_result")
-  expect_equal(
-    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
-    result
-  )
-  fit_model(filename, verbose = FALSE)
-  filename <- gsub(pattern = "new", replacement = "converged", filename)
-  result <- get_result(
-    readRDS(filename),
-    datasource.id = this.datasource,
-    verbose = FALSE
-  )
-  it("return a n2kResult", {
-    expect_is(result, "n2kResult")
-  })
-  it("returns senbile output on fitted objects", {
-    expect_lt(
-      0,
-      nrow(result@Parameter)
-    )
-    expect_identical(
-      nrow(result@Contrast),
-      0L
-    )
-    expect_lt(
-      0,
-      nrow(result@Anomaly)
-    )
-  })
-  expect_equal(
-    get_result(filename, datasource.id = this.datasource, verbose = FALSE),
-    result
-  )
-})
-
-# clean temp files
-file.remove(list.files(temp.dir, recursive = TRUE, full.names = TRUE))

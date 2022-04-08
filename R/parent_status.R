@@ -1,5 +1,5 @@
-#' Get the parent status of a n2kModel
-#' @param x the n2kModel object
+#' Get the parent status of an `n2kModel`
+#' @param x the `n2kModel` object
 #' @return the parent status of the object
 #' @name parent_status
 #' @rdname parent_status
@@ -16,7 +16,7 @@ setGeneric(
 #' @rdname parent_status
 #' @aliases parent_status,n2kAnalysisMetadata-methods
 #' @importFrom methods setMethod new
-#' @include n2kAnalysisMetadata_class.R
+#' @include n2k_analysis_metadata_class.R
 setMethod(
   f = "parent_status",
   signature = signature(x = "n2kAnalysisMetadata"),
@@ -25,8 +25,8 @@ setMethod(
   }
 )
 
-#' Overwrite the status of a n2kAnalysisMetadata
-#' @param x the n2kAnalysisMetadata object
+#' Overwrite the status of an `n2kAnalysisMetadata`
+#' @param x the `n2kAnalysisMetadata` object
 #' @param value the new values for the status
 #' @name parent_status<-
 #' @rdname parent.status.change
@@ -43,37 +43,16 @@ setGeneric(
 #' @rdname parent.status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kLrtGlmer_class.R
-setReplaceMethod(
-  "parent_status",
-  "n2kLrtGlmer",
-  function(x, value) {
-    x@AnalysisRelation <- value
-    x@StatusFingerprint <- sha1(
-      list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Model,
-        x@Model0,  x@Anova, x@AnalysisMetadata$AnalysisVersion,
-        x@AnalysisRelation
-      )
-    )
-    validObject(x)
-    return(x)
-  }
-)
-
-#' @rdname parent.status.change
-#' @importFrom methods setReplaceMethod
-#' @importFrom digest sha1
-#' @include n2kComposite_class.R
+#' @include n2k_composite_class.R
 setReplaceMethod(
   "parent_status",
   "n2kComposite",
   function(x, value) {
-    x@ParentStatus <- value
-    x@StatusFingerprint <- sha1(
+    x@parent_status <- value
+    x@status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        x@Parameter, x@Index, x@AnalysisMetadata$AnalysisVersion,
+        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status,
+        x@Parameter, x@Index, x@AnalysisMetadata$analysis_version,
         x@AnalysisRelation
       ),
       digits = 6L

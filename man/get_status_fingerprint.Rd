@@ -5,18 +5,18 @@
 \alias{get_status_fingerprint}
 \alias{get_status_fingerprint,n2kAnalysisMetadata-method}
 \alias{get_status_fingerprint,n2kAnalysisMetadata-methods}
-\title{Get the status fingerprint of a n2kModel object}
+\title{Get the status fingerprint of an \code{n2kModel} object}
 \usage{
 get_status_fingerprint(x)
 
 \S4method{get_status_fingerprint}{n2kAnalysisMetadata}(x)
 }
 \arguments{
-\item{x}{the n2kModel object}
+\item{x}{the \code{n2kModel} object}
 }
 \value{
 the status fingerprint of the object
 }
 \description{
-Get the status fingerprint of a n2kModel object
+Get the status fingerprint of an \code{n2kModel} object
 }

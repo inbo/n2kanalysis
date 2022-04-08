@@ -7,7 +7,7 @@
 \alias{get_file_fingerprint,n2kAnalysisMetadata-methods}
 \alias{get_file_fingerprint,n2kManifest-method}
 \alias{get_file_fingerprint,n2kManifest-methods}
-\title{Get the file fingerprint of a n2kModel object}
+\title{Get the file fingerprint of an \code{n2kModel} object}
 \usage{
 get_file_fingerprint(x)
 
@@ -16,11 +16,11 @@ get_file_fingerprint(x)
 \S4method{get_file_fingerprint}{n2kManifest}(x)
 }
 \arguments{
-\item{x}{the n2kModel object}
+\item{x}{the \code{n2kModel} object}
 }
 \value{
 the file fingerprint of the object
 }
 \description{
-Get the file fingerprint of a n2kModel object
+Get the file fingerprint of an \code{n2kModel} object
 }

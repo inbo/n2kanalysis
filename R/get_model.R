@@ -1,5 +1,5 @@
-#' Get the model of a n2kModel object
-#' @param x the n2kModel object
+#' Get the model of a `n2kModel` object
+#' @param x the `n2kModel` object
 #' @return the model of the object
 #' @name get_model
 #' @rdname get_model
@@ -14,21 +14,9 @@ setGeneric(
 )
 
 #' @rdname get_model
-#' @aliases get_model,n2kGlmerPoisson-methods
-#' @importFrom methods setMethod new
-#' @include n2kGlmerPoisson_class.R
-setMethod(
-  f = "get_model",
-  signature = signature(x = "n2kGlmerPoisson"),
-  definition = function(x) {
-    return(x@Model)
-  }
-)
-
-#' @rdname get_model
 #' @aliases get_model,n2kInla-methods
 #' @importFrom methods setMethod new
-#' @include n2kInla_class.R
+#' @include n2k_inla_class.R
 setMethod(
   f = "get_model",
   signature = signature(x = "n2kInla"),

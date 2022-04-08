@@ -1,11 +1,11 @@
-#' Store a n2kModel object
-#' @param x The n2kModel.
+#' Store an `n2kModel` object
+#' @param x The `n2kModel`.
 #' @param base The base location to store the model.
 #' @param project Will be a relative path within the base location.
 #' @param overwrite Should an existing object be overwritten?
-#' Defaults to TRUE.
+#' Defaults to `TRUE`.
 #' @param validate Check that the object is valid before storing it.
-#' Defaults to TRUE.
+#' Defaults to `TRUE`.
 #' @name store_model
 #' @rdname store_model
 #' @exportMethod store_model
@@ -30,6 +30,7 @@ setMethod(
     assert_that(inherits(x, "n2kModel"))
     assert_that(is.string(base))
     assert_that(file_test("-d", base))
+    base <- normalizePath(base, winslash = "/", mustWork = TRUE)
     assert_that(is.string(project))
     assert_that(is.flag(validate))
     if (isTRUE(validate)) {
@@ -40,23 +41,13 @@ setMethod(
     fingerprint <- get_file_fingerprint(x)
     part <- substring(fingerprint, 1, 4)
 
-    #create dir is it doesn't exist
-    dir <- file.path(base, project, part, status) %>%
-      normalizePath(winslash = "/", mustWork = FALSE)
-    if (!dir.exists(dir)) {
-      dir.create(dir, recursive = TRUE)
-    }
-
     current <- file.path(base, project, part) %>%
       normalizePath(winslash = "/", mustWork = FALSE) %>%
       list.files(
         pattern = sprintf("%s.rds$", fingerprint),
-        full.names = TRUE,
-        recursive = TRUE
-      )
-    filename <- sprintf("%s/%s.rds", dir, fingerprint) %>%
-      normalizePath(winslash = "/", mustWork = FALSE)
-
+        full.names = TRUE, recursive = TRUE
+      ) %>%
+      normalizePath(winslash = "/", mustWork = TRUE)
     if (length(current) > 0) {
       if (!overwrite) {
         return(current)
@@ -64,6 +55,13 @@ setMethod(
       file.remove(current)
     }
 
+    filename <- file.path(
+      base, project, part, status, sprintf("%s.rds", fingerprint)
+    ) %>%
+      normalizePath(winslash = "/", mustWork = FALSE)
+    if (!dir.exists(dirname(filename))) {
+      dir.create(dirname(filename), recursive = TRUE)
+    }
     saveRDS(x, file = filename)
     return(filename)
   }
@@ -75,7 +73,7 @@ setMethod(
 #' @importFrom aws.s3 bucket_exists copy_object delete_object get_bucket
 #' s3saveRDS
 #' @importFrom purrr map_chr
-#' @include import_S3_classes.R
+#' @include import_s3_classes.R
 setMethod(
   f = "store_model",
   signature = signature(base = "s3_bucket"),
@@ -105,7 +103,10 @@ setMethod(
       } else {
         old <- existing[hashes == fingerprint]
         backup <- paste0(
-          "abv/backup/", sha1(list(project, fingerprint, status, Sys.time()))
+          file.path(
+            "abv", "backup",
+            sha1(list(project, fingerprint, status, Sys.time())), sep = "/"
+          )
         )
         copy_object(
           from_object = old[1], to_object = backup,
@@ -115,9 +116,7 @@ setMethod(
       }
     }
 
-    filename <- sprintf(
-      "%s/%s/%s/%s.rds", project, part, status, fingerprint
-    )
+    filename <- file.path(project, part, status, sprintf("%s.rds", fingerprint))
 
     # try several times to write to S3 bucket
     # avoids errors due to time out

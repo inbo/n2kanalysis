@@ -1,6 +1,6 @@
 #' Extract the relevant coefficients
 #' @param extractor the extractor function
-#' @param object the n2kModel object
+#' @param object the `n2kModel` object
 #' @param base the optional base location of the object
 #' @param project the optional subdirectory
 #' @return the relevant coefficients
@@ -40,7 +40,7 @@ setMethod(
     }
     parent <- read_model(object, base = base, project = project)
     cbind(
-      Parent = object,
+      parent = object,
       extract(
         extractor = extractor,
         object = parent,
@@ -54,7 +54,7 @@ setMethod(
 #' @rdname extract
 #' @aliases extract,n2kInla-methods
 #' @importFrom methods setMethod new
-#' @include n2kInla_class.R
+#' @include n2k_inla_class.R
 setMethod(
   f = "extract",
   signature = signature(object = "n2kInla"),

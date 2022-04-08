@@ -13,13 +13,12 @@ extract(extractor, object, base, project)
 
 \S4method{extract}{ANY,character}(extractor, object, base, project)
 
-\S4method{extract}{ANY,n2kInla}(extractor, object, base = NULL,
-  project = NULL)
+\S4method{extract}{ANY,n2kInla}(extractor, object, base = NULL, project = NULL)
 }
 \arguments{
 \item{extractor}{the extractor function}
 
-\item{object}{the n2kModel object}
+\item{object}{the \code{n2kModel} object}
 
 \item{base}{the optional base location of the object}
 

@@ -1,5 +1,5 @@
-#' Store a n2kManifest object
-#' @param x the n2kManifest
+#' Store an `n2kManifest` object
+#' @param x the `n2kManifest`
 #' @param base the base location to store the manifest
 #' @param project will be a relative path within the base location
 #' @name store_manifest
@@ -29,7 +29,7 @@ setMethod(
     validObject(x, complete = TRUE)
 
     #create dir is it doesn't exist
-    dir <- sprintf("%s/%s/manifest", base, project) %>%
+    dir <- file.path(base, project, "manifest") %>%
       normalizePath(winslash = "/", mustWork = FALSE)
     if (!dir.exists(dir)) {
       dir.create(dir, recursive = TRUE)
@@ -43,11 +43,11 @@ setMethod(
         full.names = TRUE
       )
     if (length(filename) > 0) {
-      return(filename)
+      return(normalizePath(filename, winslash = "/"))
     }
-    filename <- sprintf("%s/%s.manifest", dir, fingerprint)
+    filename <- file.path(dir, sprintf("%s.manifest", fingerprint))
     write.table(x@Manifest, file = filename, row.names = FALSE, sep = "\t")
-    return(filename)
+    return(normalizePath(filename, winslash = "/"))
   }
 )
 
@@ -56,7 +56,7 @@ setMethod(
 #' @importFrom assertthat assert_that is.string
 #' @importFrom aws.s3 bucket_exists get_bucket s3write_using
 #' @importFrom utils write.table
-#' @include import_S3_classes.R
+#' @include import_s3_classes.R
 setMethod(
   f = "store_manifest",
   signature = signature(base = "s3_bucket"),
@@ -65,10 +65,11 @@ setMethod(
     assert_that(is.string(project))
     validObject(x, complete = TRUE)
 
-    filename <- sprintf(
-      "%s/manifest/%s.manifest",
-      project,
-      get_file_fingerprint(x)
+    filename <- file.path(
+      project, "manifest", sprintf(
+        "%s.manifest",
+        get_file_fingerprint(x)
+      ), fsep = "/"
     )
     # check if object with same fingerprint exists
     existing <- get_bucket(base, prefix = filename)

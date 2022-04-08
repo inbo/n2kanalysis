@@ -5,18 +5,18 @@
 \alias{parent_status}
 \alias{parent_status,n2kAnalysisMetadata-method}
 \alias{parent_status,n2kAnalysisMetadata-methods}
-\title{Get the parent status of a n2kModel}
+\title{Get the parent status of an \code{n2kModel}}
 \usage{
 parent_status(x)
 
 \S4method{parent_status}{n2kAnalysisMetadata}(x)
 }
 \arguments{
-\item{x}{the n2kModel object}
+\item{x}{the \code{n2kModel} object}
 }
 \value{
 the parent status of the object
 }
 \description{
-Get the parent status of a n2kModel
+Get the parent status of an \code{n2kModel}
 }

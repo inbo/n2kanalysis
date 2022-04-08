@@ -1,108 +1,98 @@
 Package: n2kanalysis
 Title: Generic Functions to Analyse Data from the Natura 2000 Monitoring
-Version: 0.2.8
-Date: 2019-12-14
+Version: 0.3.0
 Authors@R: c(
-  person(
-    "Thierry", "Onkelinx", role = c("aut", "cre"), 
-    email = "thierry.onkelinx@inbo.be", 
-    comment = c(ORCID = "0000-0001-8804-4216")),
-  person(
-    family = "Research Institute for Nature and Forest",
-    role = c("cph", "fnd"), email = "info@inbo.be"))
+    person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-8804-4216")),
+    person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
+  )
 Description: All generic functions for the analysis. The full analysis is
     defined in the analysis package of each monitoring scheme.
+License: GPL-3
+URL: https://doi.org/10.5281/zenodo.3576047
+BugReports: https://github.com/inbo/n2kanalysis/issues
 Depends:
     R (>= 3.1.2)
-License: GPL-3
-LazyData: true
-Suggests:
-    littler,
-    Matrix,
-    optimx,
-    parallel,
-    testthat (>= 2.0.1)
 Imports:
+    MASS,
+    RODBC,
     assertthat (>= 0.2.1),
     aws.s3,
     digest (>= 0.6.23.2),
     dplyr,
-    INLA,
-    lme4,
-    MASS,
     methods,
-    multimput (>= 0.2.9),
+    multimput (>= 0.2.10),
+    n2khelper (>= 0.5.0),
     purrr,
-    n2khelper (>= 0.4.3),
     rlang,
-    RODBC,
     tibble,
     tidyr (>= 0.4.0),
     yaml
-Remotes:
-  eddelbuettel/digest,
-  inbo/multimput,
-  inbo/n2khelper,
-  inbo/INLA
+Suggests:
+    INLA (>= 19.09.03),
+    Matrix,
+    littler,
+    parallel,
+    sn,
+    testthat (>= 2.0.1)
+Additional_repositories: https://inla.r-inla-download.org/R/stable,
+    https://inbo.r-universe.dev
+Encoding: UTF-8
+Language: en-GB
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
 Collate: 
-    'n2kParameter_class.R'
-    'n2kAnomaly_class.R'
-    'n2kAnalysisVersion_class.R'
+    'n2k_parameter_class.R'
+    'n2k_anomaly_class.R'
+    'n2k_analysis_version_class.R'
     'combine.R'
-    'n2kContrast_class.R'
-    'n2kAnalysisMetadata_class.R'
-    'n2kResult_class.R'
+    'n2k_contrast_class.R'
+    'n2k_analysis_metadata_class.R'
+    'n2k_result_class.R'
     'combine_result.R'
-    'import_S3_classes.R'
+    'import_s3_classes.R'
     'delete_model.R'
     'display.R'
-    'n2kModel_class.R'
-    'n2kInla_class.R'
+    'n2k_model_class.R'
+    'n2k_inla_class.R'
     'extract.R'
     'fit_every_model.R'
     'fit_model.R'
     'fit_model_character.R'
-    'n2kAggregate_class.R'
-    'fit_model_n2kAggregate.R'
-    'n2kComposite_class.R'
-    'fit_model_n2kComposite.R'
-    'n2kGlmerPoisson_class.R'
-    'fit_model_n2kGlmerPoisson.R'
-    'fit_model_n2kInla.R'
-    'n2kInlaComparison_class.R'
-    'fit_model_n2kInlaComparison.R'
-    'n2kLrtGlmer_class.R'
-    'fit_model_n2kLrtGlmer.R'
-    'n2kManifest_class.R'
-    'fit_model_n2kManifest.R'
-    'n2kModelImputed_class.R'
-    'fit_model_n2kModelImputed.R'
+    'n2k_aggregate_class.R'
+    'fit_model_n2k_aggregate.R'
+    'n2k_composite_class.R'
+    'fit_model_n2k_composite.R'
+    'fit_model_n2k_inla.R'
+    'n2k_inla_comparison_class.R'
+    'fit_model_n2k_inla_comparison.R'
+    'n2k_manifest_class.R'
+    'fit_model_n2k_manifest.R'
+    'n2k_model_imputed_class.R'
+    'fit_model_n2k_model_imputed.R'
     'fit_model_s3_object.R'
     'get_analysis_date.R'
     'get_analysis_version.R'
     'get_anomaly.R'
-    'get_anomaly_n2kGlmerPoisson.R'
-    'get_anomaly_n2kInla.R'
-    'get_anomaly_n2kModel.R'
+    'get_anomaly_n2k_inla.R'
+    'get_anomaly_n2k_model.R'
     'get_data.R'
     'get_file_fingerprint.R'
     'get_formula.R'
     'get_location_group_id.R'
     'get_model.R'
     'get_model_parameter.R'
-    'get_model_parameter_n2kAggregated.R'
-    'get_model_parameter_n2kComposite.R'
-    'get_model_parameter_n2kGlmerPoisson.R'
-    'get_model_parameter_n2kInla.R'
-    'get_model_parameter_n2kInlaComparison.R'
-    'get_model_parameter_n2kLrtGlmer.R'
-    'get_model_parameter_n2kModelImputed.R'
+    'get_model_parameter_n2k_aggregated.R'
+    'get_model_parameter_n2k_composite.R'
+    'get_model_parameter_n2k_inla.R'
+    'get_model_parameter_n2k_inla_comparison.R'
+    'get_model_parameter_n2k_model_imputed.R'
     'get_model_type.R'
     'get_parents.R'
     'get_result.R'
     'get_result_character.R'
-    'get_result_n2kInla.R'
-    'get_result_n2kModel.R'
+    'get_result_n2k_inla.R'
+    'get_result_n2k_model.R'
     'get_result_s3_object.R'
     'get_scheme_id.R'
     'get_seed.R'
@@ -110,14 +100,12 @@ Collate:
     'get_status_fingerprint.R'
     'inla_inverse.R'
     'mark_obsolete_dataset.R'
-    'n2kImport_class.R'
     'n2k_aggregated.R'
     'n2k_composite.R'
-    'n2k_glmer_poisson.R'
+    'n2k_import_class.R'
     'n2k_import.R'
     'n2k_inla.R'
     'n2k_inla_comparison.R'
-    'n2k_lrt_glmer.R'
     'n2k_manifest.R'
     'n2k_model_imputed.R'
     'parent_status.R'
@@ -133,7 +121,4 @@ Collate:
     'store_manifest_yaml.R'
     'store_model.R'
     'union.R'
-    'validOject.R'
-Encoding: UTF-8
-RoxygenNote: 6.1.1
-Roxygen: list(markdown = TRUE)
+    'valid_oject.R'

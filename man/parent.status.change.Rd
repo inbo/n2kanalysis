@@ -3,21 +3,18 @@
 \docType{methods}
 \name{parent_status<-}
 \alias{parent_status<-}
-\alias{parent_status<-,n2kLrtGlmer-method}
 \alias{parent_status<-,n2kComposite-method}
-\title{Overwrite the status of a n2kAnalysisMetadata}
+\title{Overwrite the status of an \code{n2kAnalysisMetadata}}
 \usage{
 parent_status(x) <- value
-
-\S4method{parent_status}{n2kLrtGlmer}(x) <- value
 
 \S4method{parent_status}{n2kComposite}(x) <- value
 }
 \arguments{
-\item{x}{the n2kAnalysisMetadata object}
+\item{x}{the \code{n2kAnalysisMetadata} object}
 
 \item{value}{the new values for the status}
 }
 \description{
-Overwrite the status of a n2kAnalysisMetadata
+Overwrite the status of an \code{n2kAnalysisMetadata}
 }

@@ -1,4 +1,4 @@
-#' Get the object of the parent analyses of a n2kModel object
+#' Get the object of the parent analyses of an `n2kModel` object
 #' @param child the child object
 #' @inheritParams read_model
 #' @importFrom assertthat assert_that
@@ -6,11 +6,11 @@
 get_parents <- function(child, base, project) {
   assert_that(inherits(child, "n2kModel"))
   output <- lapply(
-    child@AnalysisRelation$ParentAnalysis,
+    child@AnalysisRelation$parent_analysis,
     read_model,
     base = base,
     project = project
   )
-  names(output) <- child@AnalysisRelation$ParentAnalysis
+  names(output) <- child@AnalysisRelation$parent_analysis
   return(output)
 }

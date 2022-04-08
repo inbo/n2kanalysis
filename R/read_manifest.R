@@ -1,7 +1,7 @@
-#' Read a n2kManifest object
+#' Read a `n2kManifest` object
 #' @param base The base location to read the manifest.
 #' @param project Will be a relative path within the base location.
-#' @param hash Optinaly the sha1 of the manifest.
+#' @param hash Optional the `sha1` of the manifest.
 #' This can be abbreviated to to first unique characters.
 #' The function will return an error in case of multiple matches.
 #' If missing, then most recent manifest will be returned.
@@ -32,7 +32,7 @@ setMethod(
     assert_that(is.string(project))
 
     #check dir if exists
-    dir <- sprintf("%s/%s/manifest", base, project) %>%
+    dir <- file.path(base, project, "manifest") %>%
       normalizePath(winslash = "/", mustWork = FALSE)
     assert_that(
       dir.exists(dir),
@@ -92,7 +92,7 @@ setMethod(
 #' @importFrom dplyr %>%
 #' @importFrom purrr map_chr
 #' @importFrom utils read.table
-#' @include import_S3_classes.R
+#' @include import_s3_classes.R
 setMethod(
   f = "read_manifest",
   signature = signature(base = "s3_bucket"),

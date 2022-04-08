@@ -5,52 +5,64 @@
 \alias{n2k_inla_comparison}
 \alias{n2k_inla_comparison,data.frame-method}
 \alias{n2k_inla_comparison,n2kInlaComparison-methods}
-\title{Create a n2kInlaComparison object}
+\title{Create an \code{n2kInlaComparison} object}
 \usage{
-n2k_inla_comparison(parent.status, ...)
+n2k_inla_comparison(parent_status, ...)
 
-\S4method{n2k_inla_comparison}{data.frame}(parent.status,
-  status = "waiting", result.datasource.id, scheme.id, formula,
-  species.group.id, location.group.id, model.type, first.imported.year,
-  last.imported.year, duration, last.analysed.year, analysis.date, ...,
-  seed)
+\S4method{n2k_inla_comparison}{data.frame}(
+  parent_status,
+  status = "waiting",
+  result_datasource_id,
+  scheme_id,
+  formula,
+  species_group_id,
+  location_group_id,
+  model_type,
+  first_imported_year,
+  last_imported_year,
+  duration,
+  last_analysed_year,
+  analysis_date,
+  ...,
+  seed
+)
 }
 \arguments{
-\item{parent.status}{A \code{data.frame} with columns
-\code{ParentAnalysis} (the file fingerprint of the parent),
-\code{ParentStatusFingerprint} (the status fingerprint of the parent),
-and \code{ParentStatus} (the status of the parent).}
+\item{parent_status}{A \code{data.frame} with columns
+\code{parent_analysis} (the file fingerprint of the parent),
+\code{parentstatus_fingerprint} (the status fingerprint of the parent),
+and \code{parent_status} (the status of the parent).}
 
 \item{...}{other arguments}
 
 \item{status}{A single character indicating the status of the model.
 Defaults to \code{"waiting"}.}
 
-\item{result.datasource.id}{The id of the results datasource.}
+\item{result_datasource_id}{A string identifying the data source.}
 
-\item{scheme.id}{A single integer holding the id of the scheme.}
+\item{scheme_id}{A single integer holding the id of the scheme.}
 
 \item{formula}{A single character identifying the comparison.}
 
-\item{species.group.id}{A single integer identifing the species group.}
+\item{species_group_id}{A string identifying the species group.}
 
-\item{location.group.id}{A single integer identifing the location group.}
+\item{location_group_id}{A string identifying the location group.}
 
-\item{model.type}{The type of the models.
+\item{model_type}{The type of the models.
 Must start with \code{"inla comparison:"}.}
 
-\item{first.imported.year}{Oldest year considered in the data.}
+\item{first_imported_year}{Oldest year considered in the data.}
 
-\item{last.imported.year}{Most recent year considered in the data.}
+\item{last_imported_year}{Most recent year considered in the data.}
 
 \item{duration}{The width of the moving window.
-Defaults to the \code{last.imported.year - first.imported.year + 1}.}
+Defaults to the \code{last_imported_year - first_imported_year + 1}.}
 
-\item{last.analysed.year}{Most recent year in the window.
-Defaults to \code{last.imported.year}.}
+\item{last_analysed_year}{Most recent year in the window.
+Defaults to \code{last_imported_year}.}
 
-\item{analysis.date}{A POSIXct date indicating the date that the dataset was
-imported.}
+\item{analysis_date}{A \code{POSIXct} date indicating the date that the dataset
+was imported.}
 
 \item{seed}{A single integer used as a seed for all calculations.
 A random seed will be inserted when missing.}

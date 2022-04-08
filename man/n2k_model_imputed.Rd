@@ -5,7 +5,7 @@
 \alias{n2k_model_imputed}
 \alias{n2k_model_imputed,ANY-method}
 \alias{n2k_model_imputed,n2kModelImputed-methods}
-\title{Create a n2kModelImputed object}
+\title{Create an \code{n2kModelImputed} object}
 \usage{
 n2k_model_imputed(...)
 
@@ -15,36 +15,36 @@ n2k_model_imputed(...)
 \item{...}{other arguments. See below}
 }
 \description{
-A new n2kModelImputed model.
+A new \code{n2kModelImputed} model.
 }
 \details{
 \itemize{
-\item \code{scheme.id}: a string holding the id of the scheme.
-\item \code{species.group.id}: a string identifing the species group.
-\item \code{location.group.id}: a string identifing the location group.
-\item \code{model.type}: a string identifying the type of model to fit to the data.
-\item \code{first.imported.year}: Oldest year considered in the data.
-\item \code{last.imported.year}: Most recent year considered in the data.
+\item \code{scheme_id}: a string holding the id of the scheme.
+\item \code{species_group_id}: a string identifying the species group.
+\item \code{location_group_id}: a string identifying the location group.
+\item \code{model_type}: a string identifying the type of model to fit to the data.
+\item \code{first_imported_year}: Oldest year considered in the data.
+\item \code{last_imported_year}: Most recent year considered in the data.
 \item \code{duration}: The width of the moving window.
-Defaults to the \code{last.imported.year - first.imported.year + 1}.
-\item \code{last.analysed.year}: Most recent year in the window.
-Defaults to \code{last.imported.year}.
-\item \code{analysis.date}: A POSIXct date indicating the date that the dataset was
+Defaults to the \code{last_imported_year - first_imported_year + 1}.
+\item \code{last_analysed_year}: Most recent year in the window.
+Defaults to \code{last_imported_year}.
+\item \code{analysis_date}: A \code{POSIXct} date indicating the date that the dataset was
 imported.
 \item \code{seed}: A single integer used as a seed for all calculations.
 A random seed will be inserted when missing.
 }
 
 \itemize{
-\item \code{model.fun}: The \code{model.fun} argument of
+\item \code{model_fun}: The \code{model_fun} argument of
 \code{\link[multimput]{model_impute}}.
 \item \code{package}: A character vector of package names which must be loaded for
-\code{model.fun}.
-\item \code{model.args}: An optional list for the \code{model.args} argument of
+\code{model_fun}.
+\item \code{model_args}: An optional list for the \code{model_args} argument of
 \code{\link[multimput]{model_impute}}.
 \item \code{extractor}: An optional list for the \code{extractor} argument of
 \code{\link[multimput]{model_impute}}.
-\item \code{extractor.args}: An optional list for the \code{extractor.args} argument of
+\item \code{extractor_args}: An optional list for the \code{extractor_args} argument of
 \code{\link[multimput]{model_impute}}.
 \item \code{filter}: An optional list for the \code{filter} argument of
 \code{\link[multimput]{model_impute}}.

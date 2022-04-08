@@ -1,5 +1,5 @@
-#' Delete a n2kModel object
-#' @param x the file fingerprint of the n2kModel
+#' Delete an `n2kModel` object
+#' @param x the file fingerprint of the `n2kModel`
 #' @param base the base location
 #' @param project will be a relative path within the base location
 #' @name delete_model
@@ -45,7 +45,7 @@ setMethod(
 #' @importFrom assertthat assert_that is.string
 #' @importFrom aws.s3 bucket_exists get_bucket delete_object
 #' @importFrom purrr map
-#' @include import_S3_classes.R
+#' @include import_s3_classes.R
 setMethod(
   f = "delete_model",
   signature = signature(base = "s3_bucket"),

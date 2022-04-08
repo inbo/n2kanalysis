@@ -5,7 +5,7 @@ describe("select_factor_count_strictly_positive", {
     LocationID = rep(1:3, each = 4),
     Year = rep(c(1, 1, 1, 1, 2, 2), 2)
   )
-  observation.relative <- data.frame(
+  observation_relative <- data.frame(
     Count = rep(1, 11),
     Year = c(rep(1, 10), 2)
   )
@@ -40,13 +40,13 @@ describe("select_factor_count_strictly_positive", {
     )
     expect_that(
       select_factor_count_strictly_positive(
-        observation = observation.relative,
+        observation = observation_relative,
         variable = "Year",
         threshold = 0.15,
         dimension = 1,
         relative = TRUE
       ),
-      is_identical_to(subset(observation.relative, Year == 1))
+      is_identical_to(subset(observation_relative, Year == 1))
     )
   })
   it("checks the number of dimensions", {
@@ -79,7 +79,7 @@ describe("select_factor_count_strictly_positive", {
         dimension = 1,
         relative = FALSE
       ),
-      throws_error("threshold is not a count \\(a single positive integer\\)")
+      throws_error("threshold is not a count \\(a single positive integer\\)") # nolint: nonportable_path_linter, line_length_linter.
     )
     expect_that(
       select_factor_count_strictly_positive(

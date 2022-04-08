@@ -16,32 +16,29 @@ setGeneric(
 #' @aliases get_analysis_version,sessionInfo-methods
 #' @importFrom methods setMethod new
 #' @importFrom n2khelper check_dataframe_variable
-#' @include n2kAnalysisVersion_class.R
+#' @include n2k_analysis_version_class.R
 setMethod(
   f = "get_analysis_version",
   signature = signature(version = "data.frame"),
   definition = function(version) {
     check_dataframe_variable(
-      df = version,
-      variable = c("Description", "Version", "Origin", "Fingerprint"),
-      name = "version"
+      df = version, name = "version",
+      variable = c("description", "version", "origin", "fingerprint")
     )
-    if (is.null(attr(version, "AnalysisVersion"))) {
-      stop("Missing AnalysisVersion attribute")
-    }
-    analysis.version <- data.frame(
-      Fingerprint = attr(version, "AnalysisVersion"),
-      stringsAsFactors = FALSE
+    assert_that(
+      !is.null(attr(version, "analysis_version")),
+      msg = "Missing analysis_version attribute"
     )
-    version <- version[order(version$Description, version$Version), ]
+    analysis_version <- data.frame(
+      fingerprint = attr(version, "analysis_version"), stringsAsFactors = FALSE
+    )
+    version <- version[order(version$description, version$version), ]
     new(
       "n2kAnalysisVersion",
-      AnalysisVersion = analysis.version,
-      RPackage = version,
+      AnalysisVersion = analysis_version, RPackage = version,
       AnalysisVersionRPackage = data.frame(
-        AnalysisVersion = analysis.version$Fingerprint,
-        RPackage = version$Fingerprint,
-        stringsAsFactors = FALSE
+        analysis_version = analysis_version$fingerprint,
+        r_package = version$fingerprint, stringsAsFactors = FALSE
       )
     )
   }
@@ -50,7 +47,7 @@ setMethod(
 #' @rdname get_analysis_version
 #' @aliases get_analysis_version,n2kAnalysisMetadata-methods
 #' @importFrom methods setMethod new
-#' @include n2kAnalysisMetadata_class.R
+#' @include n2k_analysis_metadata_class.R
 setMethod(
   f = "get_analysis_version",
   signature = signature(version = "n2kAnalysisMetadata"),
@@ -68,7 +65,7 @@ setMethod(
 #' @aliases get_analysis_version,sessionInfo-methods
 #' @importFrom methods setMethod new
 #' @importFrom utils sessionInfo
-#' @include import_S3_classes.R
+#' @include import_s3_classes.R
 setMethod(
   f = "get_analysis_version",
   signature = signature(version = "sessionInfo"),

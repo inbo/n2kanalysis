@@ -1,5 +1,5 @@
-#' Get the status of a n2kModel
-#' @param x the n2kModel object
+#' Get the status of an `n2kModel`
+#' @param x the `n2kModel` object
 #' @return the status of the object
 #' @name status
 #' @rdname status
@@ -18,12 +18,12 @@ setGeneric(
 #' @rdname status
 #' @aliases status,n2kAnalysisMetadata-methods
 #' @importFrom methods setMethod new
-#' @include n2kAnalysisMetadata_class.R
+#' @include n2k_analysis_metadata_class.R
 setMethod(
   f = "status",
   signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x) {
-    return(x@AnalysisMetadata$Status)
+    return(x@AnalysisMetadata$status)
   }
 )
 
@@ -62,24 +62,24 @@ setMethod(
     return(
       data.frame(
         Filename = x,
-        FileFingerprint = analysis@AnalysisMetadata$FileFingerprint,
-        StatusFingerprint = analysis@AnalysisMetadata$StatusFingerprint,
-        Status = analysis@AnalysisMetadata$Status,
+        file_fingerprint = analysis@AnalysisMetadata$file_fingerprint,
+        status_fingerprint = analysis@AnalysisMetadata$status_fingerprint,
+        status = analysis@AnalysisMetadata$status,
         stringsAsFactors = FALSE
       )
     )
   }
 )
 
-#' Overwrite the status of a n2kAnalysisMetadata
-#' @param x the n2kAnalysisMetadata object
+#' Overwrite the status of an `n2kAnalysisMetadata`
+#' @param x the `n2kAnalysisMetadata` object
 #' @param value the new values for the status
 #' @name status<-
 #' @rdname status.change
 #' @exportMethod status<-
 #' @docType methods
 #' @importFrom methods setGeneric
-#' @include n2kAnalysisMetadata_class.R
+#' @include n2k_analysis_metadata_class.R
 setGeneric(
   name = "status<-",
   def = function(x, value) {
@@ -90,39 +90,16 @@ setGeneric(
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kGlmerPoisson_class.R
-setReplaceMethod(
-  "status",
-  "n2kGlmerPoisson",
-  function(x, value) {
-    x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- sha1(
-      list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        x@Model, x@AnalysisMetadata$AnalysisVersion,
-        x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
-        x@AnalysisRelation
-      ),
-      digits = 6L
-    )
-    validObject(x)
-    return(x)
-  }
-)
-
-#' @rdname status.change
-#' @importFrom methods setReplaceMethod
-#' @importFrom digest sha1
-#' @include n2kInla_class.R
+#' @include n2k_inla_class.R
 setReplaceMethod(
   "status",
   "n2kInla",
   function(x, value) {
-    x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- sha1(
+    x@AnalysisMetadata$status <- value
+    x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status, x@Model,
-        x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
+        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status, x@Model,
+        x@AnalysisMetadata$analysis_version, x@AnalysisVersion, x@RPackage,
         x@AnalysisVersionRPackage, x@AnalysisRelation, x@RawImputed
       ),
       digits = 6L
@@ -135,50 +112,16 @@ setReplaceMethod(
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kLrtGlmer_class.R
-setReplaceMethod(
-  "status",
-  "n2kLrtGlmer",
-  function(x, value) {
-    x@AnalysisMetadata$Status <- value
-    if (is.null(x@Model)) {
-      model <- NULL
-    } else {
-      model <- x@Model@frame
-    }
-    if (is.null(x@Model0)) {
-      model0 <- NULL
-    } else {
-      model0 <- x@Model0@frame
-    }
-    x@AnalysisMetadata$StatusFingerprint <- sha1(
-      list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        x@Model, x@Model0, x@Anova,
-        x@AnalysisMetadata$AnalysisVersion,
-        x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
-        x@AnalysisRelation
-      ),
-      digits = 6L
-    )
-    validObject(x)
-    return(x)
-  }
-)
-
-#' @rdname status.change
-#' @importFrom methods setReplaceMethod
-#' @importFrom digest sha1
-#' @include n2kComposite_class.R
+#' @include n2k_composite_class.R
 setReplaceMethod(
   "status",
   "n2kComposite",
   function(x, value) {
-    x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- sha1(
+    x@AnalysisMetadata$status <- value
+    x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        x@Parameter, x@Index, x@AnalysisMetadata$AnalysisVersion,
+        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status,
+        x@Parameter, x@Index, x@AnalysisMetadata$analysis_version,
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
       ),
@@ -192,16 +135,16 @@ setReplaceMethod(
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kInlaComparison_class.R
+#' @include n2k_inla_comparison_class.R
 setReplaceMethod(
   "status",
   "n2kInlaComparison",
   function(x, value) {
-    x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- sha1(
+    x@AnalysisMetadata$status <- value
+    x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        x@WAIC, x@AnalysisMetadata$AnalysisVersion,
+        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status,
+        x@WAIC, x@AnalysisMetadata$analysis_version,
         x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
         x@AnalysisRelation
       ),
@@ -215,16 +158,16 @@ setReplaceMethod(
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kAggregate_class.R
+#' @include n2k_aggregate_class.R
 setReplaceMethod(
   "status",
   "n2kAggregate",
   function(x, value) {
-    x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- sha1(
+    x@AnalysisMetadata$status <- value
+    x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
+        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status,
+        x@AnalysisMetadata$analysis_version, x@AnalysisVersion, x@RPackage,
         x@AnalysisVersionRPackage, x@AnalysisRelation, x@RawImputed,
         x@AggregatedImputed
       ),
@@ -238,16 +181,16 @@ setReplaceMethod(
 #' @rdname status.change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
-#' @include n2kModelImputed_class.R
+#' @include n2k_model_imputed_class.R
 setReplaceMethod(
   "status",
   "n2kModelImputed",
   function(x, value) {
-    x@AnalysisMetadata$Status <- value
-    x@AnalysisMetadata$StatusFingerprint <- sha1(
+    x@AnalysisMetadata$status <- value
+    x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$FileFingerprint, x@AnalysisMetadata$Status,
-        x@AnalysisMetadata$AnalysisVersion, x@AnalysisVersion, x@RPackage,
+        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status,
+        x@AnalysisMetadata$analysis_version, x@AnalysisVersion, x@RPackage,
         x@AnalysisVersionRPackage, x@AnalysisRelation, x@AggregatedImputed,
         x@Results
       ),

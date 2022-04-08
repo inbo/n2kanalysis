@@ -1,12 +1,12 @@
-#' Create a n2kAggregate object
-#' @inheritParams n2k_glmer_poisson
-#' @template analysis-metadata
+#' Create an `n2kAggregate` object
+#' @inheritParams n2k_inla
+#' @template analysis_metadata
 #' @details
 #' - `fun`: The function to apply when aggregating.
-#' - `filter`: An optional list for the \code{filter} argument of
-#' \code{\link[multimput]{aggregate_impute}}.
-#' - `join`: An optional list for the \code{join} argument of
-#' \code{\link[multimput]{aggregate_impute}}.
+#' - `filter`: An optional list for the `filter` argument of
+#' [multimput::aggregate_impute()].
+#' - `join`: An optional list for the`join` argument of
+#' [multimput::aggregate_impute()].
 #' @name n2k_aggregate
 #' @rdname n2k_aggregate
 #' @exportMethod n2k_aggregate
@@ -21,7 +21,7 @@ setGeneric(
   }
 )
 
-#' @description A new n2kAggregate model.
+#' @description A new `n2kAggregate` model.
 #' @rdname n2k_aggregate
 #' @aliases n2k_aggregate,n2kAggregate-methods
 #' @importFrom methods setMethod new
@@ -29,7 +29,7 @@ setGeneric(
 #' @importFrom digest sha1
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
-#' @include n2kAggregate_class.R
+#' @include n2k_aggregate_class.R
 setMethod(
   f = "n2k_aggregate",
   signature = signature("ANY"),
@@ -50,29 +50,29 @@ setMethod(
       assert_that(is.count(dots$seed))
       dots$seed <- as.integer(dots$seed)
     }
-    assert_that(is.string(dots$result.datasource.id))
-    assert_that(is.string(dots$scheme.id))
-    assert_that(is.string(dots$species.group.id))
-    assert_that(is.string(dots$location.group.id))
-    assert_that(is.string(dots$model.type))
+    assert_that(is.string(dots$result_datasource_id))
+    assert_that(is.string(dots$scheme_id))
+    assert_that(is.string(dots$species_group_id))
+    assert_that(is.string(dots$location_group_id))
+    assert_that(is.string(dots$model_type))
     assert_that(is.string(dots$formula))
-    assert_that(is.count(dots$first.imported.year))
-    dots$first.imported.year <- as.integer(dots$first.imported.year)
-    assert_that(is.count(dots$last.imported.year))
-    dots$last.imported.year <- as.integer(dots$last.imported.year)
+    assert_that(is.count(dots$first_imported_year))
+    dots$first_imported_year <- as.integer(dots$first_imported_year)
+    assert_that(is.count(dots$last_imported_year))
+    dots$last_imported_year <- as.integer(dots$last_imported_year)
     if (is.null(dots$duration)) {
-      dots$duration <- dots$last.imported.year - dots$first.imported.year + 1L
+      dots$duration <- dots$last_imported_year - dots$first_imported_year + 1L
     } else {
       assert_that(is.count(dots$duration))
       dots$duration <- as.integer(dots$duration)
     }
-    if (is.null(dots$last.analysed.year)) {
-      dots$last.analysed.year <- dots$last.imported.year
+    if (is.null(dots$last_analysed_year)) {
+      dots$last_analysed_year <- dots$last_imported_year
     } else {
-      assert_that(is.count(dots$last.analysed.year))
-      dots$last.analysed.year <- as.integer(dots$last.analysed.year)
+      assert_that(is.count(dots$last_analysed_year))
+      dots$last_analysed_year <- as.integer(dots$last_analysed_year)
     }
-    assert_that(is.time(dots$analysis.date))
+    assert_that(is.time(dots$analysis_date))
     if (is.null(dots$filter)) {
       dots$filter <- list()
     } else {
@@ -90,43 +90,43 @@ setMethod(
     assert_that(is.function(dots$fun))
     assert_that(is.string(dots$parent))
 
-    file.fingerprint <- sha1(
+    file_fingerprint <- sha1(
       list(
-        dots$result.datasource.id,
-        dots$scheme.id, dots$species.group.id, dots$location.group.id,
-        dots$model.type, dots$formula, dots$first.imported.year,
-        dots$last.imported.year, dots$duration, dots$last.analysed.year,
-        format(dots$analysis.date, tz = "UTC"), dots$seed, dots$parent,
+        dots$result_datasource_id,
+        dots$scheme_id, dots$species_group_id, dots$location_group_id,
+        dots$model_type, dots$formula, dots$first_imported_year,
+        dots$last_imported_year, dots$duration, dots$last_analysed_year,
+        format(dots$analysis_date, tz = "UTC"), dots$seed, dots$parent,
         dots$fun, dots$filter, dots$join
       ),
       environment = FALSE
     )
 
-    if (is.null(dots$parent.statusfingerprint)) {
-      if (is.null(dots$parent.status)) {
-        dots$parent.status <- "waiting"
+    if (is.null(dots$parent_statusfingerprint)) {
+      if (is.null(dots$parent_status)) {
+        dots$parent_status <- "waiting"
       }
-      dots$parent.statusfingerprint <- sha1(dots$parent.status)
+      dots$parent_statusfingerprint <- sha1(dots$parent_status)
     } else {
-      if (is.null(dots[["parent.status"]])) {
+      if (is.null(dots[["parent_status"]])) {
         stop(
-"'parent.status' is required when 'parent.status.fingerprint' is provided"
+"'parent_status' is required when 'parent_statusfingerprint' is provided"
         )
       }
     }
-    analysis.relation <- data.frame(
-      Analysis = file.fingerprint,
-      ParentAnalysis = dots$parent,
-      ParentStatusFingerprint = dots$parent.statusfingerprint,
-      ParentStatus = dots$parent.status,
+    analysis_relation <- data.frame(
+      analysis = file_fingerprint,
+      parent_analysis = dots$parent,
+      parentstatus_fingerprint = dots$parent_statusfingerprint,
+      parent_status = dots$parent_status,
       stringsAsFactors = FALSE
     )
     version <- get_analysis_version(sessionInfo())
-    status.fingerprint <- sha1(
+    status_fingerprint <- sha1(
       list(
-        file.fingerprint, dots$status, version@AnalysisVersion$Fingerprint,
+        file_fingerprint, dots$status, version@AnalysisVersion$fingerprint,
         version@AnalysisVersion, version@RPackage,
-        version@AnalysisVersionRPackage, analysis.relation, NULL, NULL
+        version@AnalysisVersionRPackage, analysis_relation, NULL, NULL
       ),
       digits = 6L
     )
@@ -137,26 +137,21 @@ setMethod(
       RPackage = version@RPackage,
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
       AnalysisMetadata = data.frame(
-        ResultDatasourceID = dots$result.datasource.id,
-        SchemeID = dots$scheme.id,
-        SpeciesGroupID = dots$species.group.id,
-        LocationGroupID = dots$location.group.id,
-        ModelType = dots$model.type,
-        Formula = dots$formula,
-        FirstImportedYear = dots$first.imported.year,
-        LastImportedYear = dots$last.imported.year,
-        Duration = dots$duration,
-        LastAnalysedYear = dots$last.analysed.year,
-        AnalysisDate = dots$analysis.date,
-        Seed = dots$seed,
-        Status = dots$status,
-        AnalysisVersion = version@AnalysisVersion$Fingerprint,
-        FileFingerprint = file.fingerprint,
-        StatusFingerprint = status.fingerprint,
-        stringsAsFactors = FALSE
+        result_datasource_id = dots$result_datasource_id,
+        scheme_id = dots$scheme_id, species_group_id = dots$species_group_id,
+        location_group_id = dots$location_group_id,
+        model_type = dots$model_type, formula = dots$formula,
+        first_imported_year = dots$first_imported_year,
+        last_imported_year = dots$last_imported_year,
+        duration = dots$duration, last_analysed_year = dots$last_analysed_year,
+        analysis_date = dots$analysis_date, seed = dots$seed,
+        status = dots$status,
+        analysis_version = version@AnalysisVersion$fingerprint,
+        file_fingerprint = file_fingerprint,
+        status_fingerprint = status_fingerprint, stringsAsFactors = FALSE
       ),
       AnalysisFormula = list(as.formula(dots$formula)),
-      AnalysisRelation = analysis.relation,
+      AnalysisRelation = analysis_relation,
       Function = dots$fun,
       Filter = dots$filter,
       Join = dots$join,

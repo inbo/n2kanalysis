@@ -3,22 +3,16 @@
 \docType{methods}
 \name{status<-}
 \alias{status<-}
-\alias{status<-,n2kGlmerPoisson-method}
 \alias{status<-,n2kInla-method}
-\alias{status<-,n2kLrtGlmer-method}
 \alias{status<-,n2kComposite-method}
 \alias{status<-,n2kInlaComparison-method}
 \alias{status<-,n2kAggregate-method}
 \alias{status<-,n2kModelImputed-method}
-\title{Overwrite the status of a n2kAnalysisMetadata}
+\title{Overwrite the status of an \code{n2kAnalysisMetadata}}
 \usage{
 status(x) <- value
 
-\S4method{status}{n2kGlmerPoisson}(x) <- value
-
 \S4method{status}{n2kInla}(x) <- value
-
-\S4method{status}{n2kLrtGlmer}(x) <- value
 
 \S4method{status}{n2kComposite}(x) <- value
 
@@ -29,10 +23,10 @@ status(x) <- value
 \S4method{status}{n2kModelImputed}(x) <- value
 }
 \arguments{
-\item{x}{the n2kAnalysisMetadata object}
+\item{x}{the \code{n2kAnalysisMetadata} object}
 
 \item{value}{the new values for the status}
 }
 \description{
-Overwrite the status of a n2kAnalysisMetadata
+Overwrite the status of an \code{n2kAnalysisMetadata}
 }

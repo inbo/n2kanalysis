@@ -8,7 +8,7 @@
 #' - `verbose`: A logical indicating if the function should display the name of
 #' the file and the status.
 #' Defaults to `TRUE`.
-#' @include import_S3_classes.R
+#' @include import_s3_classes.R
 setMethod(
   f = "fit_model",
   signature = signature(x = "s3_object"),
@@ -37,15 +37,13 @@ setMethod(
     analysis <- s3readRDS(object = x)
     current_status <- status(analysis)
     display(dots$verbose, paste(status(analysis), "-> "), FALSE)
-    analysis.fitted <- fit_model(
-      x = analysis,
-      status = dots$status,
-      base = dots$base,
-      project = dots$project
+    analysis_fitted <- fit_model(
+      x = analysis, status = dots$status, base = dots$base,
+      project = dots$project, ...
     )
-    display(dots$verbose, status(analysis.fitted))
+    display(dots$verbose, status(analysis_fitted))
     store_model(
-      analysis.fitted,
+      analysis_fitted,
       base = dots$base,
       project = dots$project
     )

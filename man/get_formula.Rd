@@ -5,18 +5,18 @@
 \alias{get_formula}
 \alias{get_formula,n2kAnalysisMetadata-method}
 \alias{get_formula,n2kAnalysisMetadata-methods}
-\title{Get the formula of a n2kModel object}
+\title{Get the formula of an \code{n2kModel} object}
 \usage{
 get_formula(x)
 
 \S4method{get_formula}{n2kAnalysisMetadata}(x)
 }
 \arguments{
-\item{x}{the n2kModel object}
+\item{x}{the \code{n2kModel} object}
 }
 \value{
 the formula of the object
 }
 \description{
-Get the formula of a n2kModel object
+Get the formula of an \code{n2kModel} object
 }

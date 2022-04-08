@@ -5,7 +5,7 @@
 \alias{read_manifest}
 \alias{read_manifest,character-method}
 \alias{read_manifest,s3_bucket-method}
-\title{Read a n2kManifest object}
+\title{Read a \code{n2kManifest} object}
 \usage{
 read_manifest(base, project, hash)
 
@@ -18,11 +18,11 @@ read_manifest(base, project, hash)
 
 \item{project}{Will be a relative path within the base location.}
 
-\item{hash}{Optinaly the sha1 of the manifest.
+\item{hash}{Optional the \code{sha1} of the manifest.
 This can be abbreviated to to first unique characters.
 The function will return an error in case of multiple matches.
 If missing, then most recent manifest will be returned.}
 }
 \description{
-Read a n2kManifest object
+Read a \code{n2kManifest} object
 }

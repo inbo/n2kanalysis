@@ -2,13 +2,13 @@
 % Please edit documentation in R/union.R
 \name{union}
 \alias{union}
-\title{Make a union of AnalysisVersions}
+\title{Make a union of \code{AnalysisVersions}}
 \usage{
 union(...)
 }
 \arguments{
-\item{...}{the n2kAnalysisVersions to union}
+\item{...}{the \code{n2kAnalysisVersions} to union}
 }
 \description{
-Make a union of AnalysisVersions
+Make a union of \code{AnalysisVersions}
 }

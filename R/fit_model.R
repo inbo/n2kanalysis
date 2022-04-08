@@ -1,6 +1,7 @@
-#' Fit a n2kModel object
-#' @param x the n2kModel
-#' @param ... other arguments. See details
+#' Fit an `n2kModel` object
+#' @param x the `n2kModel`
+#' @param ... other arguments.
+#' See details
 #' @name fit_model
 #' @rdname fit_model
 #' @exportMethod fit_model

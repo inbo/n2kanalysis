@@ -1,5 +1,5 @@
-#' Get the model type of a n2kModel object
-#' @param x the n2kModel object
+#' Get the model type of an `n2kModel` object
+#' @param x the `n2kModel` object
 #' @return the model type of the object
 #' @name get_model_type
 #' @rdname get_model_type
@@ -16,11 +16,11 @@ setGeneric(
 #' @rdname get_model_type
 #' @aliases get_model_type,n2kAnalysisMetadata-methods
 #' @importFrom methods setMethod new
-#' @include n2kAnalysisMetadata_class.R
+#' @include n2k_analysis_metadata_class.R
 setMethod(
   f = "get_model_type",
   signature = signature(x = "n2kAnalysisMetadata"),
   definition = function(x) {
-    return(x@AnalysisMetadata$ModelType)
+    return(x@AnalysisMetadata$model_type)
   }
 )

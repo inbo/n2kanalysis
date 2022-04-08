@@ -5,7 +5,7 @@
 \alias{store_manifest}
 \alias{store_manifest,ANY,character-method}
 \alias{store_manifest,ANY,s3_bucket-method}
-\title{Store a n2kManifest object}
+\title{Store an \code{n2kManifest} object}
 \usage{
 store_manifest(x, base, project)
 
@@ -14,12 +14,12 @@ store_manifest(x, base, project)
 \S4method{store_manifest}{ANY,s3_bucket}(x, base, project)
 }
 \arguments{
-\item{x}{the n2kManifest}
+\item{x}{the \code{n2kManifest}}
 
 \item{base}{the base location to store the manifest}
 
 \item{project}{will be a relative path within the base location}
 }
 \description{
-Store a n2kManifest object
+Store an \code{n2kManifest} object
 }

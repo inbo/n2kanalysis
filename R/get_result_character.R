@@ -2,20 +2,20 @@
 #' @importFrom methods setMethod validObject new
 #' @importFrom assertthat assert_that is.string is.count
 #' @importFrom utils file_test
-#' @param n.cluster The number of clusters to run this function in parallel.
+#' @param n_cluster The number of clusters to run this function in parallel.
 #' Defaults to `1` (= no parallel computing).
 setMethod(
   f = "get_result",
   signature = signature(x = "character"),
   definition = function(
     x,
-    n.cluster = 1,
+    n_cluster = 1,
     verbose = TRUE,
     ...
   ) {
     # check arguments
     assert_that(is.string(x))
-    assert_that(is.count(n.cluster))
+    assert_that(is.count(n_cluster))
 
     # x is an existing file
     if (file_test("-f", x)) {
@@ -38,15 +38,15 @@ setMethod(
     if (length(files) == 0) {
       return(new("n2kResult"))
     }
-    if (n.cluster == 1 || !requireNamespace("parallel", quietly = TRUE)) {
+    if (n_cluster == 1 || !requireNamespace("parallel", quietly = TRUE)) {
       result <- lapply(files, get_result, verbose = verbose, ...)
     } else {
-      n.cluster <- min(n.cluster, parallel::detectCores())
+      n_cluster <- min(n_cluster, parallel::detectCores())
       display(
         verbose,
-        paste("Reading results in parallel on", n.cluster, "clusters")
+        paste("Reading results in parallel on", n_cluster, "clusters")
       )
-      cl <- parallel::makeCluster(n.cluster)
+      cl <- parallel::makeCluster(n_cluster)
       result <- parallel::clusterApplyLB(
         cl = cl,
         x = files,

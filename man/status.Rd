@@ -7,7 +7,7 @@
 \alias{status,n2kAnalysisMetadata-methods}
 \alias{status,character-method}
 \alias{status,character-methods}
-\title{Get the status of a n2kModel}
+\title{Get the status of an \code{n2kModel}}
 \usage{
 status(x)
 
@@ -16,11 +16,11 @@ status(x)
 \S4method{status}{character}(x)
 }
 \arguments{
-\item{x}{the n2kModel object}
+\item{x}{the \code{n2kModel} object}
 }
 \value{
 the status of the object
 }
 \description{
-Get the status of a n2kModel
+Get the status of an \code{n2kModel}
 }

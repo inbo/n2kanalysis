@@ -3,28 +3,24 @@
 \docType{methods}
 \name{get_model}
 \alias{get_model}
-\alias{get_model,n2kGlmerPoisson-method}
-\alias{get_model,n2kGlmerPoisson-methods}
 \alias{get_model,n2kInla-method}
 \alias{get_model,n2kInla-methods}
 \alias{get_model,character-method}
 \alias{get_model,character-methods}
-\title{Get the model of a n2kModel object}
+\title{Get the model of a \code{n2kModel} object}
 \usage{
 get_model(x)
-
-\S4method{get_model}{n2kGlmerPoisson}(x)
 
 \S4method{get_model}{n2kInla}(x)
 
 \S4method{get_model}{character}(x)
 }
 \arguments{
-\item{x}{the n2kModel object}
+\item{x}{the \code{n2kModel} object}
 }
 \value{
 the model of the object
 }
 \description{
-Get the model of a n2kModel object
+Get the model of a \code{n2kModel} object
 }
