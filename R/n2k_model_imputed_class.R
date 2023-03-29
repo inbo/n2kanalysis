@@ -1,30 +1,27 @@
 #' The `n2kModelImputed` class
 #'
 #' It holds the model of aggregated imputed data
-#' @section Slots:
-#'   \describe{
-#'    \item{\code{Function}}{The object to pass to the \code{model.fun} argument
-#'    of \code{\link[multimput]{model_impute}}.}
-#'    \item{\code{Package}}{A vector of package names which must be loaded to
-#'    run the function.}
-#'    \item{\code{ModelArgs}}{The object to pass to the \code{model.args}
-#'    argument of \code{\link[multimput]{model_impute}}.}
-#'    \item{\code{PrepareModelArgs}}{An optional list containing a single
-#'    function that will be applied to the object.
-#'    The result of the function will be appended to the \code{ModelsArgs}.}
-#'    \item{\code{Extractor}}{The object to pass to the \code{extractor}
-#'    argument of \code{\link[multimput]{model_impute}}.}
-#'    \item{\code{ExtractorArgs}}{The object to pass to the
-#'    \code{extractor.args} argument of \code{\link[multimput]{model_impute}}.}
-#'    \item{\code{Filter}}{The object to pass to the \code{filter} argument of
-#'    \code{\link[multimput]{model_impute}}.}
-#'    \item{\code{Mutate}}{The object to pass to the \code{mutate} argument of
-#'    \code{\link[multimput]{model_impute}}.}
-#'    \item{\code{AggregatedImputed}}{An \code{aggregatedImputed} object with
-#'    multiple imputations.}
-#'    \item{\code{Results}}{The \code{data.frame} with the results of
-#'    \code{\link[multimput]{model_impute}}.}
-#'   }
+#' @slot Function The object to pass to the `model.fun` argument of
+#' [multimput::model_impute()].
+#' @slot Package A vector of package names which must be loaded to run the
+#' function.
+#' @slot ModelArgs The object to pass to the `model.args` argument of
+#' [multimput::model_impute()].
+#' @slot PrepareModelArgs An optional list containing a single function that
+#' will be applied to the object.
+#' The result of the function will be appended to the `ModelsArgs`.
+#' @slot Extractor The object to pass to the `extractor` argument of
+#' [multimput::model_impute()].
+#' @slot ExtractorArgs The object to pass to the `extractor.args` argument of
+#' [multimput::model_impute()].
+#' @slot Filter The object to pass to the `filter` argument of
+#' [multimput::model_impute()].
+#' @slot Mutate The object to pass to the `mutate` argument of
+#' [multimput::model_impute()].
+#' @slot AggregatedImputed An `aggregatedImputed` object with multiple
+#' imputations.
+#' @slot Results The `data.frame` with the results of
+#' [multimput::model_impute()].
 #' @name n2kModelImputed-class
 #' @rdname n2kModelImputed-class
 #' @exportClass n2kModelImputed

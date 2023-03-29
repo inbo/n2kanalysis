@@ -1,14 +1,10 @@
 #' The `n2kComposite` class
 #'
 #' Calculate composite indices from multiple analysis
-#' @section Slots:
-#'   \describe{
-#'    \item{\code{Extractor}}{A function to extract the relevant parameters from
-#'    the model.}
-#'    \item{\code{Parameter}}{A data.frame with the relevant parameter estimates
-#'    of each parent analysis.}
-#'    \item{\code{Index}}{The composite index based on the parameters}
-#'   }
+#' @slot Extractor A function to extract the relevant parameters from the model.
+#' @slot Parameter A `data.frame` with the relevant parameter estimates of each
+#' parent analysis.
+#' @slot Index The composite index based on the parameters.
 #' @name n2kComposite-class
 #' @rdname n2kComposite-class
 #' @exportClass n2kComposite

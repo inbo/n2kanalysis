@@ -11,6 +11,5 @@ It hold the imported datasets
 
 \describe{
 \item{\code{Dataset}}{A \code{data.frame} with the datasets.}
-}
-}
+}}
 

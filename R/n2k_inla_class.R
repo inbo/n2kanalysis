@@ -6,24 +6,18 @@ setClassUnion("maybeRawImputed", c("rawImputed", "aggregatedImputed", "NULL"))
 #' The `n2kInla` class
 #'
 #' It hold analysis data based on an INLA Poisson model
-#' @section Slots:
-#'   \describe{
-#'    \item{\code{Data}}{A \code{data.frame} with the data.}
-#'    \item{\code{LinearCombination}}{An optional matrix with the linear
-#'    combinations.}
-#'    \item{\code{ReplicateName}}{An optional list with names of replicates.}
-#'    \item{\code{Model}}{Either NULL or the resulting INLA model.}
-#'    \item{\code{Family}}{The family of the INLA model}
-#'    \item{\code{Control}}{
-#'    A named list with options passed to the arguments of [INLA::inla()].
-#'    }
-#'    \item{\code{ImputationSize}}{The number of multiple imputations.
-#'    Defaults to \code{0}, indication no multiple imputation.}
-#'    \item{\code{Minimum}}{An optional string containing the name of the
-#'    variable in \code{Data} holding the minimal values for imputation.}
-#'    \item{\code{RawImputed}}{A \code{rawImputed} object with multiple
-#'    imputations.}
-#'   }
+#' @slot Data A `data.frame` with the data.
+#' @slot LinearCombination An optional matrix with the linear combinations.
+#' @slot ReplicateName An optional list with names of replicates.
+#' @slot Model Either NULL or the resulting INLA model.
+#' @slot Family The family of the INLA model.
+#' @slot Control A named list with options passed to the arguments of
+#' [INLA::inla()].
+#' @slot ImputationSize The number of multiple imputations.
+#' Defaults to `0`, indication no multiple imputation.
+#' @slot Minimum An optional string containing the name of the variable in
+#' `Data` holding the minimal values for imputation.
+#' @slot RawImputed A `rawImputed` object with multiple imputations.
 #' @name n2kInla-class
 #' @rdname n2kInla-class
 #' @exportClass n2kInla

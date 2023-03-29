@@ -1,10 +1,7 @@
 #' The `n2kImport` class
 #'
 #' It hold the imported datasets
-#' @section Slots:
-#'   \describe{
-#'    \item{\code{Dataset}}{A \code{data.frame} with the datasets.}
-#'   }
+#' @slot Dataset A `data.frame` with the datasets.
 #' @name n2kImport-class
 #' @rdname n2kImport-class
 #' @exportClass n2kImport

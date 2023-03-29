@@ -10,9 +10,9 @@
 \arguments{
 \item{object}{a single filename, a single path or a vector with filenames.}
 
-\item{test}{See \code{\link[methods]{validObject}}}
+\item{test}{See \code{\link[methods:validObject]{methods::validObject()}}}
 
-\item{complete}{See \code{\link[methods]{validObject}}}
+\item{complete}{See \code{\link[methods:validObject]{methods::validObject()}}}
 }
 \description{
 Get the validity of objects in files
