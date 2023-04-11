@@ -38,7 +38,7 @@ fit_model(x, ...)
   status = "new",
   ...,
   timeout = NULL,
-  seed = 0L,
+  seed = get_seed(x),
   num_threads = NULL,
   parallel_configs = TRUE
 )

@@ -9,8 +9,8 @@ setMethod(
   f = "fit_model",
   signature = signature(x = "n2kInla"),
   definition = function(
-    x, status = "new", ..., timeout = NULL, seed = 0L, num_threads = NULL,
-    parallel_configs = TRUE
+    x, status = "new", ..., timeout = NULL, seed = get_seed(x),
+    num_threads = NULL, parallel_configs = TRUE
   ) {
     assert_that(
       requireNamespace("INLA", quietly = TRUE),
@@ -24,7 +24,7 @@ setMethod(
       return(x)
     }
 
-    set.seed(get_seed(x))
+    set.seed(seed)
 
     data <- get_data(x)
     model_formula <- x@AnalysisFormula[[1]]
