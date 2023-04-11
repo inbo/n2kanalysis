@@ -76,14 +76,17 @@ setMethod(
       return(n2k_inla(data = x, model_fit = model, status = "converged"))
     }
 
+    imputed <- try(impute(
+      model = model, n_imp = x@ImputationSize, minimum = x@Minimum,
+      seed = seed, num_threads = num_threads,
+      parallel_configs = parallel_configs
+    ))
+    if (inherits(imputed, "try-error")) {
+      return(n2k_inla(data = x, model_fit = model, status = "error"))
+    }
     # return fitted model with imputations
     return(n2k_inla(
-      data = x, model_fit = model, status = "converged",
-      raw_imputed = impute(
-        model = model, n_imp = x@ImputationSize, minimum = x@Minimum,
-        seed = seed, num_threads = num_threads,
-        parallel_configs = parallel_configs
-      )
+      data = x, model_fit = model, status = "converged", raw_imputed = imputed
     ))
   }
 )
