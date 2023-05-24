@@ -9,7 +9,7 @@ test_that("store_manifest_yaml stores the manifest on an S3 bucket", {
   )
   project <- "unittest_store_manifest_yaml"
   docker <- "inbobmk/rn2k:latest"
-  dependencies <- c("inbo/n2khelper@v0.4.1", "inbo/n2kanalysis@docker") # nolint: nonportable_path_linter, line_length_linter.
+  dependencies <- c("inbo/n2khelper@v0.4.1", "inbo/n2kanalysis@docker")
   expect_is(
     stored <- store_manifest_yaml(
       x = object, base = bucket, project = project, docker = docker,
@@ -57,7 +57,7 @@ test_that("store_manifest_yaml stores the manifest on a file system", {
   )
   project <- "unittest_store_manifest_yaml"
   docker <- "inbobmk/rn2k:latest"
-  dependencies <- c("inbo/n2khelper@v0.4.1", "inbo/n2kanalysis@docker") # nolint: nonportable_path_linter, line_length_linter.
+  dependencies <- c("inbo/n2khelper@v0.4.1", "inbo/n2kanalysis@docker")
   expect_is(
     stored <- store_manifest_yaml(
       x = object, base = base, project = project, docker = docker,

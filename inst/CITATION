@@ -3,12 +3,12 @@ citHeader("To cite `n2kanalysis` in publications please use:")
 citEntry(
   entry = "Manual",
   title = "n2kanalysis: Generic Functions to Analyse Data from the Natura 2000 Monitoring. Version 0.3.0",
-  author = c(person(given = "Thierry", family = "Onkelinx")),
-  year = 2022,
-  url = "https://doi.org/10.5281/zenodo.3576047",
+  author = c( author = c(person(given = "Thierry", family = "Onkelinx"))),
+  year = 2023,
+  url = "https://github.com/inbo/n2kanalysis/",
   abstract = "All generic functions for the analysis. The full analysis is defined in the analysis package of each monitoring scheme.",
-  textVersion = "Onkelinx, Thierry (2022) n2kanalysis: Generic Functions to Analyse Data from the Natura 2000 Monitoring. Version 0.3.0. https://doi.org/10.5281/zenodo.3576047",
-  keywords = "R package",
+  textVersion = "Onkelinx, Thierry (2023) n2kanalysis: Generic Functions to Analyse Data from the Natura 2000 Monitoring. Version 0.3.0. https://github.com/inbo/n2kanalysis/",
+  keywords = "analysis, reproducible research",
   doi = "10.5281/zenodo.3576047",
 )
 # end checklist entry

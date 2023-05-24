@@ -4,7 +4,7 @@ Version: 0.3.0
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216")),
-    person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
+    person("Research Institute for Nature and Forest (INBO)", , , "info@inbo.be", role = c("cph", "fnd"))
   )
 Description: All generic functions for the analysis. The full analysis is
     defined in the analysis package of each monitoring scheme.
@@ -37,6 +37,8 @@ Suggests:
     testthat (>= 2.0.1)
 Additional_repositories: https://inla.r-inla-download.org/R/stable,
     https://inbo.r-universe.dev
+Config/checklist/communities: inbo
+Config/checklist/keywords: analysis, reproducible research
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)

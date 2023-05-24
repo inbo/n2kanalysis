@@ -281,7 +281,7 @@ test_that("n2k_inla() converts numeric last_imported_year, when possible", {
       scheme_id = this_scheme_id
     ),
     throws_error(
-      "last_imported_year is not a count \\(a single positive integer\\)" # nolint: nonportable_path_linter, line_length_linter.
+      "last_imported_year is not a count \\(a single positive integer\\)"
     )
   )
 })
@@ -387,7 +387,7 @@ test_that("n2k_inla() converts numeric duration, when possible", {
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
     ),
-    throws_error("duration is not a count \\(a single positive integer\\)") # nolint: nonportable_path_linter, line_length_linter.
+    throws_error("duration is not a count \\(a single positive integer\\)")
   )
 })
 test_that(
@@ -426,7 +426,7 @@ last_imported_year ranges", {
       scheme_id = this_scheme_id
     ),
     throws_error(
-      "duration is not a count \\(a single positive integer\\)" # nolint: nonportable_path_linter, line_length_linter.
+      "duration is not a count \\(a single positive integer\\)"
     )
   )
 })
@@ -499,7 +499,7 @@ test_that("n2k_inla() converts numeric last_analysed_year, when possible", {
       scheme_id = this_scheme_id
     ),
     throws_error(
-      "last_analysed_year is not a count \\(a single positive integer\\)" # nolint: nonportable_path_linter, line_length_linter.
+      "last_analysed_year is not a count \\(a single positive integer\\)"
     )
   )
 })
@@ -863,7 +863,7 @@ test_that("n2kInla handles linear combinations", {
       lin_comb = this_lc,
       replicate_name = "junk"
     ),
-    "replicate\\_name is not a list" # nolint: nonportable_path_linter.
+    "replicate\\_name is not a list"
   )
   expect_error(
     n2k_inla(
@@ -880,6 +880,6 @@ test_that("n2kInla handles linear combinations", {
       lin_comb = this_lc,
       replicate_name = list("junk")
     ),
-    "replicate\\_name must have names" # nolint: nonportable_path_linter.
+    "replicate\\_name must have names"
   )
 })
