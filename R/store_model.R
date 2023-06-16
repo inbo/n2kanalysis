@@ -21,18 +21,19 @@ setGeneric(
 #' @rdname store_model
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.string is.flag noNA
+#' @importFrom fs dir_create dir_exists dir_ls file_delete path path_abs
 setMethod(
   f = "store_model",
   signature = signature(base = "character"),
   definition = function(x, base, project, overwrite = TRUE, validate = TRUE) {
-    assert_that(is.flag(overwrite))
-    assert_that(noNA(overwrite))
-    assert_that(inherits(x, "n2kModel"))
-    assert_that(is.string(base))
-    assert_that(file_test("-d", base))
-    base <- normalizePath(base, winslash = "/", mustWork = TRUE)
-    assert_that(is.string(project))
-    assert_that(is.flag(validate))
+    assert_that(
+      is.flag(overwrite), noNA(overwrite), inherits(x, "n2kModel"),
+      is.string(base), is.string(project), noNA(project), is.flag(validate)
+    )
+    assert_that(
+      dir_exists(base), msg = sprintf("`%s` is not an existing directory", base)
+    )
+    base <- path_abs(base)
     if (isTRUE(validate)) {
       validObject(x, complete = TRUE)
     }
@@ -41,27 +42,22 @@ setMethod(
     fingerprint <- get_file_fingerprint(x)
     part <- substring(fingerprint, 1, 4)
 
-    current <- file.path(base, project, part) %>%
-      normalizePath(winslash = "/", mustWork = FALSE) %>%
-      list.files(
-        pattern = sprintf("%s.rds$", fingerprint),
-        full.names = TRUE, recursive = TRUE
-      ) %>%
-      normalizePath(winslash = "/", mustWork = TRUE)
+    base <- path(base, project, part)
+    dir_create(base)
+    current <- dir_ls(
+      base, recurse = TRUE, type = "file",
+      regexp = sprintf("%s.rds$", fingerprint)
+    )
     if (length(current) > 0) {
       if (!overwrite) {
         return(current)
       }
-      file.remove(current)
+      file_delete(current)
     }
 
-    filename <- file.path(
-      base, project, part, status, sprintf("%s.rds", fingerprint)
-    ) %>%
-      normalizePath(winslash = "/", mustWork = FALSE)
-    if (!dir.exists(dirname(filename))) {
-      dir.create(dirname(filename), recursive = TRUE)
-    }
+    filename <- path(base, status, sprintf("%s.rds", fingerprint))
+    dirname(filename) |>
+      dir_create()
     saveRDS(x, file = filename)
     return(filename)
   }
