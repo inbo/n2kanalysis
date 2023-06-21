@@ -18,6 +18,9 @@ setClassUnion("maybeRawImputed", c("rawImputed", "aggregatedImputed", "NULL"))
 #' @slot Minimum An optional string containing the name of the variable in
 #' `Data` holding the minimal values for imputation.
 #' @slot RawImputed A `rawImputed` object with multiple imputations.
+#' @slot Extra A data.frame with extra data to add to the imputations.
+#' This data is not used in the imputation model.
+#' It must contain the same variables as the original data.
 #' @name n2kInla-class
 #' @rdname n2kInla-class
 #' @exportClass n2kInla
@@ -29,14 +32,10 @@ setClassUnion("maybeRawImputed", c("rawImputed", "aggregatedImputed", "NULL"))
 setClass(
   "n2kInla",
   representation = representation(
-    Data = "data.frame",
-    LinearCombination = "maybeMatrix",
-    ReplicateName = "list",
-    Model = "maybeInla",
-    Family = "character",
-    Control = "list",
-    ImputationSize = "integer",
-    Minimum = "character",
+    Data = "data.frame", Extra = "data.frame",
+    LinearCombination = "maybeMatrix", ReplicateName = "list",
+    Model = "maybeInla", Family = "character", Control = "list",
+    ImputationSize = "integer", Minimum = "character",
     RawImputed = "maybeRawImputed"
   ),
   contains = "n2kModel"
@@ -70,6 +69,11 @@ setValidity(
     assert_that(
       all(table(object@Data$observation_id, object@Data$datafield_id) <= 1),
       msg = "Duplicated observation_id"
+    )
+
+    assert_that(
+      all(colnames(object@Data) %in% colnames(object@Extra)),
+      msg = "`Extra` must contain all variables present in `Data`"
     )
 
     assert_that(
@@ -114,22 +118,19 @@ setValidity(
     )
     file_fingerprint <- sha1(
       list(
-        object@Data,
-        object@AnalysisMetadata$result_datasource_id,
+        object@Data, object@AnalysisMetadata$result_datasource_id,
         object@AnalysisMetadata$scheme_id,
         object@AnalysisMetadata$species_group_id,
-        object@AnalysisMetadata$location_group_id,
-        object@Family,
+        object@AnalysisMetadata$location_group_id, object@Family,
         object@AnalysisMetadata$model_type, object@AnalysisMetadata$formula,
         object@AnalysisMetadata$first_imported_year,
         object@AnalysisMetadata$last_imported_year,
         object@AnalysisMetadata$duration,
         object@AnalysisMetadata$last_analysed_year,
         format(object@AnalysisMetadata$analysis_date, tz = "UTC"),
-        object@AnalysisMetadata$seed,
-        object@AnalysisRelation$parent_analysis,
+        object@AnalysisMetadata$seed, object@AnalysisRelation$parent_analysis,
         object@ReplicateName, object@LinearCombination, object@ImputationSize,
-        object@Minimum, object@Control
+        object@Minimum, object@Control, object@Extra
       )
     )
     assert_that(

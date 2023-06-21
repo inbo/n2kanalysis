@@ -30,5 +30,9 @@ Defaults to \code{0}, indication no multiple imputation.}
 \code{Data} holding the minimal values for imputation.}
 
 \item{\code{RawImputed}}{A \code{rawImputed} object with multiple imputations.}
+
+\item{\code{Extra}}{A data.frame with extra data to add to the imputations.
+This data is not used in the imputation model.
+It must contain the same variables as the original data.}
 }}
 

@@ -78,7 +78,7 @@ setMethod(
 
     imputed <- try(impute(
       model = model, n_imp = x@ImputationSize, minimum = x@Minimum,
-      seed = seed, num_threads = num_threads,
+      seed = seed, num_threads = num_threads, extra = x@Extra,
       parallel_configs = parallel_configs
     ))
     if (inherits(imputed, "try-error")) {

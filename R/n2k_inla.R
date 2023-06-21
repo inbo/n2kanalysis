@@ -41,6 +41,7 @@ setGeneric(
 #' @param parent_status The status of the parent analysis.
 #' @param parent_statusfingerprint The status fingerprint of the parent
 #' analysis.
+#' @inheritParams multimput::impute
 setMethod(
   f = "n2k_inla",
   signature = signature(data = "data.frame"),
@@ -50,7 +51,7 @@ setMethod(
     first_imported_year, last_imported_year, duration, last_analysed_year,
     analysis_date, lin_comb = NULL, minimum = "", imputation_size,
     parent = character(0), seed, replicate_name = list(), control = list(),
-    parent_status = "converged", parent_statusfingerprint, ..., model_fit
+    parent_status = "converged", parent_statusfingerprint, extra, ..., model_fit
   ) {
     assert_that(is.string(status))
     assert_that(is.string(minimum))
@@ -126,25 +127,24 @@ setMethod(
       is.null(control$control.fixed$prec.intercept),
       1, control$control.fixed$prec.intercept
     )
+    if (missing(extra)) {
+      extra <- data[0, ]
+    }
 
     file_fingerprint <- sha1(
       list(
         data, result_datasource_id, scheme_id, species_group_id,
-        location_group_id, family,
-        model_type, formula, first_imported_year,
+        location_group_id, family, model_type, formula, first_imported_year,
         last_imported_year, duration, last_analysed_year,
-        format(analysis_date, tz = "UTC"),
-        seed, parent, replicate_name,
-        lin_comb, imputation_size, minimum, control
+        format(analysis_date, tz = "UTC"), seed, parent, replicate_name,
+        lin_comb, imputation_size, minimum, control, extra
       )
     )
 
     if (length(parent) == 0) {
       analysis_relation <- data.frame(
-        analysis = character(0),
-        parent_analysis = character(0),
-        parentstatus_fingerprint = character(0),
-        parent_status = character(0),
+        analysis = character(0), parent_analysis = character(0),
+        parentstatus_fingerprint = character(0), parent_status = character(0),
         stringsAsFactors = FALSE
       )
     } else {
@@ -164,18 +164,16 @@ setMethod(
     version <- get_analysis_version(sessionInfo())
     status_fingerprint <- sha1(
       list(
-        file_fingerprint, status, NULL,
-        version@AnalysisVersion$fingerprint, version@AnalysisVersion,
-        version@RPackage,  version@AnalysisVersionRPackage, analysis_relation,
-        NULL
+        file_fingerprint, status, NULL, version@AnalysisVersion$fingerprint,
+        version@AnalysisVersion, version@RPackage,
+        version@AnalysisVersionRPackage, analysis_relation, NULL
       ),
       digits = 6L
     )
 
     new(
       "n2kInla",
-      AnalysisVersion = version@AnalysisVersion,
-      RPackage = version@RPackage,
+      AnalysisVersion = version@AnalysisVersion, RPackage = version@RPackage,
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
       AnalysisMetadata = data.frame(
         result_datasource_id = result_datasource_id, scheme_id = scheme_id,
@@ -199,7 +197,8 @@ setMethod(
       Control = control,
       ImputationSize = imputation_size,
       Minimum = minimum,
-      RawImputed = NULL
+      RawImputed = NULL,
+      Extra = extra
     )
   }
 )
