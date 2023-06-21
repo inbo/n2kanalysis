@@ -105,6 +105,7 @@ Collate:
     'mark_obsolete_dataset.R'
     'n2k_aggregated.R'
     'n2k_composite.R'
+    'n2k_hurdle_imputed_class.R'
     'n2k_import_class.R'
     'n2k_import.R'
     'n2k_inla.R'
