@@ -1,4 +1,5 @@
 #' @rdname fit_model
+#' @importFrom dplyr coalesce
 #' @importFrom methods setMethod new
 #' @importFrom multimput model_impute
 #' @include n2k_model_imputed_class.R
@@ -8,29 +9,22 @@ setMethod(
   definition = function(x, ...) {
     validObject(x)
     dots <- list(...)
-    if (is.null(dots$status)) {
-      dots$status <- c("new", "waiting")
-    }
+    dots$status <- coalesce(list(dots$status), list(c("new", "waiting")))[[1]]
+
     if (!(status(x) %in% dots$status)) {
       return(x)
     }
 
     # status: "waiting"
-    if (status(x) == "waiting" | is.null(x@AggregatedImputed)) {
+    if (status(x) != "new" || is.null(x@AggregatedImputed)) {
       parent <- get_parents(x, base = dots$base, project = dots$project)
-      if (length(parent) == 0) {
-        stop("parent analysis not found")
-      }
-      if (length(parent) > 1) {
-        stop("Multiple parents")
-      }
+      stopifnot("parent analysis not found" = length(parent) > 0)
+      stopifnot("Multiple parents" = length(parent) == 1)
       parent_status <- status(parent[[1]])
-      if (parent_status %in% c("new", "waiting")) {
-        status(x) <- "waiting"
-        return(x)
-      }
       if (parent_status != "converged") {
-        status(x) <- "error"
+        status(x) <- ifelse(
+          parent_status %in% c("new", "waiting"), "waiting", "error"
+        )
         return(x)
       }
       x@AggregatedImputed <- parent[[1]]@AggregatedImputed
@@ -39,11 +33,13 @@ setMethod(
         parent[[1]]@AnalysisMetadata$status_fingerprint
       status(x) <- "new"
     }
-    sapply(x@Package, require, quietly = TRUE, character.only = TRUE)
+    stopifnot(all(vapply(
+      x@Package, FUN = require, FUN.VALUE = logical(1), quietly = TRUE,
+      character.only = TRUE
+    )))
+    model_args <- x@ModelArgs
     if (length(x@PrepareModelArgs)) {
-      model_args <- c(x@ModelArgs, x@PrepareModelArgs[[1]](x))
-    } else {
-      model_args <- x@ModelArgs
+      model_args <- c(model_args, x@PrepareModelArgs[[1]](x))
     }
     model <- try(
       model_impute(

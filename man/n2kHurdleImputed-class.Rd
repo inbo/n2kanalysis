@@ -5,5 +5,15 @@
 \alias{n2kHurdleImputed-class}
 \title{The \code{n2kHurdleImputed} class}
 \description{
-It holds the model2 of hurdle imputed data
+It holds the model2 of hurdle imputed data.
 }
+\section{Slots}{
+
+\describe{
+\item{\code{Presence}}{A \code{rawImputed} object with the presence component.}
+
+\item{\code{Count}}{A \code{rawImputed} object with the count component.}
+
+\item{\code{Hurdle}}{A \code{aggregatedImputed} object with the resulting hurdle object.}
+}}
+

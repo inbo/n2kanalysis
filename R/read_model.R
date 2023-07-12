@@ -35,9 +35,7 @@ setMethod(
       return(readRDS(filename))
     }
 
-    if (length(filename) == 0) {
-      stop("no matching object in directory")
-    }
+    stopifnot("no matching object in directory" = length(filename) > 0)
     stop("multiple matching objects in directory")
   }
 )
@@ -64,9 +62,17 @@ setMethod(
       return(s3readRDS(available[[matching]]))
     }
 
-    if (length(matching) == 0) {
-      stop("no matching object in bucket")
-    }
+    stopifnot("no matching object in bucket" = length(matching) > 0)
     stop("multiple matching objects in bucket")
+  }
+)
+
+#' @rdname read_model
+#' @importFrom methods setMethod
+setMethod(
+  f = "read_model",
+  signature = signature(base = "ANY"),
+  definition = function(x, base, project) {
+    stop("base must be either a directory or an S3 bucket")
   }
 )

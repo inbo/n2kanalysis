@@ -16,7 +16,7 @@ setMethod(
     }
 
     # status: "waiting"
-    if (status(x) == "waiting" | is.null(x@RawImputed)) {
+    if (status(x) != "new" | is.null(x@RawImputed)) {
       parent <- get_parents(x, base = dots$base, project = dots$project)
       assert_that(length(parent) > 0, msg = "Parent analysis not found")
       assert_that(length(parent) == 1, msg = "Multiple parents")
@@ -35,11 +35,16 @@ setMethod(
       } else if (inherits(parent, "n2kAggregate")) {
         x@RawImputed <- new(
           "rawImputed",
-          Data = cbind(parent@AggregatedImputed@Covariate, Count = NA),
+          Data = cbind(parent@AggregatedImputed@Covariate, Count = NA_integer_),
           Response = "Count",
           Minimum = "",
-          Imputation = parent@AggregatedImputed@Imputation
+          Imputation = parent@AggregatedImputed@Imputation,
+          Extra = cbind(
+            parent@AggregatedImputed@Covariate[0, ], Count = integer(0)
+          )
         )
+      } else if (inherits(parent, "n2kHurdleImputed")) {
+        x@RawImputed <- parent@Hurdle
       } else {
         stop("cannot handle a parent of class ", class(parent))
       }
