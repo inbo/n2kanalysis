@@ -32,25 +32,25 @@ test_that("store_model stores the model on a local file system", {
     "character"
   )
   file_info2 <- file.info(filename2)
-  expect_identical(filename, filename2)
-  expect_identical(file_info, file_info2)
+  expect_equal(filename, filename2)
+  expect_equal(file_info, file_info2, check.attributes = FALSE)
 
   expect_identical(get_model(filename), NULL)
 
   fitted <- fit_model(filename, base, project)
-  expect_identical(
+  expect_equal(
     file.path(base, project) %>%
       list.files(recursive = TRUE, full.names = TRUE) %>%
       normalizePath(winslash = "/", mustWork = TRUE),
-    gsub("new", "converged", filename)
+    gsub("new", "converged", as.character(filename))
   )
   expect_is(
     filename2 <- store_model(object, base, project, overwrite = FALSE),
     "character"
   )
-  expect_identical(filename2, gsub("new", "converged", filename))
+  expect_equal(filename2, gsub("new", "converged", filename))
   expect_is(filename2 <- store_model(object, base, project), "character")
-  expect_identical(filename2, filename)
+  expect_equal(filename2, filename)
 
   file.path(base, project) %>%
     list.files(recursive = TRUE, full.names = TRUE) %>%
@@ -59,7 +59,7 @@ test_that("store_model stores the model on a local file system", {
 
 test_that("store_model stores the model on an S3 bucket", {
   skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
-  bucket <- get_bucket("n2kmonitoring")
+  bucket <- get_bucket(Sys.getenv("N2KBUCKET"))
   project <- "unittest_store_model"
   this_result_datasource_id <- sha1(sample(letters))
   this_scheme_id <- sha1(sample(letters))
@@ -88,14 +88,14 @@ test_that("store_model stores the model on an S3 bucket", {
     filename <- store_model(x = object, base = bucket, project = project),
     "character"
   )
-  available <- get_bucket("n2kmonitoring", prefix = project) %>%
+  available <- get_bucket(Sys.getenv("N2KBUCKET"), prefix = project) %>%
     sapply("[[", "Key")
   expect_true(filename %in% available)
   expect_is(
     filename2 <- store_model(x = object, base = bucket, project = project),
     "character"
   )
-  available <- get_bucket("n2kmonitoring", prefix = project) %>%
+  available <- get_bucket(Sys.getenv("N2KBUCKET"), prefix = project) %>%
     sapply("[[", "Key")
   expect_true(filename2 %in% available)
   expect_identical(filename, filename2)

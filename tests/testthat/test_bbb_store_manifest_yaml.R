@@ -1,7 +1,7 @@
 context("store_manifest_yaml")
 test_that("store_manifest_yaml stores the manifest on an S3 bucket", {
   skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
-  bucket <- get_bucket("n2kmonitoring")
+  bucket <- get_bucket(Sys.getenv("N2KBUCKET"))
   object <- n2k_manifest(
     data.frame(
       fingerprint = "1", parent = NA_character_, stringsAsFactors = FALSE
