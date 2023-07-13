@@ -75,7 +75,7 @@ setMethod(
 #' @param x the `n2kAnalysisMetadata` object
 #' @param value the new values for the status
 #' @name status<-
-#' @rdname status.change
+#' @rdname status_change
 #' @exportMethod status<-
 #' @docType methods
 #' @importFrom methods setGeneric
@@ -87,7 +87,7 @@ setGeneric(
   }
 )
 
-#' @rdname status.change
+#' @rdname status_change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
 #' @include n2k_inla_class.R
@@ -109,7 +109,7 @@ setReplaceMethod(
   }
 )
 
-#' @rdname status.change
+#' @rdname status_change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
 #' @include n2k_composite_class.R
@@ -132,7 +132,7 @@ setReplaceMethod(
   }
 )
 
-#' @rdname status.change
+#' @rdname status_change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
 #' @include n2k_inla_comparison_class.R
@@ -155,7 +155,7 @@ setReplaceMethod(
   }
 )
 
-#' @rdname status.change
+#' @rdname status_change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
 #' @include n2k_aggregate_class.R
@@ -178,7 +178,7 @@ setReplaceMethod(
   }
 )
 
-#' @rdname status.change
+#' @rdname status_change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
 #' @include n2k_model_imputed_class.R

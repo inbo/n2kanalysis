@@ -29,7 +29,7 @@ setMethod(
 #' @param x the `n2kAnalysisMetadata` object
 #' @param value the new values for the status
 #' @name parent_status<-
-#' @rdname parent.status.change
+#' @rdname parent_status_change
 #' @exportMethod parent_status<-
 #' @docType methods
 #' @importFrom methods setGeneric
@@ -40,7 +40,7 @@ setGeneric(
   }
 )
 
-#' @rdname parent.status.change
+#' @rdname parent_status_change
 #' @importFrom methods setReplaceMethod
 #' @importFrom digest sha1
 #' @include n2k_composite_class.R
