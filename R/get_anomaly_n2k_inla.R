@@ -94,9 +94,9 @@ setMethod(
 
     parameter_id <- parameter@Parameter %>%
       filter(.data$description == "Fitted") %>%
-      select(.data$fingerprint) %>%
+      select("fingerprint") %>%
       inner_join(parameter@Parameter, by = c("fingerprint" = "parent")) %>%
-      select(parameter = .data$fingerprint.y, .data$description)
+      select(parameter = "fingerprint.y", "description")
     length_antijoin <- data %>%
       anti_join(parameter_id, by = c("observation" = "description")) %>%
       nrow()
@@ -119,7 +119,7 @@ setMethod(
     if (nrow(high_ratio) > 0) {
       anomaly <- anomaly_type %>%
         filter(.data$description == "Large ratio of observed vs expected") %>%
-        select(anomaly_type = .data$fingerprint) %>%
+        select(anomaly_type = "fingerprint") %>%
         merge(high_ratio) %>%
         bind_rows(anomaly)
     }
@@ -167,7 +167,7 @@ setMethod(
         parent = .data$fingerprint
       ) %>%
       inner_join(parameter@Parameter, by = "parent") %>%
-      select(.data$anomaly_type, parameter = .data$fingerprint) %>%
+      select("anomaly_type", parameter = "fingerprint") %>%
       inner_join(
         parameter@ParameterEstimate %>%
           filter(abs(.data$estimate) > random_threshold) %>%

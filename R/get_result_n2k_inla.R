@@ -102,10 +102,7 @@ setMethod(
           filter(.data$description == "Fixed effect"),
         by = c("parent" = "fingerprint")
       ) %>%
-      select(
-        parent_description = .data$description,
-        parent = .data$fingerprint
-      ) %>%
+      select(parent_description = "description", parent = "fingerprint") %>%
       left_join(anomaly@Parameter, by = "parent") %>%
       transmute(
         parameter = ifelse(
@@ -134,10 +131,10 @@ setMethod(
             select(-"analysis"),
           by = "description"
         ) %>%
-        select(-"description", contrast = .data$fingerprint) %>%
+        select(-"description", contrast = "fingerprint") %>%
         mutate(parameter_id = gsub("[\\(|\\)]", "", .data$parameter_id)) %>%
         inner_join(fixed_parameter_id, by = "parameter_id") %>%
-        select(.data$contrast, .data$parameter, .data$coefficient) %>%
+        select("contrast", "parameter", "coefficient") %>%
         arrange(.data$contrast, .data$parameter) %>%
         as.data.frame()
     } else {
@@ -153,7 +150,7 @@ setMethod(
             ) %>%
               filter(abs(.data$coefficient) >= 1e-8) %>%
               inner_join(fixed_parameter_id, by = "parameter_id") %>%
-              select(.data$contrast, .data$parameter, .data$coefficient)
+              select("contrast", "parameter", "coefficient")
           } else {
             random_id <- anomaly@Parameter %>%
               semi_join(
@@ -172,7 +169,7 @@ setMethod(
                 ),
                 by = c("parent" = "fingerprint")
               ) %>%
-              select(-"parent", parameter = .data$fingerprint)
+              select(-"parent", parameter = "fingerprint")
             lc <- x@LinearCombination[[y]] %>%
               as.data.frame()
             lc[abs(lc) < 1e-8] <- NA
@@ -211,7 +208,7 @@ setMethod(
                         "%s:%s", .data$main, .data$description
                       )
                     ) %>%
-                    select(parameter = .data$fingerprint, .data$description),
+                    select(parameter = "fingerprint", "description"),
                   by = "description"
                 ) %>%
                 select(-"description")
@@ -239,8 +236,8 @@ setMethod(
         by = "description"
       ) %>%
       select(
-        contrast = .data$fingerprint, .data$estimate,
-        .data$lower_confidence_limit, .data$upper_confidence_limit
+        contrast = "fingerprint", "estimate", "lower_confidence_limit",
+        "upper_confidence_limit"
       ) %>%
       arrange(.data$contrast) %>%
       as.data.frame()
