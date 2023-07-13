@@ -3,7 +3,7 @@ Title: Generic Functions to Analyse Data from the Natura 2000 Monitoring
 Version: 0.3.0
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0001-8804-4216")),
+           comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Research Institute for Nature and Forest (INBO)", , , "info@inbo.be", role = c("cph", "fnd"))
   )
 Description: All generic functions for the analysis. The full analysis is

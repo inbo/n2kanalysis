@@ -1,7 +1,7 @@
 citHeader("To cite `n2kanalysis` in publications please use:")
 # begin checklist entry
-citEntry(
-  entry = "Manual",
+bibentry(
+  bibtype = "Manual",
   title = "n2kanalysis: Generic Functions to Analyse Data from the Natura 2000 Monitoring. Version 0.3.0",
   author = c( author = c(person(given = "Thierry", family = "Onkelinx"))),
   year = 2023,

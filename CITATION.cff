@@ -4,12 +4,14 @@ title: 'n2kanalysis: Generic Functions to Analyse Data from the Natura 2000 Moni
 authors:
 - given-names: Thierry
   family-names: Onkelinx
+  affiliation: Research Institute for Nature and Forest (INBO)
   orcid: 0000-0001-8804-4216
 keywords:
 - analysis, reproducible research
 contact:
 - given-names: Thierry
   family-names: Onkelinx
+  affiliation: Research Institute for Nature and Forest (INBO)
   orcid: 0000-0001-8804-4216
 doi: 10.5281/zenodo.3576047
 license: GPL-3.0
