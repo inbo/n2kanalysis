@@ -1,6 +1,6 @@
 {
   "title": "n2kanalysis: Generic Functions to Analyse Data from the Natura 2000 Monitoring",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "license": "GPL-3.0",
   "upload_type": "software",
   "description": "<p>All generic functions for the analysis. The full analysis is defined\nin the analysis package of each monitoring scheme.<\/p>",
