@@ -21,7 +21,7 @@ Imports:
     fs,
     MASS,
     methods,
-    multimput (>= 0.2.10),
+    multimput (>= 0.2.12),
     n2khelper (>= 0.5.0),
     purrr,
     rlang,
@@ -30,7 +30,7 @@ Imports:
     tidyr (>= 0.4.0),
     yaml
 Suggests:
-    INLA (>= 19.09.03),
+    INLA (>= 23.04.24),
     littler,
     Matrix,
     parallel,
@@ -104,6 +104,7 @@ Collate:
     'get_species_group_id.R'
     'get_status_fingerprint.R'
     'inla_inverse.R'
+    'manifest_yaml_to_bash.R'
     'mark_obsolete_dataset.R'
     'n2k_aggregated.R'
     'n2k_composite.R'
