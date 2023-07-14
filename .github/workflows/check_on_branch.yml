@@ -5,7 +5,7 @@ on:
       - master
       - ghpages
 
-name: "check package"
+name: "check package with checklist"
 
 jobs:
   check-package:
@@ -13,11 +13,8 @@ jobs:
     name: "check package"
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      ORCID_TOKEN: ${{ secrets.ORCID_TOKEN }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: read
     steps:
-      - uses: inbo/actions/check_pkg@master
-        with:
-          token: ${{ secrets.PAT }}
+      - uses: inbo/actions/check_pkg@main
