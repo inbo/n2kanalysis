@@ -42,7 +42,9 @@ test_that("store_model stores the model on a local file system", {
     file.path(base, project) %>%
       list.files(recursive = TRUE, full.names = TRUE) %>%
       normalizePath(winslash = "/", mustWork = TRUE),
-    gsub("new", "converged", as.character(filename))
+    as.character(filename) |>
+      gsub(pattern = "new", replacement = "converged") |>
+      normalizePath(winslash = "/", mustWork = TRUE)
   )
   expect_is(
     filename2 <- store_model(object, base, project, overwrite = FALSE),
