@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: If you use this software, please cite it using these metadata.
-title: 'n2kanalysis: Generic Functions to Analyse Data from the Natura 2000 Monitoring'
+title: "n2kanalysis: Generic Functions to Analyse Data from the 'Natura 2000' Monitoring"
 authors:
 - given-names: Thierry
   family-names: Onkelinx
@@ -17,11 +17,9 @@ doi: 10.5281/zenodo.3576047
 license: GPL-3.0
 repository-code: https://github.com/inbo/n2kanalysis/
 type: software
-abstract: All generic functions for the analysis. The full analysis is defined in
-  the analysis package of each monitoring scheme.
+abstract: "All generic functions for the analysis. The full analysis is defined in
+  the analysis package of each monitoring scheme."
 identifiers:
 - type: doi
   value: 10.5281/zenodo.3576047
-- type: url
-  value: []
 version: 0.3.1
