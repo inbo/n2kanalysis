@@ -36,6 +36,9 @@ Suggests:
     parallel,
     sn,
     testthat (>= 2.0.1)
+Remotes:
+    inbo/multimput,
+    inbo/n2khelper
 Additional_repositories: https://inla.r-inla-download.org/R/stable,
     https://inbo.r-universe.dev
 Config/checklist/communities: inbo
