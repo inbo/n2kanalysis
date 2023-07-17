@@ -1,46 +1,60 @@
 Package: n2kanalysis
-Title: Generic Functions to Analyse Data from the Natura 2000 Monitoring
-Version: 0.3.0
+Title: Generic Functions to Analyse Data from the 'Natura 2000' Monitoring
+Version: 0.3.1
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0001-8804-4216")),
-    person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
+           comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
+    person("Research Institute for Nature and Forest (INBO)", , , "info@inbo.be", role = c("cph", "fnd"))
   )
-Description: All generic functions for the analysis. The full analysis is
-    defined in the analysis package of each monitoring scheme.
+Description: All generic functions and classes for the analysis for the
+    'Natura 2000' monitoring. The classes contain all required data and
+    definitions to fit the model without the need to access other sources.
+    Potentially they might need access to one or more parent objects. An
+    aggregation object might for example need the result of an imputation
+    object. The actual definition of the analysis, using these generic
+    function and classes, is defined in dedictated analysis R packages for
+    every monitoring scheme. For example 'abvanalysis' and
+    'watervogelanalysis'.
 License: GPL-3
 URL: https://doi.org/10.5281/zenodo.3576047
 BugReports: https://github.com/inbo/n2kanalysis/issues
 Depends:
-    R (>= 3.1.2)
+    R (>= 4.2.0)
 Imports:
-    MASS,
-    RODBC,
     assertthat (>= 0.2.1),
     aws.s3,
     digest (>= 0.6.23.2),
     dplyr,
+    fs,
+    MASS,
     methods,
-    multimput (>= 0.2.10),
+    multimput (>= 0.2.12),
     n2khelper (>= 0.5.0),
     purrr,
     rlang,
+    RODBC,
     tibble,
     tidyr (>= 0.4.0),
     yaml
 Suggests:
-    INLA (>= 19.09.03),
-    Matrix,
+    INLA (>= 23.04.24),
     littler,
+    Matrix,
     parallel,
     sn,
     testthat (>= 2.0.1)
+Remotes:
+    inbo/multimput,
+    inbo/n2khelper
 Additional_repositories: https://inla.r-inla-download.org/R/stable,
     https://inbo.r-universe.dev
+Config/checklist/communities: inbo
+Config/checklist/keywords: analysis, reproducible research, natura 2000,
+    monitoring
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Collate: 
     'n2k_parameter_class.R'
     'n2k_anomaly_class.R'
@@ -63,6 +77,8 @@ Collate:
     'fit_model_n2k_aggregate.R'
     'n2k_composite_class.R'
     'fit_model_n2k_composite.R'
+    'n2k_hurdle_imputed_class.R'
+    'fit_model_n2k_hurdle_imputed.R'
     'fit_model_n2k_inla.R'
     'n2k_inla_comparison_class.R'
     'fit_model_n2k_inla_comparison.R'
@@ -99,9 +115,11 @@ Collate:
     'get_species_group_id.R'
     'get_status_fingerprint.R'
     'inla_inverse.R'
+    'manifest_yaml_to_bash.R'
     'mark_obsolete_dataset.R'
     'n2k_aggregated.R'
     'n2k_composite.R'
+    'n2k_hurdle_imputed.R'
     'n2k_import_class.R'
     'n2k_import.R'
     'n2k_inla.R'
@@ -121,4 +139,4 @@ Collate:
     'store_manifest_yaml.R'
     'store_model.R'
     'union.R'
-    'valid_oject.R'
+    'valid_object.R'

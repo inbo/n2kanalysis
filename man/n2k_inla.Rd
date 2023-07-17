@@ -34,6 +34,7 @@ n2k_inla(data, ..., model_fit)
   control = list(),
   parent_status = "converged",
   parent_statusfingerprint,
+  extra,
   ...,
   model_fit
 )
@@ -102,6 +103,9 @@ the model.}
 
 \item{parent_statusfingerprint}{The status fingerprint of the parent
 analysis.}
+
+\item{extra}{a \code{data.frame} with extra observations not used in the model.
+They will be added in subsequent analyses.}
 
 \item{raw_imputed}{the optional \code{rawImputed} object}
 }

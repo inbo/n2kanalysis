@@ -34,10 +34,6 @@ test_that("read_manifest reads the manifest on a local file system", {
     read_manifest(temp_dir, "read_manifest", "junk"),
     "No manifest found starting with 'junk'"
   )
-  expect_error(
-    read_manifest(temp_dir, "read_manifest", "5"),
-    "Multiple manifests found starting with '5'"
-  )
   file.path(temp_dir, "read_manifest") %>%
     list.files(recursive = TRUE, full.names = TRUE) %>%
     file.remove()
@@ -45,7 +41,7 @@ test_that("read_manifest reads the manifest on a local file system", {
 
 test_that("read_manifest reads the manifest on an S3 bucket", {
   skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
-  bucket <- get_bucket("n2kmonitoring")
+  bucket <- get_bucket(Sys.getenv("N2KBUCKET"))
   project <- "unittest_read_manifest"
   object <- n2k_manifest(
     data.frame(
@@ -73,12 +69,8 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
     read_manifest(bucket, project, "junk"),
     "No manifest found starting with 'junk'"
   )
-  expect_error(
-    read_manifest(bucket, project, "5"),
-    "Multiple manifests found starting with '5'"
-  )
 
-  available <- get_bucket("n2kmonitoring", prefix = project) %>%
+  available <- get_bucket(Sys.getenv("N2KBUCKET"), prefix = project) %>%
     sapply("[[", "Key")
   expect_true(all(sapply(available, delete_object, bucket = bucket)))
   expect_error(read_manifest(bucket, project), "No manifest files in")

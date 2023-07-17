@@ -11,6 +11,5 @@ Compare multiple models using the WAIC criterion
 
 \describe{
 \item{\code{WAIC}}{A \code{data.frame} with WAIC values per model.}
-}
-}
+}}
 

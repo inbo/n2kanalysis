@@ -294,7 +294,7 @@ setMethod(
     if (!is.null(analysis@RawImputed)) {
       ri <- analysis@RawImputed
       extra <- ri@Data %>%
-        select(response = !!ri@Response, .data$observation_id) %>%
+        select(response = !!ri@Response, "observation_id") %>%
         filter(is.na(.data$response)) %>%
         transmute(
           observation_id = as.character(.data$observation_id),

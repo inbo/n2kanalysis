@@ -318,7 +318,9 @@ test_that("imputation and aggregation", {
   expect_is(result <- get_model_parameter(aggregation), "n2kParameter")
   expect_equal(nrow(result@Parameter), 0L)
 
-  imputation <- fit_model(imputation, parallel_configs = FALSE)
+  suppressWarnings({
+    imputation <- fit_model(imputation, parallel_configs = FALSE)
+  })
   store_model(imputation, base = base, project = project)
   aggregation <- fit_model(aggregation, base = base, project = project)
   expect_is(result <- get_model_parameter(imputation), "n2kParameter")

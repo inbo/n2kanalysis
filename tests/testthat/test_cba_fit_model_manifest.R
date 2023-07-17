@@ -51,8 +51,7 @@ test_that("it handles a manifest", {
 
   # works with an S3 bucket
   skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
-  bucket <- "n2kmonitoring"
-  aws_base <- get_bucket(bucket)
+  aws_base <- get_bucket(Sys.getenv("N2KBUCKET"))
   store_model(object, base = aws_base, project = project)
   store_model(object2, base = aws_base, project = project)
   store_model(object3, base = aws_base, project = project)

@@ -75,12 +75,12 @@ setValidity(
     )
 
     anomalytype_duplicate <- object@AnomalyType %>%
-      select(.data$fingerprint) %>%
+      select("fingerprint") %>%
       anyDuplicated()
     assert_that(anomalytype_duplicate == 0, msg = "Duplicated anomalytypes")
 
     anomaly_duplicate <- object@Anomaly %>%
-      select(.data$analysis, .data$anomaly_type, .data$parameter) %>%
+      select("analysis", "anomaly_type", "parameter") %>%
       anyDuplicated()
     assert_that(anomaly_duplicate == 0, msg = "Duplicated anomalies")
     return(TRUE)

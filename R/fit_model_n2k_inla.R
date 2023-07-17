@@ -9,8 +9,8 @@ setMethod(
   f = "fit_model",
   signature = signature(x = "n2kInla"),
   definition = function(
-    x, status = "new", ..., timeout = NULL, seed = 0L, num_threads = NULL,
-    parallel_configs = TRUE
+    x, status = "new", ..., timeout = NULL, seed = get_seed(x),
+    num_threads = NULL, parallel_configs = TRUE
   ) {
     assert_that(
       requireNamespace("INLA", quietly = TRUE),
@@ -24,7 +24,7 @@ setMethod(
       return(x)
     }
 
-    set.seed(get_seed(x))
+    set.seed(seed)
 
     data <- get_data(x)
     model_formula <- x@AnalysisFormula[[1]]
@@ -76,14 +76,17 @@ setMethod(
       return(n2k_inla(data = x, model_fit = model, status = "converged"))
     }
 
+    imputed <- try(impute(
+      model = model, n_imp = x@ImputationSize, minimum = x@Minimum,
+      seed = seed, num_threads = num_threads, extra = x@Extra,
+      parallel_configs = parallel_configs
+    ))
+    if (inherits(imputed, "try-error")) {
+      return(n2k_inla(data = x, model_fit = model, status = "error"))
+    }
     # return fitted model with imputations
     return(n2k_inla(
-      data = x, model_fit = model, status = "converged",
-      raw_imputed = impute(
-        model = model, n_imp = x@ImputationSize, minimum = x@Minimum,
-        seed = seed, num_threads = num_threads,
-        parallel_configs = parallel_configs
-      )
+      data = x, model_fit = model, status = "converged", raw_imputed = imputed
     ))
   }
 )

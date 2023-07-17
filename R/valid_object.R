@@ -5,8 +5,8 @@
 #' @importFrom n2khelper read_object_environment
 #' @importFrom utils file_test
 #' @param object a single filename, a single path or a vector with filenames.
-#' @param test See \code{\link[methods]{validObject}}
-#' @param complete See \code{\link[methods]{validObject}}
+#' @param test See [methods::validObject()]
+#' @param complete See [methods::validObject()]
 #' @export
 setMethod(
   f = "validObject",

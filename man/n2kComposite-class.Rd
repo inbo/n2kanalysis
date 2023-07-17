@@ -10,11 +10,11 @@ Calculate composite indices from multiple analysis
 \section{Slots}{
 
 \describe{
-\item{\code{Extractor}}{A function to extract the relevant parameters from
-the model.}
-\item{\code{Parameter}}{A data.frame with the relevant parameter estimates
-of each parent analysis.}
-\item{\code{Index}}{The composite index based on the parameters}
-}
-}
+\item{\code{Extractor}}{A function to extract the relevant parameters from the model.}
+
+\item{\code{Parameter}}{A \code{data.frame} with the relevant parameter estimates of each
+parent analysis.}
+
+\item{\code{Index}}{The composite index based on the parameters.}
+}}
 

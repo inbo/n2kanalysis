@@ -2,16 +2,30 @@ description: Configuration file for checklist::check_pkg()
 package: yes
 allowed:
   warnings:
-  - motivation: n2kanalysis requires a set of non CRAN packages
+  - motivation: require dependencies not on CRAN
     value: "checking CRAN incoming feasibility ... WARNING\nMaintainer: 'Thierry Onkelinx
-      <thierry.onkelinx@inbo.be>'\n\nNew submission\n\nStrong dependencies not in
-      mainstream repositories:\n  multimput, n2khelper\nSuggests or Enhances not in
-      mainstream repositories:\n  INLA\nAvailability using Additional_repositories
-      specification:\n  multimput   yes   https://inbo.r-universe.dev              \n
-      \ n2khelper   yes   https://inbo.r-universe.dev              \n  INLA        yes
-      \  https://inla.r-inla-download.org/R/stable"
+      <thierry.onkelinx@inbo.be>'\n\nNew submission\n\nUnknown, possibly misspelled,
+      fields in DESCRIPTION:\n  'Remotes'\n\nStrong dependencies not in mainstream
+      repositories:\n  multimput, n2khelper\nSuggests or Enhances not in mainstream
+      repositories:\n  INLA\nAvailability using Additional_repositories specification:\n
+      \ multimput   yes   https://inbo.r-universe.dev              \n  n2khelper   yes
+      \  https://inbo.r-universe.dev              \n  INLA        yes   https://inla.r-inla-download.org/R/stable"
   notes: []
-citation_roles:
-- aut
-- cre
-keywords: R package
+required:
+- CITATION
+- DESCRIPTION
+- R CMD check
+- checklist
+- codemeta
+- documentation
+- filename conventions
+- folder conventions
+- license
+- lintr
+- repository secret
+- spelling
+spelling:
+  default: en-GB
+  ignore:
+  - .github
+  - LICENSE.md

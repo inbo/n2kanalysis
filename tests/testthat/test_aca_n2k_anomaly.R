@@ -8,7 +8,7 @@ test_that("n2kAnomaly", {
     min = as.POSIXct("2000-01-01", tz = "UTC"),
     max = as.POSIXct("2015-01-01", tz = "UTC")
   ) %>%
-    as.POSIXct(origin = "1970-01-01 00:00.00 UTC", tz = "Europe/Brussels") # nolint: nonportable_path_linter, line_length_linter.
+    as.POSIXct(origin = "1970-01-01 00:00.00 UTC", tz = "Europe/Brussels")
   metadata <- data.frame(
     scheme_id = schemeid, species_group_id = speciesid,
     location_group_id = locationgroupid, model_type = "Unit test",

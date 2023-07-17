@@ -6,18 +6,14 @@ setClassUnion("maybeAggregatedImputed", c("aggregatedImputed", "NULL"))
 #' The `n2kAggregate` class
 #'
 #' It holds analysis data based on an aggregated imputation
-#' @section Slots:
-#'   \describe{
-#'    \item{\code{RawImputed}}{A \code{rawImputed} object with multiple
-#'    imputations.}
-#'    \item{\code{Function}}{The function to apply on each group.}
-#'    \item{\code{Filter}}{The object to pass to the \code{filter} argument of
-#'    \code{\link[multimput]{aggregate_impute}}.}
-#'    \item{\code{Join}}{The object to pass to the \code{join} argument of
-#'    \code{\link[multimput]{aggregate_impute}}.}
-#'    \item{\code{AggregatedImputed}}{An \code{aggregatedImputed} object with
-#'    multiple imputations.}
-#'   }
+#' @slot RawImputed A `rawImputed` object with multiple imputations.
+#' @slot Function The function to apply on each group.
+#' @slot Filter The object to pass to the `filter` argument of
+#'  [multimput::aggregate_impute()].
+#' @slot Join The object to pass to the `join` argument of
+#'  [multimput::aggregate_impute()].
+#' @slot AggregatedImputed An `aggregatedImputed` object with multiple
+#'  imputations.
 #' @name n2kAggregate-class
 #' @rdname n2kAggregate-class
 #' @exportClass n2kAggregate

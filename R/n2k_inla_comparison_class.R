@@ -4,10 +4,7 @@ setClassUnion("maybeDataFrame", c("data.frame", "NULL"))
 #' The `n2kInlaComparison` class
 #'
 #' Compare multiple models using the WAIC criterion
-#' @section Slots:
-#'   \describe{
-#'    \item{\code{WAIC}}{A \code{data.frame} with WAIC values per model.}
-#'   }
+#' @slot WAIC A `data.frame` with WAIC values per model.
 #' @name n2kInlaComparison-class
 #' @rdname n2kInlaComparison-class
 #' @exportClass n2kInlaComparison

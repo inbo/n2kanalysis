@@ -20,7 +20,7 @@ test_that("read_model() handles exceptions on characters", {
 
 test_that("read_model() works with S3 buckets", {
   skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
-  base <- get_bucket("n2kmonitoring", max = 1)
+  base <- get_bucket(Sys.getenv("N2KBUCKET"), max = 1)
   project <- "unittest_read_model"
   s3saveRDS(
     project,
@@ -44,7 +44,7 @@ test_that("read_model() works with S3 buckets", {
     read_model("test", base, project),
     "multiple matching objects in bucket"
   )
-  get_bucket("n2kmonitoring", prefix = project) %>%
+  get_bucket(Sys.getenv("N2KBUCKET"), prefix = project) %>%
     map_chr("Key") %>%
     basename() %>%
     gsub(pattern = "\\.rds", replacement = "") %>%

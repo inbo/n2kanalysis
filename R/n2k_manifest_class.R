@@ -71,7 +71,7 @@ setValidity(
     if (any(!is.na(object@Manifest$parent))) {
       object@Manifest %>%
         left_join(object@Manifest, by = c("parent" = "fingerprint")) %>%
-        select(.data$fingerprint, parent = .data$parent.y) -> link
+        select("fingerprint", parent = "parent.y") -> link
       i <- 1
       while (any(!is.na(link$parent))) {
         if (i > 10) {
@@ -80,7 +80,7 @@ setValidity(
         i <- i + 1
         link %>%
           left_join(object@Manifest, by = c("parent" = "fingerprint")) %>%
-          select(.data$fingerprint, parent = .data$parent.y) -> link
+          select("fingerprint", parent = "parent.y") -> link
       }
     }
 

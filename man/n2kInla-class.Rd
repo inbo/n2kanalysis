@@ -11,20 +11,28 @@ It hold analysis data based on an INLA Poisson model
 
 \describe{
 \item{\code{Data}}{A \code{data.frame} with the data.}
-\item{\code{LinearCombination}}{An optional matrix with the linear
-combinations.}
+
+\item{\code{LinearCombination}}{An optional matrix with the linear combinations.}
+
 \item{\code{ReplicateName}}{An optional list with names of replicates.}
+
 \item{\code{Model}}{Either NULL or the resulting INLA model.}
-\item{\code{Family}}{The family of the INLA model}
-\item{\code{Control}}{
-A named list with options passed to the arguments of \code{\link[INLA:inla]{INLA::inla()}}.
-}
+
+\item{\code{Family}}{The family of the INLA model.}
+
+\item{\code{Control}}{A named list with options passed to the arguments of
+\code{\link[INLA:inla]{INLA::inla()}}.}
+
 \item{\code{ImputationSize}}{The number of multiple imputations.
 Defaults to \code{0}, indication no multiple imputation.}
-\item{\code{Minimum}}{An optional string containing the name of the
-variable in \code{Data} holding the minimal values for imputation.}
-\item{\code{RawImputed}}{A \code{rawImputed} object with multiple
-imputations.}
-}
-}
+
+\item{\code{Minimum}}{An optional string containing the name of the variable in
+\code{Data} holding the minimal values for imputation.}
+
+\item{\code{RawImputed}}{A \code{rawImputed} object with multiple imputations.}
+
+\item{\code{Extra}}{A data.frame with extra data to add to the imputations.
+This data is not used in the imputation model.
+It must contain the same variables as the original data.}
+}}
 

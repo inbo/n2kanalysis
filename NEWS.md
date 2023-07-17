@@ -1,3 +1,10 @@
+# `n2kanalysis` 0.3.1
+
+* Add the `n2kHurdleImputed` class and `n2k_hurdle_imputed()` to fit hurdle
+  models with imputation.
+* Add `Manifest_yaml_to_bash()` to convert a manifest file into a bash script.
+* Update [`checklist`](https://inbo.github.io/checklist/) infrastructure.
+
 # `n2kanalysis` 0.3.0
 
 ## Breaking changes

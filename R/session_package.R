@@ -23,11 +23,7 @@ package_version <- function(x) {
       )
     )
   }
-  if (has_name(x, "RemoteType")) {
-    assert_that(
-      x$RemoteType == "github",
-      msg = "Only github remotes are currently handled"
-    )
+  if (has_name(x, "RemoteType") && x$RemoteType == "github") {
     return(
       data.frame(
         description = x$Package,

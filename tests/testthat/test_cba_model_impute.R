@@ -80,9 +80,12 @@ test_that("model imputation works", {
   store_model(aggregation2, base, project)
   store_model(mi2, base, project)
   expect_message(
-    fit_model(
-      get_file_fingerprint(imputation), base, project, parallel_configs = FALSE
-    ),
+    suppressWarnings({
+      fit_model(
+        get_file_fingerprint(imputation), base, project,
+        parallel_configs = FALSE
+      )
+    }),
     "converged"
   )
   expect_message(
