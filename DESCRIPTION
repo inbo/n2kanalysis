@@ -6,8 +6,15 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Research Institute for Nature and Forest (INBO)", , , "info@inbo.be", role = c("cph", "fnd"))
   )
-Description: All generic functions for the analysis. The full analysis is
-    defined in the analysis package of each monitoring scheme.
+Description: All generic functions and classes for the analysis for the
+    'Natura 2000' monitoring. The classes contain all required data and
+    definitions to fit the model without the need to access other sources.
+    Potentially they might need access to one or more parent objects. An
+    aggregation object might for example need the result of an imputation
+    object. The actual definition of the analysis, using these generic
+    function and classes, is defined in dedictated analysis R packages for
+    every monitoring scheme. For example 'abvanalysis' and
+    'watervogelanalysis'.
 License: GPL-3
 URL: https://doi.org/10.5281/zenodo.3576047
 BugReports: https://github.com/inbo/n2kanalysis/issues
@@ -42,7 +49,8 @@ Remotes:
 Additional_repositories: https://inla.r-inla-download.org/R/stable,
     https://inbo.r-universe.dev
 Config/checklist/communities: inbo
-Config/checklist/keywords: analysis, reproducible research
+Config/checklist/keywords: analysis, reproducible research, natura 2000,
+    monitoring
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)

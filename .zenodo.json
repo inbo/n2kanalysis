@@ -3,9 +3,9 @@
   "version": "0.3.1",
   "license": "GPL-3.0",
   "upload_type": "software",
-  "description": "<p>All generic functions for the analysis. The full analysis is defined\nin the analysis package of each monitoring scheme.<\/p>",
+  "description": "<p>All generic functions and classes for the analysis for the ‘Natura\n2000’ monitoring. The classes contain all required data and definitions\nto fit the model without the need to access other sources. Potentially\nthey might need access to one or more parent objects. An aggregation\nobject might for example need the result of an imputation object. The\nactual definition of the analysis, using these generic function and\nclasses, is defined in dedictated analysis R packages for every\nmonitoring scheme. For example ‘abvanalysis’ and\n‘watervogelanalysis’.<\/p>",
   "keywords": [
-    "analysis, reproducible research"
+    "analysis, reproducible research, natura 2000, monitoring"
   ],
   "access_right": "open",
   "language": "eng",
