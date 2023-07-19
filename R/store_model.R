@@ -90,10 +90,14 @@ setMethod(
       map_chr("Key") -> existing
     sprintf("%s/%s/.*/([[:xdigit:]]{40})\\.rds", project, part) |>
       gsub("\\1", existing) -> hashes
+    # what to do with an existing object
     if (fingerprint %in% hashes) {
+      # we are done when overwrite = FALSE
       if (!isTRUE(overwrite)) {
         return(fingerprint)
       }
+      # make a backup of the existing object when overwrite = TRUE
+      # then delete the original one
       old <- existing[hashes == fingerprint]
       backup <- paste0(
         file.path(
@@ -109,7 +113,6 @@ setMethod(
     }
 
     filename <- file.path(project, part, status, sprintf("%s.rds", fingerprint))
-
     # try several times to write to S3 bucket
     # avoids errors due to time out
     i <- 1
@@ -129,15 +132,19 @@ setMethod(
       # waiting time between tries increases with the number of tries
       Sys.sleep(i)
     }
+    # clean up the eventual backup
     if (fingerprint %in% hashes && isTRUE(overwrite)) {
+      # restore the backup because s3saveRDS() failed
       if (!bucket_ok) {
         copy_object(
           from_object = backup, to_object = old[1],
           from_bucket = base, to_bucket = base
         )
       }
+      # remove the backup
       delete_object(backup, bucket = base)
     }
+    # return an error when writing failed
     stopifnot(bucket_ok, "Unable to write to S3 bucket")
     return(filename)
   }
