@@ -1,6 +1,8 @@
 #' Convert a manifest yaml file into a bash script
 #' @inheritParams store_manifest
 #' @param hash Fingerprint of the manifest `yaml`file.
+#' @param shutdown Append a shutdown command at the end of the script.
+#' Defaults to `FALSE`.
 #' @name manifest_yaml_to_bash
 #' @rdname manifest_yaml_to_bash
 #' @exportMethod manifest_yaml_to_bash
@@ -8,14 +10,14 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "manifest_yaml_to_bash",
-  def = function(base, project, hash) {
+  def = function(base, project, hash, shutdown = FALSE) {
     standardGeneric("manifest_yaml_to_bash") # nocov
   }
 )
 
 #' @export
 #' @rdname manifest_yaml_to_bash
-#' @importFrom assertthat assert_that is.string noNA
+#' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom aws.s3 get_bucket get_bucketname s3read_using
 #' @importFrom methods setMethod new
 #' @importFrom purrr map_chr
@@ -23,8 +25,10 @@ setGeneric(
 setMethod(
   f = "manifest_yaml_to_bash",
   signature = signature(base = "s3_bucket"),
-  definition = function(base, project, hash) {
-    assert_that(is.string(project), noNA(project))
+  definition = function(base, project, hash, shutdown = FALSE) {
+    assert_that(
+      is.string(project), noNA(project), is.flag(shutdown), noNA(shutdown)
+    )
     if (missing(hash)) {
       paste(project, "yaml", sep = "/") |>
         get_bucket(bucket = base, max = Inf) -> available
@@ -80,7 +84,7 @@ date",
       models
     ) -> model_scripts
     script <- path(project, sprintf("bash/%s.sh", docker_hash))
-    c(init, model_scripts) |>
+    c(init, model_scripts, "shutdown -h now"[shutdown]) |>
       s3write_using(writeLines, object = script, bucket = base)
   }
 )
@@ -96,10 +100,10 @@ date",
 setMethod(
   f = "manifest_yaml_to_bash",
   signature = signature(base = "character"),
-  definition = function(base, project, hash) {
+  definition = function(base, project, hash, shutdown = FALSE) {
     assert_that(
       is.string(base), noNA(base), file_test("-d", base), is.string(project),
-      noNA(project)
+      noNA(project), is.flag(shutdown), noNA(shutdown)
     )
     assert_that(
       file_test("-d", path(base, project)),
@@ -157,7 +161,7 @@ date",
     path(base, project, "bash") |>
       dir_create()
     script <- path(base, project, sprintf("bash/%s.sh", docker_hash))
-    c(init, model_scripts) |>
+    c(init, model_scripts, "shutdown -h now"[shutdown]) |>
       writeLines(con = script)
     file_chmod(script, "711")
     return(script)
