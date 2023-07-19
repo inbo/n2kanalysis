@@ -86,30 +86,26 @@ setMethod(
     fingerprint <- get_file_fingerprint(x)
     part <- substring(fingerprint, 1, 4)
 
-    get_bucket(
-      bucket = base,
-      prefix = paste(project, part, sep = "/")
-    ) %>%
+    get_bucket(bucket = base, prefix = paste(project, part, sep = "/")) |>
       map_chr("Key") -> existing
-    sprintf("%s/%s/.*/([[:xdigit:]]{40})\\.rds", project, part) %>%
+    sprintf("%s/%s/.*/([[:xdigit:]]{40})\\.rds", project, part) |>
       gsub("\\1", existing) -> hashes
     if (fingerprint %in% hashes) {
       if (!isTRUE(overwrite)) {
         return(fingerprint)
-      } else {
-        old <- existing[hashes == fingerprint]
-        backup <- paste0(
-          file.path(
-            "abv", "backup",
-            sha1(list(project, fingerprint, status, Sys.time())), sep = "/"
-          )
-        )
-        copy_object(
-          from_object = old[1], to_object = backup,
-          from_bucket = base, to_bucket = base
-        )
-        delete_object(old, bucket = base)
       }
+      old <- existing[hashes == fingerprint]
+      backup <- paste0(
+        file.path(
+          project, "backup",
+          sha1(list(project, fingerprint, status, Sys.time())), sep = "/"
+        )
+      )
+      copy_object(
+        from_object = old[1], to_object = backup,
+        from_bucket = base, to_bucket = base
+      )
+      delete_object(old, bucket = base)
     }
 
     filename <- file.path(project, part, status, sprintf("%s.rds", fingerprint))
@@ -119,7 +115,7 @@ setMethod(
     i <- 1
     repeat {
       bucket_ok <- tryCatch(
-        s3saveRDS(x, bucket = base, object = filename),
+        s3saveRDS(x, bucket = base, object = filename, multipart = TRUE),
         error = function(err) {
           err
         }
@@ -127,9 +123,7 @@ setMethod(
       if (is.logical(bucket_ok)) {
         break
       }
-      if (i > 10) {
-        stop("Unable to write to S3 bucket")
-      }
+      stopifnot(i <= 10, "Unable to write to S3 bucket")
       message("attempt ", i, " to write to S3 bucket failed. Trying again...")
       i <- i + 1
       # waiting time between tries increases with the number of tries
@@ -144,9 +138,7 @@ setMethod(
       }
       delete_object(backup, bucket = base)
     }
-    if (!bucket_ok) {
-      stop("Unable to write to S3 bucket")
-    }
+    stopifnot(bucket_ok, "Unable to write to S3 bucket")
     return(filename)
   }
 )
