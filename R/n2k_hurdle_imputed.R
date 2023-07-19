@@ -1,6 +1,8 @@
 #' Create an `n2kHurdleImputed` object
 #' @param presence the `n2kInla` object for the presence model.
 #' @param count the `n2kInla` object for the count model.
+#' @param verbose display the location group ID and species group ID.
+#' Defaults to `FALSE`.
 #' @name n2k_hurdle_imputed
 #' @rdname n2k_hurdle_imputed
 #' @exportMethod n2k_hurdle_imputed
@@ -9,7 +11,7 @@
 setGeneric(
   name = "n2k_hurdle_imputed",
   def = function(
-    presence, count
+    presence, count, verbose = FALSE
   ) {
     standardGeneric("n2k_hurdle_imputed") # nocov
   }
@@ -19,7 +21,7 @@ setGeneric(
 #' @rdname n2k_hurdle_imputed
 #' @aliases n2k_hurdle_imputed,n2kHurdleImputed-methods
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that is.count is.string is.time
+#' @importFrom assertthat assert_that is.count is.flag is.string is.time noNA
 #' @importFrom digest sha1
 #' @importFrom stats as.formula
 #' @importFrom utils sessionInfo
@@ -28,10 +30,15 @@ setMethod(
   f = "n2k_hurdle_imputed",
   signature = signature(presence = "n2kInla"),
   definition = function(
-    presence, count
+    presence, count, verbose = FALSE
   ) {
+    assert_that(inherits(count, "n2kInla"), is.flag(verbose), noNA(verbose))
+    sprintf(
+      "%s:%s ", count@AnalysisMetadata$location_group_id,
+      count@AnalysisMetadata$species_group_id
+    ) |>
+      display(verbose = verbose, linefeed = FALSE)
     validObject(presence)
-    assert_that(inherits(count, "n2kInla"))
     validObject(count)
     status <- ifelse(
       all(c(status(presence), status(count)) == "converged"), "new", "waiting"
