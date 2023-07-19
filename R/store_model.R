@@ -86,8 +86,26 @@ setMethod(
     fingerprint <- get_file_fingerprint(x)
     part <- substring(fingerprint, 1, 4)
 
-    get_bucket(bucket = base, prefix = paste(project, part, sep = "/")) |>
-      map_chr("Key") -> existing
+    # try several times to write to S3 bucket
+    # avoids errors due to time out
+    i <- 1
+    repeat {
+      bk <- tryCatch(
+        get_bucket(bucket = base, prefix = paste(project, part, sep = "/")),
+        error = function(err) {
+          err
+        }
+      )
+      if (inherits(bk, "s3_bucket")) {
+        break
+      }
+      stopifnot("Unable to get S3 bucket" = i <= 10)
+      message("attempt ", i, " to read S3 bucket failed. Trying again...")
+      i <- i + 1
+      # waiting time between tries increases with the number of tries
+      Sys.sleep(i)
+    }
+    existing <- map_chr(bk, "Key")
     sprintf("%s/%s/.*/([[:xdigit:]]{40})\\.rds", project, part) |>
       gsub("\\1", existing) -> hashes
     # what to do with an existing object
