@@ -126,7 +126,7 @@ setMethod(
       if (is.logical(bucket_ok)) {
         break
       }
-      stopifnot(i <= 10, "Unable to write to S3 bucket")
+      stopifnot("Unable to write to S3 bucket" = i <= 10)
       message("attempt ", i, " to write to S3 bucket failed. Trying again...")
       i <- i + 1
       # waiting time between tries increases with the number of tries
@@ -145,7 +145,7 @@ setMethod(
       delete_object(backup, bucket = base)
     }
     # return an error when writing failed
-    stopifnot(bucket_ok, "Unable to write to S3 bucket")
+    stopifnot("Unable to write to S3 bucket" = bucket_ok)
     return(filename)
   }
 )
