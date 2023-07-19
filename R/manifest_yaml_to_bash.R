@@ -86,6 +86,7 @@ date",
     script <- path(project, sprintf("bash/%s.sh", docker_hash))
     c(init, model_scripts, "shutdown -h now"[shutdown]) |>
       s3write_using(writeLines, object = script, bucket = base)
+    return(script)
   }
 )
 
