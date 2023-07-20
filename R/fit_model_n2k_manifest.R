@@ -1,170 +1,97 @@
 #' @rdname fit_model
+#' @importFrom assertthat assert_that is.string is.flag is.dir has_name noNA
+#' @importFrom fs dir_create dir_ls path
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that is.string is.flag is.dir has_name
-#' @importFrom dplyr %>% transmute mutate left_join arrange distinct
-#' @importFrom aws.s3 get_bucket
-#' @importFrom tibble rowid_to_column
-#' @importFrom rlang .data
-#' @importFrom purrr map map_lgl map2_chr pmap_chr walk
+#' @importFrom purrr walk
+#' @importFrom stats na.omit
 #' @include n2k_manifest_class.R
 #' @param local A local folder into which objects from an AWS S3 bucket are
 #' downloaded.
-#' @param bash Use the `littler` package do run the models in separate sessions.
-#' This will release the memory.
+#' @param first A logical.
+#' `first = TRUE` implies to fit only the first object in the manifest with
+#' matching status.
+#' `first = FALSE`  implies to fit all objects in the manifest with matching
+#' status.
+#' Defaults to `FALSE`.
 setMethod(
   f = "fit_model",
   signature = signature(x = "n2kManifest"),
   definition = function(
     x, base, project, status = c("new", "waiting"), verbose = TRUE, ...,
-    local, bash = FALSE
+    local = tempfile("fit_model"), first = FALSE
   ) {
-    assert_that(is.string(project))
-    assert_that(is.flag(bash))
-    assert_that(is.character(status))
-    assert_that(length(status) >= 1)
-
-    manifest <- x@Manifest %>%
-      mutate(level = ifelse(is.na(.data$parent), 0, 1))
-    while (!all(is.na(manifest$parent))) {
-      manifest <- manifest %>%
-        left_join(x@Manifest, by = c("parent" = "fingerprint")) %>%
-        transmute(
-          .data$fingerprint,
-          parent = .data$parent.y,
-          level = ifelse(is.na(.data$parent), .data$level, .data$level + 1)
-        )
-    }
-    manifest %>%
-      distinct(.data$fingerprint, .data$level) -> manifest
-    if (inherits(base, "character")) {
-      assert_that(is.dir(base))
-      manifest <- data.frame(
-        filename = paste(base, project, sep = "/") %>%
-          list.files(recursive = TRUE, full.names = TRUE),
-        stringsAsFactors = FALSE
-      ) %>%
-        mutate(
-          fingerprint = gsub(
-            ".*([[:xdigit:]]{40})\\.rds$", "\\1", .data$filename
-          )
-        ) %>%
-        left_join(x = manifest, by = "fingerprint") %>%
-        arrange(.data$level, .data$fingerprint)
-      if (isTRUE(bash) && requireNamespace("littler", quietly = TRUE)) {
-        dots <- c(list(...), status = status)
-        strings <- sapply(dots, is.string)
-        dots[strings] <- paste0("\"", dots[strings], "\"")
-        dots <- paste(names(dots), dots, sep = " = ", collapse = ", ")
-        dots <- paste(",", dots)
-        sprintf(
-          "r --package n2kanalysis -e 'fit_model(
-\"%s\", base = \"%s\", project = \"%s\", verbose = %s)'",
-          manifest$filename, base, project, dots, verbose
-        ) %>%
-          lapply(system)
-      } else {
-        walk(
-          manifest$filename, fit_model, base = base, project = project,
-          status = status, verbose = verbose, ...
-        )
-      }
-      return(invisible(NULL))
-    }
     assert_that(
-      inherits(base, "s3_bucket"),
-      msg = "base should be either a local directory or an S3 bucket"
+      is.string(project), noNA(project), is.character(status), noNA(status),
+      length(status) >= 1
     )
-
-    manifest %>%
-      mutate(
-        prefix = file.path(
-          project, substring(.data$fingerprint, 1, 4), fsep = "/"
-        ),
-        filename = map(.data$prefix, get_bucket, bucket = base) %>%
-          map("Contents") %>%
-          map("Key"),
-        filename = map2_chr(
-          .data$fingerprint, .data$filename, ~.y[grep(.x, .y)]
-        ),
-        status = dirname(.data$filename) %>%
-          basename(),
-        to_do = .data$status %in% status
-      ) %>%
-      arrange(.data$level, .data$fingerprint) -> manifest
-    if (!any(manifest$to_do)) {
-      return(invisible(NULL))
-    }
-    display(verbose, "Downloading objects")
-    if (missing(local)) {
-      local <- tempfile("fit_model")
-      dir.create(local, showWarnings = FALSE)
-    }
-    file.path(local, project) %>%
-      list.files(recursive = TRUE, full.names = TRUE) -> local_files
-    manifest %>%
-      mutate(
-        is_local = map_lgl(
-          .data$fingerprint,
-          function(h) {
-            any(grepl(h, local_files))
-          }
-        ),
-        local_filename = pmap_chr(
-          list(.data$is_local, .data$fingerprint, .data$filename),
-          function(l, h, f) {
-            ifelse(l, local_files[grep(h, local_files)], file.path(local, f))
-          }
-        )
-      ) -> manifest
-    walk(
-      which(!manifest$is_local),
-      function(i) {
-        display(verbose, manifest$local_filename[i])
-        dir.create(
-          dirname(manifest$local_filename[i]), recursive = TRUE,
-          showWarnings = FALSE
-        )
-        m <- read_model(manifest$fingerprint[i], base = base, project = project)
-        assert_that(
-          !inherits(m, "try-error"),
-          msg = sprintf(
-            "Object '%s' is missing for manifest '%s'", manifest$fingerprint[i],
-            x@fingerprint
-          )
-        )
-        store_model(m, base = local, project = project)
+    to_do <- order_manifest(x)
+    remaining <- length(to_do)
+    while (length(to_do) > 1 && first) {
+      head(to_do, 1) |>
+        hash_status(base = base, project = project) -> stat
+      if (stat %in% status) {
+        to_do <- head(to_do, 1)
+      } else {
+        to_do <- tail(to_do, -1)
       }
-    )
-    if (isTRUE(bash) && requireNamespace("littler", quietly = TRUE)) {
-      dots <- c(list(...), status = status)
-      strings <- sapply(dots, is.string)
-      dots[strings] <- paste0("\"", dots[strings], "\"")
-      dots <- paste(names(dots), dots, sep = " = ", collapse = ", ")
-      dots <- paste(",", dots)
-      sprintf(
-        "r --package n2kanalysis -e 'fit_model(
-\"%s\", base = \"%s\", project = \"%s\", verbose = %s)'",
-        manifest$fingerprint[manifest$to_do], local, project, dots, verbose
-      ) %>%
-        lapply(system)
-    } else {
+    }
+    if (length(to_do) == 0) {
+      return(invisible(0))
+    }
+    if (inherits(base, "character")) {
       walk(
-        manifest$fingerprint[manifest$to_do], fit_model, base = local,
-        project = project, status = status, verbose = verbose, ...
+        to_do, fit_model, base = base, project = project,
+        status = status, verbose = verbose, ...
       )
+      return(invisible(remaining))
     }
-    display(verbose, "Uploading objects")
-    sapply(
-      basename(manifest$local_filename[manifest$to_do]),
-      function(x) {
-        display(verbose, x)
-        object <- try(read_model(x, base = local, project = project))
-        if (!inherits(object, "try-error")) {
-          store_model(x = object, base = base, project = project)
-        }
-      }
+
+    display(verbose, "Downloading objects")
+    x@Manifest$parent[x@Manifest$fingerprint %in% to_do] |>
+      c(to_do) |>
+      unique() |>
+      na.omit() -> to_download
+    path(local, project) |>
+      dir_create()
+    path(local, project) |>
+      dir_ls(recurse = TRUE, type = "file") |>
+      basename() -> local_files
+    to_download[!paste0(to_download, ".rds") %in% local_files] |>
+      walk(
+        download_model, base = base, project = project, local = local,
+        verbose = verbose
+      )
+    walk(
+      to_do, fit_model, base = local, project = project,
+      status = status, verbose = verbose, ...
     )
-    map(manifest$fingerprint, delete_model, base = local, project = project)
-    return(invisible(NULL))
+    display(verbose, "Uploading objects")
+    walk(
+      to_do, download_model, base = local, project = project, local = base,
+      verbose = verbose
+    )
+    return(invisible(remaining))
   }
 )
+
+#' @importFrom aws.s3 get_bucket
+#' @importFrom purrr map_chr
+hash_status <- function(hash, base, project) {
+  if (inherits(base, "s3_bucket")) {
+    substr(hash, 1, 4) |>
+      sprintf(fmt = "%2$s/%1$s/", project) |>
+      get_bucket(bucket = base, max = Inf) |>
+      map_chr("Key") -> keys
+    keys[grepl(hash, keys)] |>
+      gsub(pattern = sprintf(".*/(.*)/%s\\.rds", hash), replacement = "\\1") |>
+      unname() -> output
+    return(output)
+  }
+  stop("hash status for ", class(base), " still do to")
+}
+
+download_model <- function(hash, base, local, project, verbose = FALSE) {
+  display(verbose, paste("Moving", hash))
+  read_model(x = hash, base = base, project = project) |>
+    store_model(base = local, project = project)
+}

@@ -40,7 +40,7 @@ test_that("it handles a manifest", {
     stringsAsFactors = FALSE
   ) %>%
     n2k_manifest()
-  expect_null(fit_model(x, base = base, project = project))
+  expect_invisible(fit_model(x, base = base, project = project))
   x <- store_manifest(x, base, project)
   expect_null(fit_model(x, base = base, project = project))
   expect_null(fit_model(x))
@@ -66,10 +66,12 @@ test_that("it handles a manifest", {
     stringsAsFactors = FALSE
   ) %>%
     n2k_manifest()
-  expect_null(fit_model(x, base = aws_base, project = project, verbose = TRUE))
+  expect_invisible(
+    fit_model(x, base = aws_base, project = project, verbose = TRUE)
+  )
 
   x <- store_manifest(x, base = aws_base, project = project)
-  expect_null(fit_model(x$Contents))
+  expect_invisible(fit_model(x$Contents))
 
   expect_null(fit_model(x$Contents$Key, base = aws_base, project = project))
 
