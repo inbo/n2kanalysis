@@ -65,7 +65,7 @@ setMethod(
 
 #' @rdname store_model
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that is.string is.flag
+#' @importFrom assertthat assert_that is.string is.flag noNA
 #' @importFrom aws.s3 bucket_exists copy_object delete_object get_bucket
 #' s3saveRDS
 #' @importFrom purrr map_chr
@@ -74,10 +74,10 @@ setMethod(
   f = "store_model",
   signature = signature(base = "s3_bucket"),
   definition = function(x, base, project, overwrite = TRUE, validate = TRUE) {
-    assert_that(inherits(x, "n2kModel"))
-    assert_that(is.string(project))
-    assert_that(is.flag(overwrite))
-    assert_that(is.flag(validate))
+    assert_that(
+      inherits(x, "n2kModel"), is.string(project), is.flag(overwrite),
+      is.flag(validate), noNA(project), noNA(overwrite), noNA(validate)
+    )
     if (isTRUE(validate)) {
       validObject(x, complete = TRUE)
     }
@@ -117,12 +117,9 @@ setMethod(
       # make a backup of the existing object when overwrite = TRUE
       # then delete the original one
       old <- existing[hashes == fingerprint]
-      backup <- paste0(
-        file.path(
-          project, "backup",
-          sha1(list(project, fingerprint, status, Sys.time())), sep = "/"
-        )
-      )
+      list(project, fingerprint, status, Sys.time()) |>
+        sha1() |>
+        sprintf(fmt = "%2$s/backup/%1$s", project) -> backup
       copy_object(
         from_object = old[1], to_object = backup,
         from_bucket = base, to_bucket = base
