@@ -122,7 +122,7 @@ Fit an \code{n2kModel} object
 \itemize{
 \item \code{status}: A vector with status levels naming the levels which should be
 recalculated.
-Defaults to \code{"new"}.
+Defaults to \code{c("new", "waiting")}.
 \item \code{verbose}: A logical indicating if the function should display the name of
 the file and the status.
 Defaults to \code{TRUE}.
