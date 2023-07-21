@@ -10,14 +10,14 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "manifest_yaml_to_bash",
-  def = function(base, project, hash, shutdown = FALSE) {
+  def = function(base, project, hash, shutdown = FALSE, split = 1) {
     standardGeneric("manifest_yaml_to_bash") # nocov
   }
 )
 
 #' @export
 #' @rdname manifest_yaml_to_bash
-#' @importFrom assertthat assert_that is.flag is.string noNA
+#' @importFrom assertthat assert_that is.count is.flag is.string noNA
 #' @importFrom aws.s3 get_bucket get_bucketname s3read_using
 #' @importFrom methods setMethod new
 #' @importFrom purrr map_chr
@@ -25,17 +25,17 @@ setGeneric(
 setMethod(
   f = "manifest_yaml_to_bash",
   signature = signature(base = "s3_bucket"),
-  definition = function(base, project, hash, shutdown = FALSE) {
+  definition = function(base, project, hash, shutdown = FALSE, split = 1) {
     assert_that(
-      is.string(project), noNA(project), is.flag(shutdown), noNA(shutdown)
+      is.string(project), noNA(project), is.flag(shutdown), noNA(shutdown),
+      is.count(split)
     )
     if (missing(hash)) {
       paste(project, "yaml", sep = "/") |>
         get_bucket(bucket = base, max = Inf) -> available
       stopifnot("No manifest files in this project" = length(available) > 0)
       map_chr(available, "LastModified") |>
-        gsub(pattern = "T", replacement = " ") |>
-        as.POSIXct("%Y-%m-%d %H:%M:%S") |>
+        as.POSIXct(tz = "UTC", format = "%Y-%m-%dT%H:%M:%OS") |>
         which.max() -> latest
       yaml_object <- available[[latest]]
     } else {
@@ -64,35 +64,44 @@ docker build --pull --tag rn2k:%s .
 rm Dockerfile",
       yaml$docker, paste(deps, collapse = " \\\n&&  "), docker_hash
     ) -> init
-    volume <- "/n2kanalysis:n2kanalysis:rw"
+    volume <- "/n2kanalysis:/n2kanalysis:rw"
     models <- order_manifest(manifest = manifest)
     sprintf(
       "echo \"model %i of %i\"
-docker run %s --name=%s -v %s rn2k:%s ./fit_model_aws.sh -b %s -p %s -m %s
 date
-docker stop --time 14400 %s
-date",
+docker run %s --name=%s -v %s rn2k:%s ./fit_model_aws.sh -b %s -p %s -m %s",
       seq_along(models), length(models),
       paste(
         c(
-          "--rm -d", "--env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID",
+          "--rm", "--env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID",
           "--env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY",
           "--env AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION"
         ),
         collapse = " "
-      ), models, volume, docker_hash, get_bucketname(base), project, models,
-      models
+      ), models, volume, docker_hash, get_bucketname(base), project, models
     ) -> model_scripts
-    script <- path(project, sprintf("bash/%s.sh", docker_hash))
-    c(init, model_scripts, "shutdown -h now"[shutdown]) |>
-      s3write_using(writeLines, object = script, bucket = base)
-    return(script)
+    vapply(
+      seq_len(split), FUN.VALUE = character(1), project = project, init = init,
+      split = split, shutdown = shutdown, base = base,
+      FUN = function(i, project, split, init, shutdown, base) {
+        script <- path(
+          project, sprintf("bash/%s_%i.sh", docker_hash, i)
+        )
+        c(
+          init, model_scripts[seq_along(model_scripts) %% split == (i - 1)],
+          "shutdown -h now"[shutdown]
+        ) |>
+          writeLines(path("~/analysis", script))
+          # s3write_using(writeLines, object = script, bucket = base)
+        return(script)
+      }
+    )
   }
 )
 
 #' @export
 #' @rdname manifest_yaml_to_bash
-#' @importFrom assertthat assert_that is.string noNA
+#' @importFrom assertthat assert_that is.count is.string noNA
 #' @importFrom dplyr slice_max
 #' @importFrom fs dir_create dir_info file_chmod path
 #' @importFrom methods setMethod new
@@ -101,11 +110,12 @@ date",
 setMethod(
   f = "manifest_yaml_to_bash",
   signature = signature(base = "character"),
-  definition = function(base, project, hash, shutdown = FALSE) {
+  definition = function(base, project, hash, shutdown = FALSE, split = 1) {
     assert_that(
       is.string(base), noNA(base), file_test("-d", base), is.string(project),
-      noNA(project), is.flag(shutdown), noNA(shutdown)
+      noNA(project), is.flag(shutdown), noNA(shutdown), is.count(split)
     )
+    assert_that(split == 1, msg = "`split > 1` to do on local file systems.")
     assert_that(
       file_test("-d", path(base, project)),
       msg = sprintf("`%s` is not a subdirectory of `%s`", project, base)

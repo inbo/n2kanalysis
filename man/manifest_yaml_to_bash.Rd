@@ -7,11 +7,11 @@
 \alias{manifest_yaml_to_bash,character-method}
 \title{Convert a manifest yaml file into a bash script}
 \usage{
-manifest_yaml_to_bash(base, project, hash, shutdown = FALSE)
+manifest_yaml_to_bash(base, project, hash, shutdown = FALSE, split = 1)
 
-\S4method{manifest_yaml_to_bash}{s3_bucket}(base, project, hash, shutdown = FALSE)
+\S4method{manifest_yaml_to_bash}{s3_bucket}(base, project, hash, shutdown = FALSE, split = 1)
 
-\S4method{manifest_yaml_to_bash}{character}(base, project, hash, shutdown = FALSE)
+\S4method{manifest_yaml_to_bash}{character}(base, project, hash, shutdown = FALSE, split = 1)
 }
 \arguments{
 \item{base}{the base location to store the manifest}
