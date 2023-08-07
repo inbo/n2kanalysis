@@ -63,7 +63,7 @@ setMethod(
     }
 
     stopifnot("no matching object in bucket" = length(matching) > 0)
-    stop("multiple matching objects in bucket")
+    stop("multiple objects matching '", x, "' in bucket")
   }
 )
 
