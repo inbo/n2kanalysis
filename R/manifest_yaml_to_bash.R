@@ -222,21 +222,31 @@ order_manifest <- function(manifest) {
 #' @importFrom assertthat assert_that
 #' @importFrom aws.s3 get_bucket
 #' @importFrom purrr map_chr
-object_status <- function(base, project, status = c("new", "waiting")) {
+object_status <- function(base, project, status = c("new", "waiting"), hash) {
   assert_that(
     inherits(base, "s3_bucket"), is.character(status), length(status) > 0,
     is.string(project)
   )
-  if (missing())
-  get_bucket(base, project, max = Inf) |>
-    map_chr("Key") -> available
-  sprintf("^%s/[[:xdigit:]]{4}/.*/[[:xdigit:]]{40}", project) |>
-    grepl(available) -> relevant
+  if (missing(hash)) {
+    get_bucket(base, project, max = Inf) |>
+      map_chr("Key") -> available
+    sprintf("^%s/[[:xdigit:]]{4}/.+/[[:xdigit:]]{40}", project) |>
+      grepl(available) -> relevant
+  } else {
+    assert_that(is.string(x), grepl("^[[:xdigit:]]{40}$", hash))
+    substr(hash, 1, 4) |>
+      sprintf(fmt = "%2$s/%1$s", project) |>
+      get_bucket(bucket = base, max = Inf) |>
+      map_chr("Key") -> available
+    substr(hash, 1, 4) |>
+      sprintf(fmt = "^%2$s/%1$s/.+/%3$s", project, hash) |>
+      grepl(available) -> relevant
+  }
   available[relevant] |>
     basename() |>
     gsub(pattern = "\\.rds$", replacement = "") -> hash
   available[relevant] |>
     dirname() |>
     basename() -> current_status
-  hash[current_status %in% status]
+  return(hash[current_status %in% status])
 }
