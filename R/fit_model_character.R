@@ -1,6 +1,9 @@
 #' @rdname fit_model
-#' @importFrom methods setMethod new
 #' @importFrom aws.s3 get_bucket
+#' @importFrom dplyr mutate
+#' @importFrom methods setMethod new slot
+#' @importFrom purrr map
+#' @importFrom rlang .data
 #' @param base The root of a project. Can be either a directory on a file system
 #' or an AWS S3 bucket object.
 #' Extracted from `bucket` or `x` when missing.
@@ -57,7 +60,16 @@ setMethod(
       gc(verbose = FALSE)
       return(invisible(NULL))
     }
+    display(verbose, paste(status(analysis), "-> "), FALSE)
     dots <- list(...)
+    to_do <- object_status(
+      base = base, project = project, status = status, hash = x
+    )
+    if (length(to_do) == 0) {
+      display(verbose, "skipping")
+      gc(verbose = FALSE)
+      return(invisible(NULL))
+    }
     download_model(
       hash = hash, base = base, local = dots$local, project = project,
       verbose = verbose
@@ -70,7 +82,6 @@ setMethod(
           local = dots$local, project = project, verbose = verbose
         )
       )
-    display(verbose, paste(status(analysis), "-> "), FALSE)
     analysis <- fit_model(
       x = analysis, status = status, base = dots$local, project = project, ...
     )
