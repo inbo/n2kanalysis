@@ -3,6 +3,11 @@
 #' @param hash Fingerprint of the manifest `yaml`file.
 #' @param shutdown Append a shutdown command at the end of the script.
 #' Defaults to `FALSE`.
+#' @param split Number of scripts over which to splits the analyses.
+#' Default to 1.
+#' @param status A vector with status levels naming the levels which should be
+#' calculated.
+#' Defaults to `c("new", "waiting")`.
 #' @name manifest_yaml_to_bash
 #' @rdname manifest_yaml_to_bash
 #' @exportMethod manifest_yaml_to_bash

@@ -7,11 +7,32 @@
 \alias{manifest_yaml_to_bash,character-method}
 \title{Convert a manifest yaml file into a bash script}
 \usage{
-manifest_yaml_to_bash(base, project, hash, shutdown = FALSE, split = 1)
+manifest_yaml_to_bash(
+  base,
+  project,
+  hash,
+  shutdown = FALSE,
+  split = 1,
+  status = c("new", "waiting")
+)
 
-\S4method{manifest_yaml_to_bash}{s3_bucket}(base, project, hash, shutdown = FALSE, split = 1)
+\S4method{manifest_yaml_to_bash}{s3_bucket}(
+  base,
+  project,
+  hash,
+  shutdown = FALSE,
+  split = 1,
+  status = c("new", "waiting")
+)
 
-\S4method{manifest_yaml_to_bash}{character}(base, project, hash, shutdown = FALSE, split = 1)
+\S4method{manifest_yaml_to_bash}{character}(
+  base,
+  project,
+  hash,
+  shutdown = FALSE,
+  split = 1,
+  status = c("new", "waiting")
+)
 }
 \arguments{
 \item{base}{the base location to store the manifest}
@@ -22,6 +43,13 @@ manifest_yaml_to_bash(base, project, hash, shutdown = FALSE, split = 1)
 
 \item{shutdown}{Append a shutdown command at the end of the script.
 Defaults to \code{FALSE}.}
+
+\item{split}{Number of scripts over which to splits the analyses.
+Default to 1.}
+
+\item{status}{A vector with status levels naming the levels which should be
+calculated.
+Defaults to \code{c("new", "waiting")}.}
 }
 \description{
 Convert a manifest yaml file into a bash script
