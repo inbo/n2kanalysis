@@ -105,8 +105,7 @@ docker run %s --name=%s -v %s rn2k:%s ./fit_model_aws.sh -b %s -p %s -m %s",
           init, model_scripts[seq_along(model_scripts) %% split == (i - 1)],
           "shutdown -h now"[shutdown]
         ) |>
-          writeLines(path("~/analysis", script))
-          # s3write_using(writeLines, object = script, bucket = base)
+          s3write_using(writeLines, object = script, bucket = base)
         return(script)
       }
     )
