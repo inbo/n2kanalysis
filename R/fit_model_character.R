@@ -60,7 +60,6 @@ setMethod(
       gc(verbose = FALSE)
       return(invisible(NULL))
     }
-    display(verbose, paste(status(analysis), "-> "), FALSE)
     dots <- list(...)
     to_do <- object_status(
       base = base, project = project, status = status, hash = x
@@ -75,6 +74,7 @@ setMethod(
       verbose = verbose
     )
     analysis <- read_model(hash, base = dots$local, project = project)
+    display(verbose, paste(status(analysis), "-> "), FALSE)
     slot(analysis, "AnalysisRelation") |>
       mutate(
         downloaded = map(

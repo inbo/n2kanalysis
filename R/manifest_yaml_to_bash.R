@@ -232,7 +232,7 @@ object_status <- function(base, project, status = c("new", "waiting"), hash) {
     sprintf("^%s/[[:xdigit:]]{4}/.+/[[:xdigit:]]{40}", project) |>
       grepl(available) -> relevant
   } else {
-    assert_that(is.string(x), grepl("^[[:xdigit:]]{40}$", hash))
+    assert_that(is.string(hash), grepl("^[[:xdigit:]]{40}$", hash))
     substr(hash, 1, 4) |>
       sprintf(fmt = "%2$s/%1$s", project) |>
       get_bucket(bucket = base, max = Inf) |>
