@@ -10,7 +10,10 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "manifest_yaml_to_bash",
-  def = function(base, project, hash, shutdown = FALSE, split = 1) {
+  def = function(
+    base, project, hash, shutdown = FALSE, split = 1,
+    status = c("new", "waiting")
+  ) {
     standardGeneric("manifest_yaml_to_bash") # nocov
   }
 )
@@ -25,7 +28,10 @@ setGeneric(
 setMethod(
   f = "manifest_yaml_to_bash",
   signature = signature(base = "s3_bucket"),
-  definition = function(base, project, hash, shutdown = FALSE, split = 1) {
+  definition = function(
+    base, project, hash, shutdown = FALSE, split = 1,
+    status = c("new", "waiting")
+  ) {
     assert_that(
       is.string(project), noNA(project), is.flag(shutdown), noNA(shutdown),
       is.count(split)
@@ -66,6 +72,8 @@ rm Dockerfile",
     ) -> init
     volume <- "/n2kanalysis:/n2kanalysis:rw"
     models <- order_manifest(manifest = manifest)
+    to_do <- object_status(base = base, project = project, status = status)
+    models <- models[models %in% to_do]
     sprintf(
       "echo \"model %i of %i\"
 date
@@ -75,7 +83,8 @@ docker run %s --name=%s -v %s rn2k:%s ./fit_model_aws.sh -b %s -p %s -m %s",
         c(
           "--rm", "--env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID",
           "--env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY",
-          "--env AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION"
+          "--env AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION",
+          "--cap-add NET_ADMIN", "--cpu-shares=512"
         ),
         collapse = " "
       ), models, volume, docker_hash, get_bucketname(base), project, models
@@ -110,7 +119,10 @@ docker run %s --name=%s -v %s rn2k:%s ./fit_model_aws.sh -b %s -p %s -m %s",
 setMethod(
   f = "manifest_yaml_to_bash",
   signature = signature(base = "character"),
-  definition = function(base, project, hash, shutdown = FALSE, split = 1) {
+  definition = function(
+    base, project, hash, shutdown = FALSE, split = 1,
+    status = c("new", "waiting")
+  ) {
     assert_that(
       is.string(base), noNA(base), file_test("-d", base), is.string(project),
       noNA(project), is.flag(shutdown), noNA(shutdown), is.count(split)
@@ -200,4 +212,26 @@ order_manifest <- function(manifest) {
   }
   assert_that(nrow(full) == 0)
   return(final_order)
+}
+
+#' @importFrom assertthat assert_that
+#' @importFrom aws.s3 get_bucket
+#' @importFrom purrr map_chr
+object_status <- function(base, project, status = c("new", "waiting")) {
+  assert_that(
+    inherits(base, "s3_bucket"), is.character(status), length(status) > 0,
+    is.string(project)
+  )
+  if (missing())
+  get_bucket(base, project, max = Inf) |>
+    map_chr("Key") -> available
+  sprintf("^%s/[[:xdigit:]]{4}/.*/[[:xdigit:]]{40}", project) |>
+    grepl(available) -> relevant
+  available[relevant] |>
+    basename() |>
+    gsub(pattern = "\\.rds$", replacement = "") -> hash
+  available[relevant] |>
+    dirname() |>
+    basename() -> current_status
+  hash[current_status %in% status]
 }
