@@ -64,16 +64,17 @@ setMethod(
       read_manifest(base = base, project = project) -> manifest
     docker_hash <- get_file_fingerprint(manifest)
     sprintf(
-      "Rscript -e 'remotes::install_github(\\\"%s\\\"%s)'", yaml$github,
-      ", dependencies = TRUE, upgrade = \\\"never\\\", keep_source = FALSE"
+      "RUN Rscript -e 'remotes::install_github(\\\"%s\\\"%s)'", yaml$github,
+      ", dependencies = TRUE"
     ) -> deps
     sprintf(
       "#!/bin/bash
+export $(cat .env | xargs)
 echo \"FROM %s
-RUN %s\" > Dockerfile
+%s\" > Dockerfile
 docker build --pull --tag rn2k:%s .
 rm Dockerfile",
-      yaml$docker, paste(deps, collapse = " \\\n&&  "), docker_hash
+      yaml$docker, paste(deps, collapse = "\\n"), docker_hash
     ) -> init
     volume <- "/n2kanalysis:/n2kanalysis:rw"
     models <- order_manifest(manifest = manifest)
