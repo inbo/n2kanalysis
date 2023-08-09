@@ -2,8 +2,8 @@
 #' @aliases get_anomaly,n2kInla-methods
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.count is.number is.string
-#' @importFrom dplyr arrange bind_cols distinct filter group_by mutate select
-#' slice tibble transmute ungroup
+#' @importFrom dplyr arrange bind_cols bind_rows distinct filter group_by mutate
+#' select slice_head slice_max tibble transmute ungroup
 #' @importFrom rlang !!
 #' @importFrom digest sha1
 #' @importFrom utils head tail
@@ -27,27 +27,27 @@ setMethod(
     analysis, n = 20, expected_ratio = 5, expected_absent = 5,
     random_threshold = 1.05, verbose = TRUE, ...
   ) {
-    assert_that(is.count(n))
+    assert_that(
+      is.count(n), is.number(expected_ratio), expected_ratio > 1,
+      is.number(expected_absent), expected_absent > 1,
+      is.number(random_threshold), random_threshold > 1
+    )
     if (!is.null(analysis@Model)) {
       assert_that(
         length(analysis@Model$.args$family) == 1,
         msg = "multiple response not handled yet"
       )
-      if (
+      assert_that(
         analysis@Model$.args$family %in% c(
-          "poisson", "zeroinflatedpoisson0", "zeroinflatedpoisson1",
-          "nbinomial", "zeroinflatednbinomial0", "zeroinflatednbinomial1"
-        )
-      ) {
-        assert_that(is.number(expected_ratio), expected_ratio > 1)
-        log_expected_ratio <- log(expected_ratio)
-        assert_that(is.number(expected_absent), expected_absent > 1)
-        log_expected_absent <- log(expected_absent)
-        assert_that(is.number(random_threshold), random_threshold > 1)
-        random_threshold <- log(random_threshold)
-      } else {
-        stop(analysis@Model$.args$family, " not handled yet")
-      }
+          "binomial", "nbinomial", "poisson", "zeroinflatednbinomial0",
+          "zeroinflatednbinomial1", "zeroinflatedpoisson0",
+          "zeroinflatedpoisson1"
+        ),
+        msg = paste(analysis@Model$.args$family, "not handled yet")
+      )
+      log_expected_ratio <- log(expected_ratio)
+      log_expected_absent <- log(expected_absent)
+      random_threshold <- log(random_threshold)
     }
 
     parameter <- get_model_parameter(
@@ -56,8 +56,7 @@ setMethod(
     if (status(analysis) != "converged") {
       return(
         new(
-          "n2kAnomaly",
-          Parameter = parameter@Parameter,
+          "n2kAnomaly", Parameter = parameter@Parameter,
           ParameterEstimate = parameter@ParameterEstimate
         )
       )
@@ -71,7 +70,7 @@ setMethod(
         "Small ratio of observed vs expected",
         "Zero observed and high expected", "Unstable imputations"
       )
-    ) %>%
+    ) |>
       mutate(
         fingerprint = map_chr(.data$description, ~sha1(c(description = .x)))
       )
@@ -82,7 +81,7 @@ setMethod(
     )
 
     response <- as.character(get_model(analysis)$.args$formula[2])
-    get_data(analysis) %>%
+    get_data(analysis) |>
       transmute(
         response = !!as.name(response),
         expected = get_model(analysis)$summary.fitted.values[, "mean"],
@@ -92,141 +91,120 @@ setMethod(
         datafield = as.character(.data$datafield_id)
       ) -> data
 
-    parameter_id <- parameter@Parameter %>%
-      filter(.data$description == "Fitted") %>%
-      select("fingerprint") %>%
-      inner_join(parameter@Parameter, by = c("fingerprint" = "parent")) %>%
+    parameter_id <- parameter@Parameter |>
+      filter(.data$description == "Fitted") |>
+      select("fingerprint") |>
+      inner_join(parameter@Parameter, by = c("fingerprint" = "parent")) |>
       select(parameter = "fingerprint.y", "description")
-    length_antijoin <- data %>%
-      anti_join(parameter_id, by = c("observation" = "description")) %>%
+    length_antijoin <- data |>
+      anti_join(parameter_id, by = c("observation" = "description")) |>
       nrow()
     assert_that(length_antijoin == 0)
 
-    data <- data %>%
-      inner_join(parameter_id, by = c("observation" = "description")) %>%
+    data <- data |>
+      inner_join(parameter_id, by = c("observation" = "description")) |>
       arrange(desc(abs(.data$log_ratio)), desc(.data$expected))
     # check observed counts versus expected counts
     display(verbose, ": observed > 0 vs fit", FALSE)
-    high_ratio <- data %>%
-      select(
-        "analysis", "parameter", "observation", "datafield", "log_ratio"
-      ) %>%
+    data |>
       filter(
         is.finite(.data$log_ratio), .data$log_ratio > log_expected_ratio
-      ) %>%
-      select(-"log_ratio") %>%
-      head(n)
-    if (nrow(high_ratio) > 0) {
-      anomaly <- anomaly_type %>%
-        filter(.data$description == "Large ratio of observed vs expected") %>%
-        select(anomaly_type = "fingerprint") %>%
-        merge(high_ratio) %>%
-        bind_rows(anomaly)
-    }
-    low_ratio <- data %>%
-      select(
-        "analysis", "parameter", "observation", "datafield", "log_ratio"
-      ) %>%
+      ) |>
+      select("analysis", "parameter", "observation", "datafield") |>
+      slice_head(n = n) |>
+      bind_cols(
+        anomaly_type |>
+          filter(.data$description == "Large ratio of observed vs expected") |>
+          select(anomaly_type = "fingerprint")
+      ) |>
+      bind_rows(anomaly) -> anomaly
+    data |>
       filter(
         is.finite(.data$log_ratio), .data$log_ratio < -log_expected_ratio
-      ) %>%
-      select(-"log_ratio") %>%
-      head(n)
-    if (nrow(low_ratio) > 0) {
-      anomaly <- anomaly_type %>%
-        filter(.data$description == "Small ratio of observed vs expected") %>%
-        select(anomaly_type = "fingerprint") %>%
-        merge(low_ratio) %>%
-        bind_rows(anomaly)
-    }
+      ) |>
+      select("analysis", "parameter", "observation", "datafield") |>
+      slice_head(n = n) |>
+      bind_cols(
+        anomaly_type |>
+          filter(.data$description == "Small ratio of observed vs expected") |>
+          select(anomaly_type = "fingerprint")
+      ) |>
+      bind_rows(anomaly) -> anomaly
 
     display(verbose, ", observed == 0 vs fit", FALSE)
-    high_absent <- data %>%
-      select(
-        "analysis", "parameter", "observation", "datafield", "expected",
-        "response"
-      ) %>%
-      filter(.data$response == 0, .data$expected > log_expected_absent) %>%
-      select(-"response", -"expected") %>%
-      head(n)
-    if (nrow(high_absent) > 0) {
-      anomaly <- anomaly_type %>%
-        filter(.data$description == "Zero observed and high expected") %>%
-        select(anomaly_type = "fingerprint") %>%
-        merge(high_absent) %>%
-        bind_rows(anomaly)
-    }
+    data |>
+      filter(.data$response == 0, .data$expected > log_expected_absent) |>
+      select("analysis", "parameter", "observation", "datafield") |>
+      slice_head(n = n) |>
+      bind_cols(
+        anomaly_type |>
+          filter(.data$description == "Zero observed and high expected") |>
+          select(anomaly_type = "fingerprint")
+      ) |>
+      bind_rows(anomaly) -> anomaly
+
     # select anomalies on random effects
     display(verbose, ", random effect")
-    re_anomaly <- parameter@Parameter %>%
-      filter(.data$description == "Random effect BLUP") %>%
-      select(parent = "fingerprint") %>%
-      inner_join(parameter@Parameter, by = "parent") %>%
+    parameter@Parameter |>
+      filter(.data$description == "Random effect BLUP") |>
+      select(parent = "fingerprint") |>
+      inner_join(parameter@Parameter, by = "parent") |>
       transmute(
         anomaly_type = paste(.data$description, "random intercept"),
         parent = .data$fingerprint
-      ) %>%
-      inner_join(parameter@Parameter, by = "parent") %>%
-      select("anomaly_type", parameter = "fingerprint") %>%
+      ) |>
+      inner_join(parameter@Parameter, by = "parent") |>
+      select("anomaly_type", parameter = "fingerprint") |>
       inner_join(
-        parameter@ParameterEstimate %>%
-          filter(abs(.data$estimate) > random_threshold) %>%
+        parameter@ParameterEstimate |>
+          filter(abs(.data$estimate) > random_threshold) |>
           select("analysis", "parameter", "estimate"),
         by = "parameter"
-      )
+      ) -> re_anomaly
     if (nrow(re_anomaly) > 0) {
-      re_anomaly <- re_anomaly %>%
-        mutate(sign = sign(.data$estimate)) %>%
-        arrange(desc(abs(.data$estimate))) %>%
-        group_by(.data$anomaly_type, .data$sign) %>%
-        slice(seq_len(n)) %>%
-        ungroup() %>%
-        select(-"sign", -"estimate")
-      anomaly_type <- re_anomaly %>%
-        distinct(.data$anomaly_type) %>%
-        select(description = "anomaly_type") %>%
+      re_anomaly |>
+        mutate(sign = sign(.data$estimate)) |>
+        group_by(.data$anomaly_type, .data$sign) |>
+        slice_max(abs(.data$estimate), n = n) |>
+        ungroup() |>
+        select(-"sign", -"estimate") -> re_anomaly
+      anomaly_type <- re_anomaly |>
+        distinct(.data$anomaly_type) |>
+        select(description = "anomaly_type") |>
         mutate(
-          fingerprint = map_chr(
-            .data$description,
-            ~sha1(c(description = .x))
-          )
-        ) %>%
+          fingerprint = map_chr(.data$description, ~sha1(c(description = .x)))
+        ) |>
         bind_rows(anomaly_type)
-      anomaly <- re_anomaly %>%
-        inner_join(anomaly_type, by = c("anomaly_type" = "description")) %>%
-        select(-"anomaly_type", anomaly_type = "fingerprint") %>%
+      anomaly <- re_anomaly |>
+        inner_join(anomaly_type, by = c("anomaly_type" = "description")) |>
+        select(-"anomaly_type", anomaly_type = "fingerprint") |>
         bind_rows(anomaly)
     }
 
     if (!is.null(analysis@RawImputed)) {
-      parent <- anomaly_type %>%
+      parent <- anomaly_type |>
         filter(.data$description == "Unstable imputations")
-      imputations <- parameter@Parameter %>%
-        filter(.data$description == "Imputed value") %>%
-        semi_join(
-          x = parameter@Parameter,
-          by = c("parent" = "fingerprint")
-        ) %>%
-        select("fingerprint", observation = "description") %>%
+      imputations <- parameter@Parameter |>
+        filter(.data$description == "Imputed value") |>
+        semi_join(x = parameter@Parameter, by = c("parent" = "fingerprint")) |>
+        select("fingerprint", observation = "description") |>
         inner_join(
-          x = parameter@ParameterEstimate,
-          by = c("parameter" = "fingerprint")
-        ) %>%
+          x = parameter@ParameterEstimate, by = c("parameter" = "fingerprint")
+        ) |>
         mutate(anomaly_type = parent$fingerprint)
-      anomaly <- anomaly %>%
+      anomaly <- anomaly |>
         bind_rows(
-          imputations %>%
-            filter(.data$LowerConfidenceLimit == 0) %>%
-            arrange(.data$UpperConfidenceLimit) %>%
-            tail(n) %>%
+          imputations |>
+            filter(.data$lower_confidence_limit == 0) |>
+            slice_max(.data$upper_confidence_limit, n = n) |>
             select("parameter", "analysis", "anomaly_type", "observation"),
-          imputations %>%
-            filter(.data$LowerConfidenceLimit > 0) %>%
+          imputations |>
+            filter(.data$lower_confidence_limit > 0) |>
             mutate(
-              Ratio = .data$UpperConfidenceLimit / .data$LowerConfidenceLimit
-            ) %>%
-            arrange(.data$Ratio) %>%
-            tail(n) %>%
+              ratio = .data$upper_confidence_limit /
+                .data$lower_confidence_limit
+            ) |>
+            slice_max(.data$ratio, n = n) |>
             select("parameter", "analysis", "anomaly_type", "observation")
         )
     }
