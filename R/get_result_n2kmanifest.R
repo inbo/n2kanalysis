@@ -11,8 +11,12 @@ setMethod(
       inherits(base, "s3_bucket"), is.string(project), noNA(project),
       validObject(x), is.flag(verbose), noNA(verbose)
     )
-    manifest <- order_manifest(manifest = x)
-    map_chr(manifest, get_result_s3, base = base, project = project)
+    manifest <- order_manifest(manifest = x) |>
+      sample()
+    data.frame(
+      object = manifest,
+      status = map_chr(manifest, get_result_s3, base = base, project = project)
+    )
   }
 )
 
@@ -20,11 +24,11 @@ setMethod(
 #' @importFrom aws.s3 get_bucket s3saveRDS
 #' @importFrom purrr map_chr
 get_result_s3 <- function(hash, base, project, verbose = TRUE) {
-  display(verbose = verbose, hash, linefeed = FALSE)
+  display(verbose = verbose, paste(Sys.time(), hash), linefeed = FALSE)
 
   target <- sprintf("%s/results/%s.rds", project, hash)
   if (length(get_bucket(bucket = base, prefix = target, max = 1)) > 0) {
-    display(verbose = verbose, "    already done")
+    display(verbose = verbose, " already done")
     return("converged")
   }
   substring(hash, 1, 4) |>
@@ -32,24 +36,21 @@ get_result_s3 <- function(hash, base, project, verbose = TRUE) {
     get_bucket(bucket = base, max = Inf) |>
     map_chr("Key") -> available
   available <- available[grepl(hash, available)]
-  assert_that(
-    length(available) > 0,
-    msg = sprintf("object with file fingerprint `%s%` not found ", hash)
-  )
-  assert_that(
-    length(available) == 1,
-    msg = sprintf("multiple objects with file fingerprint `%s%` found ", hash)
-  )
+  if (length(available) != 1) {
+    display(verbose = verbose, " object not found or multiple objects found")
+    return("object problem")
+  }
   substring(hash, 1, 4) |>
     sprintf(fmt = "%2$s/%1$s/(\\w+)/%3$s.rds", project, hash) |>
     gsub(replacement = "\\1", available) -> hash_status
-  display(verbose = verbose, sprintf("    %s", hash_status))
+  display(verbose = verbose, sprintf(" %s", hash_status))
   if (hash_status != "converged") {
     return(hash_status)
   }
-  display(verbose = verbose, "    downloading object")
-  read_model(x = hash, base = base, project = project) |>
-    get_result() -> x
+  display(verbose = verbose, "    downloading object", FALSE)
+  x <- read_model(x = hash, base = base, project = project)
+  display(verbose = verbose, " done")
+  x <- get_result(x)
 
   # try several times to write to S3 bucket
   # avoids errors due to time out
