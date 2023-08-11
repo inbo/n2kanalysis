@@ -50,7 +50,10 @@ get_result_s3 <- function(hash, base, project, verbose = TRUE) {
   display(verbose = verbose, "    downloading object", FALSE)
   x <- read_model(x = hash, base = base, project = project)
   display(verbose = verbose, " done")
-  x <- get_result(x)
+  x <- try(get_result(x))
+  if (inherits(x, "try-error")) {
+    return("get_result() failed")
+  }
 
   # try several times to write to S3 bucket
   # avoids errors due to time out
