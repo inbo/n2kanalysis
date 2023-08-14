@@ -33,6 +33,10 @@ get_result(x, ...)
 Defaults to \code{1} (= no parallel computing).}
 
 \item{verbose}{Print extra information on the screen}
+
+\item{base}{the base location to read the model}
+
+\item{project}{will be a relative path within the base location}
 }
 \description{
 Add the results from an analysis

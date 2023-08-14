@@ -1,4 +1,5 @@
 #' @rdname get_result
+#' @inheritParams read_model
 #' @importFrom assertthat assert_that is.string noNA
 #' @importFrom methods setMethod new
 #' @importFrom purrr map_chr
