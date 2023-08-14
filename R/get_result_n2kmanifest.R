@@ -11,8 +11,7 @@ setMethod(
       inherits(base, "s3_bucket"), is.string(project), noNA(project),
       validObject(x), is.flag(verbose), noNA(verbose)
     )
-    manifest <- order_manifest(manifest = x) |>
-      sample()
+    manifest <- order_manifest(manifest = x)
     data.frame(
       object = manifest,
       status = map_chr(manifest, get_result_s3, base = base, project = project)

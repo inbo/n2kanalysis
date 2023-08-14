@@ -99,6 +99,7 @@ Collate:
     'get_model_parameter.R'
     'get_model_parameter_n2k_aggregated.R'
     'get_model_parameter_n2k_composite.R'
+    'get_model_parameter_n2k_hurdle_imputed.R'
     'get_model_parameter_n2k_inla.R'
     'get_model_parameter_n2k_inla_comparison.R'
     'get_model_parameter_n2k_model_imputed.R'
