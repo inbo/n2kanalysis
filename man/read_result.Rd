@@ -19,7 +19,7 @@ read_result(x, base, project)
 \arguments{
 \item{x}{the file fingerprint of the \code{n2kResult}}
 
-\item{base}{the base location to read the model}
+\item{base}{the base location to read the results}
 
 \item{project}{will be a relative path within the base location}
 }

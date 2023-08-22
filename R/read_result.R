@@ -1,6 +1,6 @@
 #' Read an `n2kResult` object
 #' @param x the file fingerprint of the `n2kResult`
-#' @param base the base location to read the model
+#' @param base the base location to read the results
 #' @param project will be a relative path within the base location
 #' @name read_result
 #' @rdname read_result
