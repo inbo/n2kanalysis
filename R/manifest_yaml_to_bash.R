@@ -74,7 +74,7 @@ echo \"FROM %s
 %s\" > Dockerfile
 docker build --pull --tag rn2k:%s .
 rm Dockerfile",
-      yaml$docker, paste(deps, collapse = "\\n"), docker_hash
+      yaml$docker, paste(deps, collapse = "\n"), docker_hash
     ) -> init
     volume <- "/n2kanalysis:/n2kanalysis:rw"
     models <- order_manifest(manifest = manifest)

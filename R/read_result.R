@@ -17,7 +17,7 @@ setGeneric(
 #' @rdname read_result
 #' @importFrom assertthat assert_that is.string is.dir noNA
 #' @importFrom methods setMethod new
-#' @importFrom fs path
+#' @importFrom fs file_exists path
 setMethod(
   f = "read_result",
   signature = signature(base = "character"),
