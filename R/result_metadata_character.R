@@ -1,9 +1,7 @@
 #' @inheritParams read_result
-#' @name result_metadata
 #' @rdname result_metadata
-#' @exportMethod result_metadata
-#' @docType methods
 #' @importFrom assertthat assert_that is.dir is.string noNA
+#' @importFrom fs dir_ls
 #' @importFrom methods setMethod
 #' @importFrom purrr list_rbind map
 setMethod(

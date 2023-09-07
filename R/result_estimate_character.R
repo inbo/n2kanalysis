@@ -1,8 +1,5 @@
 #' @inheritParams read_result
-#' @name result_estimate
 #' @rdname result_estimate
-#' @exportMethod result_estimate
-#' @docType methods
 #' @importFrom assertthat assert_that is.dir is.string noNA
 #' @importFrom methods setMethod
 #' @importFrom purrr list_rbind map
@@ -26,6 +23,6 @@ setMethod(
       dir_ls(type = "file", regexp = "[[:xdigit:]]{40}.rds$") |>
       basename() |>
       gsub(pattern = "\\.rds$", replacement = "") |>
-      result_estimates(base = dirname(x), project = basename(x))
+      result_estimate(base = dirname(x), project = basename(x))
   }
 )

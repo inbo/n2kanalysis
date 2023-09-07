@@ -4,6 +4,8 @@
 \docType{methods}
 \name{result_metadata}
 \alias{result_metadata}
+\alias{result_metadata,character-method}
+\alias{result_metadata,n2kResult-method}
 \title{Aggregate all results meta data in a single dataframe}
 \usage{
 result_metadata(x, ...)

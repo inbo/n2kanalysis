@@ -1,7 +1,5 @@
-#' @name result_metadata
 #' @rdname result_metadata
-#' @exportMethod result_metadata
-#' @docType methods
+#' @importFrom dplyr left_join rename select
 #' @importFrom methods setMethod
 setMethod(
   f = "result_metadata",

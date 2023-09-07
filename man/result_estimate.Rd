@@ -4,6 +4,8 @@
 \docType{methods}
 \name{result_estimate}
 \alias{result_estimate}
+\alias{result_estimate,character-method}
+\alias{result_estimate,n2kResult-method}
 \title{Aggregate all results estimates in a single dataframe}
 \usage{
 result_estimate(x, ...)

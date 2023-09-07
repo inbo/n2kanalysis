@@ -1,7 +1,4 @@
-#' @name result_estimate
 #' @rdname result_estimate
-#' @exportMethod result_estimate
-#' @docType methods
 #' @importFrom dplyr inner_join left_join select transmute
 #' @importFrom methods setMethod slot
 #' @importFrom rlang .data

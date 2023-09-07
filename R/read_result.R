@@ -50,7 +50,7 @@ setMethod(
     prefix <- file.path(project, "results", paste0(x, ".rds"), fsep = "/")
     available <- get_bucket(base, prefix = prefix, max = Inf)
     if (length(available) == 1) {
-      return(s3readRDS(available[[matching]]))
+      return(s3readRDS(available))
     }
     stopifnot("no matching object in bucket" = length(available) > 0)
     stop("multiple objects matching `", x, "` in bucket")
