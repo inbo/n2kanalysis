@@ -8,6 +8,8 @@
 #' @param status A vector with status levels naming the levels which should be
 #' calculated.
 #' Defaults to `c("new", "waiting")`.
+#' @param limit Limit bandwidth and CPU usage.
+#' Defaults to `FALSE`.
 #' @name manifest_yaml_to_bash
 #' @rdname manifest_yaml_to_bash
 #' @exportMethod manifest_yaml_to_bash
@@ -17,7 +19,7 @@ setGeneric(
   name = "manifest_yaml_to_bash",
   def = function(
     base, project, hash, shutdown = FALSE, split = 1,
-    status = c("new", "waiting")
+    status = c("new", "waiting"), limit = FALSE
   ) {
     standardGeneric("manifest_yaml_to_bash") # nocov
   }
@@ -35,11 +37,11 @@ setMethod(
   signature = signature(base = "s3_bucket"),
   definition = function(
     base, project, hash, shutdown = FALSE, split = 1,
-    status = c("new", "waiting")
+    status = c("new", "waiting"), limit = FALSE
   ) {
     assert_that(
       is.string(project), noNA(project), is.flag(shutdown), noNA(shutdown),
-      is.count(split)
+      is.count(split), is.flag(limit), noNA(limit)
     )
     if (missing(hash)) {
       paste(project, "yaml", sep = "/") |>
@@ -65,7 +67,7 @@ setMethod(
     docker_hash <- get_file_fingerprint(manifest)
     sprintf(
       "RUN Rscript -e 'remotes::install_github(\\\"%s\\\"%s)'", yaml$github,
-      ", dependencies = TRUE"
+      ", dependencies = TRUE, upgrade = \\\"never\\\""
     ) -> deps
     sprintf(
       "#!/bin/bash
@@ -83,17 +85,18 @@ rm Dockerfile",
     sprintf(
       "echo \"model %i of %i\"
 date
-docker run %s --name=%s -v %s rn2k:%s ./fit_model_aws.sh -b %s -p %s -m %s",
+docker run %s --name=%s -v %s rn2k:%s ./fit_model_aws.sh -b %s -p %s -m %s%s",
       seq_along(models), length(models),
       paste(
         c(
           "--rm", "--env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID",
           "--env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY",
           "--env AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION",
-          "--cap-add NET_ADMIN", "--cpu-shares=512"
+          "--cap-add NET_ADMIN"[limit], "--cpu-shares=512"[limit]
         ),
         collapse = " "
-      ), models, volume, docker_hash, get_bucketname(base), project, models
+      ), models, volume, docker_hash, get_bucketname(base), project, models,
+      ifelse(limit, " -s 1", "")
     ) -> model_scripts
     vapply(
       seq_len(split), FUN.VALUE = character(1), project = project, init = init,
@@ -115,7 +118,7 @@ docker run %s --name=%s -v %s rn2k:%s ./fit_model_aws.sh -b %s -p %s -m %s",
 
 #' @export
 #' @rdname manifest_yaml_to_bash
-#' @importFrom assertthat assert_that is.count is.string noNA
+#' @importFrom assertthat assert_that is.count is.flag is.string noNA
 #' @importFrom dplyr slice_max
 #' @importFrom fs dir_create dir_info file_chmod path
 #' @importFrom methods setMethod new
@@ -126,11 +129,12 @@ setMethod(
   signature = signature(base = "character"),
   definition = function(
     base, project, hash, shutdown = FALSE, split = 1,
-    status = c("new", "waiting")
+    status = c("new", "waiting"), limit = FALSE
   ) {
     assert_that(
       is.string(base), noNA(base), file_test("-d", base), is.string(project),
-      noNA(project), is.flag(shutdown), noNA(shutdown), is.count(split)
+      noNA(project), is.flag(shutdown), noNA(shutdown), is.count(split),
+      is.flag(limit), noNA(limit)
     )
     assert_that(split == 1, msg = "`split > 1` to do on local file systems.")
     assert_that(
@@ -179,11 +183,12 @@ rm Dockerfile",
     models <- order_manifest(manifest = manifest)
     sprintf(
       "echo \"model %i of %i\"
-docker run %s --name=%s -v %s rn2k:%s ./fit_model_file.sh -b %s -p %s -m %s
+docker run %s%s --name=%s -v %s rn2k:%s ./fit_model_file.sh -b %s -p %s -m %s
 date
 docker stop --time 14400 %s
 date",
-      seq_along(models), length(models), "--rm -d", models, volume, docker_hash,
+      seq_along(models), length(models), "--rm -d",
+      ifelse(limit, "--cpu-shares=512", ""), models, volume, docker_hash,
       base, project, models, models
     ) -> model_scripts
     path(base, project, "bash") |>

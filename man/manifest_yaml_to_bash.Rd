@@ -13,7 +13,8 @@ manifest_yaml_to_bash(
   hash,
   shutdown = FALSE,
   split = 1,
-  status = c("new", "waiting")
+  status = c("new", "waiting"),
+  limit = FALSE
 )
 
 \S4method{manifest_yaml_to_bash}{s3_bucket}(
@@ -22,7 +23,8 @@ manifest_yaml_to_bash(
   hash,
   shutdown = FALSE,
   split = 1,
-  status = c("new", "waiting")
+  status = c("new", "waiting"),
+  limit = FALSE
 )
 
 \S4method{manifest_yaml_to_bash}{character}(
@@ -31,7 +33,8 @@ manifest_yaml_to_bash(
   hash,
   shutdown = FALSE,
   split = 1,
-  status = c("new", "waiting")
+  status = c("new", "waiting"),
+  limit = FALSE
 )
 }
 \arguments{
@@ -50,6 +53,9 @@ Default to 1.}
 \item{status}{A vector with status levels naming the levels which should be
 calculated.
 Defaults to \code{c("new", "waiting")}.}
+
+\item{limit}{Limit bandwidth and CPU usage.
+Defaults to \code{FALSE}.}
 }
 \description{
 Convert a manifest yaml file into a bash script
