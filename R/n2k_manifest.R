@@ -29,19 +29,18 @@ setMethod(
   definition = function(
     manifest
   ) {
-    assert_that(has_name(manifest, "fingerprint"))
-    assert_that(has_name(manifest, "parent"))
+    assert_that(
+      has_name(manifest, "fingerprint"), has_name(manifest, "parent"),
+      is.character(manifest$fingerprint), is.character(manifest$parent),
+      noNA(manifest$fingerprint)
+    )
 
     if (inherits(manifest, "tbl")) {
       manifest <- as.data.frame(manifest)
     }
-    manifest %>%
-      distinct(.data$fingerprint, .data$parent) %>%
+    manifest |>
+      distinct(.data$fingerprint, .data$parent) |>
       arrange(.data$fingerprint, .data$parent) -> manifest
-    new(
-      "n2kManifest",
-      Manifest = manifest,
-      Fingerprint = sha1(manifest)
-    )
+    new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest))
   }
 )
