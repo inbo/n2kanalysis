@@ -34,7 +34,7 @@ setMethod(
       hash = basename(stored$Contents$Key) |>
         gsub(pattern = "\\.manifest", replacement = "")
     ) -> yaml
-    filename <- sprintf("%s/yaml/%s.yml", project, sha1(yaml))
+    filename <- sprintf("%s/yaml/%s.yaml", project, sha1(yaml))
     available <- get_bucket(base, prefix = filename, max = Inf)
     if (length(available)) {
       return(available)
@@ -84,7 +84,7 @@ setMethod(
       hash = basename(stored) |>
         gsub(pattern = "\\.manifest", replacement = "")
     ) -> yaml
-    sprintf("%s/%s/yaml/%s.yml", base, project, sha1(yaml)) |>
+    sprintf("%s/%s/yaml/%s.yaml", base, project, sha1(yaml)) |>
       normalizePath(winslash = "/", mustWork = FALSE) -> filename
     if (file.exists(filename)) {
       return(filename)
