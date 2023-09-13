@@ -28,7 +28,7 @@ Imports:
     fs,
     MASS,
     methods,
-    multimput (>= 0.2.12),
+    multimput (>= 0.2.13),
     n2khelper (>= 0.5.0),
     purrr,
     rlang,
