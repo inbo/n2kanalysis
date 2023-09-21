@@ -19,19 +19,28 @@ setMethod(
     }
 
     if (status(x) != "new") {
-      parents <- get_parents(x, base = base, project = project)
-      presence <- parents[[x@AnalysisRelation$parent_analysis[1]]]
-      count <- parents[[x@AnalysisRelation$parent_analysis[2]]]
+      presence <- read_model(
+        x@AnalysisRelation$parent_analysis[1], base = base, project = project
+      )
       x@Presence <- presence@RawImputed
-      x@Count <- count@RawImputed
       x@AnalysisRelation$parentstatus_fingerprint[1] <- get_status_fingerprint(
         presence
       )
+      x@AnalysisRelation$parentstatus[1] <- status(presence)
+      rm(presence)
+      gc()
+
+      count <- read_model(
+        x@AnalysisRelation$parent_analysis[2], base = base, project = project
+      )
+      x@Count <- count@RawImputed
       x@AnalysisRelation$parentstatus_fingerprint[2] <- get_status_fingerprint(
         count
       )
-      x@AnalysisRelation$parentstatus[1] <- status(presence)
       x@AnalysisRelation$parentstatus[2] <- status(count)
+      rm(count)
+      gc()
+
       x@AnalysisMetadata$status <- ifelse(
         all(x@AnalysisRelation$parentstatus == "converged"), "new",
         ifelse(
