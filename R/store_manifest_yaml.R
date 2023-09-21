@@ -19,6 +19,7 @@ setGeneric(
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.string
 #' @importFrom dplyr %>%
+#' @importFrom purrr map_chr
 #' @importFrom yaml write_yaml
 setMethod(
   f = "store_manifest_yaml",
@@ -37,7 +38,7 @@ setMethod(
     filename <- sprintf("%s/yaml/%s.yaml", project, sha1(yaml))
     available <- get_bucket(base, prefix = filename, max = Inf)
     if (length(available)) {
-      return(available)
+      return(map_chr(available, "Key"))
     }
 
     # try several times to write to S3 bucket
@@ -60,7 +61,8 @@ setMethod(
       Sys.sleep(i)
     }
     stopifnot("Unable to write to S3 bucket" = bucket_ok)
-    get_bucket(base, prefix = filename, max = Inf)
+    get_bucket(base, prefix = filename, max = Inf) |>
+      map_chr("Key")
   }
 )
 
@@ -74,9 +76,7 @@ setMethod(
   f = "store_manifest_yaml",
   signature = signature(base = "character"),
   definition = function(x, base, project, docker, dependencies) {
-    assert_that(is.dir(base))
-    assert_that(is.string(docker))
-    assert_that(is.character(dependencies))
+    assert_that(is.dir(base), is.string(docker), is.character(dependencies))
 
     stored <- store_manifest(x = x, base = base, project = project)
     list(
@@ -89,7 +89,6 @@ setMethod(
     if (file.exists(filename)) {
       return(filename)
     }
-
     if (!dir.exists(dirname(filename))) {
       dir.create(dirname(filename), recursive = TRUE)
     }

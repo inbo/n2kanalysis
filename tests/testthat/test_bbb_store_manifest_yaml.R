@@ -15,7 +15,7 @@ test_that("store_manifest_yaml stores the manifest on an S3 bucket", {
       x = object, base = bucket, project = project, docker = docker,
       dependencies = dependencies
     ),
-    "s3_bucket"
+    "character"
   )
   available <- get_bucket(bucket, prefix = project)
   keys <- sapply(
@@ -24,7 +24,7 @@ test_that("store_manifest_yaml stores the manifest on an S3 bucket", {
       x$Key
     }
   )
-  expect_equivalent(stored, available[grepl("\\.yaml$", keys)])
+  expect_equivalent(stored, keys[grepl("\\.yaml$", keys)])
   expect_equivalent(object, read_manifest(bucket, project, object@Fingerprint))
 
   expect_is(
@@ -32,7 +32,7 @@ test_that("store_manifest_yaml stores the manifest on an S3 bucket", {
       x = object, base = bucket, project = project, docker = docker,
       dependencies = dependencies
     ),
-    "s3_bucket"
+    "character"
   )
   available <- get_bucket(bucket, prefix = "unittest_store_manifest")
   keys <- sapply(
@@ -41,7 +41,7 @@ test_that("store_manifest_yaml stores the manifest on an S3 bucket", {
       x$Key
     }
   )
-  expect_equivalent(stored2, available[grepl("\\.yaml$", keys)])
+  expect_equivalent(stored2, keys[grepl("\\.yaml$", keys)])
   expect_equivalent(object, read_manifest(bucket, project, object@Fingerprint))
   expect_equivalent(stored, stored2)
   expect_true(all(sapply(available, delete_object, bucket = bucket)))
