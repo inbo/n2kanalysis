@@ -62,14 +62,18 @@ setMethod(
     dots$seed <- as.integer(dots$seed)
     dots$first_imported_year <- as.integer(dots$first_imported_year)
     dots$last_imported_year <- as.integer(dots$last_imported_year)
-    dots$duration <- coalesce(dots$duration, dots$last_imported_year - dots$first_imported_year + 1L)
-    dots$last_analysed_year <- coalesce(dots$last_analysed_year, dots$last_imported_year)
+    dots$duration <- coalesce(
+      dots$duration, dots$last_imported_year - dots$first_imported_year + 1L
+    )
+    dots$last_analysed_year <- coalesce(
+      dots$last_analysed_year, dots$last_imported_year
+    )
     dots$filter <- coalesce(dots$filter, list())
     dots$mutate <- coalesce(dots$mutate, list())
     dots$model_args <- coalesce(dots$model_args, list())
     dots$prepare_model_args <- coalesce(dots$prepare_model_args, list())
     dots$extractor_args <- coalesce(dots$extractor_args, list())
-    dots$package <- coalesce(dots$package, character(0))
+    dots$package <- c(dots$package, character(0))
     assert_that(
       is.count(dots$duration), is.count(dots$last_analysed_year),
       is.list(dots$filter), is.list(dots$mutate), is.list(dots$model_args),
