@@ -1,6 +1,7 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
 #' @importFrom multimput aggregate_impute
+#' @importFrom stats setNames
 #' @include n2k_aggregate_class.R
 setMethod(
   f = "fit_model",
@@ -33,16 +34,23 @@ setMethod(
       if (inherits(parent, "n2kInla")) {
         x@RawImputed <- parent@RawImputed
       } else if (inherits(parent, "n2kAggregate")) {
-        x@RawImputed <- new(
-          "rawImputed",
-          Data = cbind(parent@AggregatedImputed@Covariate, Count = NA_integer_),
-          Response = "Count",
-          Minimum = "",
-          Imputation = parent@AggregatedImputed@Imputation,
-          Extra = cbind(
-            parent@AggregatedImputed@Covariate[0, ], Count = integer(0)
-          )
-        )
+        nrow(parent@AggregatedImputed@Covariate) |>
+          rep(x = NA_integer_) |>
+          list() |>
+          setNames("Count") |>
+          cbind(parent@AggregatedImputed@Covariate) |>
+          list() |>
+          setNames("Data") |>
+          c(
+            list(
+              Class = "rawImputed", Response = "Count", Minimum = "",
+              Imputation = parent@AggregatedImputed@Imputation,
+              Extra = cbind(
+                parent@AggregatedImputed@Covariate[0, ], Count = integer(0)
+              )
+            )
+          ) |>
+          do.call(what = "new") -> x@RawImputed
       } else if (inherits(parent, "n2kHurdleImputed")) {
         x@RawImputed <- parent@Hurdle
       } else {
