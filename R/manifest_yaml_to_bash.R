@@ -67,7 +67,7 @@ setMethod(
     docker_hash <- get_file_fingerprint(manifest)
     sprintf(
       "RUN Rscript -e 'remotes::install_github(\\\"%s\\\"%s)'", yaml$github,
-      ", dependencies = TRUE, upgrade = \\\"never\\\""
+      ", dependencies = FALSE, upgrade = \\\"never\\\""
     ) -> deps
     sprintf(
       "#!/bin/bash
