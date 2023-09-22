@@ -75,6 +75,9 @@ test_that("store_manifest_yaml stores the manifest on a file system", {
     ),
     "character"
   )
-  expect_identical(stored2, stored)
+
+  basename(base) |>
+    sprintf(fmt = ".*(%s.*?)") -> regex
+  expect_identical(gsub(regex, "\\1", stored2), gsub(regex, "\\1", stored))
   file.remove(stored)
 })

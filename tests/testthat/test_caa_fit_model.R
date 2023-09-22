@@ -296,3 +296,55 @@ test_that("fit_model() works on n2kInlaComposite", {
   filename3 <- gsub("waiting", "converged", filename3)
   expect_null(fit_model(filename3, verbose = FALSE))
 })
+
+test_that("fit_model() works on n2kHurdleImputed", {
+  project <- "fit_inla_hurdle"
+  base <- tempfile(project)
+  dir.create(base)
+  dataset <- test_data(missing = 0.2)
+  this_date <- Sys.time() - 24 * 3600
+  dataset |>
+    transmute(
+      .data$A, Count = ifelse(.data$Count > 0, .data$Count, NA),
+      .data$observation_id, .data$datafield_id
+    ) |>
+    n2k_inla(
+      result_datasource_id = "a", scheme_id = "b", seed = 20230922,
+      model_type = "inla zeroinflatednbinomial0: A",
+      family = "zeroinflatednbinomial0", formula = "Count ~ 1",
+      species_group_id = "c", location_group_id = "d", first_imported_year = 1,
+      last_imported_year = 10, imputation_size = 9, analysis_date = this_date,
+      control = list(
+        control.family = list(
+          list(hyper = list(theta = list(initial = -11, fixed = TRUE)))
+        )
+      )
+    ) -> count
+  dataset |>
+    transmute(
+      .data$A, Presence = ifelse(.data$Count > 0, 1, 0),
+      .data$observation_id, .data$datafield_id
+    ) |>
+    n2k_inla(
+      result_datasource_id = "a", scheme_id = "b",
+      model_type = "inla binomial: A",
+      family = "binomial", formula = "Presence ~ 1", seed = 20230922,
+      species_group_id = "c", location_group_id = "d", first_imported_year = 1,
+      last_imported_year = 10, imputation_size = 9, analysis_date = this_date
+    ) -> presence
+  hurdle <- n2k_hurdle_imputed(presence = presence, count = count)
+  expect_s4_class(fit_model(hurdle, status = "error"), "n2kHurdleImputed")
+  sha_count <- store_model(count, base = base, project = project)
+  sha_presence <- store_model(presence, base = base, project = project)
+  sha_hurdle <- store_model(hurdle, base = base, project = project)
+  expect_null(fit_model(basename(sha_hurdle), base = base, project = project))
+  expect_null(fit_model(basename(sha_count), base = base, project = project))
+  expect_null(fit_model(basename(sha_presence), base = base, project = project))
+  expect_null(fit_model(basename(sha_hurdle), base = base, project = project))
+  expect_s4_class(
+    basename(sha_hurdle) |>
+      read_model(base = base, project = project) |>
+      get_anomaly(),
+    "n2kAnomaly"
+  )
+})
