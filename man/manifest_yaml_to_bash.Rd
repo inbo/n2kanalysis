@@ -14,7 +14,8 @@ manifest_yaml_to_bash(
   shutdown = FALSE,
   split = 1,
   status = c("new", "waiting"),
-  limit = FALSE
+  limit = FALSE,
+  timeout = 4
 )
 
 \S4method{manifest_yaml_to_bash}{s3_bucket}(
@@ -24,7 +25,8 @@ manifest_yaml_to_bash(
   shutdown = FALSE,
   split = 1,
   status = c("new", "waiting"),
-  limit = FALSE
+  limit = FALSE,
+  timeout = 4
 )
 
 \S4method{manifest_yaml_to_bash}{character}(
@@ -56,6 +58,9 @@ Defaults to \code{c("new", "waiting")}.}
 
 \item{limit}{Limit bandwidth and CPU usage.
 Defaults to \code{FALSE}.}
+
+\item{timeout}{number of hours to time out the docker container.
+Defaults to \code{4}.}
 }
 \description{
 Convert a manifest yaml file into a bash script

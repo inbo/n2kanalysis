@@ -10,6 +10,8 @@
 #' Defaults to `c("new", "waiting")`.
 #' @param limit Limit bandwidth and CPU usage.
 #' Defaults to `FALSE`.
+#' @param timeout number of hours to time out the docker container.
+#' Defaults to `4`.
 #' @name manifest_yaml_to_bash
 #' @rdname manifest_yaml_to_bash
 #' @exportMethod manifest_yaml_to_bash
@@ -19,7 +21,7 @@ setGeneric(
   name = "manifest_yaml_to_bash",
   def = function(
     base, project, hash, shutdown = FALSE, split = 1,
-    status = c("new", "waiting"), limit = FALSE
+    status = c("new", "waiting"), limit = FALSE, timeout = 4
   ) {
     standardGeneric("manifest_yaml_to_bash") # nocov
   }
@@ -37,11 +39,11 @@ setMethod(
   signature = signature(base = "s3_bucket"),
   definition = function(
     base, project, hash, shutdown = FALSE, split = 1,
-    status = c("new", "waiting"), limit = FALSE
+    status = c("new", "waiting"), limit = FALSE, timeout = 4
   ) {
     assert_that(
       is.string(project), noNA(project), is.flag(shutdown), noNA(shutdown),
-      is.count(split), is.flag(limit), noNA(limit)
+      is.count(split), is.flag(limit), noNA(limit), is.count(timeout)
     )
     if (missing(hash)) {
       paste(project, "yaml", sep = "/") |>
@@ -82,22 +84,25 @@ rm Dockerfile",
     models <- order_manifest(manifest = manifest)
     to_do <- object_status(base = base, project = project, status = status)
     models <- models[models %in% to_do]
-    sprintf(
-      "echo \"model %i of %i\"
-date
-docker run %s --name=%s -v %s rn2k:%s ./fit_model_aws.sh -b %s -p %s -m %s%s",
-      seq_along(models), length(models),
-      paste(
-        c(
-          "--rm", "--env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID",
-          "--env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY",
-          "--env AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION",
-          "--cap-add NET_ADMIN"[limit], "--cpu-shares=512"[limit]
-        ),
-        collapse = " "
-      ), models, volume, docker_hash, get_bucketname(base), project, models,
-      ifelse(limit, " -s 1", "")
-    ) -> model_scripts
+    c(
+      "echo \"\n\nmodel %i of %i\n\n\"\ndate\n",
+      "timeout --kill-after=2m %ih docker run %s --name=%s -v %s rn2k:%s",
+      "./fit_model_aws.sh -b %s -p %s -m %s%s"
+    ) |>
+      paste(collapse = " ") |>
+      sprintf(
+        seq_along(models), length(models), timeout,
+        paste(
+          c(
+            "--rm", "--env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID",
+            "--env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY",
+            "--env AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION",
+            "--cap-add NET_ADMIN"[limit], "--cpu-shares=512"[limit]
+          ),
+          collapse = " "
+        ), models, volume, docker_hash, get_bucketname(base), project, models,
+        ifelse(limit, " -s 1", "")
+      ) -> model_scripts
     vapply(
       seq_len(split), FUN.VALUE = character(1), project = project, init = init,
       split = split, shutdown = shutdown, base = base,
