@@ -19,6 +19,9 @@ setMethod(
       fingerprint = sha1(c("AggregatedImputed", NA_character_)),
       stringsAsFactors = FALSE
     )
+    if (nrow(analysis@AggregatedImputed@Covariate) == 0) {
+      return(new("n2kParameter", Parameter = parameter))
+    }
     observations <- analysis@AggregatedImputed@Covariate %>%
       mutate(
         across(.cols = everything(), .fns = as.character),

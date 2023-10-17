@@ -8,7 +8,7 @@ setMethod(
   f = "get_model_parameter",
   signature = signature(analysis = "n2kModelImputed"),
   definition = function(analysis, ...) {
-    if (is.null(analysis@Results)) {
+    if (is.null(analysis@Results) || nrow(analysis@Results) == 0) {
       return(new("n2kParameter"))
     }
     parent <- data.frame(
