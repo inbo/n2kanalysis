@@ -16,13 +16,23 @@ inla_inverse <- function(marginal) {
       1 / x
     }
   )
-  tibble(
-    estimate = INLA::inla.emarginal(
+  estimate <- try(
+    INLA::inla.emarginal(
       inverse,
       fun = function(x) {
         x
       }
-    ),
+    )
+  )
+  if (inherits(estimate, "try-error")) {
+    return(
+      data.frame(
+        estimate = NA, lower_confidence_limit = NA, upper_confidence_limit = NA
+      )
+    )
+  }
+  tibble(
+    estimate = estimate,
     lower_confidence_limit = INLA::inla.qmarginal(0.025, inverse),
     upper_confidence_limit = INLA::inla.qmarginal(0.975, inverse)
   )
