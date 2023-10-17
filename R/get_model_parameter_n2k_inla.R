@@ -39,15 +39,24 @@ setMethod(
     )
     variable <- variable[!grepl("f\\(", variable)]
 
-    get_model(analysis)$summary.fixed %>%
-      rownames_to_column("parameter") %>%
-      transmute(
-        analysis = analysis@AnalysisMetadata$file_fingerprint,
-        parameter = gsub("[\\(|\\)]", "", .data$parameter),
-        estimate = .data$mean,
-        lower_confidence_limit = .data$`0.025quant`,
-        upper_confidence_limit = .data$`0.975quant`
-      ) -> parameter_estimate
+    fixed <- get_model(analysis)$summary.fixed
+    if (nrow(fixed) == 0) {
+      parameter_estimate <- data.frame(
+        analysis = character(0), parameter = character(0),
+        estimate = numeric(0), lower_confidence_limit = numeric(0),
+        upper_confidence_limit = numeric(0)
+      )
+    } else {
+      fixed |>
+        rownames_to_column("parameter") |>
+        transmute(
+          analysis = analysis@AnalysisMetadata$file_fingerprint,
+          parameter = gsub("[\\(|\\)]", "", .data$parameter),
+          estimate = .data$mean,
+          lower_confidence_limit = .data$`0.025quant`,
+          upper_confidence_limit = .data$`0.975quant`
+        ) -> parameter_estimate
+    }
     attr(parameter_estimate, "parameter") <- parameter
     fixed_parent <- parameter$fingerprint[
       parameter$description == "Fixed effect"
