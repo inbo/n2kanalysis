@@ -18,13 +18,18 @@ setMethod(
     # status: "waiting"
     if (status(x) != "new" || is.null(x@AggregatedImputed)) {
       parent <- get_parents(x, base = dots$base, project = dots$project)
-      stopifnot("parent analysis not found" = length(parent) > 0)
-      stopifnot("Multiple parents" = length(parent) == 1)
+      if (length(parent) != 1) {
+        status(x) <- "error"
+        return(x)
+      }
       parent_status <- status(parent[[1]])
       if (parent_status != "converged") {
         status(x) <- ifelse(
           parent_status %in% c("new", "waiting"), "waiting", "error"
         )
+        x@AnalysisRelation$parent_status <- parent[[1]]@AnalysisMetadata$status
+        x@AnalysisRelation$parentstatus_fingerprint <-
+          parent[[1]]@AnalysisMetadata$status_fingerprint
         return(x)
       }
       x@AggregatedImputed <- parent[[1]]@AggregatedImputed
