@@ -86,11 +86,11 @@ test_that("fit_model() on INLA based objects", {
     sep = ""
   )
   # 64-bit linux
-  object_file <- "abc497293281bce5e26f4513eeb875813308d78e"
-  object_lc_file <- "363fde867fa653a8436f1fde7abab973c69747e4"
-  object_lc_list_file <- "c4fda1bee16fae53bdb270a3665f85d46c97289c"
-  object_lc_list2_file <- "6fd8c82394e3bbacf00ed0a47196a0f804c361f6"
-  object_badlc_file <- "891cca854059f5eee2fd1132fd5564b137c5d8b6"
+  object_file <- "f4f6b81193924031699ea89948626f20a573d18d"
+  object_lc_file <- "6fcd90fbd66a5cd5a523bba0d30bc44c3ac7b66b"
+  object_lc_list_file <- "1b4fd0e42aa8564853af9a78f32baf343092924f"
+  object_lc_list2_file <- "f207d11bf9c278e952495b1a640f50e383bc0ed7"
+  object_badlc_file <- "448d9542be0742b236594645dcc5f4bff0e41403"
 
   # returns the same file fingerprints on 32-bit and 64-bit
   expect_identical(object_file, get_file_fingerprint(object))

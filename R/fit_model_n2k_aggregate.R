@@ -9,9 +9,7 @@ setMethod(
   definition = function(x, ...) {
     validObject(x)
     dots <- list(...)
-    if (is.null(dots$status)) {
-      dots$status <- c("new", "waiting")
-    }
+    dots$status <- coalesce(list(dots$status), list(c("new", "waiting")))[[1]]
     if (!(status(x) %in% dots$status)) {
       return(x)
     }
@@ -20,9 +18,6 @@ setMethod(
     if (status(x) != "new" | is.null(x@RawImputed)) {
       parent <- get_parents(x, base = dots$base, project = dots$project)
       if (length(parent) != 1) {
-        message(
-          ifelse(parent > 1, "Multiple parents", "Parent analysis not found")
-        )
         status(x) <- "error"
         return(x)
       }
