@@ -115,13 +115,8 @@ setMethod(
       is.null(control$control.predictor$compute), TRUE,
       control$control.predictor$compute
     )
-    assert_that(
-      has_name(data, as.character(as.formula(formula)[[2]])),
-      msg = "Response variable is missing from data"
-    )
-    response <- data[, as.character(as.formula(formula)[[2]])]
     if (is.null(control$control.predictor$link)) {
-      control$control.predictor$link <- ifelse(is.na(response), 1, NA)
+      control$control.predictor$link <- 1
     }
     control$control.fixed$prec.intercept <- ifelse(
       is.null(control$control.fixed$prec.intercept),
