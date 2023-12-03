@@ -53,17 +53,46 @@ setMethod(
     control <- x@Control
     control$formula <- model_formula
     control$family <- x@Family
-    control$data <- data
-    control$lincomb <- lc
     # fit model
-    model <- try({
+    fm <- terms(x@AnalysisFormula[[1]])
+    response <- all.vars(fm)[attr(fm, "response")]
+    if (mean(is.na(data[[response]])) < 0.10) {
+      # directly fit model when less than 10% missing data
+      control$data <- data
+      control$lincomb <- lc
+      model <- try({
         if (!is.null(timeout)) {
           assert_that(is.number(timeout), timeout > 0)
           setTimeLimit(cpu = timeout, elapsed = timeout)
           control$safe <- FALSE
         }
         do.call(INLA::inla, control)
-        }, silent = TRUE)
+      }, silent = TRUE)
+    } else {
+      # first fit model without missing data
+      control$data <- data[!is.na(data[[response]]), ]
+      m0 <- try({
+        if (!is.null(timeout)) {
+          assert_that(is.number(timeout), timeout > 0)
+          setTimeLimit(cpu = timeout, elapsed = timeout)
+          control$safe <- FALSE
+        }
+        do.call(INLA::inla, control)
+      }, silent = TRUE)
+      # then refit with missing data
+      control$data <- data
+      control$lincomb <- lc
+      control$control.update <- list(result = m0)
+      model <- try({
+        if (!is.null(timeout)) {
+          assert_that(is.number(timeout), timeout > 0)
+          setTimeLimit(cpu = timeout, elapsed = timeout)
+          control$safe <- FALSE
+        }
+        do.call(INLA::inla, control)
+      }, silent = TRUE)
+    }
+
     # handle error in model fit
     if (inherits(model, "try-error")) {
       status(x) <- ifelse(
