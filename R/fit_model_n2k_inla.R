@@ -30,25 +30,8 @@ setMethod(
     model_formula <- x@AnalysisFormula[[1]]
 
     # prepare linear combinations
-    if (is.null(x@LinearCombination)) {
-      lc <- NULL
-    } else {
-      lincomb <- x@LinearCombination
-      if (inherits(lincomb, "matrix")) {
-        lc <- lincomb %>%
-          as.data.frame() %>%
-          as.list() %>%
-          INLA::inla.make.lincombs()
-        names(lc) <- rownames(lincomb)
-      } else {
-        lc <- INLA::inla.make.lincombs(lincomb)
-        if (is.matrix(lincomb[[1]])) {
-          names(lc) <- rownames(lincomb[[1]])
-        } else {
-          names(lc) <- names(lincomb[[1]])
-        }
-      }
-    }
+
+    lc <- model2lincomb(x@LinearCombination)
     # prepare inla() arguments
     control <- x@Control
     control$formula <- model_formula
@@ -119,3 +102,23 @@ setMethod(
     ))
   }
 )
+
+model2lincomb <- function(lincomb) {
+  if (is.null(lincomb)) {
+    return(NULL)
+  }
+  if (inherits(lincomb, "matrix")) {
+    lincomb |>
+      as.data.frame() |>
+      as.list() %>%
+      INLA::inla.make.lincombs() |>
+      setNames(rownames(lincomb)) -> lc
+    return(lc)
+  }
+  lc <- INLA::inla.make.lincombs(lincomb)
+  if (is.matrix(lincomb[[1]])) {
+    names(lc) <- rownames(lincomb[[1]])
+  } else {
+    names(lc) <- names(lincomb[[1]])
+  }
+}
