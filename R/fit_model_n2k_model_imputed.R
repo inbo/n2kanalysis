@@ -50,8 +50,8 @@ setMethod(
       model_impute(
         object = x@AggregatedImputed, model_fun = x@Function,
         rhs = gsub("~", "", x@AnalysisMetadata$formula),
-        model_args = model_args, extractor = x@Extractor,
-        extractor_args = x@ExtractorArgs, filter = x@Filter, mutate = x@Mutate
+        model_args = model_args, extractor = x@Extractor, mutate = x@Mutate,
+        extractor_args = x@ExtractorArgs, filter = filter2function(x@Filter)
       )
     )
     if ("try-error" %in% class(model)) {
@@ -63,3 +63,11 @@ setMethod(
     return(x)
   }
 )
+
+filter2function <- function(z) {
+  stopifnot(inherits(z, "list"))
+  if (length(z) == 1 && is.function(z[[1]])) {
+    return(z[[1]])
+  }
+  return(z)
+}
