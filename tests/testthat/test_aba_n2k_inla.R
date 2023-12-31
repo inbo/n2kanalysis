@@ -572,7 +572,7 @@ test_that(
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
     ),
-    throws_error("Response variable is missing from data")
+    throws_error("Missing variable `Count` in Data slot")
   )
   expect_that(
     n2k_inla(
@@ -587,7 +587,7 @@ test_that(
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
     ),
-    throws_error("object@Data does not have .*name.*A")
+    throws_error("Missing variable `A` in Data slot")
   )
   expect_that(
     n2k_inla(
@@ -602,7 +602,7 @@ test_that(
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
     ),
-    throws_error("object@Data does not have .*name.*G")
+    throws_error("Missing variable `G` in Data slot")
   )
   expect_that(
     n2k_inla(
@@ -617,7 +617,7 @@ test_that(
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
     ),
-    throws_error("object@Data does not have .*name.*D")
+    throws_error("Missing variable `D` in Data slot")
   )
 })
 

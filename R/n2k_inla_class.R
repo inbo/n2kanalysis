@@ -58,7 +58,12 @@ setValidity(
       all.vars(object@AnalysisFormula[[1]]),
       "observation_id", "datafield_id"
     ) %>%
-      walk(~assert_that(has_name(object@Data, .x)))
+      walk(
+        ~assert_that(
+          has_name(object@Data, .x),
+          msg = sprintf("Missing variable `%s` in Data slot", .x)
+        )
+      )
     assert_that(
       noNA(object@Data$observation_id), msg = "observation_id cannot be NA"
     )
