@@ -24,12 +24,12 @@ setMethod(
       }
       parent_status <- status(parent[[1]])
       if (parent_status != "converged") {
-        status(x) <- ifelse(
-          parent_status %in% c("new", "waiting"), "waiting", "error"
-        )
         x@AnalysisRelation$parent_status <- parent[[1]]@AnalysisMetadata$status
         x@AnalysisRelation$parentstatus_fingerprint <-
           parent[[1]]@AnalysisMetadata$status_fingerprint
+        status(x) <- ifelse(
+          parent_status %in% c("new", "waiting"), "waiting", "error"
+        )
         return(x)
       }
       x@AggregatedImputed <- parent[[1]]@AggregatedImputed
