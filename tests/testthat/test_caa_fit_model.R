@@ -146,12 +146,12 @@ test_that("fit_model() on INLA based objects", {
     formula = this_formula, first_imported_year = this_first_imported_year,
     last_imported_year = this_last_imported_year,
     analysis_date = this_analysis_date, lin_comb = lin_comb,
-    data = list(dataset) %>%
-      rep(10) %>%
-      bind_rows() %>%
+    data = list(dataset) |>
+      rep(10) |>
+      bind_rows() |>
       mutate(observation_id = seq_along(.data$observation_id))
   )
-  timeout_object <- fit_model(object_long, timeout = 1)
+  timeout_object <- fit_model(object_long, timeout = 1e-3)
   expect_identical(status(timeout_object), "time-out")
 })
 
@@ -338,9 +338,17 @@ test_that("fit_model() works on n2kHurdleImputed", {
   sha_presence <- store_model(presence, base = base, project = project)
   sha_hurdle <- store_model(hurdle, base = base, project = project)
   expect_null(fit_model(basename(sha_hurdle), base = base, project = project))
-  expect_null(fit_model(basename(sha_count), base = base, project = project))
-  expect_null(fit_model(basename(sha_presence), base = base, project = project))
-  expect_null(fit_model(basename(sha_hurdle), base = base, project = project))
+  suppressWarnings(
+    expect_null(fit_model(basename(sha_count), base = base, project = project))
+  )
+  suppressWarnings(
+    expect_null(
+      fit_model(basename(sha_presence), base = base, project = project)
+    )
+  )
+  suppressWarnings(
+    expect_null(fit_model(basename(sha_hurdle), base = base, project = project))
+  )
   expect_s4_class(
     basename(sha_hurdle) |>
       read_model(base = base, project = project) |>

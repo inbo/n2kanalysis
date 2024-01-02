@@ -47,7 +47,6 @@ setMethod(
         if (!is.null(timeout)) {
           assert_that(is.number(timeout), timeout > 0)
           setTimeLimit(cpu = timeout, elapsed = timeout)
-          control$safe <- FALSE
         }
         do.call(INLA::inla, control)
       }, silent = TRUE)
@@ -58,10 +57,15 @@ setMethod(
         if (!is.null(timeout)) {
           assert_that(is.number(timeout), timeout > 0)
           setTimeLimit(cpu = timeout, elapsed = timeout)
-          control$safe <- FALSE
         }
         do.call(INLA::inla, control)
       }, silent = TRUE)
+      if (inherits(m0, "try-error")) {
+        status(x) <- ifelse(
+          grepl("time limit", m0), "time-out", "error"
+        )
+        return(x)
+      }
       # then refit with missing data
       control$data <- data
       control$lincomb <- lc
@@ -70,7 +74,6 @@ setMethod(
         if (!is.null(timeout)) {
           assert_that(is.number(timeout), timeout > 0)
           setTimeLimit(cpu = timeout, elapsed = timeout)
-          control$safe <- FALSE
         }
         do.call(INLA::inla, control)
       }, silent = TRUE)
@@ -79,7 +82,7 @@ setMethod(
     # handle error in model fit
     if (inherits(model, "try-error")) {
       status(x) <- ifelse(
-        grepl("reached .* time limit", model), "time-out", "error"
+        grepl("time limit", model), "time-out", "error"
       )
       return(x)
     }
@@ -121,4 +124,5 @@ model2lincomb <- function(lincomb) {
   } else {
     names(lc) <- names(lincomb[[1]])
   }
+  return(lc)
 }

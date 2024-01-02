@@ -48,9 +48,8 @@ test_that("get_result on n2kInla", {
   )
   fit_model(filename, verbose = FALSE)
   filename <- gsub(pattern = "new", replacement = "converged", filename)
-  result <- get_result(
-    readRDS(filename), datasource_id = this_datasource, verbose = FALSE
-  )
+  readRDS(filename) |>
+    get_result(datasource_id = this_datasource, verbose = FALSE) -> result
   expect_is(result, "n2kResult")
   expect_lt(0, nrow(result@Parameter))
   expect_identical(nrow(result@Contrast), 0L)
@@ -61,11 +60,11 @@ test_that("get_result on n2kInla", {
   )
 
   # with linear combination
-  lin_comb <- dataset %>%
-    filter(.data$C == max(.data$C), .data$D == max(.data$D)) %>%
-    select("A", "B", "C", "D") %>%
-    distinct() %>%
-    model.matrix(object = ~A * (B + C) + C:D)
+  dataset |>
+    filter(.data$C == max(.data$C), .data$D == max(.data$D)) |>
+    select("A", "B", "C", "D") |>
+    distinct() |>
+    model.matrix(object = ~A * (B + C) + C:D) -> lin_comb
   rownames(lin_comb) <- seq_len(nrow(lin_comb))
   this_parent <- "abcd"
   analysis <- n2k_inla(
@@ -95,9 +94,8 @@ test_that("get_result on n2kInla", {
   )
   fit_model(filename, verbose = FALSE)
   filename <- gsub(pattern = "new", replacement = "converged", filename)
-  result2 <- get_result(
-    readRDS(filename), datasource_id = this_datasource, verbose = FALSE
-  )
+  readRDS(filename) |>
+    get_result(datasource_id = this_datasource, verbose = FALSE) -> result2
   expect_is(result2, "n2kResult")
   expect_lt(0, nrow(result2@Parameter))
   expect_identical(nrow(result2@Contrast), nrow(lin_comb))
@@ -154,10 +152,10 @@ test_that("get_result on n2kInla", {
 
 
   # with linear combination as list of matrices
-  lc_e <- max(dataset$E) %>%
-    diag() %>%
-    list() %>%
-    rep(length(levels(dataset$A))) %>%
+  lc_e <- max(dataset$E) |>
+    diag() |>
+    list() |>
+    rep(length(levels(dataset$A))) |>
     do.call(what = cbind) %>%
     "/"(length(levels(dataset$A))) #nolint
   colnames(lc_e) <- dataset %>%
@@ -168,10 +166,10 @@ test_that("get_result on n2kInla", {
     unlist() %>%
     unname()
   rownames(lc_e) <- seq_len(nrow(lc_e))
-  lin_comb <- list(
+  list(
     E = lc_e,
     G = matrix(c(1, 0, 0), byrow = TRUE, ncol = 3, nrow = nrow(lc_e))
-  )
+  ) -> lin_comb
   analysis <- n2k_inla(
     result_datasource_id = this_result_datasource_id,
     scheme_id = this_scheme_id, species_group_id = this_species_group_id,
@@ -199,9 +197,8 @@ test_that("get_result on n2kInla", {
   )
   fit_model(filename, verbose = FALSE)
   filename <- gsub(pattern = "new", replacement = "converged", filename)
-  result4 <- get_result(
-    readRDS(filename), datasource_id = this_datasource, verbose = FALSE
-  )
+  readRDS(filename) |>
+    get_result(datasource_id = this_datasource, verbose = FALSE) -> result4
   expect_is(result4, "n2kResult")
   expect_lt(0, nrow(result4@Parameter))
   expect_identical(nrow(result4@Contrast), nrow(lin_comb[[1]]))
@@ -225,5 +222,6 @@ test_that("get_result on n2kInla", {
     ))
   )
   # clean temp files
-  file.remove(list.files(temp_dir, recursive = TRUE, full.names = TRUE))
+  list.files(temp_dir, recursive = TRUE, full.names = TRUE) |>
+    file.remove()
 })
