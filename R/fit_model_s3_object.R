@@ -13,7 +13,8 @@
 setMethod(
   f = "fit_model",
   signature = signature(x = "s3_object"),
-  definition = function(x, ...) {
+  definition = function(x, status = c("new", "waiting"), ...) {
+    assert_that(is.character(status), length(status) >= 1)
     dots <- list(...)
     dots$verbose <- coalesce(dots$verbose, TRUE)
     display(dots$verbose, x$Key)
@@ -29,10 +30,14 @@ setMethod(
         fit_model(base = dots$base, project = dots$project, ...) -> output
       return(invisible(output))
     }
+    if (all(!vapply(status, FUN = grepl, FUN.VALUE = logical(1), x$Key))) {
+      display(dots$verbose, "skipped")
+      return(invisible(NULL))
+    }
     analysis <- s3readRDS(object = x)
     display(dots$verbose, paste(status(analysis), "-> "), FALSE)
     analysis_fitted <- fit_model(
-      x = analysis, status = dots$status, base = dots$base,
+      x = analysis, status = status, base = dots$base,
       project = dots$project, ...
     )
     display(dots$verbose, status(analysis_fitted))

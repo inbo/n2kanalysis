@@ -61,7 +61,7 @@ fit_model(x, ...)
 
 \S4method{fit_model}{n2kModelImputed}(x, ...)
 
-\S4method{fit_model}{s3_object}(x, ...)
+\S4method{fit_model}{s3_object}(x, status = c("new", "waiting"), ...)
 }
 \arguments{
 \item{x}{the \code{n2kModel}}
