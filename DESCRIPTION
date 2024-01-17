@@ -38,8 +38,10 @@ Imports:
     yaml
 Suggests:
     INLA (>= 23.04.24),
+    knitr,
     Matrix,
     parallel,
+    rmarkdown,
     sn,
     testthat (>= 2.0.1)
 Remotes:
@@ -148,3 +150,4 @@ Collate:
     'store_model.R'
     'union.R'
     'valid_object.R'
+VignetteBuilder: knitr
