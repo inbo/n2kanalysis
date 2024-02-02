@@ -1,6 +1,6 @@
 #' Get the anomalies from a model
 #' @param analysis The model to add
-#' @param ... Extra options. See details
+#' @param ... Extra options. See details.
 #' @name get_anomaly
 #' @rdname get_anomaly
 #' @exportMethod get_anomaly

@@ -26,7 +26,7 @@ get_anomaly(analysis, ...)
 \arguments{
 \item{analysis}{The model to add}
 
-\item{...}{Extra options. See details}
+\item{...}{Extra options. See details.}
 
 \item{n}{the number of anomalies per category.}
 

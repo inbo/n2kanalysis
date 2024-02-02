@@ -44,6 +44,8 @@ Suggests:
     rmarkdown,
     sn,
     testthat (>= 2.0.1)
+VignetteBuilder: 
+    knitr
 Remotes:
     inbo/multimput,
     inbo/n2khelper
@@ -55,7 +57,7 @@ Config/checklist/keywords: analysis, reproducible research, natura 2000,
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Collate: 
     'n2k_parameter_class.R'
     'n2k_anomaly_class.R'
@@ -150,4 +152,3 @@ Collate:
     'store_model.R'
     'union.R'
     'valid_object.R'
-VignetteBuilder: knitr
