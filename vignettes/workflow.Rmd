@@ -265,7 +265,7 @@ control.family = list(
 )
 ```
 
-### `n2k_agregate()`
+### `n2k_aggregate()`
 
 The aggregation step after multiple imputation.
 `fit_model()` will call `multimpute::aggregate_impute()`.
