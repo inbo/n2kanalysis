@@ -2,20 +2,19 @@
 #' @inheritParams n2k_inla
 #' @template analysis_metadata
 #' @details
-#' - `model_fun`: The `model_fun` argument of
-#' \code{\link[multimput]{model_impute}}.
+#' - `model_fun`: The `model_fun` argument of [multimput::model_impute()].
 #' - `package`: A character vector of package names which must be loaded for
-#' \code{model_fun}.
+#' `model_fun`.
 #' - `model_args`: An optional list for the `model_args` argument of
-#' \code{\link[multimput]{model_impute}}.
+#'  [multimput::model_impute()].
 #' - `extractor`: An optional list for the `extractor` argument of
-#' \code{\link[multimput]{model_impute}}.
+#'  [multimput::model_impute()].
 #' - `extractor_args`: An optional list for the `extractor_args` argument of
-#' \code{\link[multimput]{model_impute}}.
+#'  [multimput::model_impute()].
 #' - `filter`: An optional list for the `filter` argument of
-#'  \code{\link[multimput]{model_impute}}.
+#'  [multimput::model_impute()].
 #' - `mutate`: An optional list for the `mutate`` argument of
-#' \code{\link[multimput]{model_impute}}.
+#'  [multimput::model_impute()].
 #' @name n2k_model_imputed
 #' @rdname n2k_model_imputed
 #' @exportMethod n2k_model_imputed
@@ -52,70 +51,42 @@ setMethod(
     }
     if (is.null(dots$seed)) {
       dots$seed <- sample(.Machine$integer.max, 1)
-    } else {
-      assert_that(is.count(dots$seed))
-      dots$seed <- as.integer(dots$seed)
     }
-    assert_that(is.string(dots$result_datasource_id))
-    assert_that(is.string(dots$scheme_id))
-    assert_that(is.string(dots$species_group_id))
-    assert_that(is.string(dots$location_group_id))
-    assert_that(is.string(dots$model_type))
-    assert_that(is.string(dots$formula))
-    assert_that(is.count(dots$first_imported_year))
+    assert_that(
+      is.count(dots$seed), is.string(dots$result_datasource_id),
+      is.string(dots$scheme_id), is.string(dots$species_group_id),
+      is.string(dots$location_group_id), is.string(dots$model_type),
+      is.string(dots$formula), is.count(dots$first_imported_year),
+      is.count(dots$last_imported_year), is.time(dots$analysis_date)
+    )
+    dots$seed <- as.integer(dots$seed)
     dots$first_imported_year <- as.integer(dots$first_imported_year)
-    assert_that(is.count(dots$last_imported_year))
     dots$last_imported_year <- as.integer(dots$last_imported_year)
-    if (is.null(dots$duration)) {
-      dots$duration <- dots$last_imported_year - dots$first_imported_year + 1L
-    } else {
-      assert_that(is.count(dots$duration))
-      dots$duration <- as.integer(dots$duration)
+    dots$duration <- coalesce(
+      dots$duration, dots$last_imported_year - dots$first_imported_year + 1L
+    )
+    dots$last_analysed_year <- coalesce(
+      dots$last_analysed_year, dots$last_imported_year
+    )
+    dots$filter <- c(dots$filter, list())
+    dots$mutate <- c(dots$mutate, list())
+    dots$model_args <- c(dots$model_args, list())
+    dots$prepare_model_args <- c(dots$prepare_model_args, list())
+    dots$extractor_args <- c(dots$extractor_args, list())
+    dots$package <- c(dots$package, character(0))
+    assert_that(
+      is.count(dots$duration), is.count(dots$last_analysed_year),
+      is.list(dots$filter), is.list(dots$mutate), is.list(dots$model_args),
+      is.function(dots$model_fun) || is.string(dots$model_fun),
+      is.function(dots$extractor), is.list(dots$prepare_model_args),
+      length(dots$prepare_model_args) <= 1, is.list(dots$extractor_args),
+      is.character(dots$package), is.string(dots$parent)
+    )
+    dots$duration <- as.integer(dots$duration)
+    dots$last_analysed_year <- as.integer(dots$last_analysed_year)
+    if (length(dots$prepare_model_args)) {
+      assert_that(is.function(dots$prepare_model_args[[1]]))
     }
-    if (is.null(dots$last_analysed_year)) {
-      dots$last_analysed_year <- dots$last_imported_year
-    } else {
-      assert_that(is.count(dots$last_analysed_year))
-      dots$last_analysed_year <- as.integer(dots$last_analysed_year)
-    }
-    assert_that(is.time(dots$analysis_date))
-    if (is.null(dots$filter)) {
-      dots$filter <- list()
-    } else {
-      assert_that(is.list(dots$filter))
-    }
-    if (is.null(dots$mutate)) {
-      dots$mutate <- list()
-    } else {
-      assert_that(is.list(dots$mutate))
-    }
-    assert_that(is.function(dots$model_fun))
-    assert_that(is.function(dots$extractor))
-    if (is.null(dots$model_args)) {
-      dots$model_args <- list()
-    } else {
-      assert_that(is.list(dots$model_args))
-    }
-    if (is.null(dots$prepare_model_args)) {
-      dots$prepare_model_args <- list()
-    } else {
-      assert_that(is.list(dots$prepare_model_args),
-                  length(dots$prepare_model_args) <= 1)
-      if (length(dots$prepare_model_args)) {
-        assert_that(is.function(dots$prepare_model_args[[1]]))
-      }
-    }
-    if (is.null(dots$extractor_args)) {
-      dots$extractor_args <- list()
-    } else {
-      assert_that(is.list(dots$extractor_args))
-    }
-    if (is.null(dots$package)) {
-      dots$package <- character(0)
-    } else {
-      assert_that(is.character(dots$package))
-    }
-    assert_that(is.string(dots$parent))
 
     file_fingerprint <- sha1(
       list(
@@ -132,17 +103,13 @@ setMethod(
     )
 
     if (is.null(dots$parent_statusfingerprint)) {
-      if (is.null(dots$parent_status)) {
-        dots$parent_status <- "waiting"
-      }
+      dots$parent_status <- coalesce(dots$parent_status, "waiting")
       dots$parent_statusfingerprint <- sha1(dots$parent_status)
-    } else {
-      if (is.null(dots[["parent_status"]])) {
-        stop(
-"'parent_status' is required when 'parent_statusfingerprint' is provided"
-        )
-      }
     }
+    stopifnot(
+"'parent_status' is required when 'parent_statusfingerprint' is provided" =
+!is.null(dots[["parent_status"]])
+    )
     analysis_relation <- data.frame(
       analysis = file_fingerprint, parent_analysis = dots$parent,
       parentstatus_fingerprint = dots$parent_statusfingerprint,

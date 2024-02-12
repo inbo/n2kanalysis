@@ -1,6 +1,9 @@
 #' @rdname fit_model
-#' @importFrom methods setMethod new
 #' @importFrom aws.s3 get_bucket
+#' @importFrom dplyr mutate
+#' @importFrom methods setMethod new slot
+#' @importFrom purrr map
+#' @importFrom rlang .data
 #' @param base The root of a project. Can be either a directory on a file system
 #' or an AWS S3 bucket object.
 #' Extracted from `bucket` or `x` when missing.
@@ -45,13 +48,49 @@ setMethod(
         fit_model(base = base, project = project, verbose = verbose, ...)
       return(invisible(NULL))
     }
-    analysis <- read_model(hash, base = base, project = project)
+    if (!has_name(list(...), "local") || !inherits(base, "s3_bucket")) {
+      analysis <- read_model(hash, base = base, project = project)
+      display(verbose, paste(status(analysis), "-> "), FALSE)
+      analysis <- fit_model(
+        x = analysis, status = status, base = base, project = project, ...
+      )
+      display(verbose, status(analysis))
+      store_model(analysis, base = base, project = project)
+      rm(analysis)
+      gc(verbose = FALSE)
+      return(invisible(NULL))
+    }
+    dots <- list(...)
+    to_do <- object_status(
+      base = base, project = project, status = status, hash = x
+    )
+    if (length(to_do) == 0) {
+      display(verbose, "skipping")
+      gc(verbose = FALSE)
+      return(invisible(NULL))
+    }
+    download_model(
+      hash = hash, base = base, local = dots$local, project = project,
+      verbose = verbose
+    )
+    analysis <- read_model(hash, base = dots$local, project = project)
     display(verbose, paste(status(analysis), "-> "), FALSE)
+    slot(analysis, "AnalysisRelation") |>
+      mutate(
+        downloaded = map(
+          .data$parent_analysis, download_model, base = base,
+          local = dots$local, project = project, verbose = verbose
+        )
+      )
     analysis <- fit_model(
-      x = analysis, status = status, base = base, project = project, ...
+      x = analysis, status = status, base = dots$local, project = project, ...
     )
     display(verbose, status(analysis))
-    store_model(analysis, base = base, project = project)
+    store_model(analysis, base = dots$local, project = project)
+    download_model(
+      hash = hash, local = base, base = dots$local, project = project,
+      verbose = verbose
+    )
     rm(analysis)
     gc(verbose = FALSE)
     return(invisible(NULL))

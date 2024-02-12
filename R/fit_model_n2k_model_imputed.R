@@ -18,10 +18,15 @@ setMethod(
     # status: "waiting"
     if (status(x) != "new" || is.null(x@AggregatedImputed)) {
       parent <- get_parents(x, base = dots$base, project = dots$project)
-      stopifnot("parent analysis not found" = length(parent) > 0)
-      stopifnot("Multiple parents" = length(parent) == 1)
+      if (length(parent) != 1) {
+        status(x) <- "error"
+        return(x)
+      }
       parent_status <- status(parent[[1]])
       if (parent_status != "converged") {
+        x@AnalysisRelation$parent_status <- parent[[1]]@AnalysisMetadata$status
+        x@AnalysisRelation$parentstatus_fingerprint <-
+          parent[[1]]@AnalysisMetadata$status_fingerprint
         status(x) <- ifelse(
           parent_status %in% c("new", "waiting"), "waiting", "error"
         )
@@ -45,8 +50,8 @@ setMethod(
       model_impute(
         object = x@AggregatedImputed, model_fun = x@Function,
         rhs = gsub("~", "", x@AnalysisMetadata$formula),
-        model_args = model_args, extractor = x@Extractor,
-        extractor_args = x@ExtractorArgs, filter = x@Filter, mutate = x@Mutate
+        model_args = model_args, extractor = x@Extractor, mutate = x@Mutate,
+        extractor_args = x@ExtractorArgs, filter = filter2function(x@Filter)
       )
     )
     if ("try-error" %in% class(model)) {
@@ -58,3 +63,11 @@ setMethod(
     return(x)
   }
 )
+
+filter2function <- function(z) {
+  stopifnot(inherits(z, "list"))
+  if (length(z) == 1 && is.function(z[[1]])) {
+    return(z[[1]])
+  }
+  return(z)
+}

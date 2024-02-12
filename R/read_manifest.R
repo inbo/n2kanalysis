@@ -89,7 +89,6 @@ setMethod(
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.string
 #' @importFrom aws.s3 bucket_exists get_bucket s3read_using
-#' @importFrom dplyr %>%
 #' @importFrom purrr map_chr
 #' @importFrom utils read.table
 #' @include import_s3_classes.R
@@ -101,52 +100,40 @@ setMethod(
     if (missing(hash)) {
       assert_that(is.string(project))
       available <- get_bucket(
-        base,
-        prefix = paste(project, "manifest", sep = "/"),
-        max = Inf
+        base, prefix = paste(project, "manifest", sep = "/"), max = Inf
       )
-      if (length(available) == 0) {
-        stop("No manifest files in this project")
-      }
-      map_chr(available, "LastModified") %>%
-        gsub(pattern = "T", replacement = " ") %>%
-        as.POSIXct("%Y-%m-%d %H:%M:%S") %>%
+      stopifnot("No manifest files in this project" = length(available) > 0)
+      map_chr(available, "LastModified") |>
+        as.POSIXct() |>
         which.max() -> latest
-      manifest <- s3read_using(
-        read.table,
-        header = TRUE,
-        sep = "\t",
-        colClasses = "character",
-        as.is = TRUE,
-        object = available[[latest]]
-      ) %>%
-        n2k_manifest()
+      s3read_using(
+        read.table, header = TRUE, sep = "\t", colClasses = "character",
+        as.is = TRUE, object = available[[latest]]
+      ) |>
+        n2k_manifest() -> manifest
       return(manifest)
     }
 
     assert_that(is.string(hash))
     if (missing(project)) {
-      available <- get_bucket(base, prefix = hash)
+      available <- get_bucket(bucket = base, prefix = hash)
     } else {
       available <- get_bucket(
-        base,
-        prefix = paste(project, "manifest", hash, sep = "/")
+        bucket = base, prefix = paste(project, "manifest", hash, sep = "/")
       )
     }
-    if (length(available) == 0) {
-      stop("No manifest found starting with '", hash, "'")
-    }
-    if (length(available) > 1) {
-      stop("Multiple manifests found starting with '", hash, "'")
-    }
+    assert_that(
+      length(available) > 0,
+      msg = sprintf("No manifest found starting with '%s'", hash)
+    )
+    assert_that(
+      length(available) == 1,
+      msg = sprintf("Multiple manifests found starting with '%s'", hash)
+    )
     s3read_using(
-      read.table,
-      header = TRUE,
-      sep = "\t",
-      colClasses = "character",
-      as.is = TRUE,
-      object = available[[1]]
-    ) %>%
+      read.table, header = TRUE, sep = "\t", colClasses = "character",
+      as.is = TRUE, object = available[[1]]
+    ) |>
       n2k_manifest()
   }
 )

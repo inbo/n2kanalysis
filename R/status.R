@@ -200,3 +200,27 @@ setReplaceMethod(
     return(x)
   }
 )
+
+
+#' @rdname status_change
+#' @importFrom methods setReplaceMethod
+#' @importFrom digest sha1
+#' @include n2k_hurdle_imputed_class.R
+setReplaceMethod(
+  "status",
+  "n2kHurdleImputed",
+  function(x, value) {
+    x@AnalysisMetadata$status <- value
+    x@AnalysisMetadata$status_fingerprint <- sha1(
+      list(
+        get_file_fingerprint(x), x@AnalysisMetadata$status,
+        x@AnalysisVersion$fingerprint, x@AnalysisVersion, x@RPackage,
+        x@AnalysisVersionRPackage, x@AnalysisRelation, x@Presence, x@Count,
+        x@Hurdle
+      ),
+      digits = 6L
+    )
+    validObject(x)
+    return(x)
+  }
+)

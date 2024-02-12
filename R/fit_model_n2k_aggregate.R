@@ -1,6 +1,7 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
 #' @importFrom multimput aggregate_impute
+#' @importFrom stats setNames
 #' @include n2k_aggregate_class.R
 setMethod(
   f = "fit_model",
@@ -8,9 +9,7 @@ setMethod(
   definition = function(x, ...) {
     validObject(x)
     dots <- list(...)
-    if (is.null(dots$status)) {
-      dots$status <- c("new", "waiting")
-    }
+    dots$status <- coalesce(list(dots$status), list(c("new", "waiting")))[[1]]
     if (!(status(x) %in% dots$status)) {
       return(x)
     }
@@ -18,8 +17,10 @@ setMethod(
     # status: "waiting"
     if (status(x) != "new" | is.null(x@RawImputed)) {
       parent <- get_parents(x, base = dots$base, project = dots$project)
-      assert_that(length(parent) > 0, msg = "Parent analysis not found")
-      assert_that(length(parent) == 1, msg = "Multiple parents")
+      if (length(parent) != 1) {
+        status(x) <- "error"
+        return(x)
+      }
       parent <- parent[[1]]
       parent_status <- status(parent)
       if (parent_status %in% c("new", "waiting")) {
@@ -33,16 +34,23 @@ setMethod(
       if (inherits(parent, "n2kInla")) {
         x@RawImputed <- parent@RawImputed
       } else if (inherits(parent, "n2kAggregate")) {
-        x@RawImputed <- new(
-          "rawImputed",
-          Data = cbind(parent@AggregatedImputed@Covariate, Count = NA_integer_),
-          Response = "Count",
-          Minimum = "",
-          Imputation = parent@AggregatedImputed@Imputation,
-          Extra = cbind(
-            parent@AggregatedImputed@Covariate[0, ], Count = integer(0)
-          )
-        )
+        nrow(parent@AggregatedImputed@Covariate) |>
+          rep(x = NA_integer_) |>
+          list() |>
+          setNames("Count") |>
+          cbind(parent@AggregatedImputed@Covariate) |>
+          list() |>
+          setNames("Data") |>
+          c(
+            list(
+              Class = "rawImputed", Response = "Count", Minimum = "",
+              Imputation = parent@AggregatedImputed@Imputation,
+              Extra = cbind(
+                parent@AggregatedImputed@Covariate[0, ], Count = integer(0)
+              )
+            )
+          ) |>
+          do.call(what = "new") -> x@RawImputed
       } else if (inherits(parent, "n2kHurdleImputed")) {
         x@RawImputed <- parent@Hurdle
       } else {

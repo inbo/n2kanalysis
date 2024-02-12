@@ -7,11 +7,37 @@
 \alias{manifest_yaml_to_bash,character-method}
 \title{Convert a manifest yaml file into a bash script}
 \usage{
-manifest_yaml_to_bash(base, project, hash)
+manifest_yaml_to_bash(
+  base,
+  project,
+  hash,
+  shutdown = FALSE,
+  split = 1,
+  status = c("new", "waiting"),
+  limit = FALSE,
+  timeout = 4
+)
 
-\S4method{manifest_yaml_to_bash}{s3_bucket}(base, project, hash)
+\S4method{manifest_yaml_to_bash}{s3_bucket}(
+  base,
+  project,
+  hash,
+  shutdown = FALSE,
+  split = 1,
+  status = c("new", "waiting"),
+  limit = FALSE,
+  timeout = 4
+)
 
-\S4method{manifest_yaml_to_bash}{character}(base, project, hash)
+\S4method{manifest_yaml_to_bash}{character}(
+  base,
+  project,
+  hash,
+  shutdown = FALSE,
+  split = 1,
+  status = c("new", "waiting"),
+  limit = FALSE
+)
 }
 \arguments{
 \item{base}{the base location to store the manifest}
@@ -19,6 +45,22 @@ manifest_yaml_to_bash(base, project, hash)
 \item{project}{will be a relative path within the base location}
 
 \item{hash}{Fingerprint of the manifest \code{yaml}file.}
+
+\item{shutdown}{Append a shutdown command at the end of the script.
+Defaults to \code{FALSE}.}
+
+\item{split}{Number of scripts over which to splits the analyses.
+Default to 1.}
+
+\item{status}{A vector with status levels naming the levels which should be
+calculated.
+Defaults to \code{c("new", "waiting")}.}
+
+\item{limit}{Limit bandwidth and CPU usage.
+Defaults to \code{FALSE}.}
+
+\item{timeout}{number of hours to time out the docker container.
+Defaults to \code{4}.}
 }
 \description{
 Convert a manifest yaml file into a bash script

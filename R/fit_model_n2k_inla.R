@@ -30,44 +30,59 @@ setMethod(
     model_formula <- x@AnalysisFormula[[1]]
 
     # prepare linear combinations
-    if (is.null(x@LinearCombination)) {
-      lc <- NULL
-    } else {
-      lincomb <- x@LinearCombination
-      if (inherits(lincomb, "matrix")) {
-        lc <- lincomb %>%
-          as.data.frame() %>%
-          as.list() %>%
-          INLA::inla.make.lincombs()
-        names(lc) <- rownames(lincomb)
-      } else {
-        lc <- INLA::inla.make.lincombs(lincomb)
-        if (is.matrix(lincomb[[1]])) {
-          names(lc) <- rownames(lincomb[[1]])
-        } else {
-          names(lc) <- names(lincomb[[1]])
-        }
-      }
-    }
+
+    lc <- model2lincomb(x@LinearCombination)
     # prepare inla() arguments
     control <- x@Control
     control$formula <- model_formula
     control$family <- x@Family
-    control$data <- data
-    control$lincomb <- lc
     # fit model
-    model <- try({
+    fm <- terms(x@AnalysisFormula[[1]])
+    response <- all.vars(fm)[attr(fm, "response")]
+    if (mean(is.na(data[[response]])) < 0.10) {
+      # directly fit model when less than 10% missing data
+      control$data <- data
+      control$lincomb <- lc
+      model <- try({
         if (!is.null(timeout)) {
           assert_that(is.number(timeout), timeout > 0)
           setTimeLimit(cpu = timeout, elapsed = timeout)
-          control$safe <- FALSE
         }
         do.call(INLA::inla, control)
-        }, silent = TRUE)
+      }, silent = TRUE)
+    } else {
+      # first fit model without missing data
+      control$data <- data[!is.na(data[[response]]), ]
+      m0 <- try({
+        if (!is.null(timeout)) {
+          assert_that(is.number(timeout), timeout > 0)
+          setTimeLimit(cpu = timeout, elapsed = timeout)
+        }
+        do.call(INLA::inla, control)
+      }, silent = TRUE)
+      if (inherits(m0, "try-error")) {
+        status(x) <- ifelse(
+          grepl("time limit", m0), "time-out", "error"
+        )
+        return(x)
+      }
+      # then refit with missing data
+      control$data <- data
+      control$lincomb <- lc
+      control$control.update <- list(result = m0)
+      model <- try({
+        if (!is.null(timeout)) {
+          assert_that(is.number(timeout), timeout > 0)
+          setTimeLimit(cpu = timeout, elapsed = timeout)
+        }
+        do.call(INLA::inla, control)
+      }, silent = TRUE)
+    }
+
     # handle error in model fit
     if (inherits(model, "try-error")) {
       status(x) <- ifelse(
-        grepl("reached .* time limit", model), "time-out", "error"
+        grepl("time limit", model), "time-out", "error"
       )
       return(x)
     }
@@ -90,3 +105,24 @@ setMethod(
     ))
   }
 )
+
+model2lincomb <- function(lincomb) {
+  if (is.null(lincomb)) {
+    return(NULL)
+  }
+  if (inherits(lincomb, "matrix")) {
+    lincomb |>
+      as.data.frame() |>
+      as.list() %>%
+      INLA::inla.make.lincombs() |>
+      setNames(rownames(lincomb)) -> lc
+    return(lc)
+  }
+  lc <- INLA::inla.make.lincombs(lincomb)
+  if (is.matrix(lincomb[[1]])) {
+    names(lc) <- rownames(lincomb[[1]])
+  } else {
+    names(lc) <- names(lincomb[[1]])
+  }
+  return(lc)
+}

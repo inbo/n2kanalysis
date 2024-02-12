@@ -1,3 +1,6 @@
+#' @importFrom methods setClassUnion
+setClassUnion("maybeFunction", c("function", "character"))
+
 #' The `n2kModelImputed` class
 #'
 #' It holds the model of aggregated imputed data
@@ -33,7 +36,7 @@
 setClass(
   "n2kModelImputed",
   representation = representation(
-    Function = "function",
+    Function = "maybeFunction",
     Package = "character",
     ModelArgs = "list",
     PrepareModelArgs = "list",
@@ -49,10 +52,15 @@ setClass(
 
 #' @importFrom methods setValidity
 #' @importFrom digest sha1
-#' @importFrom assertthat assert_that has_name
+#' @importFrom assertthat assert_that has_name is.string noNA
 setValidity(
   "n2kModelImputed",
   function(object) {
+    stopifnot(
+      "Function must be either a function or a string" =
+        inherits(object@Function, "function") ||
+        (is.string(object@Function) && noNA(object@Function))
+    )
     file_fingerprint <- sha1(
       list(
         object@AnalysisMetadata$result_datasource_id,
@@ -74,9 +82,10 @@ setValidity(
       environment = FALSE
     )
 
-    if (object@AnalysisMetadata$file_fingerprint != file_fingerprint) {
-      stop("Corrupt file_fingerprint")
-    }
+    stopifnot(
+      "Corrupt file_fingerprint" =
+        object@AnalysisMetadata$file_fingerprint == file_fingerprint
+    )
 
     status_fingerprint <- sha1(
       list(
@@ -89,9 +98,10 @@ setValidity(
       digits = 6L
     )
 
-    if (object@AnalysisMetadata$status_fingerprint != status_fingerprint) {
-      stop("Corrupt status_fingerprint")
-    }
+    stopifnot(
+      "Corrupt status_fingerprint" =
+        object@AnalysisMetadata$status_fingerprint == status_fingerprint
+    )
 
     return(TRUE)
   }

@@ -4,6 +4,11 @@ navbar:
   left:
   - text: NEWS
     href: news/index.html
+  - text: Tutorials
+    href: articles/index.html
+    menu:
+    - text: Using n2kanalysis to analyse monitoring data
+      href: articles/workflow.html
   - text: Functions
     href: reference/index.html
   - text: Contributing

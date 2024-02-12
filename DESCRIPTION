@@ -1,6 +1,6 @@
 Package: n2kanalysis
 Title: Generic Functions to Analyse Data from the 'Natura 2000' Monitoring
-Version: 0.3.1
+Version: 0.3.2
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
@@ -28,7 +28,7 @@ Imports:
     fs,
     MASS,
     methods,
-    multimput (>= 0.2.12),
+    multimput (>= 0.2.13),
     n2khelper (>= 0.5.0),
     purrr,
     rlang,
@@ -38,11 +38,14 @@ Imports:
     yaml
 Suggests:
     INLA (>= 23.04.24),
-    littler,
+    knitr,
     Matrix,
     parallel,
+    rmarkdown,
     sn,
     testthat (>= 2.0.1)
+VignetteBuilder: 
+    knitr
 Remotes:
     inbo/multimput,
     inbo/n2khelper
@@ -54,7 +57,7 @@ Config/checklist/keywords: analysis, reproducible research, natura 2000,
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Collate: 
     'n2k_parameter_class.R'
     'n2k_anomaly_class.R'
@@ -100,6 +103,7 @@ Collate:
     'get_model_parameter.R'
     'get_model_parameter_n2k_aggregated.R'
     'get_model_parameter_n2k_composite.R'
+    'get_model_parameter_n2k_hurdle_imputed.R'
     'get_model_parameter_n2k_inla.R'
     'get_model_parameter_n2k_inla_comparison.R'
     'get_model_parameter_n2k_model_imputed.R'
@@ -109,6 +113,7 @@ Collate:
     'get_result_character.R'
     'get_result_n2k_inla.R'
     'get_result_n2k_model.R'
+    'get_result_n2kmanifest.R'
     'get_result_s3_object.R'
     'get_scheme_id.R'
     'get_seed.R'
@@ -129,6 +134,13 @@ Collate:
     'parent_status.R'
     'read_manifest.R'
     'read_model.R'
+    'read_result.R'
+    'result_estimate.R'
+    'result_estimate_character.R'
+    'result_estimate_n2k_result.R'
+    'result_metadata.R'
+    'result_metadata_character.R'
+    'result_metadata_n2k_result.R'
     'select_factor_count_strictly_positive.R'
     'select_factor_treshold.R'
     'select_observed_range.R'

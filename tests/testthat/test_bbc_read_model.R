@@ -42,7 +42,7 @@ test_that("read_model() works with S3 buckets", {
   )
   expect_error(
     read_model("test", base, project),
-    "multiple matching objects in bucket"
+    "multiple objects matching `test` in bucket"
   )
   get_bucket(Sys.getenv("N2KBUCKET"), prefix = project) %>%
     map_chr("Key") %>%

@@ -55,13 +55,13 @@ fit_model(x, ...)
   status = c("new", "waiting"),
   verbose = TRUE,
   ...,
-  local,
-  bash = FALSE
+  local = tempfile("fit_model"),
+  first = FALSE
 )
 
 \S4method{fit_model}{n2kModelImputed}(x, ...)
 
-\S4method{fit_model}{s3_object}(x, ...)
+\S4method{fit_model}{s3_object}(x, status = c("new", "waiting"), ...)
 }
 \arguments{
 \item{x}{the \code{n2kModel}}
@@ -112,8 +112,12 @@ using \code{B:0} threads.}
 \item{local}{A local folder into which objects from an AWS S3 bucket are
 downloaded.}
 
-\item{bash}{Use the \code{littler} package do run the models in separate sessions.
-This will release the memory.}
+\item{first}{A logical.
+\code{first = TRUE} implies to fit only the first object in the manifest with
+matching status.
+\code{first = FALSE}  implies to fit all objects in the manifest with matching
+status.
+Defaults to \code{FALSE}.}
 }
 \description{
 Fit an \code{n2kModel} object
@@ -122,7 +126,7 @@ Fit an \code{n2kModel} object
 \itemize{
 \item \code{status}: A vector with status levels naming the levels which should be
 recalculated.
-Defaults to \code{"new"}.
+Defaults to \code{c("new", "waiting")}.
 \item \code{verbose}: A logical indicating if the function should display the name of
 the file and the status.
 Defaults to \code{TRUE}.

@@ -1,10 +1,11 @@
 #' @rdname fit_model
-#' @importFrom methods setMethod new
 #' @importFrom aws.s3 s3readRDS
+#' @importFrom dplyr coalesce
+#' @importFrom methods setMethod new
 #' @details
 #' - `status`: A vector with status levels naming the levels which should be
 #' recalculated.
-#' Defaults to `"new"`.
+#' Defaults to `c("new", "waiting")`.
 #' - `verbose`: A logical indicating if the function should display the name of
 #' the file and the status.
 #' Defaults to `TRUE`.
@@ -12,40 +13,35 @@
 setMethod(
   f = "fit_model",
   signature = signature(x = "s3_object"),
-  definition = function(x, ...) {
+  definition = function(x, status = c("new", "waiting"), ...) {
+    assert_that(is.character(status), length(status) >= 1)
     dots <- list(...)
-    if (is.null(dots$verbose)) {
-      dots$verbose <- TRUE
-    }
+    dots$verbose <- coalesce(dots$verbose, TRUE)
     display(dots$verbose, x$Key)
-    if (is.null(dots$base)) {
-      dots$base <- get_bucket(x$Bucket)
-    }
-    if (is.null(dots$project)) {
-      dots$project <- gsub(
-        pattern = "(.*)/(.*)/([[:xdigit:]]{1,40})\\.(rds|manifest)$",
-        replacement = "\\1",
-        x$Key
-      )
-    }
+    dots$base <- get_bucket(x$Bucket)
+    dots$project <- gsub(
+      pattern = "(.*)/(.*)/([[:xdigit:]]{1,40})\\.(rds|manifest)$",
+      replacement = "\\1",
+      x$Key
+    )
     if (grepl("\\.manifest$", x$Key)) {
       hash <- gsub(".*?([[:xdigit:]]{1,40}).manifest$", "\\1", x$Key)
-      read_manifest(base = dots$base, project = dots$project, hash = hash) %>%
-        fit_model(base = dots$base, project = dots$project, ...)
+      read_manifest(base = dots$base, project = dots$project, hash = hash) |>
+        fit_model(base = dots$base, project = dots$project, ...) -> output
+      return(invisible(output))
+    }
+    if (all(!vapply(status, FUN = grepl, FUN.VALUE = logical(1), x$Key))) {
+      display(dots$verbose, "skipped")
       return(invisible(NULL))
     }
     analysis <- s3readRDS(object = x)
     display(dots$verbose, paste(status(analysis), "-> "), FALSE)
     analysis_fitted <- fit_model(
-      x = analysis, status = dots$status, base = dots$base,
+      x = analysis, status = status, base = dots$base,
       project = dots$project, ...
     )
     display(dots$verbose, status(analysis_fitted))
-    store_model(
-      analysis_fitted,
-      base = dots$base,
-      project = dots$project
-    )
+    store_model(analysis_fitted, base = dots$base, project = dots$project)
     return(invisible(NULL))
   }
 )

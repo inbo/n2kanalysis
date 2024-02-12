@@ -1,3 +1,7 @@
+# `n2kanalysis` 0.3.2
+
+* Make `fit_model()` more efficient.
+
 # `n2kanalysis` 0.3.1
 
 * Add the `n2kHurdleImputed` class and `n2k_hurdle_imputed()` to fit hurdle
