@@ -148,6 +148,7 @@ Collate:
     'session_package.R'
     'sha1.R'
     'spde.R'
+    'spde2mesh.R'
     'status.R'
     'store_manifest.R'
     'store_manifest_yaml.R'
