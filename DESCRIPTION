@@ -57,7 +57,7 @@ Config/checklist/keywords: analysis, reproducible research, natura 2000,
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Collate: 
     'n2k_parameter_class.R'
     'n2k_anomaly_class.R'
@@ -90,6 +90,7 @@ Collate:
     'n2k_model_imputed_class.R'
     'fit_model_n2k_model_imputed.R'
     'spde_class.R'
+    'fit_model_n2k_spde.R'
     'fit_model_s3_object.R'
     'get_analysis_date.R'
     'get_analysis_version.R'
@@ -121,6 +122,7 @@ Collate:
     'get_species_group_id.R'
     'get_status_fingerprint.R'
     'inla_inverse.R'
+    'make_a.R'
     'manifest_yaml_to_bash.R'
     'mark_obsolete_dataset.R'
     'n2k_aggregated.R'
@@ -132,6 +134,7 @@ Collate:
     'n2k_inla_comparison.R'
     'n2k_manifest.R'
     'n2k_model_imputed.R'
+    'n2k_spde.R'
     'parent_status.R'
     'read_manifest.R'
     'read_model.R'
