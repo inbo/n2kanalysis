@@ -90,6 +90,7 @@ Collate:
     'n2k_model_imputed_class.R'
     'fit_model_n2k_model_imputed.R'
     'spde_class.R'
+    'n2k_spde_class.R'
     'fit_model_n2k_spde.R'
     'fit_model_s3_object.R'
     'get_analysis_date.R'

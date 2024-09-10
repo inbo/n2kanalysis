@@ -3,7 +3,8 @@
 %   R/fit_model_n2k_aggregate.R, R/fit_model_n2k_composite.R,
 %   R/fit_model_n2k_hurdle_imputed.R, R/fit_model_n2k_inla.R,
 %   R/fit_model_n2k_inla_comparison.R, R/fit_model_n2k_manifest.R,
-%   R/fit_model_n2k_model_imputed.R, R/fit_model_s3_object.R
+%   R/fit_model_n2k_model_imputed.R, R/fit_model_n2k_spde.R,
+%   R/fit_model_s3_object.R
 \docType{methods}
 \name{fit_model}
 \alias{fit_model}
@@ -15,6 +16,7 @@
 \alias{fit_model,n2kInlaComparison-method}
 \alias{fit_model,n2kManifest-method}
 \alias{fit_model,n2kModelImputed-method}
+\alias{fit_model,n2kSpde-method}
 \alias{fit_model,s3_object-method}
 \title{Fit an \code{n2kModel} object}
 \usage{
@@ -60,6 +62,16 @@ fit_model(x, ...)
 )
 
 \S4method{fit_model}{n2kModelImputed}(x, ...)
+
+\S4method{fit_model}{n2kSpde}(
+  x,
+  status = "new",
+  ...,
+  timeout = NULL,
+  seed = get_seed(x),
+  num_threads = NULL,
+  parallel_configs = TRUE
+)
 
 \S4method{fit_model}{s3_object}(x, status = c("new", "waiting"), ...)
 }
