@@ -37,11 +37,13 @@ Imports:
     tidyr (>= 0.4.0),
     yaml
 Suggests:
+    fmesher,
     INLA (>= 23.04.24),
     knitr,
     Matrix,
     parallel,
     rmarkdown,
+    sf,
     sn,
     testthat (>= 2.0.1)
 VignetteBuilder: 
