@@ -3,9 +3,11 @@
 #' It holds the coordinates, range and sigma parameters for the SPDE model.
 #' @slot Coordinates a `data.frame` with the coordinates used for the mesh.
 #' @slot Range a numeric vector of length 2.
-#' Will be used as the `prior.range` argument of [INLA::inla.spde2.pcmatern].
+#' Will be used as the `prior.range` argument of
+#' [INLA::inla.spde2.pcmatern]. <!-- spell-checker: ignore -->
 #' @slot Sigma a numeric vector of length 2.
-#' Will be used as the `prior.sigma` argument of [INLA::inla.spde2.pcmatern].
+#' Will be used as the `prior.sigma` argument of
+#' [INLA::inla.spde2.pcmatern]. <!-- spell-checker: ignore -->
 #' @name Spde-class
 #' @rdname Spde-class
 #' @exportClass Spde

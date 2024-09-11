@@ -37,7 +37,7 @@ setMethod(
     response <- all.vars(fm)[attr(fm, "response")]
     stack_observed <- INLA::inla.stack(
       data = data[!is.na(data[[response]]), response, drop = FALSE],
-      A = list(1, make_a(object = x@Spde, data[!is.na(data[[response]]),])),
+      A = list(1, make_a(object = x@Spde, data[!is.na(data[[response]]), ])),
       tag = "observed",
       effects = list(
         data[
@@ -48,7 +48,7 @@ setMethod(
     )
     INLA::inla.stack(
       data = data[is.na(data[[response]]), response, drop = FALSE],
-      A = list(1, make_a(object = x@Spde, data[is.na(data[[response]]),])),
+      A = list(1, make_a(object = x@Spde, data[is.na(data[[response]]), ])),
       tag = "observed",
       effects = list(
         data[is.na(data[[response]]), colnames(data) != response, drop = FALSE],
@@ -66,7 +66,7 @@ setMethod(
     if (mean(is.na(data[[response]])) < 0.10) {
       # directly fit model when less than 10% missing data
       control$data <- INLA::inla.stack.data(stack_total, spde = spde)
-      control$control.predictor = list(
+      control$control.predictor <- list(
         A = INLA::inla.stack.A(stack_total), link = 1
       )
       control$lincomb <- lc
@@ -80,7 +80,7 @@ setMethod(
     } else {
       # first fit model without missing data
       control$data <- INLA::inla.stack.data(stack_observed, spde = spde)
-      control$control.predictor = list(A = INLA::inla.stack.A(stack_observed))
+      control$control.predictor <- list(A = INLA::inla.stack.A(stack_observed))
       m0 <- try({
         if (!is.null(timeout)) {
           assert_that(is.number(timeout), timeout > 0)
@@ -96,7 +96,7 @@ setMethod(
       }
       # then refit with missing data
       control$data <- INLA::inla.stack.data(stack_total, spde = spde)
-      control$control.predictor = list(
+      control$control.predictor <- list(
         A = INLA::inla.stack.A(stack_total), link = 1
       )
       control$lincomb <- lc

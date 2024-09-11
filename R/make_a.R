@@ -1,5 +1,7 @@
 #' Convert an `Spde` object to a A object
 #' @param object The `Spde` object
+#' @param data The `data.frame` to combine with the `Spde` object to create the
+#' `A` matrix.
 #' @name make_a
 #' @rdname make_a
 #' @exportMethod make_a

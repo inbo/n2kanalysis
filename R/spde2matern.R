@@ -1,4 +1,4 @@
-#' Convert an `Spde` object to a matern object
+#' Convert an `Spde` object to a Matern object
 #' @param object The `Spde` object
 #' @name spde2matern
 #' @rdname spde2matern

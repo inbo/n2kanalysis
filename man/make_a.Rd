@@ -12,6 +12,9 @@ make_a(object, data)
 }
 \arguments{
 \item{object}{The \code{Spde} object}
+
+\item{data}{The \code{data.frame} to combine with the \code{Spde} object to create the
+\code{A} matrix.}
 }
 \description{
 Convert an \code{Spde} object to a A object
