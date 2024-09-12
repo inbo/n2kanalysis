@@ -3,7 +3,7 @@
 \docType{methods}
 \name{spde2matern}
 \alias{spde2matern}
-\title{Convert an \code{Spde} object to a Matern object}
+\title{Convert an \code{Spde} object to a \code{matern} object}
 \usage{
 spde2matern(object)
 }
@@ -11,5 +11,5 @@ spde2matern(object)
 \item{object}{The \code{Spde} object}
 }
 \description{
-Convert an \code{Spde} object to a Matern object
+Convert an \code{Spde} object to a \code{matern} object
 }

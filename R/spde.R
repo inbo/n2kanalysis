@@ -1,11 +1,9 @@
 #' Create an `Spde` object
 #' @param coordinates a `data.frame` of coordinates use to define the mesh.
 #' @param range a numeric vector of length 2.
-#' Will be used as the `prior.range` argument of
-#' [INLA::inla.spde2.pcmatern]. <!-- spell-checker: ignore -->
+#' Will be used as the `prior.range` argument of `[INLA::inla.spde2.pcmatern]`.
 #' @param sigma a numeric vector of length 2.
-#' Will be used as the `prior.sigma` argument of
-#' [INLA::inla.spde2.pcmatern]. <!-- spell-checker: ignore -->
+#' Will be used as the `prior.sigma` argument of `[INLA::inla.spde2.pcmatern]`.
 #' @export
 #' @importFrom assertthat assert_that noNA
 #' @importFrom methods new

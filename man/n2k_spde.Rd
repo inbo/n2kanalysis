@@ -67,7 +67,7 @@ Defaults to \code{"waiting"}.}
 \item{model_type}{The type of the models.
 Must start with \code{"inla comparison:"}.}
 
-\item{spde}{the \code{Spde} object. See \link{spde}.}
+\item{spde}{the \code{Spde} object. See \verb{[spde]}.}
 
 \item{first_imported_year}{Oldest year considered in the data.}
 

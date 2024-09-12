@@ -13,11 +13,9 @@ It holds the coordinates, range and sigma parameters for the SPDE model.
 \item{\code{Coordinates}}{a \code{data.frame} with the coordinates used for the mesh.}
 
 \item{\code{Range}}{a numeric vector of length 2.
-Will be used as the \code{prior.range} argument of
-\link[INLA:inla.spde2.pcmatern]{INLA::inla.spde2.pcmatern}. \if{html}{\out{<!-- spell-checker: ignore -->}}}
+Will be used as the \code{prior.range} argument of \verb{[INLA::inla.spde2.pcmatern]}.}
 
 \item{\code{Sigma}}{a numeric vector of length 2.
-Will be used as the \code{prior.sigma} argument of
-\link[INLA:inla.spde2.pcmatern]{INLA::inla.spde2.pcmatern}. \if{html}{\out{<!-- spell-checker: ignore -->}}}
+Will be used as the \code{prior.sigma} argument of \verb{[INLA::inla.spde2.pcmatern]}.}
 }}
 

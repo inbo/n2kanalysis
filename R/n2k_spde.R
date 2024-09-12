@@ -17,7 +17,7 @@ setGeneric(
 )
 
 #' @description A new `n2kSpde` model is created when `data` is a `data.frame`.
-#' @param spde the `Spde` object. See [spde].
+#' @param spde the `Spde` object. See `[spde]`.
 #' @rdname n2k_spde
 #' @aliases n2k_spde,n2kSpde-methods
 #' @importFrom methods setMethod new
