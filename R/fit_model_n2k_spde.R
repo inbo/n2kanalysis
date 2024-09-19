@@ -47,15 +47,14 @@ setMethod(
       )
     )
     INLA::inla.stack(
-      data = data[is.na(data[[response]]), response, drop = FALSE],
-      A = list(1, make_a(object = x@Spde, data[is.na(data[[response]]), ])),
+      data = data[, response, drop = FALSE],
+      A = list(1, make_a(object = x@Spde, data)),
       tag = "observed",
       effects = list(
-        data[is.na(data[[response]]), colnames(data) != response, drop = FALSE],
+        data[, colnames(data) != response, drop = FALSE],
         index
       )
-    ) |>
-      INLA::inla.stack(stack_observed) -> stack_total
+    ) -> stack_total
     # prepare linear combinations
     lc <- model2lincomb(x@LinearCombination)
     # prepare inla() arguments
