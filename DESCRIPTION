@@ -128,6 +128,7 @@ Collate:
     'make_a.R'
     'manifest_yaml_to_bash.R'
     'mark_obsolete_dataset.R'
+    'moving_trend.R'
     'n2k_aggregated.R'
     'n2k_composite.R'
     'n2k_hurdle_imputed.R'
