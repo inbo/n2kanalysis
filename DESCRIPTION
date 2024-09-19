@@ -129,6 +129,7 @@ Collate:
     'manifest_yaml_to_bash.R'
     'mark_obsolete_dataset.R'
     'moving_average.R'
+    'moving_difference.R'
     'moving_trend.R'
     'n2k_aggregated.R'
     'n2k_composite.R'
