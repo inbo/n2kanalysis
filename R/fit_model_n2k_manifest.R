@@ -25,25 +25,17 @@ setMethod(
       length(status) >= 1
     )
     to_do <- order_manifest(x)
-    remaining <- length(to_do)
-    while (length(to_do) > 1 && first) {
-      head(to_do, 1) |>
-        hash_status(base = base, project = project) -> stat
-      if (stat %in% status) {
-        to_do <- head(to_do, 1)
-      } else {
-        to_do <- tail(to_do, -1)
-      }
-    }
+    stat <- map_chr(to_do, ~hash_status(base = base, project = project, .x))
+    to_do <- to_do[stat %in% status]
     if (length(to_do) == 0) {
-      return(invisible(0))
+      return(invisible(NULL))
     }
     if (inherits(base, "character")) {
       walk(
         to_do, fit_model, base = base, project = project,
         status = status, verbose = verbose, ...
       )
-      return(invisible(remaining))
+      return(invisible(NULL))
     }
 
     display(verbose, "Downloading objects")
@@ -70,13 +62,14 @@ setMethod(
       to_do, download_model, base = local, project = project, local = base,
       verbose = verbose
     )
-    return(invisible(remaining))
+    return(invisible(NULL))
   }
 )
 
 #' @importFrom aws.s3 get_bucket
 #' @importFrom purrr map_chr
 hash_status <- function(hash, base, project) {
+  assert_that(is.string(hash), is.string(project))
   if (inherits(base, "s3_bucket")) {
     substr(hash, 1, 4) |>
       sprintf(fmt = "%2$s/%1$s/", project) |>
@@ -87,7 +80,11 @@ hash_status <- function(hash, base, project) {
       unname() -> output
     return(output)
   }
-  stop("hash status for ", class(base), " still do to")
+  stopifnot(inherits(base, "character"))
+  assert_that(is.string(base))
+  file.path(base, project) |>
+    list.files(recursive = TRUE, pattern = hash) |>
+    gsub(x = _, pattern = ".*/(.*)/.*\\.rds", replacement = "\\1")
 }
 
 download_model <- function(hash, base, local, project, verbose = FALSE) {
