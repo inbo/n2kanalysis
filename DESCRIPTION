@@ -16,7 +16,8 @@ Description: All generic functions and classes for the analysis for the
     every monitoring scheme. For example 'abvanalysis' and
     'watervogelanalysis'.
 License: GPL-3
-URL: https://doi.org/10.5281/zenodo.3576047
+URL: https://doi.org/10.5281/zenodo.3576047,
+    https://inbo.github.io/n2kanalysis/
 BugReports: https://github.com/inbo/n2kanalysis/issues
 Depends:
     R (>= 4.2.0)

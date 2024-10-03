@@ -27,4 +27,6 @@ abstract: "All generic functions and classes for the analysis for the 'Natura 20
 identifiers:
 - type: doi
   value: 10.5281/zenodo.3576047
+- type: url
+  value: https://inbo.github.io/n2kanalysis/
 version: 0.4.0
