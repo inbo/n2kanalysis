@@ -130,7 +130,7 @@ setMethod(
       return(n2k_spde(data = x, model_fit = model, status = "error"))
     }
     # return fitted model with imputations
-    return(n2k_inla(
+    return(n2k_spde(
       data = x, model_fit = model, status = "converged", raw_imputed = imputed
     ))
   }
