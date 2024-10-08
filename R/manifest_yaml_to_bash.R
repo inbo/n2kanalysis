@@ -143,13 +143,11 @@ setMethod(
     )
     assert_that(split == 1, msg = "`split > 1` to do on local file systems.")
     assert_that(
-      file_test("-d", path(base, project)),
-      msg = sprintf("`%s` is not a subdirectory of `%s`", project, base)
+      file_test("-d", base),
+      msg = sprintf("`%s` is not an existing folder",  base)
     )
-    assert_that(
-      file_test("-d", path(base, project, "yaml")),
-      msg = sprintf("`yaml` is not a subdirectory of `%s/%s`", base, project)
-    )
+    path(base, project, "yaml") |>
+      dir.create(showWarnings = FALSE)
     if (missing(hash)) {
       path(base, project, "yaml") |>
         dir_info(type = "file", regexp = "\\.yaml$") |>
