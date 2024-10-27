@@ -102,6 +102,7 @@ Collate:
     'get_anomaly_n2k_inla.R'
     'get_anomaly_n2k_model.R'
     'get_data.R'
+    'get_datafield_id.R'
     'get_file_fingerprint.R'
     'get_formula.R'
     'get_location_group_id.R'
