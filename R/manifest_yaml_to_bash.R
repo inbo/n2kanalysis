@@ -68,8 +68,8 @@ setMethod(
       read_manifest(base = base, project = project) -> manifest
     docker_hash <- get_file_fingerprint(manifest)
     sprintf(
-      "RUN Rscript -e 'remotes::install_github(\\\"%s\\\"%s)'", yaml$github,
-      ", dependencies = FALSE, upgrade = \\\"never\\\""
+      "RUN Rscript -e 'pak::pkg_install(\\\"%s\\\"%s)'", yaml$github,
+      ", dependencies = FALSE, upgrade = FALSE, ask = FALSE"
     ) -> deps
     sprintf(
       "#!/bin/bash
