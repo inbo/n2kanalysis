@@ -56,9 +56,12 @@ setMethod(
       )
       display(verbose, status(analysis))
       store_model(analysis, base = base, project = project)
+      result <- data.frame(
+        fingerprint = get_file_fingerprint(analysis), status = status(analysis)
+      )
       rm(analysis)
       gc(verbose = FALSE)
-      return(invisible(NULL))
+      return(invisible(result))
     }
     dots <- list(...)
     to_do <- object_status(
@@ -67,7 +70,10 @@ setMethod(
     if (length(to_do) == 0) {
       display(verbose, "skipping")
       gc(verbose = FALSE)
-      return(invisible(NULL))
+      result <- data.frame(
+        fingerprint = hash, status = "converged"
+      )
+      return(invisible(result))
     }
     download_model(
       hash = hash, base = base, local = dots$local, project = project,
@@ -91,8 +97,11 @@ setMethod(
       hash = hash, local = base, base = dots$local, project = project,
       verbose = verbose
     )
+    result <- data.frame(
+      fingerprint = get_file_fingerprint(analysis), status = status(analysis)
+    )
     rm(analysis)
     gc(verbose = FALSE)
-    return(invisible(NULL))
+    return(invisible(result))
   }
 )

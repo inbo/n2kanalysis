@@ -57,8 +57,7 @@ fit_model(x, ...)
   status = c("new", "waiting"),
   verbose = TRUE,
   ...,
-  local = tempfile("fit_model"),
-  first = FALSE
+  local = tempfile("fit_model")
 )
 
 \S4method{fit_model}{n2kModelImputed}(x, ...)
@@ -123,13 +122,6 @@ using \code{B:0} threads.}
 
 \item{local}{A local folder into which objects from an AWS S3 bucket are
 downloaded.}
-
-\item{first}{A logical.
-\code{first = TRUE} implies to fit only the first object in the manifest with
-matching status.
-\code{first = FALSE}  implies to fit all objects in the manifest with matching
-status.
-Defaults to \code{FALSE}.}
 }
 \description{
 Fit an \code{n2kModel} object
