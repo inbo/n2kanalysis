@@ -34,9 +34,16 @@ setMethod(
           file = cache_file, sep = "\t", row.names = FALSE, quote = FALSE
         )
     }
-    for (i in to_do) {
+    for (i in seq_along(to_do)) {
+      display(
+        verbose = verbose,
+        message = sprintf(
+          "Processing %i from %i (%.2f%%)", i, length(to_do),
+          100 * (i - 1) / length(to_do)
+        )
+      )
       result <- try(fit_model(
-        x = i, base = base, project = project, status = status,
+        x = to_do[i], base = base, project = project, status = status,
         verbose = verbose, ..., local = local
       ))
       if (!inherits(result, "try-error")) {
