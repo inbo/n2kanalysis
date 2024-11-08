@@ -60,6 +60,17 @@ setMethod(
         }
         do.call(INLA::inla, control)
       }, silent = TRUE)
+      if (inherits(m0, "try-error") && "control.family" %in% names(control)) {
+        control$control.family <- NULL
+        m0 <- try({
+          if (!is.null(timeout)) {
+            assert_that(is.number(timeout), timeout > 0)
+            setTimeLimit(cpu = timeout, elapsed = timeout)
+          }
+          do.call(INLA::inla, control)
+        }, silent = TRUE)
+        control$control.family <- x@Control$control.family
+      }
       if (inherits(m0, "try-error")) {
         status(x) <- ifelse(
           grepl("time limit", m0), "time-out", "error"
