@@ -57,7 +57,7 @@ fit_model(x, ...)
   status = c("new", "waiting"),
   verbose = TRUE,
   ...,
-  local = tempfile("fit_model")
+  local = NULL
 )
 
 \S4method{fit_model}{n2kModelImputed}(x, ...)

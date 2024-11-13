@@ -48,7 +48,11 @@ setMethod(
         fit_model(base = base, project = project, verbose = verbose, ...)
       return(invisible(NULL))
     }
-    if (!has_name(list(...), "local") || !inherits(base, "s3_bucket")) {
+    dots <- list(...)
+    if (
+      !has_name(dots, "local") || is.null(dots$local) ||
+      !inherits(base, "s3_bucket")
+    ) {
       analysis <- read_model(hash, base = base, project = project)
       display(verbose, paste(status(analysis), "-> "), FALSE)
       analysis <- fit_model(

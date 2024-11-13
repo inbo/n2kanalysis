@@ -13,7 +13,7 @@ setMethod(
   signature = signature(x = "n2kManifest"),
   definition = function(
     x, base, project, status = c("new", "waiting"), verbose = TRUE, ...,
-    local = tempfile("fit_model")
+    local = NULL
   ) {
     assert_that(
       is.string(project), noNA(project), is.character(status), noNA(status),
@@ -27,7 +27,7 @@ setMethod(
     if (file_test("-f", cache_file)) {
       processed <- read.table(cache_file, header = TRUE, sep = "\t")
       done <- processed$status %in% status
-      to_do <- to_do[!to_do %in% processed$fingerprint[done]]
+      to_do <- to_do[!to_do %in% processed$fingerprint[!done]]
     } else {
       data.frame(fingerprint = character(0), status = character(0)) |>
         write.table(
