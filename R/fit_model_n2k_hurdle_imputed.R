@@ -80,6 +80,10 @@ setMethod(
       store_model(x, base = base, project = project)
     }
 
+    if (!all(x@AnalysisRelation$parentstatus == "converged")) {
+      return(x)
+    }
+
     result <- try(hurdle_impute(x@Presence, x@Count))
     if (inherits(result, "try-error")) {
       x@AnalysisMetadata$status_fingerprint <- sha1(
