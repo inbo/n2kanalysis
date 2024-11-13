@@ -63,3 +63,17 @@ setMethod(
     extractor(object@Model)
   }
 )
+
+
+#' @rdname extract
+#' @aliases extract,n2kInla-methods
+#' @importFrom methods setMethod new
+#' @include n2k_inla_class.R
+setMethod(
+  f = "extract",
+  signature = signature(object = "n2kModelImputed"),
+  definition = function(extractor, object, base = NULL, project = NULL) {
+    assert_that(inherits(extractor, "function"))
+    extractor(object)
+  }
+)

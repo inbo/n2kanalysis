@@ -7,6 +7,7 @@
 \alias{extract,character-methods}
 \alias{extract,ANY,n2kInla-method}
 \alias{extract,n2kInla-methods}
+\alias{extract,ANY,n2kModelImputed-method}
 \title{Extract the relevant coefficients}
 \usage{
 extract(extractor, object, base, project)
@@ -14,6 +15,8 @@ extract(extractor, object, base, project)
 \S4method{extract}{ANY,character}(extractor, object, base, project)
 
 \S4method{extract}{ANY,n2kInla}(extractor, object, base = NULL, project = NULL)
+
+\S4method{extract}{ANY,n2kModelImputed}(extractor, object, base = NULL, project = NULL)
 }
 \arguments{
 \item{extractor}{the extractor function}
