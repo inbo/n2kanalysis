@@ -38,8 +38,8 @@ setMethod(
       display(
         verbose = verbose,
         message = sprintf(
-          "Processing %i from %i (%.2f%%)", i, length(to_do),
-          100 * (i - 1) / length(to_do)
+          "Processing %i from %i (%.2f%%) %s", i, length(to_do),
+          100 * (i - 1) / length(to_do), Sys.time()
         )
       )
       result <- try(fit_model(
