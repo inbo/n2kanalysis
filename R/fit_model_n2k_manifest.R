@@ -34,12 +34,18 @@ setMethod(
           file = cache_file, sep = "\t", row.names = FALSE, quote = FALSE
         )
     }
+    start_time <- Sys.time()
     for (i in seq_along(to_do)) {
       display(
         verbose = verbose,
         message = sprintf(
-          "Processing %i from %i (%.2f%%) %s", i, length(to_do),
-          100 * (i - 1) / length(to_do), Sys.time()
+          "Processing %i from %i (%.2f%%) %s ETA %s", i, length(to_do),
+          100 * (i - 1) / length(to_do),
+          format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+          format(
+            start_time + (Sys.time() - start_time) * length(to_do)  / (i - 1),
+            "%d %H:%M"
+          )
         )
       )
       result <- try(fit_model(
