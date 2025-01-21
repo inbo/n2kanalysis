@@ -4,7 +4,7 @@
 \alias{moving_difference}
 \title{Calculate coefficients for a moving difference}
 \usage{
-moving_difference(n_year, duration, first_year)
+moving_difference(n_year, duration, first_year = 1)
 }
 \arguments{
 \item{n_year}{Number of available years in the data.}
