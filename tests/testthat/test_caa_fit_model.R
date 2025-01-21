@@ -218,7 +218,8 @@ test_that("fit_model() works on n2kInlaComparison", {
   fit_model(filename2, verbose = FALSE)
   fit_model(filename3, verbose = FALSE)
   filename3 <- gsub("waiting", "converged", filename3)
-  expect_null(fit_model(filename3, verbose = FALSE))
+  expect_invisible(output <- fit_model(filename3, verbose = FALSE))
+  expect_is(output, "data.frame")
 })
 
 test_that("fit_model() works on n2kInlaComposite", {
@@ -294,7 +295,8 @@ test_that("fit_model() works on n2kInlaComposite", {
   fit_model(filename2, verbose = FALSE)
   fit_model(filename3, verbose = FALSE)
   filename3 <- gsub("waiting", "converged", filename3)
-  expect_null(fit_model(filename3, verbose = FALSE))
+  expect_invisible(output <- fit_model(filename3, verbose = FALSE))
+  expect_is(output, "data.frame")
 })
 
 test_that("fit_model() works on n2kHurdleImputed", {
@@ -337,18 +339,30 @@ test_that("fit_model() works on n2kHurdleImputed", {
   sha_count <- store_model(count, base = base, project = project)
   sha_presence <- store_model(presence, base = base, project = project)
   sha_hurdle <- store_model(hurdle, base = base, project = project)
-  expect_null(fit_model(basename(sha_hurdle), base = base, project = project))
-  suppressWarnings(
-    expect_null(fit_model(basename(sha_count), base = base, project = project))
+  expect_invisible(
+    output <- fit_model(basename(sha_hurdle), base = base, project = project)
   )
+  expect_is(output, "data.frame")
   suppressWarnings(
-    expect_null(
-      fit_model(basename(sha_presence), base = base, project = project)
+    expect_invisible(
+      output <- fit_model(basename(sha_count), base = base, project = project)
     )
   )
+  expect_is(output, "data.frame")
   suppressWarnings(
-    expect_null(fit_model(basename(sha_hurdle), base = base, project = project))
+    expect_invisible(
+      output <- fit_model(
+        basename(sha_presence), base = base, project = project
+      )
+    )
   )
+  expect_is(output, "data.frame")
+  suppressWarnings(
+    expect_invisible(
+      output <- fit_model(basename(sha_hurdle), base = base, project = project)
+    )
+  )
+  expect_is(output, "data.frame")
   expect_s4_class(
     basename(sha_hurdle) |>
       read_model(base = base, project = project) |>
