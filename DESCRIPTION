@@ -27,6 +27,7 @@ Imports:
     digest (>= 0.6.23.2),
     dplyr,
     fs,
+    git2rdata,
     MASS,
     methods,
     multimput (>= 0.2.14),
