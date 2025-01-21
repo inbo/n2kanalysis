@@ -9,6 +9,7 @@
 #' moving_average(5, 3)
 #' moving_average(5, 3, 2000)
 #' @importFrom assertthat assert_that is.count is.number
+#' @importFrom stats median
 moving_average <- function(n_year, duration, first_year = 0) {
   assert_that(is.count(n_year), is.count(duration), is.number(first_year))
   duration <- min(n_year, duration)

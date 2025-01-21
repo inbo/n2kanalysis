@@ -11,6 +11,7 @@
 #' moving_difference(6, 2)
 #' moving_difference(6, 2, 2000)
 #' @importFrom assertthat assert_that is.count is.number
+#' @importFrom stats median
 moving_difference <- function(n_year, duration, first_year = 1) {
   assert_that(is.count(n_year), is.count(duration), is.number(first_year))
   duration <- min(floor(n_year / 2), duration)

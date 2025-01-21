@@ -15,6 +15,7 @@
 #' moving_trend(5, 4, 2000)
 #' @export
 #' @importFrom assertthat assert_that is.count is.number
+#' @importFrom stats median
 moving_trend <- function(n_year, duration, first_year = 0) {
   assert_that(is.count(n_year), is.count(duration), is.number(first_year))
   duration <- min(n_year, duration)
