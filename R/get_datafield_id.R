@@ -1,7 +1,7 @@
-#' Get the datafield id
+#' Get the data field id
 #' @param table The table name
 #' @param field The field name
-#' @param datasource The datasource name
+#' @param datasource The data source name
 #' @inheritParams git2rdata::write_vc
 #' @export
 #' @importFrom assertthat assert_that is.string noNA

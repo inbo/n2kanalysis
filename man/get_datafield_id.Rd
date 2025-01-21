@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_datafield_id.R
 \name{get_datafield_id}
 \alias{get_datafield_id}
-\title{Get the datafield id}
+\title{Get the data field id}
 \usage{
 get_datafield_id(table, field, datasource, root, stage = FALSE)
 }
@@ -11,7 +11,7 @@ get_datafield_id(table, field, datasource, root, stage = FALSE)
 
 \item{field}{The field name}
 
-\item{datasource}{The datasource name}
+\item{datasource}{The data source name}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
 Defaults to the current working directory (\code{"."}).}
@@ -20,5 +20,5 @@ Defaults to the current working directory (\code{"."}).}
 writing the data. Defaults to \code{FALSE}.}
 }
 \description{
-Get the datafield id
+Get the data field id
 }
