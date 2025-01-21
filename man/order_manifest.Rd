@@ -6,6 +6,9 @@
 \usage{
 order_manifest(manifest)
 }
+\arguments{
+\item{manifest}{the \code{n2kManifest}}
+}
 \description{
 The order of the analysis is determined by the parent-child relationship.
 It starts with the analyses without parents.
