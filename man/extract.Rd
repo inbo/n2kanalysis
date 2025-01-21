@@ -8,6 +8,7 @@
 \alias{extract,ANY,n2kInla-method}
 \alias{extract,n2kInla-methods}
 \alias{extract,ANY,n2kModelImputed-method}
+\alias{extract,n2kModelImputed-methods}
 \title{Extract the relevant coefficients}
 \usage{
 extract(extractor, object, base, project)

@@ -10,6 +10,7 @@
 #' @aliases n2kHurdleImputed-class
 #' @importFrom methods setClass
 #' @docType class
+#' @include n2k_aggregate_class.R
 setClass(
   "n2kHurdleImputed",
   representation = representation(
