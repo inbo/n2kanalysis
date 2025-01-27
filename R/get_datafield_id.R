@@ -28,7 +28,7 @@ table in that datasource and which field in that table.",
         source = "data source which stores the data"
       )
     )
-    return(1)
+    return(1L)
   }
   datafield <- verify_vc(
     file = "datafield", root = root,
