@@ -18,7 +18,7 @@ setMethod(
       return(x)
     }
 
-    if (status(x) != "new") {
+    if (is.null(x@Presence) || status(x) %in% c("converged", "error")) {
       presence <- read_model(
         x@AnalysisRelation$parent_analysis[1], base = base, project = project
       )
@@ -29,7 +29,26 @@ setMethod(
       x@AnalysisRelation$parentstatus[1] <- status(presence)
       rm(presence)
       gc()
-
+      x@AnalysisMetadata$status <- ifelse(
+        all(x@AnalysisRelation$parentstatus == "converged"), "new",
+        ifelse(
+          any(!x@AnalysisRelation$parentstatus %in%
+                c("new", "waiting", "converged")),
+          "error", "waiting"
+        )
+      )
+      x@AnalysisMetadata$status_fingerprint <- sha1(
+        list(
+          get_file_fingerprint(x), x@AnalysisMetadata$status,
+          x@AnalysisVersion$fingerprint, x@AnalysisVersion, x@RPackage,
+          x@AnalysisVersionRPackage, x@AnalysisRelation, x@Presence, x@Count,
+          x@Hurdle
+        ),
+        digits = 6L
+      )
+      store_model(x, base = base, project = project)
+    }
+    if (is.null(x@Count) || status(x) %in% c("converged", "error")) {
       count <- read_model(
         x@AnalysisRelation$parent_analysis[2], base = base, project = project
       )
@@ -58,9 +77,10 @@ setMethod(
         ),
         digits = 6L
       )
+      store_model(x, base = base, project = project)
     }
 
-    if (status(x) != "new") {
+    if (!all(x@AnalysisRelation$parentstatus == "converged")) {
       return(x)
     }
 

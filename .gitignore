@@ -17,7 +17,7 @@
 .Ruserdata
 .httr-oauth
 docs
+inst/doc
 libs
 output
 renv/library
-inst/doc

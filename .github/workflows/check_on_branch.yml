@@ -2,7 +2,6 @@ on:
   push:
     branches-ignore:
       - main
-      - master
       - ghpages
 
 name: "check package with checklist"
@@ -14,11 +13,11 @@ jobs:
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      N2KBUCKET: ${{ secrets.N2KBUCKET }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      N2KBUCKET: ${{ secrets.N2KBUCKET }}
     permissions:
       contents: read
     steps:
-      - uses: inbo/actions/check_pkg@checklist-0.3.6
+      - uses: inbo/actions/check_pkg@checklist-0.4.1

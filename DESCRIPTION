@@ -1,6 +1,6 @@
 Package: n2kanalysis
 Title: Generic Functions to Analyse Data from the 'Natura 2000' Monitoring
-Version: 0.3.2
+Version: 0.4.0
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
@@ -16,7 +16,8 @@ Description: All generic functions and classes for the analysis for the
     every monitoring scheme. For example 'abvanalysis' and
     'watervogelanalysis'.
 License: GPL-3
-URL: https://doi.org/10.5281/zenodo.3576047
+URL: https://doi.org/10.5281/zenodo.3576047,
+    https://inbo.github.io/n2kanalysis/
 BugReports: https://github.com/inbo/n2kanalysis/issues
 Depends:
     R (>= 4.2.0)
@@ -26,22 +27,26 @@ Imports:
     digest (>= 0.6.23.2),
     dplyr,
     fs,
+    git2rdata (>= 0.5.0),
     MASS,
     methods,
-    multimput (>= 0.2.13),
+    multimput (>= 0.2.14),
     n2khelper (>= 0.5.0),
     purrr,
     rlang,
     RODBC,
     tibble,
     tidyr (>= 0.4.0),
+    tools,
     yaml
 Suggests:
+    fmesher,
     INLA (>= 23.04.24),
     knitr,
     Matrix,
     parallel,
     rmarkdown,
+    sf,
     sn,
     testthat (>= 2.0.1)
 VignetteBuilder: 
@@ -57,7 +62,7 @@ Config/checklist/keywords: analysis, reproducible research, natura 2000,
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Collate: 
     'n2k_parameter_class.R'
     'n2k_anomaly_class.R'
@@ -71,24 +76,27 @@ Collate:
     'delete_model.R'
     'display.R'
     'n2k_model_class.R'
+    'n2k_inla_comparison_class.R'
     'n2k_inla_class.R'
+    'n2k_aggregate_class.R'
+    'n2k_model_imputed_class.R'
     'extract.R'
     'fit_every_model.R'
     'fit_model.R'
     'fit_model_character.R'
-    'n2k_aggregate_class.R'
     'fit_model_n2k_aggregate.R'
     'n2k_composite_class.R'
     'fit_model_n2k_composite.R'
     'n2k_hurdle_imputed_class.R'
     'fit_model_n2k_hurdle_imputed.R'
     'fit_model_n2k_inla.R'
-    'n2k_inla_comparison_class.R'
     'fit_model_n2k_inla_comparison.R'
     'n2k_manifest_class.R'
     'fit_model_n2k_manifest.R'
-    'n2k_model_imputed_class.R'
     'fit_model_n2k_model_imputed.R'
+    'spde_class.R'
+    'n2k_spde_class.R'
+    'fit_model_n2k_spde.R'
     'fit_model_s3_object.R'
     'get_analysis_date.R'
     'get_analysis_version.R'
@@ -96,6 +104,7 @@ Collate:
     'get_anomaly_n2k_inla.R'
     'get_anomaly_n2k_model.R'
     'get_data.R'
+    'get_datafield_id.R'
     'get_file_fingerprint.R'
     'get_formula.R'
     'get_location_group_id.R'
@@ -120,8 +129,12 @@ Collate:
     'get_species_group_id.R'
     'get_status_fingerprint.R'
     'inla_inverse.R'
+    'make_a.R'
     'manifest_yaml_to_bash.R'
     'mark_obsolete_dataset.R'
+    'moving_average.R'
+    'moving_difference.R'
+    'moving_trend.R'
     'n2k_aggregated.R'
     'n2k_composite.R'
     'n2k_hurdle_imputed.R'
@@ -131,6 +144,7 @@ Collate:
     'n2k_inla_comparison.R'
     'n2k_manifest.R'
     'n2k_model_imputed.R'
+    'n2k_spde.R'
     'parent_status.R'
     'read_manifest.R'
     'read_model.R'
@@ -146,6 +160,9 @@ Collate:
     'select_observed_range.R'
     'session_package.R'
     'sha1.R'
+    'spde.R'
+    'spde2matern.R'
+    'spde2mesh.R'
     'status.R'
     'store_manifest.R'
     'store_manifest_yaml.R'

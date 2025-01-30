@@ -31,7 +31,7 @@ setClassUnion("maybeFunction", c("function", "character"))
 #' @aliases n2kModelImputed-class
 #' @importFrom methods setClass
 #' @docType class
-#' @include n2k_model_imputed_class.R
+#' @include n2k_aggregate_class.R
 #' @include n2k_inla_comparison_class.R
 setClass(
   "n2kModelImputed",

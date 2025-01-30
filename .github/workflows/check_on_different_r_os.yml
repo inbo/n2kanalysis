@@ -21,6 +21,7 @@ jobs:
       matrix:
         config:
           - {os: macOS-latest,   r: 'release'}
+          - {os: windows-latest, r: 'release'}
           - {os: ubuntu-22.04,   r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/jammy/latest"}
           - {os: ubuntu-22.04,   r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/jammy/latest"}
 
@@ -40,7 +41,7 @@ jobs:
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
-          extra-repositories: https://inla.r-inla-download.org/R/testing
+          extra-repositories: https://inla.r-inla-download.org/R/stable
 
       - uses: r-lib/actions/setup-pandoc@v2
 

@@ -1,6 +1,6 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that is.number
+#' @importFrom assertthat assert_that
 #' @importMethodsFrom multimput impute
 #' @include n2k_inla_class.R
 #' @param timeout the optional number of second until the model will time out
@@ -40,43 +40,14 @@ setMethod(
     fm <- terms(x@AnalysisFormula[[1]])
     response <- all.vars(fm)[attr(fm, "response")]
     if (mean(is.na(data[[response]])) < 0.10) {
-      # directly fit model when less than 10% missing data
-      control$data <- data
-      control$lincomb <- lc
-      model <- try({
-        if (!is.null(timeout)) {
-          assert_that(is.number(timeout), timeout > 0)
-          setTimeLimit(cpu = timeout, elapsed = timeout)
-        }
-        do.call(INLA::inla, control)
-      }, silent = TRUE)
+      model <- direct_fit(
+        control = control, data = data, lc = lc, timeout = timeout
+      )
     } else {
-      # first fit model without missing data
-      control$data <- data[!is.na(data[[response]]), ]
-      m0 <- try({
-        if (!is.null(timeout)) {
-          assert_that(is.number(timeout), timeout > 0)
-          setTimeLimit(cpu = timeout, elapsed = timeout)
-        }
-        do.call(INLA::inla, control)
-      }, silent = TRUE)
-      if (inherits(m0, "try-error")) {
-        status(x) <- ifelse(
-          grepl("time limit", m0), "time-out", "error"
-        )
-        return(x)
-      }
-      # then refit with missing data
-      control$data <- data
-      control$lincomb <- lc
-      control$control.update <- list(result = m0)
-      model <- try({
-        if (!is.null(timeout)) {
-          assert_that(is.number(timeout), timeout > 0)
-          setTimeLimit(cpu = timeout, elapsed = timeout)
-        }
-        do.call(INLA::inla, control)
-      }, silent = TRUE)
+      model <- indirect_fit(
+        response = response, control = control, data = data, lc = lc,
+        timeout = timeout
+      )
     }
 
     # handle error in model fit
@@ -125,4 +96,57 @@ model2lincomb <- function(lincomb) {
     names(lc) <- names(lincomb[[1]])
   }
   return(lc)
+}
+
+# directly fit model when less than 10% missing data
+direct_fit <- function(control, data, lc, timeout = NULL) {
+  control$data <- data
+  control$lincomb <- lc
+  try({
+    if (!is.null(timeout)) {
+      assert_that(is.number(timeout), timeout > 0)
+      setTimeLimit(cpu = timeout, elapsed = timeout)
+    }
+    do.call(INLA::inla, control)
+  }, silent = TRUE)
+}
+
+#' @importFrom assertthat assert_that is.number
+indirect_fit <- function(control, data, lc, response, timeout = NULL) {
+  # first fit model without missing data
+  control$data <- data[!is.na(data[[response]]), ]
+  m0 <- try({
+    if (!is.null(timeout)) {
+      assert_that(is.number(timeout), timeout > 0)
+      setTimeLimit(cpu = timeout, elapsed = timeout)
+    }
+    do.call(INLA::inla, control)
+  }, silent = TRUE)
+  if (inherits(m0, "try-error") && "control.family" %in% names(control)) {
+    # when model failed to fit, try again without family
+    old_control_family <- control$control.family
+    control$control.family <- NULL
+    m0 <- try({
+      if (!is.null(timeout)) {
+        assert_that(is.number(timeout), timeout > 0)
+        setTimeLimit(cpu = timeout, elapsed = timeout)
+      }
+      do.call(INLA::inla, control)
+    }, silent = TRUE)
+    control$control.family <- old_control_family
+  }
+  if (inherits(m0, "try-error")) {
+    return(m0)
+  }
+  # then refit with missing data
+  control$data <- data
+  control$lincomb <- lc
+  control$control.update <- list(result = m0)
+  try({
+    if (!is.null(timeout)) {
+      assert_that(is.number(timeout), timeout > 0)
+      setTimeLimit(cpu = timeout, elapsed = timeout)
+    }
+    do.call(INLA::inla, control)
+  }, silent = TRUE)
 }

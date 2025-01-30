@@ -1,3 +1,7 @@
+# `n2kanalysis` 0.4.0
+
+* Handle INLA models with an SPDE element.
+
 # `n2kanalysis` 0.3.2
 
 * Make `fit_model()` more efficient.

@@ -1,6 +1,6 @@
 #' @rdname fit_model
 #' @importFrom methods setMethod new
-#' @importFrom dplyr %>% filter group_by n summarise transmute mutate arrange
+#' @importFrom dplyr arrange filter group_by mutate n summarise transmute
 #' @importFrom rlang .data
 #' @importFrom utils file_test
 #' @importFrom stats qnorm
@@ -21,21 +21,19 @@ setMethod(
         status(x) <- "error"
         return(x)
       }
-      x@Parameter %>%
-        filter(!is.na(.data$estimate), !is.na(.data$variance)) %>%
-        group_by(.data$value) %>%
+      x@Parameter |>
+        filter(!is.na(.data$estimate), !is.na(.data$variance)) |>
+        group_by(.data$value) |>
         summarise(
-          estimate = mean(.data$estimate),
-          se = sqrt(sum(.data$variance)) / n()
-        ) %>%
+          estimate = mean(.data$estimate), se = sqrt(sum(.data$variance)) / n()
+        ) |>
         transmute(
-          .data$value,
-          .data$estimate,
+          .data$value, .data$estimate,
           lower_confidence_limit =
             qnorm(0.025, mean = .data$estimate, sd = .data$se),
           upper_confidence_limit =
             qnorm(0.975, mean = .data$estimate, sd = .data$se)
-        ) %>%
+        ) |>
         as.data.frame() -> x@Index
       status(x) <- "converged"
       return(x)
@@ -43,8 +41,8 @@ setMethod(
 
     status(x) <- "waiting"
     parent_status <- parent_status(x)
-    parent_status %>%
-      filter(.data$parent_status %in% c("new", "waiting", status)) %>%
+    parent_status |>
+      filter(.data$parent_status %in% c("new", "waiting", status)) |>
       pull("parent_analysis") -> todo
 
     for (this_parent in todo) {
@@ -67,12 +65,12 @@ setMethod(
       ] <- get_status_fingerprint(model)
       x@AnalysisRelation <- parent_status
       if (status(model) == "converged") {
-        extract(extractor = x@Extractor, object = model) %>%
-          mutate(parent = this_parent) %>%
+        extract(extractor = x@Extractor, object = model) |>
+          mutate(parent = this_parent) |>
           bind_rows(
-            x@Parameter %>%
+            x@Parameter |>
               filter(.data$parent != this_parent)
-          ) %>%
+          ) |>
           arrange(.data$parent, .data$value) -> x@Parameter
       }
     }
