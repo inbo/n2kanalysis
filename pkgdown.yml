@@ -1,0 +1,9 @@
+pandoc: 3.6.2
+pkgdown: 2.1.1
+pkgdown_sha: ~
+articles:
+  workflow: workflow.html
+last_built: 2025-01-30T20:56Z
+urls:
+  reference: https://inbo.github.io/n2kanalysis/reference
+  article: https://inbo.github.io/n2kanalysis/articles
