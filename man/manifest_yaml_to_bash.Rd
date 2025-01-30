@@ -36,7 +36,8 @@ manifest_yaml_to_bash(
   shutdown = FALSE,
   split = 1,
   status = c("new", "waiting"),
-  limit = FALSE
+  limit = FALSE,
+  timeout = 4
 )
 }
 \arguments{

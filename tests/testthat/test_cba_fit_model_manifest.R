@@ -38,8 +38,15 @@ test_that("it handles a manifest", {
       NA, get_file_fingerprint(object), get_file_fingerprint(object2)
     ),
     stringsAsFactors = FALSE
-  ) %>%
+  ) |>
     n2k_manifest()
+  hash <- store_manifest_yaml(
+    x = x, base = base, project = project, docker = "inbobmk/rn2k:dev-0.10",
+    dependencies = c("inbo/n2khelper@v0.5.0", "inbo/n2kanalysis@0.4.0")
+  )
+  script <- manifest_yaml_to_bash(
+    base = base, project = project, hash = basename(hash)
+  )
   expect_invisible(fit_model(x, base = base, project = project))
   y <- store_manifest(x, base, project)
   expect_null(fit_model(y, base = base, project = project))
@@ -69,8 +76,15 @@ test_that("it handles a manifest", {
       NA, get_file_fingerprint(object), get_file_fingerprint(object2)
     ),
     stringsAsFactors = FALSE
-  ) %>%
+  ) |>
     n2k_manifest()
+  hash <- store_manifest_yaml(
+    x = x, base = aws_base, project = project, docker = "inbobmk/rn2k:dev-0.10",
+    dependencies = c("inbo/n2khelper@v0.5.0", "inbo/n2kanalysis@0.4.0")
+  )
+  script <- manifest_yaml_to_bash(
+    base = aws_base, project = project, hash = basename(hash)
+  )
   expect_s3_class(
     results <- get_result(x, base = aws_base, project = project),
     "data.frame"

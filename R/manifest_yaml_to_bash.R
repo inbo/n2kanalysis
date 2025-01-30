@@ -67,42 +67,16 @@ setMethod(
     gsub("\\.manifest$", "", yaml$hash) |>
       read_manifest(base = base, project = project) -> manifest
     docker_hash <- get_file_fingerprint(manifest)
-    sprintf(
-      "RUN Rscript -e 'pak::pkg_install(\\\"%s\\\"%s)'", yaml$github,
-      ", dependencies = FALSE, upgrade = FALSE, ask = FALSE"
-    ) -> deps
-    sprintf(
-      "#!/bin/bash
-export $(cat .env | xargs)
-echo \"FROM %s
-%s\" > Dockerfile
-docker build --pull --tag rn2k:%s .
-rm Dockerfile",
-      yaml$docker, paste(deps, collapse = "\n"), docker_hash
-    ) -> init
+    init <- create_docker_init(yaml = yaml, docker_hash = docker_hash)
     volume <- "/n2kanalysis:/n2kanalysis:rw"
     models <- order_manifest(manifest = manifest)
     to_do <- object_status(base = base, project = project, status = status)
     models <- models[models %in% to_do]
-    c(
-      "echo \"\n\nmodel %i of %i\n\n\"\ndate\n",
-      "timeout --kill-after=2m %ih docker run %s --name=%s -v %s rn2k:%s",
-      "./fit_model_aws.sh -b %s -p %s -m %s%s"
-    ) |>
-      paste(collapse = " ") |>
-      sprintf(
-        seq_along(models), length(models), timeout,
-        paste(
-          c(
-            "--rm", "--env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID",
-            "--env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY",
-            "--env AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION",
-            "--cap-add NET_ADMIN"[limit], "--cpu-shares=512"[limit]
-          ),
-          collapse = " "
-        ), models, volume, docker_hash, get_bucketname(base), project, models,
-        ifelse(limit, " -s 1", "")
-      ) -> model_scripts
+    model_scripts <- create_docker_model_scripts(
+      models = models, base = base, timeout = timeout,
+      limit = limit, volume = volume, docker_hash = docker_hash,
+      project = project
+    )
     vapply(
       seq_len(split), FUN.VALUE = character(1), project = project, init = init,
       split = split, shutdown = shutdown, base = base,
@@ -121,6 +95,52 @@ rm Dockerfile",
   }
 )
 
+create_docker_init <- function(yaml, docker_hash) {
+  sprintf(
+    "RUN Rscript -e 'pak::pkg_install(\\\"%s\\\"%s)'", yaml$github,
+    ", dependencies = FALSE, upgrade = FALSE, ask = FALSE"
+  ) -> deps
+  sprintf(
+    "#!/bin/bash
+export $(cat .env | xargs)
+echo \"FROM %s
+%s\" > Dockerfile
+docker build --pull --tag rn2k:%s .
+rm Dockerfile",
+    yaml$docker, paste(deps, collapse = "\n"), docker_hash
+  )
+}
+
+create_docker_model_scripts <- function(
+  models, base, timeout = 4, limit = FALSE, volume, docker_hash, project
+) {
+  if (inherits(base, "character")) {
+    script <- "./fit_model_file.sh"
+  } else {
+    script <- "./fit_model_aws.sh"
+    base <- get_bucketname(base)
+  }
+  c(
+    "echo \"\n\nmodel %i of %i\n\n\"\ndate\n",
+    "timeout --kill-after=2m %ih docker run %s --name=%s -v %s rn2k:%s",
+    script, " -b %s -p %s -m %s%s"
+  ) |>
+    paste(collapse = " ") |>
+    sprintf(
+      seq_along(models), length(models), timeout,
+      paste(
+        c(
+          "--rm", "--env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID",
+          "--env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY",
+          "--env AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION",
+          "--cap-add NET_ADMIN"[limit], "--cpu-shares=512"[limit]
+        ),
+        collapse = " "
+      ), models, volume, docker_hash, base, project, models,
+      ifelse(limit, " -s 1", "")
+    )
+}
+
 #' @export
 #' @rdname manifest_yaml_to_bash
 #' @importFrom assertthat assert_that is.count is.flag is.string noNA
@@ -134,7 +154,7 @@ setMethod(
   signature = signature(base = "character"),
   definition = function(
     base, project, hash, shutdown = FALSE, split = 1,
-    status = c("new", "waiting"), limit = FALSE
+    status = c("new", "waiting"), limit = FALSE, timeout = 4
   ) {
     assert_that(
       is.string(base), noNA(base), file_test("-d", base), is.string(project),
@@ -169,31 +189,14 @@ setMethod(
     gsub("\\.manifest$", "", yaml$hash) |>
       read_manifest(base = base, project = project) -> manifest
     docker_hash <- get_file_fingerprint(manifest)
-    sprintf(
-      "Rscript -e 'remotes::install_github(\\\"%s\\\"%s)'", yaml$github,
-      ", dependencies = TRUE, upgrade = \\\"never\\\", keep_source = FALSE"
-    ) -> deps
-    sprintf(
-      "#!/bin/bash
-echo \"FROM %s
-RUN %s\" > Dockerfile
-docker build --pull --tag rn2k:%s .
-rm Dockerfile",
-      yaml$docker, paste(deps, collapse = " \\\n&&  "), docker_hash
-    ) -> init
+    init <- create_docker_init(yaml = yaml, docker_hash = docker_hash)
     base <- normalizePath(base, winslash = "/")
     volume <- paste(base, base, "rw", sep = ":")
     models <- order_manifest(manifest = manifest)
-    sprintf(
-      "echo \"model %i of %i\"
-docker run %s%s --name=%s -v %s rn2k:%s ./fit_model_file.sh -b %s -p %s -m %s
-date
-docker stop --time 14400 %s
-date",
-      seq_along(models), length(models), "--rm -d",
-      ifelse(limit, "--cpu-shares=512", ""), models, volume, docker_hash,
-      base, project, models, models
-    ) -> model_scripts
+    model_scripts <- create_docker_model_scripts(
+      models = models, base = base, timeout = timeout, limit = limit,
+      volume = volume, docker_hash = docker_hash, project = project
+    )
     path(base, project, "bash") |>
       dir_create()
     script <- path(base, project, sprintf("bash/%s.sh", docker_hash))
