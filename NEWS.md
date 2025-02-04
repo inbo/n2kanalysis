@@ -1,3 +1,7 @@
+# `n2kanalysis` 0.4.1
+
+* Improve `get_result()`
+
 # `n2kanalysis` 0.4.0
 
 * Handle INLA models with an SPDE element.
