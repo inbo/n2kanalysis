@@ -11,7 +11,7 @@
 setMethod(
   f = "get_result",
   signature = signature(x = "n2kInla"),
-  definition = function(x, verbose = TRUE, ...) {
+  definition = function(x, base, ..., verbose = TRUE) {
     validObject(x)
     anomaly <- get_anomaly(analysis = x, verbose = verbose, ...)
     if (is.null(x@LinearCombination)) {

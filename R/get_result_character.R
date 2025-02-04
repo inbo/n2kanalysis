@@ -1,65 +1,70 @@
 #' @rdname get_result
 #' @importFrom methods setMethod validObject new
-#' @importFrom assertthat assert_that is.string is.count
+#' @importFrom assertthat assert_that is.string noNA
 #' @importFrom utils file_test
-#' @param n_cluster The number of clusters to run this function in parallel.
-#' Defaults to `1` (= no parallel computing).
 setMethod(
   f = "get_result",
-  signature = signature(x = "character"),
-  definition = function(
-    x,
-    n_cluster = 1,
-    verbose = TRUE,
-    ...
-  ) {
+  signature = signature(x = "character", base = "character"),
+  definition = function(x, base, ..., project, verbose = TRUE) {
     # check arguments
-    assert_that(is.string(x))
-    assert_that(is.count(n_cluster))
+    assert_that(
+      is.string(x), is.string(base), is.string(project), noNA(x), noNA(base),
+      noNA(project)
+    )
+    stopifnot("`base` is not a existing directory" = file_test("-d", base))
+
+    target <- file.path(base, project, "results", sprintf("%s.rds", x))
+    dirname(target) |>
+      dir.create(showWarnings = FALSE, recursive = TRUE)
 
     # x is an existing file
-    if (file_test("-f", x)) {
-      display(verbose, x)
-      return(get_result(x = readRDS(x), verbose = verbose, ...))
+    if (file_test("-f", target)) {
+      display(verbose = verbose, paste("  already extracted", x))
+      return(readRDS(target))
     }
+    display(verbose = verbose, paste("  extracting", x))
 
-    if (!file_test("-d", x)) {
-      stop("'x' is neither an existing file, neither an existing directory")
+    read_model(x = x, base = base, project = project) |>
+      get_result(
+        base = base, project = project, ..., verbose = verbose
+      ) -> result
+    if (status(result) == "converged") {
+      saveRDS(result, file = target)
     }
-
-    # x is an existing directory
-    x <- normalizePath(x, winslash = "/", mustWork = TRUE)
-    files <- list.files(
-      path = x,
-      pattern = "\\.rds$",
-      full.names = TRUE,
-      recursive = TRUE
-    )
-    if (length(files) == 0) {
-      return(new("n2kResult"))
-    }
-    if (n_cluster == 1 || !requireNamespace("parallel", quietly = TRUE)) {
-      result <- lapply(files, get_result, verbose = verbose, ...)
-    } else {
-      n_cluster <- min(n_cluster, parallel::detectCores())
-      display(
-        verbose,
-        paste("Reading results in parallel on", n_cluster, "clusters")
-      )
-      cl <- parallel::makeCluster(n_cluster)
-      result <- parallel::clusterApplyLB(
-        cl = cl,
-        x = files,
-        fun = get_result,
-        verbose = verbose,
-        ...
-      )
-      parallel::stopCluster(cl)
-    }
-
-    display(verbose, "Combining results")
-    result <- do.call(combine, result)
-
     return(result)
+  }
+)
+
+#' @rdname get_result
+#' @importFrom methods setMethod validObject new
+#' @importFrom assertthat assert_that is.string noNA
+#' @importFrom utils file_test
+setMethod(
+  f = "get_result",
+  signature = signature(x = "character", base = "s3_bucket"),
+  definition = function(x, base, ..., project, verbose = TRUE) {
+    # check arguments
+    assert_that(is.string(x), is.string(project), noNA(x), noNA(project))
+    target <- sprintf("%s/results/%s.rds", project, x)
+    result <- get_bucket(bucket = base, prefix = target, max = 1)
+    if (length(result) == 1) {
+      display(verbose = verbose, paste("  already extracted", x))
+      return(s3readRDS(result$Contents))
+    }
+    stopifnot(length(result) == 0)
+    display(verbose = verbose, paste("  extracting", x))
+    substring(x, 1, 4) |>
+      sprintf(fmt = "%2$s/%1$s", project) |>
+      get_bucket(bucket = base, max = Inf) -> available
+    available <- available[
+      map_chr(available, "Key") |>
+        grepl(pattern = x)
+    ]
+    stopifnot(
+      "object not found or multiple objects found" = length(available) == 1
+    )
+    get_result(
+      available[[1]], base = base, project = project, verbose = verbose, ...
+    )
   }
 )
