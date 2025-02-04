@@ -1,9 +1,4 @@
 test_that("get_result on n2kInla", {
-  expect_error(
-    get_result("junk"),
-    "'x' is neither an existing file, neither an existing directory"
-  )
-
   temp_dir <- tempfile("get_result_n2kInla")
   dir.create(temp_dir)
   this_result_datasource_id <- sha1(sample(letters))
@@ -43,7 +38,11 @@ test_that("get_result on n2kInla", {
 
   filename <- store_model(analysis, base = temp_dir, project = "get_result")
   expect_equal(
-    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
+    basename(filename) |>
+      get_result(
+        base = temp_dir, project = "get_result",
+        datasource_id = this_datasource, verbose = FALSE
+      ),
     result
   )
   fit_model(filename, verbose = FALSE)
@@ -55,7 +54,11 @@ test_that("get_result on n2kInla", {
   expect_identical(nrow(result@Contrast), 0L)
   expect_lt(0, nrow(result@Anomaly))
   expect_equal(
-    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
+    basename(filename) |>
+      get_result(
+        base = temp_dir, project = "get_result",
+        datasource_id = this_datasource, verbose = FALSE
+      ),
     result
   )
 
@@ -89,7 +92,11 @@ test_that("get_result on n2kInla", {
 
   filename <- store_model(analysis, base = temp_dir, project = "get_result")
   expect_equal(
-    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
+    basename(filename) |>
+      get_result(
+        base = temp_dir, project = "get_result",
+        datasource_id = this_datasource, verbose = FALSE
+      ),
     result2
   )
   fit_model(filename, verbose = FALSE)
@@ -103,7 +110,11 @@ test_that("get_result on n2kInla", {
   expect_lt(0, nrow(result2@ContrastEstimate))
   expect_lt(0, nrow(result2@Anomaly))
   expect_equal(
-    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
+    basename(filename) |>
+      get_result(
+        base = temp_dir, project = "get_result",
+        datasource_id = this_datasource, verbose = FALSE
+      ),
     result2
   )
 
@@ -131,7 +142,11 @@ test_that("get_result on n2kInla", {
   expect_identical(nrow(result3@Anomaly), 0L)
   filename <- store_model(analysis, base = temp_dir, project = "get_result")
   expect_equal(
-    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
+    basename(filename) |>
+      get_result(
+        base = temp_dir, project = "get_result",
+        datasource_id = this_datasource, verbose = FALSE
+      ),
     result3
   )
   fit_model(filename, verbose = FALSE)
@@ -146,7 +161,11 @@ test_that("get_result on n2kInla", {
   expect_lt(0, nrow(result3@ContrastEstimate))
   expect_lt(0, nrow(result3@Anomaly))
   expect_equal(
-    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
+    basename(filename) |>
+      get_result(
+        base = temp_dir, project = "get_result",
+        datasource_id = this_datasource, verbose = FALSE
+      ),
     result3
   )
 
@@ -192,7 +211,11 @@ test_that("get_result on n2kInla", {
   expect_identical(nrow(result4@Anomaly), 0L)
   filename <- store_model(analysis, base = temp_dir, project = "get_result")
   expect_equal(
-    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
+    basename(filename) |>
+      get_result(
+        base = temp_dir, project = "get_result",
+        datasource_id = this_datasource, verbose = FALSE
+      ),
     result4
   )
   fit_model(filename, verbose = FALSE)
@@ -206,7 +229,11 @@ test_that("get_result on n2kInla", {
   expect_lt(0, nrow(result4@ContrastEstimate))
   expect_lt(0, nrow(result4@Anomaly))
   expect_equal(
-    get_result(filename, datasource_id = this_datasource, verbose = FALSE),
+    basename(filename) |>
+      get_result(
+        base = temp_dir, project = "get_result",
+        datasource_id = this_datasource, verbose = FALSE
+      ),
     result4
   )
 
