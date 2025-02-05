@@ -41,8 +41,8 @@ test_that("read_manifest reads the manifest on a local file system", {
 
 test_that("read_manifest reads the manifest on an S3 bucket", {
   skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
-  bucket <- get_bucket(Sys.getenv("N2KBUCKET"))
   project <- "unittest_read_manifest"
+  bucket <- get_bucket(Sys.getenv("N2KBUCKET"), prefix = project, max = 1)
   object <- n2k_manifest(
     data.frame(
       fingerprint = "1", parent = NA_character_, stringsAsFactors = FALSE
@@ -60,7 +60,7 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
   )
   Sys.sleep(2)
   stored <- store_manifest(object2, bucket, project)
-  expect_equal(read_manifest(bucket, hash = stored$Contents$Key), object2)
+  expect_equal(read_manifest(bucket, hash = stored), object2)
   expect_equal(read_manifest(bucket, project, object2@Fingerprint), object2)
   latest <- read_manifest(bucket, project)
   expect_equal(latest, object2)

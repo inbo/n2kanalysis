@@ -29,18 +29,14 @@ setMethod(
     validObject(x, complete = TRUE)
 
     #create dir is it doesn't exist
-    dir <- file.path(base, project, "manifest") %>%
+    dir <- file.path(base, project, "manifest") |>
       normalizePath(winslash = "/", mustWork = FALSE)
-    if (!dir.exists(dir)) {
-      dir.create(dir, recursive = TRUE)
-    }
+    dir.create(dir, recursive = TRUE, showWarnings = FALSE)
 
     #test if file exists
     fingerprint <- get_file_fingerprint(x)
     filename <- list.files(
-        dir,
-        pattern = sprintf("%s.manifest$", fingerprint),
-        full.names = TRUE
+        dir, pattern = sprintf("%s.manifest$", fingerprint), full.names = TRUE
       )
     if (length(filename) > 0) {
       return(normalizePath(filename, winslash = "/"))
@@ -53,62 +49,23 @@ setMethod(
 
 #' @rdname store_manifest
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that is.string
-#' @importFrom aws.s3 bucket_exists get_bucket s3write_using
+#' @importFrom assertthat assert_that is.string noNA
 #' @importFrom utils write.table
 #' @include import_s3_classes.R
 setMethod(
   f = "store_manifest",
   signature = signature(base = "s3_bucket"),
   definition = function(x, base, project) {
-    assert_that(inherits(x, "n2kManifest"))
-    assert_that(is.string(project))
+    assert_that(inherits(x, "n2kManifest"), is.string(project), noNA(project))
     validObject(x, complete = TRUE)
 
     filename <- file.path(
-      project, "manifest", sprintf(
-        "%s.manifest",
-        get_file_fingerprint(x)
-      ), fsep = "/"
+      fsep = "/", project, "manifest",
+      sprintf("%s.manifest", get_file_fingerprint(x))
     )
-    # check if object with same fingerprint exists
-    existing <- get_bucket(base, prefix = filename)
-    if (length(existing) > 0) {
-      return(existing)
-    }
-
-    # create object if it doesn't exists
-    # try several times to write to S3 bucket
-    # avoids errors due to time out
-    i <- 1
-    repeat {
-      bucket_ok <- tryCatch(
-        s3write_using(
-          x@Manifest,
-          write.table,
-          row.names = FALSE,
-          sep = "\t",
-          bucket = base,
-          object = filename
-        ),
-        error = function(err) {
-          err
-        }
-      )
-      if (is.logical(bucket_ok)) {
-        break
-      }
-      if (i > 10) {
-        stop("Unable to write to S3 bucket")
-      }
-      message("attempt ", i, " to write to S3 bucket failed. Trying again...")
-      i <- i + 1
-      # waiting time between tries increases with the number of tries
-      Sys.sleep(i)
-    }
-    if (!bucket_ok) {
-      stop("Unable to write to S3 bucket")
-    }
-    get_bucket(base, prefix = filename)
+    write_s3_fun(
+      object = x@Manifest, bucket = base, key = filename, overwrite = FALSE,
+      row.names = FALSE, sep = "\t"
+    )
   }
 )

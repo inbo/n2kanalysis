@@ -60,8 +60,8 @@ test_that("it handles a manifest", {
     fit_model(manif, base = base, project = project, verbose = FALSE)
   )
   y <- store_manifest(manif, base, project)
-  expect_null(fit_model(y, base = base, project = project))
-  expect_null(fit_model(y))
+  expect_null(fit_model(y, base = base, project = project, verbose = FALSE))
+  expect_null(fit_model(y, verbose = FALSE))
   results <- get_result(
     x = manif, base = base, project = project, verbose = FALSE
   )
@@ -72,7 +72,9 @@ test_that("it handles a manifest", {
   )
   expect_true(all(status(results) == "converged"))
   expect_s4_class(
-    results <- get_result(x = manif, base = base, project = project),
+    results <- get_result(
+      x = manif, base = base, project = project, verbose = FALSE
+    ),
     "n2kResult"
   )
 
@@ -122,7 +124,9 @@ test_that("it handles a manifest", {
   expect_invisible(
     fit_model(manif, base = aws_base, project = project, verbose = FALSE)
   )
-  results <- get_result(x = manif, base = aws_base, project = project)
+  results <- get_result(
+    x = manif, base = aws_base, project = project, verbose = FALSE
+  )
   expect_s4_class(results, "n2kResult")
   expect_identical(
     sort(results@AnalysisMetadata$file_fingerprint),
@@ -131,9 +135,7 @@ test_that("it handles a manifest", {
   expect_true(all(status(results) == "converged"))
 
   y <- store_manifest(manif, base = aws_base, project = project)
-  expect_invisible(fit_model(y$Contents))
-
-  expect_null(fit_model(y$Contents$Key, base = aws_base, project = project))
+  expect_null(fit_model(y, base = aws_base, project = project, verbose = FALSE))
 
   available <- get_bucket(aws_base, prefix = project) |>
     sapply("[[", "Key")

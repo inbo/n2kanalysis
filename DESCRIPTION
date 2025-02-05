@@ -169,3 +169,4 @@ Collate:
     'store_model.R'
     'union.R'
     'valid_object.R'
+    'write_s3_fun.R'

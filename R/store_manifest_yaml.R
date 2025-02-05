@@ -17,52 +17,31 @@ setGeneric(
 #' @export
 #' @rdname store_manifest_yaml
 #' @importFrom methods setMethod new
-#' @importFrom assertthat assert_that is.string
-#' @importFrom dplyr %>%
+#' @importFrom assertthat assert_that is.string noNA
 #' @importFrom purrr map_chr
 #' @importFrom yaml write_yaml
 setMethod(
   f = "store_manifest_yaml",
   signature = signature(base = "s3_bucket"),
   definition = function(x, base, project, docker, dependencies) {
-    assert_that(is.string(docker))
-    assert_that(is.character(dependencies))
+    assert_that(
+      is.string(docker), is.character(dependencies), noNA(dependencies),
+      noNA(docker)
+    )
 
     stored <- store_manifest(x = x, base = base, project = project)
     list(
       github = dependencies, docker = docker, bucket = attr(base, "Name"),
       project = project,
-      hash = basename(stored$Contents$Key) |>
+      hash = basename(stored) |>
         gsub(pattern = "\\.manifest", replacement = "")
     ) -> yaml
     filename <- sprintf("%s/yaml/%s.yaml", project, sha1(yaml))
-    available <- get_bucket(base, prefix = filename, max = Inf)
-    if (length(available)) {
-      return(map_chr(available, "Key"))
-    }
 
-    # try several times to write to S3 bucket
-    # avoids errors due to time out
-    i <- 1
-    repeat {
-      bucket_ok <- tryCatch(
-        s3write_using(yaml, write_yaml, bucket = base, object = filename),
-        error = function(err) {
-          err
-        }
-      )
-      if (is.logical(bucket_ok)) {
-        break
-      }
-      stopifnot("Unable to write to S3 bucket" = i <= 10)
-      message("attempt ", i, " to write to S3 bucket failed. Trying again...")
-      i <- i + 1
-      # waiting time between tries increases with the number of tries
-      Sys.sleep(i)
-    }
-    stopifnot("Unable to write to S3 bucket" = bucket_ok)
-    get_bucket(base, prefix = filename, max = Inf) |>
-      map_chr("Key")
+    write_s3_fun(
+      object = yaml, bucket = base, key = filename, overwrite = FALSE,
+      fun = write_yaml
+    )
   }
 )
 
@@ -89,9 +68,7 @@ setMethod(
     if (file.exists(filename)) {
       return(filename)
     }
-    if (!dir.exists(dirname(filename))) {
-      dir.create(dirname(filename), recursive = TRUE)
-    }
+    dir.create(dirname(filename), recursive = TRUE, showWarnings = FALSE)
     write_yaml(yaml, filename)
     return(filename)
   }
