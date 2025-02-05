@@ -27,9 +27,7 @@ setMethod(
   f = "read_manifest",
   signature = signature(base = "character"),
   definition = function(base, project, hash) {
-    assert_that(is.string(base))
-    assert_that(file_test("-d", base))
-    assert_that(is.string(project))
+    assert_that(is.string(base), file_test("-d", base), is.string(project))
 
     #check dir if exists
     dir <- file.path(base, project, "manifest") %>%
@@ -40,48 +38,46 @@ setMethod(
     )
 
     available <- list.files(
-      dir,
-      pattern = "\\.manifest$",
-      full.names = TRUE,
-      ignore.case = TRUE
+      dir, pattern = "\\.manifest$", full.names = TRUE, ignore.case = TRUE
     )
-    if (length(available) == 0) {
-      stop("No manifest files in '", dir, "'")
-    }
+    assert_that(
+      length(available) > 0, msg = paste0("No manifest files in '", dir, "'")
+    )
 
     if (missing(hash)) {
-      manifest <- file.info(available) %>%
-        rownames_to_column("filename") %>%
-        arrange(desc(.data$mtime)) %>%
-        slice(1) %>%
-        "[["("filename") %>% #nolint
-        read.table(
-          header = TRUE,
-          sep = "\t",
-          colClasses = "character",
-          as.is = TRUE
-        ) %>%
-        n2k_manifest()
+      file.info(available) |>
+        rownames_to_column("filename") |>
+        slice_max(.data$mtime, n = 1) -> latest
+      read.table(
+        latest$filename, header = TRUE, sep = "\t", colClasses = "character",
+        as.is = TRUE
+      ) |>
+        n2k_manifest() -> manifest
+      stopifnot(
+        "fingerprint doesn't match" =
+          paste0(manifest@Fingerprint, ".manifest") == basename(latest$filename)
+      )
       return(manifest)
     }
 
     assert_that(is.string(hash))
 
     selection <- grep(sprintf("manifest/%s.*\\.manifest$", hash), available)
-    if (length(selection) == 0) {
-      stop("No manifest found starting with '", hash, "'")
-    }
-    if (length(selection) > 1) {
-      stop("Multiple manifests found starting with '", hash, "'")
-    }
-    available[selection] %>%
-      read.table(
-        header = TRUE,
-        sep = "\t",
-        colClasses = "character",
-        as.is = TRUE
-      ) %>%
-      n2k_manifest()
+    assert_that(
+      length(selection) > 0,
+      msg = paste0("No manifest found starting with '", hash, "'")
+    )
+    assert_that(
+      length(selection) == 1,
+      msg = paste0("Multiple manifests found starting with '", hash, "'")
+    )
+    read.table(
+      available[selection], header = TRUE, sep = "\t", colClasses = "character",
+      as.is = TRUE
+    ) |>
+      n2k_manifest() -> manifest
+    stopifnot("fingerprint doesn't match" = manifest@Fingerprint == hash)
+    return(manifest)
   }
 )
 
@@ -96,7 +92,6 @@ setMethod(
   f = "read_manifest",
   signature = signature(base = "s3_bucket"),
   definition = function(base, project, hash) {
-
     if (missing(hash)) {
       assert_that(is.string(project))
       available <- get_bucket(
@@ -104,24 +99,30 @@ setMethod(
       )
       stopifnot("No manifest files in this project" = length(available) > 0)
       map_chr(available, "LastModified") |>
-        as.POSIXct() |>
+        as.POSIXct(format = "%Y-%m-%dT%H:%M:%OS") |>
         which.max() -> latest
       s3read_using(
         read.table, header = TRUE, sep = "\t", colClasses = "character",
         as.is = TRUE, object = available[[latest]]
       ) |>
         n2k_manifest() -> manifest
+      stopifnot(
+        "fingerprint doesn't match" =
+          paste0(manifest@Fingerprint, ".manifest") ==
+          basename(available[[latest]][["Key"]])
+      )
       return(manifest)
     }
 
     assert_that(is.string(hash))
     if (missing(project)) {
-      available <- get_bucket(bucket = base, prefix = hash)
-    } else {
-      available <- get_bucket(
-        bucket = base, prefix = paste(project, "manifest", hash, sep = "/")
-      )
+      project <- gsub("(.*?)/manifest/.*", "\\1", hash)
+      gsub(".*?/manifest/(.*)", "\\1", hash) |>
+        gsub(pattern = "\\.manifest", replacement = "", x = _) -> hash
     }
+    available <- get_bucket(
+      bucket = base, prefix = paste(project, "manifest", hash, sep = "/")
+    )
     assert_that(
       length(available) > 0,
       msg = sprintf("No manifest found starting with '%s'", hash)
@@ -134,6 +135,8 @@ setMethod(
       read.table, header = TRUE, sep = "\t", colClasses = "character",
       as.is = TRUE, object = available[[1]]
     ) |>
-      n2k_manifest()
+      n2k_manifest() -> manifest
+    stopifnot("fingerprint doesn't match" = manifest@Fingerprint == hash)
+    return(manifest)
   }
 )

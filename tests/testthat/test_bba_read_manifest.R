@@ -14,8 +14,8 @@ test_that("read_manifest reads the manifest on a local file system", {
   expect_error(
     read_manifest(temp_dir, "read_manifest"), "No manifest files in"
   )
-  file.path(temp_dir, "read_manifest", "manifest") %>%
-    normalizePath(mustWork = FALSE) %>%
+  file.path(temp_dir, "read_manifest", "manifest") |>
+    normalizePath(mustWork = FALSE) |>
     dir.create(recursive = TRUE)
   expect_error(
     read_manifest(temp_dir, "read_manifest"), "No manifest files in"
@@ -34,8 +34,8 @@ test_that("read_manifest reads the manifest on a local file system", {
     read_manifest(temp_dir, "read_manifest", "junk"),
     "No manifest found starting with 'junk'"
   )
-  file.path(temp_dir, "read_manifest") %>%
-    list.files(recursive = TRUE, full.names = TRUE) %>%
+  file.path(temp_dir, "read_manifest") |>
+    list.files(recursive = TRUE, full.names = TRUE) |>
     file.remove()
 })
 
@@ -54,10 +54,7 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
     )
   )
   store_manifest(object, bucket, project)
-  expect_equal(
-    read_manifest(bucket, project, object@Fingerprint),
-    object
-  )
+  expect_equal(read_manifest(bucket, project, object@Fingerprint), object)
   Sys.sleep(2)
   stored <- store_manifest(object2, bucket, project)
   expect_equal(read_manifest(bucket, hash = stored), object2)
@@ -70,7 +67,7 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
     "No manifest found starting with 'junk'"
   )
 
-  available <- get_bucket(Sys.getenv("N2KBUCKET"), prefix = project) %>%
+  available <- get_bucket(Sys.getenv("N2KBUCKET"), prefix = project) |>
     sapply("[[", "Key")
   expect_true(all(sapply(available, delete_object, bucket = bucket)))
   expect_error(read_manifest(bucket, project), "No manifest files in")
