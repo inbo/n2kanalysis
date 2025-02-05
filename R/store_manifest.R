@@ -2,6 +2,7 @@
 #' @param x the `n2kManifest`
 #' @param base the base location to store the manifest
 #' @param project will be a relative path within the base location
+#' @inheritParams store_model
 #' @name store_manifest
 #' @rdname store_manifest
 #' @exportMethod store_manifest
@@ -9,7 +10,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "store_manifest",
-  def = function(x, base, project) {
+  def = function(x, base, project, overwrite = FALSE) {
     standardGeneric("store_manifest") # nocov
   }
 )
@@ -21,11 +22,11 @@ setGeneric(
 setMethod(
   f = "store_manifest",
   signature = signature(base = "character"),
-  definition = function(x, base, project) {
-    assert_that(inherits(x, "n2kManifest"))
-    assert_that(is.string(base))
-    assert_that(file_test("-d", base))
-    assert_that(is.string(project))
+  definition = function(x, base, project, overwrite = FALSE) {
+    assert_that(
+      inherits(x, "n2kManifest"), is.string(base), file_test("-d", base),
+      is.string(project), is.flag(overwrite), noNA(overwrite)
+    )
     validObject(x, complete = TRUE)
 
     #create dir is it doesn't exist
@@ -38,7 +39,7 @@ setMethod(
     filename <- list.files(
         dir, pattern = sprintf("%s.manifest$", fingerprint), full.names = TRUE
       )
-    if (length(filename) > 0) {
+    if (!overwrite && length(filename) > 0) {
       return(normalizePath(filename, winslash = "/"))
     }
     filename <- file.path(dir, sprintf("%s.manifest", fingerprint))
@@ -55,8 +56,11 @@ setMethod(
 setMethod(
   f = "store_manifest",
   signature = signature(base = "s3_bucket"),
-  definition = function(x, base, project) {
-    assert_that(inherits(x, "n2kManifest"), is.string(project), noNA(project))
+  definition = function(x, base, project, overwrite = FALSE) {
+    assert_that(
+      inherits(x, "n2kManifest"), is.string(project), noNA(project),
+      is.flag(overwrite), noNA(overwrite)
+    )
     validObject(x, complete = TRUE)
 
     filename <- file.path(
@@ -64,7 +68,7 @@ setMethod(
       sprintf("%s.manifest", get_file_fingerprint(x))
     )
     write_s3_fun(
-      object = x@Manifest, bucket = base, key = filename, overwrite = FALSE,
+      object = x@Manifest, bucket = base, key = filename, overwrite = overwrite,
       row.names = FALSE, sep = "\t"
     )
   }

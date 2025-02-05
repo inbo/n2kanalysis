@@ -1,5 +1,6 @@
 #' Store a Docker configuration
 #' @inheritParams store_manifest
+#' @inheritParams store_model
 #' @param docker the docker image to use
 #' @param dependencies extra GitHub packages to install
 #' @name store_manifest_yaml
@@ -9,7 +10,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "store_manifest_yaml",
-  def = function(x, base, project, docker, dependencies) {
+  def = function(x, base, project, docker, dependencies, overwrite = FALSE) {
     standardGeneric("store_manifest_yaml") # nocov
   }
 )
@@ -23,13 +24,17 @@ setGeneric(
 setMethod(
   f = "store_manifest_yaml",
   signature = signature(base = "s3_bucket"),
-  definition = function(x, base, project, docker, dependencies) {
+  definition = function(
+    x, base, project, docker, dependencies, overwrite = FALSE
+  ) {
     assert_that(
       is.string(docker), is.character(dependencies), noNA(dependencies),
-      noNA(docker)
+      noNA(docker), is.flag(overwrite), noNA(overwrite)
     )
 
-    stored <- store_manifest(x = x, base = base, project = project)
+    stored <- store_manifest(
+      x = x, base = base, project = project, overwrite = overwrite
+    )
     list(
       github = dependencies, docker = docker, bucket = attr(base, "Name"),
       project = project,
@@ -39,7 +44,7 @@ setMethod(
     filename <- sprintf("%s/yaml/%s.yaml", project, sha1(yaml))
 
     write_s3_fun(
-      object = yaml, bucket = base, key = filename, overwrite = FALSE,
+      object = yaml, bucket = base, key = filename, overwrite = overwrite,
       fun = write_yaml
     )
   }
@@ -54,10 +59,17 @@ setMethod(
 setMethod(
   f = "store_manifest_yaml",
   signature = signature(base = "character"),
-  definition = function(x, base, project, docker, dependencies) {
-    assert_that(is.dir(base), is.string(docker), is.character(dependencies))
+  definition = function(
+    x, base, project, docker, dependencies, overwrite = FALSE
+  ) {
+    assert_that(
+      is.dir(base), is.string(docker), is.character(dependencies),
+      is.flag(overwrite), noNA(overwrite)
+    )
 
-    stored <- store_manifest(x = x, base = base, project = project)
+    stored <- store_manifest(
+      x = x, base = base, project = project, overwrite = overwrite
+    )
     list(
       github = dependencies, docker = docker, bucket = base, project = project,
       hash = basename(stored) |>
@@ -65,7 +77,7 @@ setMethod(
     ) -> yaml
     sprintf("%s/%s/yaml/%s.yaml", base, project, sha1(yaml)) |>
       normalizePath(winslash = "/", mustWork = FALSE) -> filename
-    if (file.exists(filename)) {
+    if (!overwrite && file.exists(filename)) {
       return(filename)
     }
     dir.create(dirname(filename), recursive = TRUE, showWarnings = FALSE)

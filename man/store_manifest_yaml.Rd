@@ -7,11 +7,11 @@
 \alias{store_manifest_yaml,ANY,character-method}
 \title{Store a Docker configuration}
 \usage{
-store_manifest_yaml(x, base, project, docker, dependencies)
+store_manifest_yaml(x, base, project, docker, dependencies, overwrite = FALSE)
 
-\S4method{store_manifest_yaml}{ANY,s3_bucket}(x, base, project, docker, dependencies)
+\S4method{store_manifest_yaml}{ANY,s3_bucket}(x, base, project, docker, dependencies, overwrite = FALSE)
 
-\S4method{store_manifest_yaml}{ANY,character}(x, base, project, docker, dependencies)
+\S4method{store_manifest_yaml}{ANY,character}(x, base, project, docker, dependencies, overwrite = FALSE)
 }
 \arguments{
 \item{x}{the \code{n2kManifest}}
@@ -23,6 +23,9 @@ store_manifest_yaml(x, base, project, docker, dependencies)
 \item{docker}{the docker image to use}
 
 \item{dependencies}{extra GitHub packages to install}
+
+\item{overwrite}{Should an existing object be overwritten?
+Defaults to \code{TRUE}.}
 }
 \description{
 Store a Docker configuration
