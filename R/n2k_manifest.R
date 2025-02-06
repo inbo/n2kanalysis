@@ -35,12 +35,11 @@ setMethod(
       noNA(manifest$fingerprint)
     )
 
-    if (inherits(manifest, "tbl")) {
-      manifest <- as.data.frame(manifest)
-    }
     manifest |>
+      as.data.frame() |>
       distinct(.data$fingerprint, .data$parent) |>
-      arrange(.data$fingerprint, .data$parent) -> manifest
-    new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest))
+      arrange(.data$fingerprint, .data$parent) -> manif
+    attributes(manif) <- attributes(manif)[c("names", "row.names", "class")]
+    new("n2kManifest", Manifest = manif, Fingerprint = sha1(manif))
   }
 )
