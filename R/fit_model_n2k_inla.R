@@ -114,7 +114,9 @@ direct_fit <- function(control, data, lc, timeout = NULL) {
 #' @importFrom assertthat assert_that is.number
 indirect_fit <- function(control, data, lc, response, timeout = NULL) {
   # first fit model without missing data
+  compute <- control$control.compute
   control$data <- data[!is.na(data[[response]]), ]
+  control$control.compute <- NULL
   m0 <- try({
     if (!is.null(timeout)) {
       assert_that(is.number(timeout), timeout > 0)
@@ -142,6 +144,7 @@ indirect_fit <- function(control, data, lc, response, timeout = NULL) {
   control$data <- data
   control$lincomb <- lc
   control$control.update <- list(result = m0)
+  control$control.compute <- compute
   try({
     if (!is.null(timeout)) {
       assert_that(is.number(timeout), timeout > 0)
