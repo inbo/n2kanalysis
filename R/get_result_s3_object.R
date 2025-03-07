@@ -14,7 +14,7 @@ setMethod(
       i <- 1
       repeat {
         bucket_ok <- tryCatch(
-          s3saveRDS(x, bucket = base, object = target, multipart = TRUE),
+          s3saveRDS(result, bucket = base, object = target, multipart = TRUE),
           error = function(err) {
             err
           }

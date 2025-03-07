@@ -9,7 +9,8 @@
 \alias{get_result,character,s3_bucket-method}
 \alias{get_result,n2kInla,ANY-method}
 \alias{get_result,n2kModel,ANY-method}
-\alias{get_result,n2kManifest,ANY-method}
+\alias{get_result,n2kManifest,character-method}
+\alias{get_result,n2kManifest,s3_bucket-method}
 \alias{get_result,s3_object,ANY-method}
 \title{Add the results from an analysis}
 \usage{
@@ -23,7 +24,9 @@ get_result(x, base, ...)
 
 \S4method{get_result}{n2kModel,ANY}(x, verbose = TRUE, ...)
 
-\S4method{get_result}{n2kManifest,ANY}(x, base, ..., verbose = TRUE)
+\S4method{get_result}{n2kManifest,character}(x, base, ..., verbose = TRUE)
+
+\S4method{get_result}{n2kManifest,s3_bucket}(x, base, project, ..., verbose = TRUE)
 
 \S4method{get_result}{s3_object,ANY}(x, base, ..., project, verbose = TRUE)
 }
