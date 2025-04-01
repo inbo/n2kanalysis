@@ -69,10 +69,14 @@ setValidity(
     antijoin_anomaly <- object@Anomaly %>%
       anti_join(object@ParameterEstimate, by = c("analysis", "parameter")) %>%
       nrow()
-    assert_that(
-      antijoin_anomaly == 0, msg =
-"Mismatch on Analysis and Parameter between Anomaly and ParameterEstimate slot"
-    )
+    list(antijoin_anomaly == 0) |>
+      setNames(
+        paste(
+          "Mismatch on `Analysis` and `Parameter` between `Anomaly` and",
+          "`ParameterEstimate` slot"
+        )
+      ) |>
+      do.call(what = stopifnot)
 
     anomalytype_duplicate <- object@AnomalyType %>%
       select("fingerprint") %>%

@@ -108,11 +108,14 @@ setMethod(
       }
       dots$parent_statusfingerprint <- sha1(dots$parent_status)
     } else {
-      if (is.null(dots[["parent_status"]])) {
-        stop(
-"'parent_status' is required when 'parent_statusfingerprint' is provided"
-        )
-      }
+      list(!is.null(dots[["parent_status"]])) |>
+        setNames(
+          paste(
+            "'parent_status' is required when 'parent_statusfingerprint' is",
+            "provided"
+          )
+        ) |>
+        do.call(what = stopifnot)
     }
     analysis_relation <- data.frame(
       analysis = file_fingerprint,

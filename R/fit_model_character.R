@@ -51,7 +51,7 @@ setMethod(
     dots <- list(...)
     if (
       !has_name(dots, "local") || is.null(dots$local) ||
-      !inherits(base, "s3_bucket")
+        !inherits(base, "s3_bucket")
     ) {
       analysis <- read_model(hash, base = base, project = project)
       display(verbose, paste(status(analysis), "-> "), FALSE)

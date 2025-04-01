@@ -279,7 +279,8 @@ test_that("fit_model() works on n2kInlaComposite", {
         transmute(
           .data$value,
           estimate = .data$mean,
-          variance = .data$sd ^ 2)
+          variance = .data$sd ^ 2
+        )
     }
   )
 

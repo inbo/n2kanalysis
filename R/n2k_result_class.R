@@ -17,45 +17,63 @@ setClass(
 setValidity(
   "n2kResult",
   function(object) {
-    if (!all(
+    all(
       object@AnalysisMetadata$analysis_version %in%
         object@AnalysisVersion$fingerprint
-    )) {
-      stop(
-"Some analysis_version in 'AnalysisMetadata' slot are not present in
-'AnalysisVersion' slot"
-      )
-    }
-    if (!all(
-object@ParameterEstimate$analysis %in% object@AnalysisMetadata$file_fingerprint
-    )) {
-      stop(
-"Some Analysis in 'ParameterEstimate' slot are not present in 'AnalysisMetadata'
-slot"
-      )
-    }
-    if (!all(
+    ) |>
+      list() |>
+      setNames(
+        paste(
+          "Some analysis_version in 'AnalysisMetadata' slot are not present in",
+          "'AnalysisVersion' slot"
+        )
+      ) |>
+      do.call(what = stopifnot)
+    all(
+      object@ParameterEstimate$analysis %in%
+        object@AnalysisMetadata$file_fingerprint
+    ) |>
+      list() |>
+      setNames(
+        paste(
+          "Some Analysis in 'ParameterEstimate' slot are not present in",
+          "'AnalysisMetadata' slot"
+        )
+      ) |>
+      do.call(what = stopifnot)
+    all(
       object@Anomaly$analysis %in% object@AnalysisMetadata$file_fingerprint
-    )) {
-      stop(
-"Some Analysis in 'Anomaly' slot are not present in 'AnalysisMetadata' slot"
-      )
-    }
-    if (!all(
+    ) |>
+      list() |>
+      setNames(
+        paste(
+          "Some Analysis in 'Anomaly' slot are not present in",
+          "'AnalysisMetadata' slot"
+        )
+      ) |>
+      do.call(what = stopifnot)
+    all(
       object@ContrastCoefficient$parameter %in% object@Parameter$fingerprint
-    )) {
-      stop(
-"Some Parameter in 'ContrastCoefficient' slot are not present in 'Parameter'
-slot"
-      )
-    }
-    if (!all(
+    ) |>
+      list() |>
+      setNames(
+        paste(
+          "Some Parameter in 'ContrastCoefficient' slot are not present in",
+          "'Parameter' slot"
+        )
+      ) |>
+      do.call(what = stopifnot)
+    all(
       object@Contrast$analysis %in% object@AnalysisMetadata$file_fingerprint
-    )) {
-      stop(
-"Some Analysis in 'Contrast' slot are not present in 'AnalysisMetadata' slot"
-      )
-    }
+    ) |>
+      list() |>
+      setNames(
+        paste(
+          "Some Analysis in 'Contrast' slot are not present in",
+          "'AnalysisMetadata' slot"
+        )
+      ) |>
+      do.call(what = stopifnot)
     return(TRUE)
   }
 )

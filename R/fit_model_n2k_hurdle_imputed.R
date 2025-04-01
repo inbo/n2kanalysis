@@ -9,7 +9,7 @@ setMethod(
   signature = signature(x = "n2kHurdleImputed"),
   definition = function(
     x, base, project, status = c("new", "waiting"), ...
-) {
+  ) {
     validObject(x)
     assert_that(is.character(status), length(status) >= 1)
 

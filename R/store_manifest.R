@@ -37,8 +37,8 @@ setMethod(
     #test if file exists
     fingerprint <- get_file_fingerprint(x)
     filename <- list.files(
-        dir, pattern = sprintf("%s.manifest$", fingerprint), full.names = TRUE
-      )
+      dir, pattern = sprintf("%s.manifest$", fingerprint), full.names = TRUE
+    )
     if (!overwrite && length(filename) > 0) {
       return(normalizePath(filename, winslash = "/"))
     }

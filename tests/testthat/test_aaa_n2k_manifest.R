@@ -46,45 +46,47 @@ test_that("n2k_manifest checks the fingerprint", {
 })
 
 test_that(
-  "n2k_manifest checks the correct link between parent and fingerprint", {
-  manifest <- data.frame(
-    fingerprint = "1", parent = "2", stringsAsFactors = FALSE
-  )
-  expect_error(
-    new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
-    "All rows have parents"
-  )
-  manifest <- data.frame(
-    fingerprint = c("1", "2"), parent = c(NA, "3"), stringsAsFactors = FALSE
-  )
-  expect_error(
-    new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
-    "Some parent in 'Manifest' slot have no matching fingerprint"
-  )
-  manifest <- data.frame(
-    fingerprint = c("1", "2"), parent = c(NA, "2"), stringsAsFactors = FALSE
-  )
-  expect_error(
-    new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
-    "Self references between parent and fingerprint"
-  )
-  manifest <- data.frame(
-    fingerprint = c("1", "2", "3"), parent = c(NA, "3", "2"),
-    stringsAsFactors = FALSE
-  )
-  expect_error(
-    new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
-    "Too many parent - child levels"
-  )
-  manifest <- data.frame(
-    fingerprint = as.character(seq(1, 20)), parent = as.character(c(NA, 1:19)),
-    stringsAsFactors = FALSE
-  )
-  expect_error(
-    new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
-    "Too many parent - child levels"
-  )
-})
+  "n2k_manifest checks the correct link between parent and fingerprint",
+  {
+    manifest <- data.frame(
+      fingerprint = "1", parent = "2", stringsAsFactors = FALSE
+    )
+    expect_error(
+      new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
+      "All rows have parents"
+    )
+    manifest <- data.frame(
+      fingerprint = c("1", "2"), parent = c(NA, "3"), stringsAsFactors = FALSE
+    )
+    expect_error(
+      new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
+      "Some parent in 'Manifest' slot have no matching fingerprint"
+    )
+    manifest <- data.frame(
+      fingerprint = c("1", "2"), parent = c(NA, "2"), stringsAsFactors = FALSE
+    )
+    expect_error(
+      new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
+      "Self references between parent and fingerprint"
+    )
+    manifest <- data.frame(
+      fingerprint = c("1", "2", "3"), parent = c(NA, "3", "2"),
+      stringsAsFactors = FALSE
+    )
+    expect_error(
+      new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
+      "Too many parent - child levels"
+    )
+    manifest <- data.frame(
+      fingerprint = as.character(seq(1, 20)),
+      parent = as.character(c(NA, 1:19)), stringsAsFactors = FALSE
+    )
+    expect_error(
+      new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
+      "Too many parent - child levels"
+    )
+  }
+)
 
 test_that("n2kManifest generates the object", {
   manifest <- data.frame(

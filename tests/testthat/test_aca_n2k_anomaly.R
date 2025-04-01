@@ -36,9 +36,9 @@ test_that("n2kAnomaly", {
       )
     )
   parameter <- expand.grid(
-      description = seq_len(10), parent = parameter$description,
-      stringsAsFactors = FALSE
-    ) %>%
+    description = seq_len(10), parent = parameter$description,
+    stringsAsFactors = FALSE
+  ) %>%
     mutate(
       description = ifelse(
         grepl("letters", .data$parent), LETTERS[.data$description],
@@ -133,7 +133,10 @@ test_that("n2kAnomaly", {
       "n2kAnomaly", Parameter = parameter, AnomalyType = anomalytype,
       Anomaly = anomaly
     ),
-"Mismatch on Analysis and Parameter between Anomaly and ParameterEstimate slot"
+    paste(
+      "Mismatch on `Analysis` and `Parameter` between `Anomaly` and",
+      "`ParameterEstimate` slot"
+    )
   )
   expect_error(
     new(

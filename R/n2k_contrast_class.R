@@ -60,7 +60,7 @@ setValidity(
     }
     if (!all(
       na.omit(object@ContrastEstimate$contrast) %in%
-      object@Contrast$fingerprint
+        object@Contrast$fingerprint
     )) {
       stop("Some contrast in 'ConstrastEstimate' slot not found")
     }

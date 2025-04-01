@@ -23,16 +23,14 @@ setValidity(
     if (nrow(object@AnalysisMetadata) != 1) {
       stop("The 'AnalysisMetadata' slot must contain exactly one row")
     }
-    if (nrow(object@AnalysisRelation) > 0) {
-      if (any(
-        object@AnalysisRelation$analysis !=
-          object@AnalysisMetadata$file_fingerprint
-      )) {
-        stop(
-        "Some Analysis in 'AnalysisRelation' slot don't match file_fingerprint"
+    stopifnot(
+      "Some Analysis in 'AnalysisRelation' slot don't match file_fingerprint" =
+        nrow(object@AnalysisRelation) == 0 ||
+        all(
+          object@AnalysisRelation$analysis ==
+            object@AnalysisMetadata$file_fingerprint
         )
-      }
-    }
+    )
     return(TRUE)
   }
 )

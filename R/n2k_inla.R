@@ -88,7 +88,7 @@ setMethod(
     assert_that(is.time(analysis_date))
     assert_that(
       is.null(lin_comb) || inherits(lin_comb, "list") ||
-      (inherits(lin_comb, "matrix") && length(dim(lin_comb) == 2)),
+        (inherits(lin_comb, "matrix") && length(dim(lin_comb) == 2)),
       msg = "lin_comb must be either a list or a matrix"
     )
     assert_that(is.list(replicate_name))

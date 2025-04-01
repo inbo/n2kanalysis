@@ -46,23 +46,27 @@ setValidity(
       name = "AnalysisVersionRPackage"
     )
 
-    if (!all(
+    list(all(
       object@AnalysisVersionRPackage$analysis_version %in%
         object@AnalysisVersion$fingerprint
-    )) {
-      stop(
-"Some AnalysisVersion in 'AnalysisVersionRPackage' slot are not present in
-'AnalysisVersion' slot"
-      )
-    }
-    if (!all(
+    )) |>
+      setNames(
+        paste(
+          "Some AnalysisVersion in 'AnalysisVersionRPackage' slot are not",
+          "present in 'AnalysisVersion' slot"
+        )
+      ) |>
+      do.call(what = stopifnot)
+    list(all(
       object@AnalysisVersionRPackage$r_package %in% object@RPackage$fingerprint
-    )) {
-      stop(
-"Some r_package in 'AnalysisVersionRPackage' slot are not present in
-'RPackage' slot"
-      )
-    }
+    )) |>
+      setNames(
+        paste(
+          "Some r_package in 'AnalysisVersionRPackage' slot are not present in",
+          "'RPackage' slot"
+        )
+      ) |>
+      do.call(what = stopifnot)
     if (anyDuplicated(object@AnalysisVersionRPackage)) {
       stop("Duplicated rows in 'AnalysisVersionRPackage' slot")
     }

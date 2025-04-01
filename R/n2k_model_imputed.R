@@ -106,10 +106,14 @@ setMethod(
       dots$parent_status <- coalesce(dots$parent_status, "waiting")
       dots$parent_statusfingerprint <- sha1(dots$parent_status)
     }
-    stopifnot(
-"'parent_status' is required when 'parent_statusfingerprint' is provided" =
-!is.null(dots[["parent_status"]])
-    )
+    list(!is.null(dots[["parent_status"]])) |>
+      setNames(
+        paste(
+          "'parent_status' is required when 'parent_statusfingerprint' is",
+          "provided"
+        )
+      ) |>
+      do.call(what = stopifnot)
     analysis_relation <- data.frame(
       analysis = file_fingerprint, parent_analysis = dots$parent,
       parentstatus_fingerprint = dots$parent_statusfingerprint,

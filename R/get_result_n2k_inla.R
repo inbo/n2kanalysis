@@ -155,18 +155,18 @@ setMethod(
             random_id <- anomaly@Parameter %>%
               semi_join(
                 anomaly@Parameter %>%
-                semi_join(
-                  anomaly@Parameter %>%
-                    semi_join(
-                      data.frame(
-                        description = "Random effect BLUP",
-                        stringsAsFactors = FALSE
-                      ),
-                      by = "description"
-                    ) %>%
-                    mutate(description = y),
-                  by = c("parent" = "fingerprint", "description")
-                ),
+                  semi_join(
+                    anomaly@Parameter %>%
+                      semi_join(
+                        data.frame(
+                          description = "Random effect BLUP",
+                          stringsAsFactors = FALSE
+                        ),
+                        by = "description"
+                      ) %>%
+                      mutate(description = y),
+                    by = c("parent" = "fingerprint", "description")
+                  ),
                 by = c("parent" = "fingerprint")
               ) %>%
               select(-"parent", parameter = "fingerprint")

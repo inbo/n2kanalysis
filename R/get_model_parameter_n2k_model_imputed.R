@@ -21,8 +21,10 @@ setMethod(
       parent = parent$fingerprint,
       stringsAsFactors = FALSE
     ) %>%
-      mutate(fingerprint = map2_chr(
-        .data$parent, .data$description, ~sha1(c(.x, .y)))
+      mutate(
+        fingerprint = map2_chr(
+          .data$parent, .data$description, ~sha1(c(.x, .y))
+        )
       )
     new(
       "n2kParameter",
@@ -30,8 +32,7 @@ setMethod(
       ParameterEstimate = parameter %>%
         inner_join(
           analysis@Results %>%
-            mutate(
-              Parameter = as.character(.data$Parameter)),
+            mutate(Parameter = as.character(.data$Parameter)),
           by = c("description" = "Parameter")
         ) %>%
         transmute(

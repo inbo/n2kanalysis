@@ -304,23 +304,25 @@ test_that("n2k_inla() checks that last_imported_year is from the past", {
 })
 test_that(
   "n2k_inla() checks that last_imported_year is not earlier than
-  first_imported_year ", {
-  expect_that(
-    n2k_inla(
-      data = dataset,
-      result_datasource_id = this_result_datasource_id,
-      species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
-      formula = this_formula,
-      first_imported_year = 2000,
-      last_imported_year = 1999,
-      analysis_date = this_analysis_date,
-      scheme_id = this_scheme_id
-    ),
-    throws_error("first_imported_year cannot exceed last_imported_year")
-  )
-})
+  first_imported_year",
+  {
+    expect_that(
+      n2k_inla(
+        data = dataset,
+        result_datasource_id = this_result_datasource_id,
+        species_group_id = this_species_group_id,
+        location_group_id = this_location_group_id,
+        model_type = this_model_type,
+        formula = this_formula,
+        first_imported_year = 2000,
+        last_imported_year = 1999,
+        analysis_date = this_analysis_date,
+        scheme_id = this_scheme_id
+      ),
+      throws_error("first_imported_year cannot exceed last_imported_year")
+    )
+  }
+)
 
 test_that("n2k_inla() sets the correct duration", {
   expect_that(
@@ -391,45 +393,47 @@ test_that("n2k_inla() converts numeric duration, when possible", {
   )
 })
 test_that(
-"n2k_inla() checks that duration is not outside the FirstImportYear -
-last_imported_year ranges", {
-  expect_that(
-    n2k_inla(
-      data = dataset,
-      result_datasource_id = this_result_datasource_id,
-      species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
-      formula = this_formula,
-      first_imported_year = 1999,
-      last_imported_year = 1999,
-      duration = 2,
-      analysis_date = this_analysis_date,
-      scheme_id = this_scheme_id
-    ),
-    throws_error(
-      "duration longer than the interval from first_imported_year to"
+  "n2k_inla() checks that duration is not outside the FirstImportYear -
+  last_imported_year ranges",
+  {
+    expect_that(
+      n2k_inla(
+        data = dataset,
+        result_datasource_id = this_result_datasource_id,
+        species_group_id = this_species_group_id,
+        location_group_id = this_location_group_id,
+        model_type = this_model_type,
+        formula = this_formula,
+        first_imported_year = 1999,
+        last_imported_year = 1999,
+        duration = 2,
+        analysis_date = this_analysis_date,
+        scheme_id = this_scheme_id
+      ),
+      throws_error(
+        "duration longer than the interval from first_imported_year to"
+      )
     )
-  )
-  expect_that(
-    n2k_inla(
-      data = dataset,
-      result_datasource_id = this_result_datasource_id,
-      species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
-      formula = this_formula,
-      first_imported_year = 1999,
-      last_imported_year = 1999,
-      duration = 0,
-      analysis_date = this_analysis_date,
-      scheme_id = this_scheme_id
-    ),
-    throws_error(
-      "duration is not a count \\(a single positive integer\\)"
+    expect_that(
+      n2k_inla(
+        data = dataset,
+        result_datasource_id = this_result_datasource_id,
+        species_group_id = this_species_group_id,
+        location_group_id = this_location_group_id,
+        model_type = this_model_type,
+        formula = this_formula,
+        first_imported_year = 1999,
+        last_imported_year = 1999,
+        duration = 0,
+        analysis_date = this_analysis_date,
+        scheme_id = this_scheme_id
+      ),
+      throws_error(
+        "duration is not a count \\(a single positive integer\\)"
+      )
     )
-  )
-})
+  }
+)
 
 test_that("sets the correct last_analysed_year", {
   expect_that(
@@ -536,7 +540,7 @@ test_that("n2k_inla() checks that last_analysed_year is within the range", {
       analysis_date = this_analysis_date,
       scheme_id = this_scheme_id
     ),
-    throws_error("last_analysed_year smaller than first_imported_year")
+    throws_error("`last_analysed_year` smaller than `first_imported_year")
   )
 })
 
@@ -558,68 +562,70 @@ test_that("n2k_inla() checks if analysis date is from the past", {
   )
 })
 test_that(
-  "n2k_inla() checks if all variable in formula are available in the data", {
-  expect_that(
-    n2k_inla(
-      data = dataset[, c("A", "B", "C", "D", "E", "G")],
-      result_datasource_id = this_result_datasource_id,
-      species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
-      formula = this_formula,
-      first_imported_year = this_first_imported_year,
-      last_imported_year = this_last_imported_year,
-      analysis_date = this_analysis_date,
-      scheme_id = this_scheme_id
-    ),
-    throws_error("Missing variable `Count` in Data slot")
-  )
-  expect_that(
-    n2k_inla(
-      data = dataset[, c("Count", "B", "C", "D", "E", "G")],
-      result_datasource_id = this_result_datasource_id,
-      species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
-      formula = this_formula,
-      first_imported_year = this_first_imported_year,
-      last_imported_year = this_last_imported_year,
-      analysis_date = this_analysis_date,
-      scheme_id = this_scheme_id
-    ),
-    throws_error("Missing variable `A` in Data slot")
-  )
-  expect_that(
-    n2k_inla(
-      data = dataset[, c("Count", "A", "B", "C", "D", "E")],
-      result_datasource_id = this_result_datasource_id,
-      species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
-      formula = this_formula,
-      first_imported_year = this_first_imported_year,
-      last_imported_year = this_last_imported_year,
-      analysis_date = this_analysis_date,
-      scheme_id = this_scheme_id
-    ),
-    throws_error("Missing variable `G` in Data slot")
-  )
-  expect_that(
-    n2k_inla(
-      data = dataset[, c("A", "B", "C", "Count", "E", "G")],
-      result_datasource_id = this_result_datasource_id,
-      species_group_id = this_species_group_id,
-      location_group_id = this_location_group_id,
-      model_type = this_model_type,
-      formula = this_formula,
-      first_imported_year = this_first_imported_year,
-      last_imported_year = this_last_imported_year,
-      analysis_date = this_analysis_date,
-      scheme_id = this_scheme_id
-    ),
-    throws_error("Missing variable `D` in Data slot")
-  )
-})
+  "n2k_inla() checks if all variable in formula are available in the data",
+  {
+    expect_that(
+      n2k_inla(
+        data = dataset[, c("A", "B", "C", "D", "E", "G")],
+        result_datasource_id = this_result_datasource_id,
+        species_group_id = this_species_group_id,
+        location_group_id = this_location_group_id,
+        model_type = this_model_type,
+        formula = this_formula,
+        first_imported_year = this_first_imported_year,
+        last_imported_year = this_last_imported_year,
+        analysis_date = this_analysis_date,
+        scheme_id = this_scheme_id
+      ),
+      throws_error("Missing variable `Count` in Data slot")
+    )
+    expect_that(
+      n2k_inla(
+        data = dataset[, c("Count", "B", "C", "D", "E", "G")],
+        result_datasource_id = this_result_datasource_id,
+        species_group_id = this_species_group_id,
+        location_group_id = this_location_group_id,
+        model_type = this_model_type,
+        formula = this_formula,
+        first_imported_year = this_first_imported_year,
+        last_imported_year = this_last_imported_year,
+        analysis_date = this_analysis_date,
+        scheme_id = this_scheme_id
+      ),
+      throws_error("Missing variable `A` in Data slot")
+    )
+    expect_that(
+      n2k_inla(
+        data = dataset[, c("Count", "A", "B", "C", "D", "E")],
+        result_datasource_id = this_result_datasource_id,
+        species_group_id = this_species_group_id,
+        location_group_id = this_location_group_id,
+        model_type = this_model_type,
+        formula = this_formula,
+        first_imported_year = this_first_imported_year,
+        last_imported_year = this_last_imported_year,
+        analysis_date = this_analysis_date,
+        scheme_id = this_scheme_id
+      ),
+      throws_error("Missing variable `G` in Data slot")
+    )
+    expect_that(
+      n2k_inla(
+        data = dataset[, c("A", "B", "C", "Count", "E", "G")],
+        result_datasource_id = this_result_datasource_id,
+        species_group_id = this_species_group_id,
+        location_group_id = this_location_group_id,
+        model_type = this_model_type,
+        formula = this_formula,
+        first_imported_year = this_first_imported_year,
+        last_imported_year = this_last_imported_year,
+        analysis_date = this_analysis_date,
+        scheme_id = this_scheme_id
+      ),
+      throws_error("Missing variable `D` in Data slot")
+    )
+  }
+)
 
 object_model <- n2k_inla(
   data = object, model_fit = model_object, status = "converged"
