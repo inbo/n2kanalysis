@@ -15,7 +15,8 @@ setMethod(
     }
 
     parameter <- data.frame(
-      description = "AggregatedImputed", parent = NA_character_,
+      description = "AggregatedImputed",
+      parent = NA_character_,
       fingerprint = sha1(c("AggregatedImputed", NA_character_)),
       stringsAsFactors = FALSE
     )
@@ -33,8 +34,9 @@ setMethod(
         mutate(
           description = i,
           fingerprint = map2_chr(
-            .data$description, .data$parent,
-            ~sha1(c(description = .x, parent = .y))
+            .data$description,
+            .data$parent,
+            ~ sha1(c(description = .x, parent = .y))
           )
         )
       observations <- observations %>%
@@ -50,8 +52,9 @@ setMethod(
         distinct() %>%
         mutate(
           fingerprint = map2_chr(
-            .data$description, .data$parent,
-            ~sha1(c(description = .x, parent = .y))
+            .data$description,
+            .data$parent,
+            ~ sha1(c(description = .x, parent = .y))
           )
         )
       link <- c("parent", "description")
@@ -69,7 +72,9 @@ setMethod(
         t() %>%
         as.data.frame() %>%
         select(
-          estimate = 1, lower_confidence_limit = 2, upper_confidence_limit = 3
+          estimate = 1,
+          lower_confidence_limit = 2,
+          upper_confidence_limit = 3
         ) %>%
         mutate(
           analysis = get_file_fingerprint(analysis),

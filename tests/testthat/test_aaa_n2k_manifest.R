@@ -15,7 +15,9 @@ test_that("n2k_manifest checks the content of Manifest", {
     new(
       "n2kManifest",
       Manifest = data.frame(
-        fingerprint = 1, parent = "1", stringsAsFactors = FALSE
+        fingerprint = 1,
+        parent = "1",
+        stringsAsFactors = FALSE
       )
     ),
     "fingerprint: got 'numeric'"
@@ -28,7 +30,9 @@ test_that("n2k_manifest checks the content of Manifest", {
 
 test_that("n2k_manifest checks the fingerprint", {
   manifest <- data.frame(
-    fingerprint = "1", parent = NA_character_, stringsAsFactors = FALSE
+    fingerprint = "1",
+    parent = NA_character_,
+    stringsAsFactors = FALSE
   )
   expect_error(new("n2kManifest", Manifest = manifest), "wrong fingerprint")
   expect_error(
@@ -46,31 +50,38 @@ test_that("n2k_manifest checks the fingerprint", {
 })
 
 test_that(
-  "n2k_manifest checks the correct link between parent and fingerprint",
+  paste("n2k_manifest checks the correct link between parent and fingerprint"),
   {
     manifest <- data.frame(
-      fingerprint = "1", parent = "2", stringsAsFactors = FALSE
+      fingerprint = "1",
+      parent = "2",
+      stringsAsFactors = FALSE
     )
     expect_error(
       new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
       "All rows have parents"
     )
     manifest <- data.frame(
-      fingerprint = c("1", "2"), parent = c(NA, "3"), stringsAsFactors = FALSE
+      fingerprint = c("1", "2"),
+      parent = c(NA, "3"),
+      stringsAsFactors = FALSE
     )
     expect_error(
       new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
       "Some parent in 'Manifest' slot have no matching fingerprint"
     )
     manifest <- data.frame(
-      fingerprint = c("1", "2"), parent = c(NA, "2"), stringsAsFactors = FALSE
+      fingerprint = c("1", "2"),
+      parent = c(NA, "2"),
+      stringsAsFactors = FALSE
     )
     expect_error(
       new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
       "Self references between parent and fingerprint"
     )
     manifest <- data.frame(
-      fingerprint = c("1", "2", "3"), parent = c(NA, "3", "2"),
+      fingerprint = c("1", "2", "3"),
+      parent = c(NA, "3", "2"),
       stringsAsFactors = FALSE
     )
     expect_error(
@@ -79,7 +90,8 @@ test_that(
     )
     manifest <- data.frame(
       fingerprint = as.character(seq(1, 20)),
-      parent = as.character(c(NA, 1:19)), stringsAsFactors = FALSE
+      parent = as.character(c(NA, 1:19)),
+      stringsAsFactors = FALSE
     )
     expect_error(
       new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
@@ -90,14 +102,18 @@ test_that(
 
 test_that("n2kManifest generates the object", {
   manifest <- data.frame(
-    fingerprint = "1", parent = NA_character_, stringsAsFactors = FALSE
+    fingerprint = "1",
+    parent = NA_character_,
+    stringsAsFactors = FALSE
   )
   expect_is(
     new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
     "n2kManifest"
   )
   manifest <- data.frame(
-    fingerprint = c("1", "2"), parent = c(NA, "1"), stringsAsFactors = FALSE
+    fingerprint = c("1", "2"),
+    parent = c(NA, "1"),
+    stringsAsFactors = FALSE
   )
   expect_is(
     new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest)),
@@ -124,14 +140,17 @@ test_that("n2k_manifest ignores extra columns", {
   expect_is(
     x <- n2k_manifest(
       data.frame(
-        fingerprint = "1", parent = NA_character_, junk = 1,
+        fingerprint = "1",
+        parent = NA_character_,
+        junk = 1,
         stringsAsFactors = FALSE
       )
     ),
     "n2kManifest"
   )
   expect_identical(
-    colnames(x@Manifest), c("fingerprint", "parent")
+    colnames(x@Manifest),
+    c("fingerprint", "parent")
   )
 })
 

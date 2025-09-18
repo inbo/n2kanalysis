@@ -22,7 +22,8 @@ setMethod(
   signature = signature(version = "data.frame"),
   definition = function(version) {
     check_dataframe_variable(
-      df = version, name = "version",
+      df = version,
+      name = "version",
       variable = c("description", "version", "origin", "fingerprint")
     )
     assert_that(
@@ -30,15 +31,18 @@ setMethod(
       msg = "Missing analysis_version attribute"
     )
     analysis_version <- data.frame(
-      fingerprint = attr(version, "analysis_version"), stringsAsFactors = FALSE
+      fingerprint = attr(version, "analysis_version"),
+      stringsAsFactors = FALSE
     )
     version <- version[order(version$description, version$version), ]
     new(
       "n2kAnalysisVersion",
-      AnalysisVersion = analysis_version, RPackage = version,
+      AnalysisVersion = analysis_version,
+      RPackage = version,
       AnalysisVersionRPackage = data.frame(
         analysis_version = analysis_version$fingerprint,
-        r_package = version$fingerprint, stringsAsFactors = FALSE
+        r_package = version$fingerprint,
+        stringsAsFactors = FALSE
       )
     )
   }

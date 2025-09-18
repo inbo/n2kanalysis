@@ -23,6 +23,7 @@ setValidity(
     if (nrow(object@AnalysisMetadata) != 1) {
       stop("The 'AnalysisMetadata' slot must contain exactly one row")
     }
+    # fmt: skip
     stopifnot(
       "Some Analysis in 'AnalysisRelation' slot don't match file_fingerprint" =
         nrow(object@AnalysisRelation) == 0 ||

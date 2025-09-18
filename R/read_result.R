@@ -23,12 +23,18 @@ setMethod(
   signature = signature(base = "character"),
   definition = function(x, base, project) {
     assert_that(
-      is.string(x), noNA(x), grepl("^[[:xdigit:]]{40}", x), is.dir(base),
-      is.string(project), noNA(project), is.dir(path(base, project, "results"))
+      is.string(x),
+      noNA(x),
+      grepl("^[[:xdigit:]]{40}", x),
+      is.dir(base),
+      is.string(project),
+      noNA(project),
+      is.dir(path(base, project, "results"))
     )
     filename <- path(base, project, "results", x, ext = "rds")
     assert_that(
-      file_exists(filename), msg = sprintf("`%s` does not exists", filename)
+      file_exists(filename),
+      msg = sprintf("`%s` does not exists", filename)
     )
     readRDS(filename)
   }
@@ -44,7 +50,10 @@ setMethod(
   signature = signature(base = "s3_bucket"),
   definition = function(x, base, project) {
     assert_that(
-      is.string(x), noNA(x), grepl("^[[:xdigit:]]{40}$", x), is.string(project),
+      is.string(x),
+      noNA(x),
+      grepl("^[[:xdigit:]]{40}$", x),
+      is.string(project),
       noNA(project)
     )
     prefix <- file.path(project, "results", paste0(x, ".rds"), fsep = "/")

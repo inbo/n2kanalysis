@@ -9,10 +9,19 @@
 #' @importFrom methods new
 spde <- function(coordinates, range, sigma) {
   assert_that(
-    inherits(coordinates, "data.frame"), is.numeric(range), is.numeric(sigma),
-    noNA(coordinates), noNA(range), noNA(sigma), ncol(coordinates) == 2,
-    length(range) == 2, length(sigma) == 2, all(range > 0), all(sigma > 0),
-    range[2] < 1, sigma[2] < 1
+    inherits(coordinates, "data.frame"),
+    is.numeric(range),
+    is.numeric(sigma),
+    noNA(coordinates),
+    noNA(range),
+    noNA(sigma),
+    ncol(coordinates) == 2,
+    length(range) == 2,
+    length(sigma) == 2,
+    all(range > 0),
+    all(sigma > 0),
+    range[2] < 1,
+    sigma[2] < 1
   )
   new("Spde", Coordinates = coordinates, Range = range, Sigma = sigma)
 }

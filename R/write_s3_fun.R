@@ -2,7 +2,13 @@
 #' @importFrom aws.s3 bucket_exists get_bucket s3write_using
 #' @importFrom purrr map_chr
 write_s3_fun <- function(
-  object, bucket, key, fun = write.table, overwrite = FALSE, opts = NULL, ...,
+  object,
+  bucket,
+  key,
+  fun = write.table,
+  overwrite = FALSE,
+  opts = NULL,
+  ...,
   max_attempt = 10
 ) {
   assert_that(is.flag(overwrite), noNA(overwrite), is.count(max_attempt))
@@ -19,7 +25,12 @@ write_s3_fun <- function(
   repeat {
     bucket_ok <- tryCatch(
       s3write_using(
-        x = object, FUN = fun, bucket = bucket, object = key, opts = opts, ...
+        x = object,
+        FUN = fun,
+        bucket = bucket,
+        object = key,
+        opts = opts,
+        ...
       ),
       error = function(err) {
         err

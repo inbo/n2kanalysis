@@ -12,7 +12,8 @@ sha1.inla <- function(x, digits = 14L, zapsmall = 7L, ...) {
     FixedEffects = list(x$summary.fixed),
     Hyper = list(x$summary.hyperpar)
   )
-  attr(parameter, "digest::sha1") <- list( # nolint: object_name_linter.
+  attr(parameter, "digest::sha1") <- list(
+    # nolint: object_name_linter.
     class = class(x),
     digits = as.integer(digits),
     zapsmall = as.integer(zapsmall),
@@ -31,7 +32,8 @@ sha1.rawImputed <- function(x, digits = 14L, zapsmall = 7L, ...) {
     Response = x@Response,
     Imputation = x@Imputation
   )
-  attr(parameter, "digest::sha1") <- list( # nolint: object_name_linter.
+  attr(parameter, "digest::sha1") <- list(
+    # nolint: object_name_linter.
     class = class(x),
     digits = as.integer(digits),
     zapsmall = as.integer(zapsmall),
@@ -49,7 +51,8 @@ sha1.aggregatedImputed <- function(x, digits = 14L, zapsmall = 7L, ...) {
     Covariate = x@Covariate,
     Imputation = x@Imputation
   )
-  attr(parameter, "digest::sha1") <- list( # nolint: object_name_linter.
+  attr(parameter, "digest::sha1") <- list(
+    # nolint: object_name_linter.
     class = class(x),
     digits = as.integer(digits),
     zapsmall = as.integer(zapsmall),

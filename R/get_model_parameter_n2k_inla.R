@@ -19,15 +19,20 @@ setMethod(
     }
     parameter <- tibble(
       description = c(
-        "Fixed effect", "Random effect BLUP", "Random effect variance",
-        "Fitted", "Overdispersion", "WAIC", "Imputed value"
+        "Fixed effect",
+        "Random effect BLUP",
+        "Random effect variance",
+        "Fitted",
+        "Overdispersion",
+        "WAIC",
+        "Imputed value"
       ),
       parent = NA_character_
     ) %>%
       mutate(
         fingerprint = map_chr(
           .data$description,
-          ~sha1(c(description = .x, parent = NA_character_))
+          ~ sha1(c(description = .x, parent = NA_character_))
         )
       )
 
@@ -35,15 +40,18 @@ setMethod(
     display(verbose, "    reading model parameters: fixed effects", FALSE)
 
     variable <- c(
-      "Intercept", attr(terms(analysis@AnalysisFormula[[1]]), "term.labels")
+      "Intercept",
+      attr(terms(analysis@AnalysisFormula[[1]]), "term.labels")
     )
     variable <- variable[!grepl("f\\(", variable)]
 
     fixed <- get_model(analysis)$summary.fixed
     if (nrow(fixed) == 0) {
       parameter_estimate <- data.frame(
-        analysis = character(0), parameter = character(0),
-        estimate = numeric(0), lower_confidence_limit = numeric(0),
+        analysis = character(0),
+        parameter = character(0),
+        estimate = numeric(0),
+        lower_confidence_limit = numeric(0),
         upper_confidence_limit = numeric(0)
       )
     } else {
@@ -65,11 +73,13 @@ setMethod(
 
     parameter_estimate <- model_parameter_main(
       parameter_estimate = parameter_estimate,
-      main_effect = variable[!interaction], fixed_parent = fixed_parent
+      main_effect = variable[!interaction],
+      fixed_parent = fixed_parent
     )
     parameter_estimate <- model_parameter_interaction(
       parameter_estimate = parameter_estimate,
-      interaction = variable[interaction], fixed_parent = fixed_parent
+      interaction = variable[interaction],
+      fixed_parent = fixed_parent
     )
     parameter <- attr(parameter_estimate, "parameter")
 
@@ -80,7 +90,8 @@ setMethod(
     re_names <- re_names[grepl("^Precision for ", re_names)]
     if (length(re_names) > 0) {
       map_df(
-        get_model(analysis)$marginals.hyperpar[re_names], inla_inverse
+        get_model(analysis)$marginals.hyperpar[re_names],
+        inla_inverse
       ) %>%
         mutate(
           parameter = gsub("^Precision for ", "", re_names),
@@ -88,14 +99,16 @@ setMethod(
         ) -> re_variance
       parameter %>%
         filter(
-          is.na(.data$parent), .data$description == "Random effect variance"
+          is.na(.data$parent),
+          .data$description == "Random effect variance"
         ) %>%
         select(parent = "fingerprint") %>%
         merge(tibble(description = re_variance$parameter)) %>%
         mutate(
           fingerprint = map2_chr(
-            .data$description, .data$parent,
-            ~sha1(c(description = .x, parent = .y))
+            .data$description,
+            .data$parent,
+            ~ sha1(c(description = .x, parent = .y))
           )
         ) -> extra
       extra %>%
@@ -136,7 +149,8 @@ setMethod(
         tibble(
           estimate = get_model(analysis)$waic$waic,
           analysis = analysis@AnalysisMetadata$file_fingerprint,
-          parameter = parent$fingerprint, lower_confidence_limit = NA_real_,
+          parameter = parent$fingerprint,
+          lower_confidence_limit = NA_real_,
           upper_confidence_limit = NA_real_
         )
       )
@@ -151,7 +165,8 @@ setMethod(
           get_model(analysis)$summary.random[[i]] %>%
             transmute(
               analysis = analysis@AnalysisMetadata$file_fingerprint,
-              parent = i, parameter = as.character(.data$ID),
+              parent = i,
+              parameter = as.character(.data$ID),
               estimate = .data$mean,
               lower_confidence_limit = .data$`0.025quant`,
               upper_confidence_limit = .data$`0.975quant`
@@ -202,7 +217,7 @@ setMethod(
           fingerprint = map2_chr(
             .data$description,
             .data$parent,
-            ~sha1(c(description = .x, parent = .y))
+            ~ sha1(c(description = .x, parent = .y))
           )
         )
       parameter <- blup_parent %>%
@@ -225,7 +240,7 @@ setMethod(
             fingerprint = map2_chr(
               .data$description,
               .data$parent,
-              ~sha1(c(description = .x, parent = .y))
+              ~ sha1(c(description = .x, parent = .y))
             )
           )
         parameter <- bind_rows(parameter, blup_parent)
@@ -250,7 +265,7 @@ setMethod(
           fingerprint = map2_chr(
             .data$description,
             .data$parent,
-            ~sha1(c(description = .x, parent = .y))
+            ~ sha1(c(description = .x, parent = .y))
           )
         ) %>%
         bind_rows(parameter)
@@ -290,7 +305,7 @@ setMethod(
         fingerprint = map2_chr(
           .data$description,
           .data$parent,
-          ~sha1(c(description = .x, parent = .y))
+          ~ sha1(c(description = .x, parent = .y))
         )
       ) %>%
       bind_rows(parameter) -> parameter
@@ -309,10 +324,18 @@ setMethod(
           observation_id = as.character(.data$observation_id),
           analysis = get_file_fingerprint(analysis),
           estimate = apply(ri@Imputation, 1, quantile, probs = 0.500),
-          lower_confidence_limit =
-            apply(ri@Imputation, 1, quantile, probs = 0.025),
-          upper_confidence_limit =
-            apply(ri@Imputation, 1, quantile, probs = 0.975)
+          lower_confidence_limit = apply(
+            ri@Imputation,
+            1,
+            quantile,
+            probs = 0.025
+          ),
+          upper_confidence_limit = apply(
+            ri@Imputation,
+            1,
+            quantile,
+            probs = 0.975
+          )
         )
       parent <- parameter %>%
         filter(.data$description == "Imputed value", is.na(.data$parent))
@@ -322,18 +345,23 @@ setMethod(
           parent = parent$fingerprint,
           description = .data$observation_id,
           fingerprint = map2_chr(
-            .data$description, .data$parent,
-            ~sha1(c(description = .x, parent = .y))
+            .data$description,
+            .data$parent,
+            ~ sha1(c(description = .x, parent = .y))
           )
         )
       parameter <- bind_rows(parameter, impute_parameter)
       parameter_estimate <- extra %>%
         inner_join(
-          impute_parameter, by = c("observation_id" = "description")
+          impute_parameter,
+          by = c("observation_id" = "description")
         ) %>%
         select(
-          "analysis", "estimate", "lower_confidence_limit",
-          "upper_confidence_limit", parameter = "fingerprint"
+          "analysis",
+          "estimate",
+          "lower_confidence_limit",
+          "upper_confidence_limit",
+          parameter = "fingerprint"
         ) %>%
         bind_rows(parameter_estimate)
     }
@@ -347,7 +375,9 @@ setMethod(
 )
 
 model_parameter_main <- function(
-  parameter_estimate, main_effect, fixed_parent
+  parameter_estimate,
+  main_effect,
+  fixed_parent
 ) {
   attr(parameter_estimate, "parameter") -> parameter
   for (i in main_effect) {
@@ -364,7 +394,7 @@ model_parameter_main <- function(
         fingerprint = map2_chr(
           .data$description,
           .data$parent,
-          ~sha1(c(description = .x, parent = .y))
+          ~ sha1(c(description = .x, parent = .y))
         )
       )
     extra_factor <- tibble(
@@ -385,7 +415,7 @@ model_parameter_main <- function(
           fingerprint = map2_chr(
             .data$description,
             .data$parent,
-            ~sha1(c(description = .x, parent = .y))
+            ~ sha1(c(description = .x, parent = .y))
           )
         )
       extra_factor %>%
@@ -399,7 +429,9 @@ model_parameter_main <- function(
     ) %>%
       mutate(
         parameter = ifelse(
-          is.na(.data$fingerprint), .data$parameter, .data$fingerprint
+          is.na(.data$fingerprint),
+          .data$parameter,
+          .data$fingerprint
         )
       ) %>%
       select(-"fingerprint") -> parameter_estimate
@@ -410,7 +442,9 @@ model_parameter_main <- function(
 }
 
 model_parameter_interaction <- function(
-  parameter_estimate, interaction, fixed_parent
+  parameter_estimate,
+  interaction,
+  fixed_parent
 ) {
   attr(parameter_estimate, "parameter") -> parameter
   for (i in interaction) {
@@ -427,7 +461,7 @@ model_parameter_interaction <- function(
         fingerprint = map2_chr(
           .data$description,
           .data$parent,
-          ~sha1(c(description = .x, parent = .y))
+          ~ sha1(c(description = .x, parent = .y))
         )
       )
     parts <- strsplit(i, ":")[[1]]
@@ -448,7 +482,7 @@ model_parameter_interaction <- function(
         fingerprint = map2_chr(
           .data$description,
           .data$parent,
-          ~sha1(c(description = .x, parent = .y))
+          ~ sha1(c(description = .x, parent = .y))
         )
       )
     if (nrow(extra_factor) > 0) {

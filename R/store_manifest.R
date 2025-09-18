@@ -24,8 +24,12 @@ setMethod(
   signature = signature(base = "character"),
   definition = function(x, base, project, overwrite = FALSE) {
     assert_that(
-      inherits(x, "n2kManifest"), is.string(base), file_test("-d", base),
-      is.string(project), is.flag(overwrite), noNA(overwrite)
+      inherits(x, "n2kManifest"),
+      is.string(base),
+      file_test("-d", base),
+      is.string(project),
+      is.flag(overwrite),
+      noNA(overwrite)
     )
     validObject(x, complete = TRUE)
 
@@ -37,7 +41,9 @@ setMethod(
     #test if file exists
     fingerprint <- get_file_fingerprint(x)
     filename <- list.files(
-      dir, pattern = sprintf("%s.manifest$", fingerprint), full.names = TRUE
+      dir,
+      pattern = sprintf("%s.manifest$", fingerprint),
+      full.names = TRUE
     )
     if (!overwrite && length(filename) > 0) {
       return(normalizePath(filename, winslash = "/"))
@@ -58,18 +64,27 @@ setMethod(
   signature = signature(base = "s3_bucket"),
   definition = function(x, base, project, overwrite = FALSE) {
     assert_that(
-      inherits(x, "n2kManifest"), is.string(project), noNA(project),
-      is.flag(overwrite), noNA(overwrite)
+      inherits(x, "n2kManifest"),
+      is.string(project),
+      noNA(project),
+      is.flag(overwrite),
+      noNA(overwrite)
     )
     validObject(x, complete = TRUE)
 
     filename <- file.path(
-      fsep = "/", project, "manifest",
+      fsep = "/",
+      project,
+      "manifest",
       sprintf("%s.manifest", get_file_fingerprint(x))
     )
     write_s3_fun(
-      object = x@Manifest, bucket = base, key = filename, overwrite = overwrite,
-      row.names = FALSE, sep = "\t"
+      object = x@Manifest,
+      bucket = base,
+      key = filename,
+      overwrite = overwrite,
+      row.names = FALSE,
+      sep = "\t"
     )
   }
 )

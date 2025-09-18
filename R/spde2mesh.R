@@ -20,10 +20,14 @@ setMethod(
   signature = signature(object = "Spde"),
   definition = function(object) {
     stopifnot(
-      "fmesher package required but not installed." =
-        requireNamespace("fmesher", quietly = TRUE),
-      "sf package required but not installed." =
-        requireNamespace("sf", quietly = TRUE)
+      "fmesher package required but not installed." = requireNamespace(
+        "fmesher",
+        quietly = TRUE
+      ),
+      "sf package required but not installed." = requireNamespace(
+        "sf",
+        quietly = TRUE
+      )
     )
     max_dist <- object@Range[1]
     object@Coordinates |>
@@ -32,7 +36,8 @@ setMethod(
       sf::st_union() |>
       sf::st_simplify(dTolerance = max_dist / 10) -> region
     fmesher::fm_mesh_2d_inla(
-      boundary = region, max.edge = c(max_dist / 3, max_dist * 2),
+      boundary = region,
+      max.edge = c(max_dist / 3, max_dist * 2),
       cutoff = max_dist / 10
     )
   }

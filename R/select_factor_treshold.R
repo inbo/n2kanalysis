@@ -34,7 +34,8 @@ select_factor_threshold <- function(observation, variable, threshold) {
     setNames(
       paste(
         "The number of observations much be at least twice the number of",
-        "levels in", variable
+        "levels in",
+        variable
       )
     ) |>
     do.call(what = stopifnot)

@@ -3,30 +3,38 @@ test_that("read_manifest reads the manifest on a local file system", {
   dir.create(temp_dir)
   object <- n2k_manifest(
     data.frame(
-      fingerprint = "1", parent = NA_character_, stringsAsFactors = FALSE
+      fingerprint = "1",
+      parent = NA_character_,
+      stringsAsFactors = FALSE
     )
   )
   object2 <- n2k_manifest(
     data.frame(
-      fingerprint = "4", parent = NA_character_, stringsAsFactors = FALSE
+      fingerprint = "4",
+      parent = NA_character_,
+      stringsAsFactors = FALSE
     )
   )
   expect_error(
-    read_manifest(temp_dir, "read_manifest"), "No manifest files in"
+    read_manifest(temp_dir, "read_manifest"),
+    "No manifest files in"
   )
   file.path(temp_dir, "read_manifest", "manifest") |>
     normalizePath(mustWork = FALSE) |>
     dir.create(recursive = TRUE)
   expect_error(
-    read_manifest(temp_dir, "read_manifest"), "No manifest files in"
+    read_manifest(temp_dir, "read_manifest"),
+    "No manifest files in"
   )
   store_manifest(object, temp_dir, "read_manifest")
   store_manifest(object2, temp_dir, "read_manifest")
   expect_equal(
-    read_manifest(temp_dir, "read_manifest", object@Fingerprint), object
+    read_manifest(temp_dir, "read_manifest", object@Fingerprint),
+    object
   )
   expect_equal(
-    read_manifest(temp_dir, "read_manifest", object2@Fingerprint), object2
+    read_manifest(temp_dir, "read_manifest", object2@Fingerprint),
+    object2
   )
   Sys.sleep(1)
   expect_equal(read_manifest(temp_dir, "read_manifest"), object2)
@@ -45,12 +53,16 @@ test_that("read_manifest reads the manifest on an S3 bucket", {
   bucket <- get_bucket(Sys.getenv("N2KBUCKET"), prefix = project, max = 1)
   object <- n2k_manifest(
     data.frame(
-      fingerprint = "1", parent = NA_character_, stringsAsFactors = FALSE
+      fingerprint = "1",
+      parent = NA_character_,
+      stringsAsFactors = FALSE
     )
   )
   object2 <- n2k_manifest(
     data.frame(
-      fingerprint = "4", parent = NA_character_, stringsAsFactors = FALSE
+      fingerprint = "4",
+      parent = NA_character_,
+      stringsAsFactors = FALSE
     )
   )
   store_manifest(object, bucket, project)

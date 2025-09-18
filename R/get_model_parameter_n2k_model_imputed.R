@@ -12,7 +12,8 @@ setMethod(
       return(new("n2kParameter"))
     }
     parent <- data.frame(
-      description = "ModelImputed", parent = NA_character_,
+      description = "ModelImputed",
+      parent = NA_character_,
       fingerprint = sha1(c("ModelImputed", NA_character_)),
       stringsAsFactors = FALSE
     )
@@ -23,7 +24,9 @@ setMethod(
     ) %>%
       mutate(
         fingerprint = map2_chr(
-          .data$parent, .data$description, ~sha1(c(.x, .y))
+          .data$parent,
+          .data$description,
+          ~ sha1(c(.x, .y))
         )
       )
     new(
@@ -37,8 +40,10 @@ setMethod(
         ) %>%
         transmute(
           analysis = get_file_fingerprint(analysis),
-          parameter = .data$fingerprint, estimate = .data$Estimate,
-          lower_confidence_limit = .data$LCL, upper_confidence_limit = .data$UCL
+          parameter = .data$fingerprint,
+          estimate = .data$Estimate,
+          lower_confidence_limit = .data$LCL,
+          upper_confidence_limit = .data$UCL
         ) %>%
         as.data.frame()
     )

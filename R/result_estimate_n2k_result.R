@@ -9,18 +9,25 @@ setMethod(
     validObject(x)
     slot(x, "ParameterEstimate") |>
       inner_join(
-        slot(x, "Parameter"), by = c("parameter" = "fingerprint")
+        slot(x, "Parameter"),
+        by = c("parameter" = "fingerprint")
       ) -> estimates
     while (any(!is.na(estimates$parent))) {
       estimates |>
         left_join(
-          slot(x, "Parameter"), by = c("parent" = "fingerprint")
+          slot(x, "Parameter"),
+          by = c("parent" = "fingerprint")
         ) |>
         transmute(
-          .data$analysis, .data$estimate, .data$lower_confidence_limit,
-          .data$upper_confidence_limit, parent = .data$parent.y,
+          .data$analysis,
+          .data$estimate,
+          .data$lower_confidence_limit,
+          .data$upper_confidence_limit,
+          parent = .data$parent.y,
           description = paste(
-            .data$description.y, .data$description.x, sep = ":"
+            .data$description.y,
+            .data$description.x,
+            sep = ":"
           )
         ) -> estimates
     }

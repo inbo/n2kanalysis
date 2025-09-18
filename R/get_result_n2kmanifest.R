@@ -15,8 +15,10 @@ setMethod(
         FUN = function(hash, base, verbose, ...) {
           list(get_result(x = hash, base = base, ..., verbose = verbose))
         },
-        FUN.VALUE = vector(mode = "list", length = 1), base = base,
-        verbose = verbose, ...
+        FUN.VALUE = vector(mode = "list", length = 1),
+        base = base,
+        verbose = verbose,
+        ...
       ) |>
       do.call(what = combine)
   }
@@ -35,13 +37,16 @@ setMethod(
     assert_that(validObject(x))
     display(verbose = verbose, paste("Handle manifest", x@Fingerprint))
     get_bucket(
-      bucket = base, prefix = file.path(project, "results"), max = Inf
+      bucket = base,
+      prefix = file.path(project, "results"),
+      max = Inf
     ) |>
       map_chr("Key") |>
       basename() -> done
     to_do <- order_manifest(manifest = x)
     vapply(
-      to_do[!paste0(to_do, ".rds") %in% done], FUN.VALUE = logical(1),
+      to_do[!paste0(to_do, ".rds") %in% done],
+      FUN.VALUE = logical(1),
       FUN = function(x, base, verbose, project, ...) {
         display(verbose = verbose, paste("  extracting", x))
         substring(x, 1, 4) |>
@@ -55,23 +60,37 @@ setMethod(
           "object not found or multiple objects found" = length(available) == 1
         )
         get_result(
-          available[[1]], base = base, verbose = verbose, project = project, ...
+          available[[1]],
+          base = base,
+          verbose = verbose,
+          project = project,
+          ...
         )
         gc(verbose = FALSE)
         return(TRUE)
       },
-      base = base, verbose = verbose, project = project, ...
+      base = base,
+      verbose = verbose,
+      project = project,
+      ...
     )
     order_manifest(manifest = x) |>
       vapply(
         FUN = function(hash, base, project, verbose, ...) {
           get_result(
-            x = hash, base = base, project = project, ..., verbose = verbose
+            x = hash,
+            base = base,
+            project = project,
+            ...,
+            verbose = verbose
           ) |>
             list()
         },
-        FUN.VALUE = vector(mode = "list", length = 1), base = base,
-        verbose = verbose, project = project, ...
+        FUN.VALUE = vector(mode = "list", length = 1),
+        base = base,
+        verbose = verbose,
+        project = project,
+        ...
       ) |>
       do.call(what = combine)
   }

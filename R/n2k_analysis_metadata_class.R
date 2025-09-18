@@ -16,8 +16,10 @@ setClass(
   contains = "n2kAnalysisVersion",
   prototype = prototype(
     AnalysisRelation = data.frame(
-      analysis = character(0), parent_analysis = character(0),
-      parentstatus_fingerprint = character(0), parent_status = character(0),
+      analysis = character(0),
+      parent_analysis = character(0),
+      parentstatus_fingerprint = character(0),
+      parent_status = character(0),
       stringsAsFactors = FALSE
     )
   )
@@ -72,8 +74,9 @@ setValidity(
 
     assert_that(
       length(object@AnalysisFormula) == nrow(object@AnalysisMetadata),
-      msg =
+      msg = paste(
         "Number of 'AnalysisFormula' not equal to number of 'AnalysisMetadata'"
+      )
     )
     if (inherits(object@AnalysisMetadata$formula, "character")) {
       assert_that(
@@ -111,22 +114,27 @@ setValidity(
     if (any(object@AnalysisMetadata$last_imported_year > this_year)) {
       stop("last_imported_year from the future.")
     }
-    if (any(
-      object@AnalysisMetadata$first_imported_year >
-        object@AnalysisMetadata$last_imported_year
-    )) {
+    if (
+      any(
+        object@AnalysisMetadata$first_imported_year >
+          object@AnalysisMetadata$last_imported_year
+      )
+    ) {
       stop("first_imported_year cannot exceed last_imported_year")
     }
-    if (any(
-      object@AnalysisMetadata$last_analysed_year >
-        object@AnalysisMetadata$last_imported_year
-    )) {
+    if (
+      any(
+        object@AnalysisMetadata$last_analysed_year >
+          object@AnalysisMetadata$last_imported_year
+      )
+    ) {
       stop("last_analysed_year cannot exceed last_imported_year")
     }
     list(
       object@AnalysisMetadata$duration <=
         object@AnalysisMetadata$last_imported_year -
-          object@AnalysisMetadata$first_imported_year + 1
+          object@AnalysisMetadata$first_imported_year +
+          1
     ) |>
       setNames(
         paste(
@@ -139,7 +147,8 @@ setValidity(
     list(
       object@AnalysisMetadata$last_analysed_year >=
         object@AnalysisMetadata$first_imported_year +
-          object@AnalysisMetadata$duration - 1
+          object@AnalysisMetadata$duration -
+          1
     ) |>
       setNames(
         paste(
@@ -150,8 +159,15 @@ setValidity(
       do.call(what = stopifnot)
 
     ok_status <- c(
-      "new", "working", "waiting", "error", "converged", "false_convergence",
-      "unstable", "insufficient_data", "time-out"
+      "new",
+      "working",
+      "waiting",
+      "error",
+      "converged",
+      "false_convergence",
+      "unstable",
+      "insufficient_data",
+      "time-out"
     )
     if (!all(object@AnalysisMetadata$status %in% ok_status)) {
       stop(

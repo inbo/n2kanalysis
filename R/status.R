@@ -98,9 +98,15 @@ setReplaceMethod(
     x@AnalysisMetadata$status <- value
     x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status, x@Model,
-        x@AnalysisMetadata$analysis_version, x@AnalysisVersion, x@RPackage,
-        x@AnalysisVersionRPackage, x@AnalysisRelation, x@RawImputed
+        x@AnalysisMetadata$file_fingerprint,
+        x@AnalysisMetadata$status,
+        x@Model,
+        x@AnalysisMetadata$analysis_version,
+        x@AnalysisVersion,
+        x@RPackage,
+        x@AnalysisVersionRPackage,
+        x@AnalysisRelation,
+        x@RawImputed
       ),
       digits = 6L
     )
@@ -120,9 +126,14 @@ setReplaceMethod(
     x@AnalysisMetadata$status <- value
     x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status,
-        x@Parameter, x@Index, x@AnalysisMetadata$analysis_version,
-        x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
+        x@AnalysisMetadata$file_fingerprint,
+        x@AnalysisMetadata$status,
+        x@Parameter,
+        x@Index,
+        x@AnalysisMetadata$analysis_version,
+        x@AnalysisVersion,
+        x@RPackage,
+        x@AnalysisVersionRPackage,
         x@AnalysisRelation
       ),
       digits = 6L
@@ -143,9 +154,13 @@ setReplaceMethod(
     x@AnalysisMetadata$status <- value
     x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status,
-        x@WAIC, x@AnalysisMetadata$analysis_version,
-        x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
+        x@AnalysisMetadata$file_fingerprint,
+        x@AnalysisMetadata$status,
+        x@WAIC,
+        x@AnalysisMetadata$analysis_version,
+        x@AnalysisVersion,
+        x@RPackage,
+        x@AnalysisVersionRPackage,
         x@AnalysisRelation
       ),
       digits = 6L
@@ -166,9 +181,14 @@ setReplaceMethod(
     x@AnalysisMetadata$status <- value
     x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status,
-        x@AnalysisMetadata$analysis_version, x@AnalysisVersion, x@RPackage,
-        x@AnalysisVersionRPackage, x@AnalysisRelation, x@RawImputed,
+        x@AnalysisMetadata$file_fingerprint,
+        x@AnalysisMetadata$status,
+        x@AnalysisMetadata$analysis_version,
+        x@AnalysisVersion,
+        x@RPackage,
+        x@AnalysisVersionRPackage,
+        x@AnalysisRelation,
+        x@RawImputed,
         x@AggregatedImputed
       ),
       digits = 6L
@@ -189,9 +209,14 @@ setReplaceMethod(
     x@AnalysisMetadata$status <- value
     x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status,
-        x@AnalysisMetadata$analysis_version, x@AnalysisVersion, x@RPackage,
-        x@AnalysisVersionRPackage, x@AnalysisRelation, x@AggregatedImputed,
+        x@AnalysisMetadata$file_fingerprint,
+        x@AnalysisMetadata$status,
+        x@AnalysisMetadata$analysis_version,
+        x@AnalysisVersion,
+        x@RPackage,
+        x@AnalysisVersionRPackage,
+        x@AnalysisRelation,
+        x@AggregatedImputed,
         x@Results
       ),
       digits = 6L
@@ -213,9 +238,15 @@ setReplaceMethod(
     x@AnalysisMetadata$status <- value
     x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        get_file_fingerprint(x), x@AnalysisMetadata$status,
-        x@AnalysisVersion$fingerprint, x@AnalysisVersion, x@RPackage,
-        x@AnalysisVersionRPackage, x@AnalysisRelation, x@Presence, x@Count,
+        get_file_fingerprint(x),
+        x@AnalysisMetadata$status,
+        x@AnalysisVersion$fingerprint,
+        x@AnalysisVersion,
+        x@RPackage,
+        x@AnalysisVersionRPackage,
+        x@AnalysisRelation,
+        x@Presence,
+        x@Count,
         x@Hurdle
       ),
       digits = 6L

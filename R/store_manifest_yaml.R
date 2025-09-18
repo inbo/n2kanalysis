@@ -25,18 +25,32 @@ setMethod(
   f = "store_manifest_yaml",
   signature = signature(base = "s3_bucket"),
   definition = function(
-    x, base, project, docker, dependencies, overwrite = FALSE
+    x,
+    base,
+    project,
+    docker,
+    dependencies,
+    overwrite = FALSE
   ) {
     assert_that(
-      is.string(docker), is.character(dependencies), noNA(dependencies),
-      noNA(docker), is.flag(overwrite), noNA(overwrite)
+      is.string(docker),
+      is.character(dependencies),
+      noNA(dependencies),
+      noNA(docker),
+      is.flag(overwrite),
+      noNA(overwrite)
     )
 
     stored <- store_manifest(
-      x = x, base = base, project = project, overwrite = overwrite
+      x = x,
+      base = base,
+      project = project,
+      overwrite = overwrite
     )
     list(
-      github = dependencies, docker = docker, bucket = attr(base, "Name"),
+      github = dependencies,
+      docker = docker,
+      bucket = attr(base, "Name"),
       project = project,
       hash = basename(stored) |>
         gsub(pattern = "\\.manifest", replacement = "")
@@ -44,7 +58,10 @@ setMethod(
     filename <- sprintf("%s/yaml/%s.yaml", project, sha1(yaml))
 
     write_s3_fun(
-      object = yaml, bucket = base, key = filename, overwrite = overwrite,
+      object = yaml,
+      bucket = base,
+      key = filename,
+      overwrite = overwrite,
       fun = write_yaml
     )
   }
@@ -60,18 +77,32 @@ setMethod(
   f = "store_manifest_yaml",
   signature = signature(base = "character"),
   definition = function(
-    x, base, project, docker, dependencies, overwrite = FALSE
+    x,
+    base,
+    project,
+    docker,
+    dependencies,
+    overwrite = FALSE
   ) {
     assert_that(
-      is.dir(base), is.string(docker), is.character(dependencies),
-      is.flag(overwrite), noNA(overwrite)
+      is.dir(base),
+      is.string(docker),
+      is.character(dependencies),
+      is.flag(overwrite),
+      noNA(overwrite)
     )
 
     stored <- store_manifest(
-      x = x, base = base, project = project, overwrite = overwrite
+      x = x,
+      base = base,
+      project = project,
+      overwrite = overwrite
     )
     list(
-      github = dependencies, docker = docker, bucket = base, project = project,
+      github = dependencies,
+      docker = docker,
+      bucket = base,
+      project = project,
       hash = basename(stored) |>
         gsub(pattern = "\\.manifest", replacement = "")
     ) -> yaml

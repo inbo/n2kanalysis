@@ -71,10 +71,18 @@ setMethod(
     file_fingerprint <- sha1(
       list(
         dots$result_datasource_id,
-        dots$scheme_id, dots$species_group_id, dots$location_group_id,
-        dots$model_type, dots$formula, dots$first_imported_year,
-        dots$last_imported_year, dots$duration, dots$last_analysed_year,
-        format(dots$analysis_date, tz = "UTC"), dots$seed, character(0)
+        dots$scheme_id,
+        dots$species_group_id,
+        dots$location_group_id,
+        dots$model_type,
+        dots$formula,
+        dots$first_imported_year,
+        dots$last_imported_year,
+        dots$duration,
+        dots$last_analysed_year,
+        format(dots$analysis_date, tz = "UTC"),
+        dots$seed,
+        character(0)
       ),
       environment = FALSE
     )
@@ -82,9 +90,13 @@ setMethod(
     version <- get_analysis_version(sessionInfo())
     status_fingerprint <- sha1(
       list(
-        file_fingerprint, dots$status, version@AnalysisVersion$fingerprint,
-        version@AnalysisVersion, version@RPackage,
-        version@AnalysisVersionRPackage, dots$dataset
+        file_fingerprint,
+        dots$status,
+        version@AnalysisVersion$fingerprint,
+        version@AnalysisVersion,
+        version@RPackage,
+        version@AnalysisVersionRPackage,
+        dots$dataset
       ),
       digits = 6L
     )

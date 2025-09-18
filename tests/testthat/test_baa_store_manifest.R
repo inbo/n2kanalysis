@@ -4,7 +4,9 @@ test_that("store_manifest stores the manifest on a local file system", {
   dir.create(temp_dir)
   object <- n2k_manifest(
     data.frame(
-      fingerprint = "1", parent = NA_character_, stringsAsFactors = FALSE
+      fingerprint = "1",
+      parent = NA_character_,
+      stringsAsFactors = FALSE
     )
   )
   expect_is(
@@ -31,7 +33,9 @@ test_that("store_manifest stores the manifest on an S3 bucket", {
   bucket <- get_bucket(Sys.getenv("N2KBUCKET"), prefix = project, max = 1)
   object <- n2k_manifest(
     data.frame(
-      fingerprint = "1", parent = NA_character_, stringsAsFactors = FALSE
+      fingerprint = "1",
+      parent = NA_character_,
+      stringsAsFactors = FALSE
     )
   )
   expect_type(

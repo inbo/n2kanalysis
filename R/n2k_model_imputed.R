@@ -53,20 +53,27 @@ setMethod(
       dots$seed <- sample(.Machine$integer.max, 1)
     }
     assert_that(
-      is.count(dots$seed), is.string(dots$result_datasource_id),
-      is.string(dots$scheme_id), is.string(dots$species_group_id),
-      is.string(dots$location_group_id), is.string(dots$model_type),
-      is.string(dots$formula), is.count(dots$first_imported_year),
-      is.count(dots$last_imported_year), is.time(dots$analysis_date)
+      is.count(dots$seed),
+      is.string(dots$result_datasource_id),
+      is.string(dots$scheme_id),
+      is.string(dots$species_group_id),
+      is.string(dots$location_group_id),
+      is.string(dots$model_type),
+      is.string(dots$formula),
+      is.count(dots$first_imported_year),
+      is.count(dots$last_imported_year),
+      is.time(dots$analysis_date)
     )
     dots$seed <- as.integer(dots$seed)
     dots$first_imported_year <- as.integer(dots$first_imported_year)
     dots$last_imported_year <- as.integer(dots$last_imported_year)
     dots$duration <- coalesce(
-      dots$duration, dots$last_imported_year - dots$first_imported_year + 1L
+      dots$duration,
+      dots$last_imported_year - dots$first_imported_year + 1L
     )
     dots$last_analysed_year <- coalesce(
-      dots$last_analysed_year, dots$last_imported_year
+      dots$last_analysed_year,
+      dots$last_imported_year
     )
     dots$filter <- c(dots$filter, list())
     dots$mutate <- c(dots$mutate, list())
@@ -75,12 +82,18 @@ setMethod(
     dots$extractor_args <- c(dots$extractor_args, list())
     dots$package <- c(dots$package, character(0))
     assert_that(
-      is.count(dots$duration), is.count(dots$last_analysed_year),
-      is.list(dots$filter), is.list(dots$mutate), is.list(dots$model_args),
+      is.count(dots$duration),
+      is.count(dots$last_analysed_year),
+      is.list(dots$filter),
+      is.list(dots$mutate),
+      is.list(dots$model_args),
       is.function(dots$model_fun) || is.string(dots$model_fun),
-      is.function(dots$extractor), is.list(dots$prepare_model_args),
-      length(dots$prepare_model_args) <= 1, is.list(dots$extractor_args),
-      is.character(dots$package), is.string(dots$parent)
+      is.function(dots$extractor),
+      is.list(dots$prepare_model_args),
+      length(dots$prepare_model_args) <= 1,
+      is.list(dots$extractor_args),
+      is.character(dots$package),
+      is.string(dots$parent)
     )
     dots$duration <- as.integer(dots$duration)
     dots$last_analysed_year <- as.integer(dots$last_analysed_year)
@@ -91,13 +104,26 @@ setMethod(
     file_fingerprint <- sha1(
       list(
         dots$result_datasource_id,
-        dots$scheme_id, dots$species_group_id, dots$location_group_id,
-        dots$model_type, dots$formula, dots$first_imported_year,
-        dots$last_imported_year, dots$duration, dots$last_analysed_year,
+        dots$scheme_id,
+        dots$species_group_id,
+        dots$location_group_id,
+        dots$model_type,
+        dots$formula,
+        dots$first_imported_year,
+        dots$last_imported_year,
+        dots$duration,
+        dots$last_analysed_year,
         format(dots$analysis_date, tz = "UTC"),
-        dots$seed, dots$parent, dots$model_fun, dots$filter,
-        dots$mutate, dots$model_args, dots$prepare_model_args, dots$extractor,
-        dots$extractor_args, dots$package
+        dots$seed,
+        dots$parent,
+        dots$model_fun,
+        dots$filter,
+        dots$mutate,
+        dots$model_args,
+        dots$prepare_model_args,
+        dots$extractor,
+        dots$extractor_args,
+        dots$package
       ),
       environment = FALSE
     )
@@ -115,16 +141,24 @@ setMethod(
       ) |>
       do.call(what = stopifnot)
     analysis_relation <- data.frame(
-      analysis = file_fingerprint, parent_analysis = dots$parent,
+      analysis = file_fingerprint,
+      parent_analysis = dots$parent,
       parentstatus_fingerprint = dots$parent_statusfingerprint,
-      parent_status = dots$parent_status, stringsAsFactors = FALSE
+      parent_status = dots$parent_status,
+      stringsAsFactors = FALSE
     )
     version <- get_analysis_version(sessionInfo())
     status_fingerprint <- sha1(
       list(
-        file_fingerprint, dots$status, version@AnalysisVersion$fingerprint,
-        version@AnalysisVersion, version@RPackage,
-        version@AnalysisVersionRPackage, analysis_relation, NULL, NULL
+        file_fingerprint,
+        dots$status,
+        version@AnalysisVersion$fingerprint,
+        version@AnalysisVersion,
+        version@RPackage,
+        version@AnalysisVersionRPackage,
+        analysis_relation,
+        NULL,
+        NULL
       ),
       digits = 6L
     )

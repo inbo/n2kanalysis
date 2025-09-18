@@ -32,7 +32,8 @@ setValidity(
         object@AnalysisMetadata$scheme_id,
         object@AnalysisMetadata$species_group_id,
         object@AnalysisMetadata$location_group_id,
-        object@AnalysisMetadata$model_type, object@AnalysisMetadata$formula,
+        object@AnalysisMetadata$model_type,
+        object@AnalysisMetadata$formula,
         object@AnalysisMetadata$first_imported_year,
         object@AnalysisMetadata$last_imported_year,
         object@AnalysisMetadata$duration,
@@ -53,8 +54,10 @@ setValidity(
       list(
         object@AnalysisMetadata$file_fingerprint,
         object@AnalysisMetadata$status,
-        object@AnalysisMetadata$analysis_version, object@AnalysisVersion,
-        object@RPackage, object@AnalysisVersionRPackage,
+        object@AnalysisMetadata$analysis_version,
+        object@AnalysisVersion,
+        object@RPackage,
+        object@AnalysisVersionRPackage,
         object@Dataset
       ),
       digits = 6L

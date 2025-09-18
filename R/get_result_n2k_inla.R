@@ -41,12 +41,14 @@ setMethod(
       }
     }
     contrast <- tibble(
-      description = description, analysis = get_file_fingerprint(x)
+      description = description,
+      analysis = get_file_fingerprint(x)
     ) %>%
       mutate(
         fingerprint = map2_chr(
-          .data$description, .data$analysis,
-          ~sha1(c(description = .x, analysis = .y))
+          .data$description,
+          .data$analysis,
+          ~ sha1(c(description = .x, analysis = .y))
         )
       ) %>%
       select("fingerprint", "description", "analysis") %>%
@@ -106,10 +108,13 @@ setMethod(
       left_join(anomaly@Parameter, by = "parent") %>%
       transmute(
         parameter = ifelse(
-          is.na(.data$fingerprint), .data$parent, .data$fingerprint
+          is.na(.data$fingerprint),
+          .data$parent,
+          .data$fingerprint
         ),
         parameter_id = concat(
-          child = .data$description, parent = .data$parent_description
+          child = .data$description,
+          parent = .data$parent_description
         )
       )
 
@@ -120,7 +125,8 @@ setMethod(
         as.data.frame() %>%
         rownames_to_column("description") %>%
         pivot_longer(
-          names_to = "parameter_id", values_to = "coefficient",
+          names_to = "parameter_id",
+          values_to = "coefficient",
           colnames(contrast_coefficient)[
             !grepl("description", colnames(contrast_coefficient))
           ],
@@ -177,9 +183,11 @@ setMethod(
               lc %>%
                 mutate(contrast = contrast$fingerprint) %>%
                 pivot_longer(
-                  names_to = "description", values_to = "coefficient",
+                  names_to = "description",
+                  values_to = "coefficient",
                   colnames(lc)[!grepl("contrast", colnames(lc))],
-                  values_drop_na = TRUE, names_transform = factor
+                  values_drop_na = TRUE,
+                  names_transform = factor
                 ) %>%
                 mutate(
                   description = as.character(
@@ -192,7 +200,8 @@ setMethod(
               lc %>%
                 mutate(contrast = contrast$fingerprint) %>%
                 pivot_longer(
-                  names_to = "description", values_to = "coefficient",
+                  names_to = "description",
+                  values_to = "coefficient",
                   colnames(lc)[!grepl("contrast", colnames(lc))],
                   values_drop_na = TRUE
                 ) %>%
@@ -205,7 +214,9 @@ setMethod(
                     ) %>%
                     mutate(
                       description = sprintf(
-                        "%s:%s", .data$main, .data$description
+                        "%s:%s",
+                        .data$main,
+                        .data$description
                       )
                     ) %>%
                     select(parameter = "fingerprint", "description"),
@@ -226,7 +237,8 @@ setMethod(
       lc <- x@Model$summary.lincomb
     }
     contrast_estimate <- tibble(
-      description = rownames(lc), estimate = lc$mean,
+      description = rownames(lc),
+      estimate = lc$mean,
       lower_confidence_limit = lc[, "0.025quant"],
       upper_confidence_limit = lc[, "0.975quant"]
     ) %>%
@@ -236,7 +248,9 @@ setMethod(
         by = "description"
       ) %>%
       select(
-        contrast = "fingerprint", "estimate", "lower_confidence_limit",
+        contrast = "fingerprint",
+        "estimate",
+        "lower_confidence_limit",
         "upper_confidence_limit"
       ) %>%
       arrange(.data$contrast) %>%

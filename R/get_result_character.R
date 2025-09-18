@@ -8,7 +8,11 @@ setMethod(
   definition = function(x, base, ..., project, verbose = TRUE) {
     # check arguments
     assert_that(
-      is.string(x), is.string(base), is.string(project), noNA(x), noNA(base),
+      is.string(x),
+      is.string(base),
+      is.string(project),
+      noNA(x),
+      noNA(base),
       noNA(project)
     )
     stopifnot("`base` is not a existing directory" = file_test("-d", base))
@@ -26,7 +30,10 @@ setMethod(
 
     read_model(x = x, base = base, project = project) |>
       get_result(
-        base = base, project = project, ..., verbose = verbose
+        base = base,
+        project = project,
+        ...,
+        verbose = verbose
       ) -> result
     if (status(result) == "converged") {
       saveRDS(result, file = target)
@@ -64,7 +71,11 @@ setMethod(
       "object not found or multiple objects found" = length(available) == 1
     )
     get_result(
-      available[[1]], base = base, project = project, verbose = verbose, ...
+      available[[1]],
+      base = base,
+      project = project,
+      verbose = verbose,
+      ...
     )
   }
 )

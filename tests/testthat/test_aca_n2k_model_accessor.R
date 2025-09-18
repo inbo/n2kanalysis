@@ -17,7 +17,7 @@ this_lc <- dataset %>%
   select("A", "B", "C", "D") %>%
   filter(.data$C == max(.data$C), .data$D == max(.data$D)) %>%
   distinct() %>%
-  model.matrix(object = ~A * (B + C) + C:D)
+  model.matrix(object = ~ A * (B + C) + C:D)
 object <- n2k_inla(
   result_datasource_id = this_result_datasource_id,
   scheme_id = this_scheme_id,
@@ -34,10 +34,12 @@ object_model <- fit_model(object)
 
 test_that("status() returns the status of n2kModels", {
   expect_that(
-    status(object), is_identical_to(object@AnalysisMetadata$status)
+    status(object),
+    is_identical_to(object@AnalysisMetadata$status)
   )
   expect_that(
-    status(object_model), is_identical_to(object_model@AnalysisMetadata$status)
+    status(object_model),
+    is_identical_to(object_model@AnalysisMetadata$status)
   )
 })
 test_that("status() updates the status of n2kModels", {
@@ -60,7 +62,8 @@ test_that("get_seed() returns the seed slot", {
 
 test_that("get_scheme_id() returns the scheme_id slot", {
   expect_that(
-    get_scheme_id(object), is_identical_to(object@AnalysisMetadata$scheme_id)
+    get_scheme_id(object),
+    is_identical_to(object@AnalysisMetadata$scheme_id)
   )
 })
 

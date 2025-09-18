@@ -20,11 +20,14 @@ setMethod(
   signature = signature(object = "Spde"),
   definition = function(object) {
     stopifnot(
-      "INLA package required but not installed." =
-        requireNamespace("INLA", quietly = TRUE)
+      "INLA package required but not installed." = requireNamespace(
+        "INLA",
+        quietly = TRUE
+      )
     )
     INLA::inla.spde2.pcmatern(
-      mesh = spde2mesh(object), prior.range = object@Range,
+      mesh = spde2mesh(object),
+      prior.range = object@Range,
       prior.sigma = object@Sigma
     )
   }

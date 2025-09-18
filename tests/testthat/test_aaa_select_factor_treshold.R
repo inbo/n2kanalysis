@@ -31,7 +31,8 @@ describe("select_factor_threshold", {
       throws_error(
         paste(
           "The number of observations much be at least twice the number of",
-          "levels in", variable
+          "levels in",
+          variable
         )
       )
     )

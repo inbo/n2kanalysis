@@ -19,22 +19,23 @@
 #'   Year = rep(c(1, 1, 1, 1, 2, 2), 2)
 #' )
 #' # Select the locations with at least 3 prescenses
-#' select_factor_count_strictly_positive(
+#' select_factor_count_non_zero(
 #'   observation,
 #'   variable = "LocationID",
 #'   threshold = 3
 #' )
 #' # Select those locations in which the species is present in at least 2 years
-#' select_factor_count_strictly_positive(
+#' select_factor_count_non_zero(
 #'   observation, variable = c("LocationID", "Year"), threshold = 2
 #' )
 #' # Select those years in which the species is present in at least 2 locations
-#' select_factor_count_strictly_positive(
+#' select_factor_count_non_zero(
 #'   observation, variable = c("LocationID", "Year"),
 #'   threshold = 2,
 #'   dimension = 2
 #' )
-select_factor_count_strictly_positive <- function(# nolint
+select_factor_count_non_zero <- function(
+  # nolint
   observation,
   variable,
   threshold,

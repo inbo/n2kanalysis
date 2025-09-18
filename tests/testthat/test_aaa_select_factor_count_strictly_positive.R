@@ -1,5 +1,5 @@
 context("select data based on positive observations")
-describe("select_factor_count_strictly_positive", {
+describe("select_factor_count_non_zero", {
   observation <- data.frame(
     Count = c(4, 4, 4, 4, 3, 3, 3, 0, 2, 2, 0, 0),
     LocationID = rep(1:3, each = 4),
@@ -12,7 +12,7 @@ describe("select_factor_count_strictly_positive", {
 
   it("selects correctly", {
     expect_that(
-      select_factor_count_strictly_positive(
+      select_factor_count_non_zero(
         observation = observation,
         variable = "LocationID",
         threshold = 3,
@@ -21,7 +21,7 @@ describe("select_factor_count_strictly_positive", {
       is_identical_to(subset(observation, LocationID %in% 1:2))
     )
     expect_that(
-      select_factor_count_strictly_positive(
+      select_factor_count_non_zero(
         observation = observation,
         variable = c("LocationID", "Year"),
         threshold = 2,
@@ -30,7 +30,7 @@ describe("select_factor_count_strictly_positive", {
       is_identical_to(subset(observation, LocationID == 2))
     )
     expect_that(
-      select_factor_count_strictly_positive(
+      select_factor_count_non_zero(
         observation = observation,
         variable = c("LocationID", "Year"),
         threshold = 2,
@@ -39,7 +39,7 @@ describe("select_factor_count_strictly_positive", {
       is_identical_to(subset(observation, Year == 1))
     )
     expect_that(
-      select_factor_count_strictly_positive(
+      select_factor_count_non_zero(
         observation = observation_relative,
         variable = "Year",
         threshold = 0.15,
@@ -51,7 +51,7 @@ describe("select_factor_count_strictly_positive", {
   })
   it("checks the number of dimensions", {
     expect_that(
-      select_factor_count_strictly_positive(
+      select_factor_count_non_zero(
         observation = observation,
         variable = "LocationID",
         threshold = 3,
@@ -60,7 +60,7 @@ describe("select_factor_count_strictly_positive", {
       throws_error("the dimension can't exceed the number of variables")
     )
     expect_that(
-      select_factor_count_strictly_positive(
+      select_factor_count_non_zero(
         observation = observation,
         variable = c("LocationID", "Year"),
         threshold = 3,
@@ -72,7 +72,7 @@ describe("select_factor_count_strictly_positive", {
   })
   it("checks the correct class of threshold", {
     expect_that(
-      select_factor_count_strictly_positive(
+      select_factor_count_non_zero(
         observation = observation,
         variable = "LocationID",
         threshold = 0.15,
@@ -82,7 +82,7 @@ describe("select_factor_count_strictly_positive", {
       throws_error("threshold is not a count \\(a single positive integer\\)")
     )
     expect_that(
-      select_factor_count_strictly_positive(
+      select_factor_count_non_zero(
         observation = observation,
         variable = "LocationID",
         threshold = 3,

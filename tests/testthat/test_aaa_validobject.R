@@ -21,7 +21,10 @@ test_that("n2kanalysis objects", {
       TRUE
     } else {
       paste(
-        "Unequal x,y lengths: ", length(object@x), ", ", length(object@y),
+        "Unequal x,y lengths: ",
+        length(object@x),
+        ", ",
+        length(object@y),
         sep = ""
       )
     }
@@ -37,7 +40,9 @@ test_that("n2kanalysis objects", {
   expect_error(validObject(t2))
 
   temp_dir <- normalizePath(
-    tempfile("n2kanalysis"), winslash = "/", mustWork = FALSE
+    tempfile("n2kanalysis"),
+    winslash = "/",
+    mustWork = FALSE
   )
   dir.create(temp_dir)
   dir.create(paste(temp_dir, "sub", sep = "/"))

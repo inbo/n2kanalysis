@@ -25,12 +25,15 @@ moving_trend <- function(n_year, duration, first_year = 0) {
     function(i, trend_coef) {
       c(rep(0, i - 1), trend_coef, rep(0, n_year - duration - i + 1))
     },
-    numeric(n_year), trend_coef = trend_coef / sum(trend_coef ^ 2)
+    numeric(n_year),
+    trend_coef = trend_coef / sum(trend_coef^2)
   ) |>
     `colnames<-`(
       sprintf(
         "trend_%.1f_%i",
-        seq_len(n_year - duration + 1) + median(seq_len(duration)) - 2 +
+        seq_len(n_year - duration + 1) +
+          median(seq_len(duration)) -
+          2 +
           first_year,
         duration
       )

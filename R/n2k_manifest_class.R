@@ -9,16 +9,19 @@
 setClass(
   "n2kManifest",
   representation = representation(
-    Manifest = "data.frame", Fingerprint = "character"
+    Manifest = "data.frame",
+    Fingerprint = "character"
   ),
   prototype = prototype(
     Manifest = data.frame(
-      fingerprint = character(0), parent = character(0),
+      fingerprint = character(0),
+      parent = character(0),
       stringsAsFactors = FALSE
     ),
     Fingerprint = sha1(
       data.frame(
-        fingerprint = character(0), parent = character(0),
+        fingerprint = character(0),
+        parent = character(0),
         stringsAsFactors = FALSE
       )
     )
@@ -38,7 +41,9 @@ setValidity(
       msg = "Fingerprint is not a string (a length one character vector)."
     )
     check_dataframe_variable(
-      df = object@Manifest, force_na = TRUE, name = "Manifest",
+      df = object@Manifest,
+      force_na = TRUE,
+      name = "Manifest",
       variable = list(fingerprint = "character", parent = "character")
     )
     assert_that(
@@ -47,14 +52,16 @@ setValidity(
     )
 
     assert_that(
-      any(is.na(object@Manifest$parent)), msg = "All rows have parents"
+      any(is.na(object@Manifest$parent)),
+      msg = "All rows have parents"
     )
 
     self_link <- object@Manifest %>%
       filter(.data$fingerprint == .data$parent) %>%
       nrow()
     assert_that(
-      self_link == 0, msg = "Self references between parent and fingerprint"
+      self_link == 0,
+      msg = "Self references between parent and fingerprint"
     )
 
     if (!all(is.na(object@Manifest$parent))) {
@@ -85,7 +92,8 @@ setValidity(
     }
 
     assert_that(
-      sha1(object@Manifest) == object@Fingerprint, msg = "wrong fingerprint"
+      sha1(object@Manifest) == object@Fingerprint,
+      msg = "wrong fingerprint"
     )
     return(TRUE)
   }

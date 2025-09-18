@@ -18,12 +18,16 @@ moving_average <- function(n_year, duration, first_year = 0) {
     FUN.VALUE = vector(mode = "numeric", length = n_year),
     FUN = function(i, trend_coef, n_year) {
       c(rep(0, i), trend_coef, rep(0, n_year - length(trend_coef) - i))
-    }, trend_coef = rep(1 / duration, duration), n_year = n_year
+    },
+    trend_coef = rep(1 / duration, duration),
+    n_year = n_year
   ) |>
     `colnames<-`(
       sprintf(
         "average_%.1f_%i",
-        seq_len(n_year - duration + 1) + median(seq_len(duration)) - 2 +
+        seq_len(n_year - duration + 1) +
+          median(seq_len(duration)) -
+          2 +
           first_year,
         duration
       )

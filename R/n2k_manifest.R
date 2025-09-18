@@ -30,8 +30,10 @@ setMethod(
     manifest
   ) {
     assert_that(
-      has_name(manifest, "fingerprint"), has_name(manifest, "parent"),
-      is.character(manifest$fingerprint), is.character(manifest$parent),
+      has_name(manifest, "fingerprint"),
+      has_name(manifest, "parent"),
+      is.character(manifest$fingerprint),
+      is.character(manifest$parent),
       noNA(manifest$fingerprint)
     )
 
