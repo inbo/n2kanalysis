@@ -73,6 +73,7 @@ Collate:
     'n2k_analysis_metadata_class.R'
     'n2k_result_class.R'
     'combine_result.R'
+    'connect_inbo_s3.R'
     'import_s3_classes.R'
     'delete_model.R'
     'display.R'
