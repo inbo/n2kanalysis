@@ -63,7 +63,7 @@ Config/checklist/keywords: analysis, reproducible research, natura 2000,
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Collate: 
     'n2k_parameter_class.R'
     'n2k_anomaly_class.R'
