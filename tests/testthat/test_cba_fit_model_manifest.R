@@ -119,7 +119,9 @@ test_that("it handles a manifest", {
     file.remove()
 
   # works with an S3 bucket
-  skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
+  if (Sys.getenv("GITHUB_ACTION") == "") {
+    connect_inbo_s3()
+  }
   aws_base <- get_bucket(Sys.getenv("N2KBUCKET"), max = 1)
   store_model(object, base = aws_base, project = project)
   store_model(object2, base = aws_base, project = project)

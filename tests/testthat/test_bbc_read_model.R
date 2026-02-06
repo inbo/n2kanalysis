@@ -19,7 +19,9 @@ test_that("read_model() handles exceptions on characters", {
 })
 
 test_that("read_model() works with S3 buckets", {
-  skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
+  if (Sys.getenv("GITHUB_ACTION") == "") {
+    connect_inbo_s3()
+  }
   base <- get_bucket(Sys.getenv("N2KBUCKET"), max = 1)
   project <- "unittest_read_model"
   s3saveRDS(

@@ -64,7 +64,9 @@ test_that("store_model stores the model on a local file system", {
 })
 
 test_that("store_model stores the model on an S3 bucket", {
-  skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
+  if (Sys.getenv("GITHUB_ACTION") == "") {
+    connect_inbo_s3()
+  }
   bucket <- get_bucket(Sys.getenv("N2KBUCKET"))
   project <- "unittest_store_model"
   this_result_datasource_id <- sha1(sample(letters))

@@ -28,7 +28,9 @@ test_that("store_manifest stores the manifest on a local file system", {
 })
 
 test_that("store_manifest stores the manifest on an S3 bucket", {
-  skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
+  if (Sys.getenv("GITHUB_ACTION") == "") {
+    connect_inbo_s3()
+  }
   project <- "unittest_store_manifest"
   bucket <- get_bucket(Sys.getenv("N2KBUCKET"), prefix = project, max = 1)
   object <- n2k_manifest(
