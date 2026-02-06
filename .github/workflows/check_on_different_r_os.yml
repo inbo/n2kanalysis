@@ -46,6 +46,19 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
+      - name: linux dependencies
+        if: runner.os == 'linux'
+        run: |
+          cd /tmp
+          wget http://ftp.gnu.org/gnu/glibc/glibc-2.38.tar.gz
+          tar -xzf glibc-2.38.tar.gz
+          mkdir glibc-build
+          cd glibc-build
+          ../glibc-2.38/configure --prefix=/usr/local/glibc-2.38
+          make -j$(nproc)
+          sudo make install
+          ldd --version
+      
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
