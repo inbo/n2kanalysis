@@ -10,7 +10,7 @@ The import from the raw data into the analysis object is done by dedicated packa
 
 ## Rationale
 
-`n2kanalysis` is part of the collection of [R packages](https://github.com/search?q=topic%3Anatura2000+org%3Ainbo&type=Repositories) created to analyse the data gathered during the Natura 2000 monitoring.
+`n2kanalysis` is part of the collection of R packages created to analyse the data gathered during the Natura 2000 monitoring.
 
 - [`n2kanalysis`](https://github.com/inbo/n2kanalysis): R package with generic functions for the analysis
 - [`watervogelanalysis`](https://github.com/inbo/watervogelanalysis): R package to extract the raw data from the wintering bird survey database and prepare the analyses

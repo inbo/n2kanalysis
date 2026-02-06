@@ -17,3 +17,5 @@
 ^organisation.yml$
 ^pkgdown$
 ^wercker\.yml$
+^\.vscode$
+^[.]?air[.]toml$
