@@ -11,8 +11,7 @@
 #' @importFrom stats setNames
 #' @importFrom utils head tail
 connect_inbo_s3 <- function() {
-  c(unix = ".aws", windows = "../.aws")[.Platform$OS.type] |>
-    path_home() -> aws_dir
+  aws_dir <- path_home(".aws")
   stopifnot("no `.aws` folder found" = dir_exists(aws_dir))
   # Read the credentials file
   path(aws_dir, "credentials") |>
