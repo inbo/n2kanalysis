@@ -64,6 +64,7 @@ test_that("store_model stores the model on a local file system", {
 })
 
 test_that("store_model stores the model on an S3 bucket", {
+  skip_if(Sys.getenv("MY_UNIVERSE") != "") # skip test on r-universe.dev
   if (Sys.getenv("GITHUB_ACTION") == "") {
     connect_inbo_s3()
   }
