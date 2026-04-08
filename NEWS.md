@@ -1,6 +1,10 @@
 # `n2kanalysis` 0.4.1
 
-* Improve `get_result()`
+* Improve `get_result()`.
+* Add `connect_inbo_s3()` function to make the temporary credentials available
+  to the R functions.
+* Improve automated tests.
+* Update code style with `air`.
 
 # `n2kanalysis` 0.4.0
 
