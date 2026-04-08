@@ -2,11 +2,13 @@
 ^CITATION\.cff$
 ^LICENSE.md$
 ^README\.Rmd$
+^[.]?air[.]toml$
 ^\.Rproj\.user$
 ^\.git$
 ^\.github$
 ^\.httr-oauth$
 ^\.lintr$
+^\.vscode$
 ^\.zenodo\.json$
 ^_pkgdown.yml$
 ^checklist.yml$
@@ -17,5 +19,3 @@
 ^organisation.yml$
 ^pkgdown$
 ^wercker\.yml$
-^\.vscode$
-^[.]?air[.]toml$

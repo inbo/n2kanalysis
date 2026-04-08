@@ -23,4 +23,4 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::347082780157:role/inbo-n2kmonitoring-shared-infra-eu-west-1-unittest-role
           aws-region: eu-west-1
-      - uses: inbo/actions/check_pkg@devel
+      - uses: inbo/actions/check_pkg@main
