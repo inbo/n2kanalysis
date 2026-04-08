@@ -51,8 +51,11 @@ setReplaceMethod(
     x@parent_status <- value
     x@status_fingerprint <- sha1(
       list(
-        x@AnalysisMetadata$file_fingerprint, x@AnalysisMetadata$status,
-        x@Parameter, x@Index, x@AnalysisMetadata$analysis_version,
+        x@AnalysisMetadata$file_fingerprint,
+        x@AnalysisMetadata$status,
+        x@Parameter,
+        x@Index,
+        x@AnalysisMetadata$analysis_version,
         x@AnalysisRelation
       ),
       digits = 6L

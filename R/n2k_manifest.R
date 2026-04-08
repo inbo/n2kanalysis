@@ -30,17 +30,18 @@ setMethod(
     manifest
   ) {
     assert_that(
-      has_name(manifest, "fingerprint"), has_name(manifest, "parent"),
-      is.character(manifest$fingerprint), is.character(manifest$parent),
+      has_name(manifest, "fingerprint"),
+      has_name(manifest, "parent"),
+      is.character(manifest$fingerprint),
+      is.character(manifest$parent),
       noNA(manifest$fingerprint)
     )
 
-    if (inherits(manifest, "tbl")) {
-      manifest <- as.data.frame(manifest)
-    }
     manifest |>
+      as.data.frame() |>
       distinct(.data$fingerprint, .data$parent) |>
-      arrange(.data$fingerprint, .data$parent) -> manifest
-    new("n2kManifest", Manifest = manifest, Fingerprint = sha1(manifest))
+      arrange(.data$fingerprint, .data$parent) -> manif
+    attributes(manif) <- attributes(manif)[c("names", "row.names", "class")]
+    new("n2kManifest", Manifest = manif, Fingerprint = sha1(manif))
   }
 )

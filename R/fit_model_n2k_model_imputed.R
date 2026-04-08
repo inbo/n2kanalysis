@@ -28,7 +28,9 @@ setMethod(
         x@AnalysisRelation$parentstatus_fingerprint <-
           parent[[1]]@AnalysisMetadata$status_fingerprint
         status(x) <- ifelse(
-          parent_status %in% c("new", "waiting"), "waiting", "error"
+          parent_status %in% c("new", "waiting"),
+          "waiting",
+          "error"
         )
         return(x)
       }
@@ -39,7 +41,10 @@ setMethod(
       status(x) <- "new"
     }
     stopifnot(all(vapply(
-      x@Package, FUN = require, FUN.VALUE = logical(1), quietly = TRUE,
+      x@Package,
+      FUN = require,
+      FUN.VALUE = logical(1),
+      quietly = TRUE,
       character.only = TRUE
     )))
     model_args <- x@ModelArgs
@@ -48,10 +53,14 @@ setMethod(
     }
     model <- try(
       model_impute(
-        object = x@AggregatedImputed, model_fun = x@Function,
+        object = x@AggregatedImputed,
+        model_fun = x@Function,
         rhs = gsub("~", "", x@AnalysisMetadata$formula),
-        model_args = model_args, extractor = x@Extractor, mutate = x@Mutate,
-        extractor_args = x@ExtractorArgs, filter = filter2function(x@Filter)
+        model_args = model_args,
+        extractor = x@Extractor,
+        mutate = x@Mutate,
+        extractor_args = x@ExtractorArgs,
+        filter = filter2function(x@Filter)
       )
     )
     if ("try-error" %in% class(model)) {

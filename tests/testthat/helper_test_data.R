@@ -23,7 +23,7 @@ test_data <- function(datafield_id = sha1(letters), missing = 0) {
   mm_fixed <- model.matrix(~ A * (B + C) + C * D, data = dataset)
   fixed <- runif(ncol(mm_fixed))
 
-  mm_random <- model.matrix(~ 0 + factor(E) : A, data = dataset)
+  mm_random <- model.matrix(~ 0 + factor(E):A, data = dataset)
   random <- rnorm(length(levels(dataset$A)) * n_e, sd = sd_random)
   random <- apply(matrix(random, nrow = n_e), 2, cumsum)
   random <- as.vector(random)

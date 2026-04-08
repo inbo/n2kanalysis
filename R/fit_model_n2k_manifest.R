@@ -12,11 +12,19 @@ setMethod(
   f = "fit_model",
   signature = signature(x = "n2kManifest"),
   definition = function(
-    x, base, project, status = c("new", "waiting"), verbose = TRUE, ...,
+    x,
+    base,
+    project,
+    status = c("new", "waiting"),
+    verbose = TRUE,
+    ...,
     local = NULL
   ) {
     assert_that(
-      is.string(project), noNA(project), is.character(status), noNA(status),
+      is.string(project),
+      noNA(project),
+      is.character(status),
+      noNA(status),
       length(status) >= 1
     )
     to_do <- order_manifest(x)
@@ -31,7 +39,10 @@ setMethod(
     } else {
       data.frame(fingerprint = character(0), status = character(0)) |>
         write.table(
-          file = cache_file, sep = "\t", row.names = FALSE, quote = FALSE
+          file = cache_file,
+          sep = "\t",
+          row.names = FALSE,
+          quote = FALSE
         )
     }
     start_time <- Sys.time()
@@ -39,23 +50,35 @@ setMethod(
       display(
         verbose = verbose,
         message = sprintf(
-          "Processing %i from %i (%.2f%%) %s ETA %s", i, length(to_do),
+          "Processing %i from %i (%.2f%%) %s ETA %s",
+          i,
+          length(to_do),
           100 * (i - 1) / length(to_do),
           format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
           format(
-            start_time + (Sys.time() - start_time) * length(to_do)  / (i - 1),
+            start_time + (Sys.time() - start_time) * length(to_do) / (i - 1),
             "%d %H:%M"
           )
         )
       )
       result <- try(fit_model(
-        x = to_do[i], base = base, project = project, status = status,
-        verbose = verbose, ..., local = local
+        x = to_do[i],
+        base = base,
+        project = project,
+        status = status,
+        verbose = verbose,
+        ...,
+        local = local
       ))
       if (!inherits(result, "try-error")) {
         write.table(
-          result, file = cache_file, append = TRUE, sep = "\t",
-          row.names = FALSE, quote = FALSE, col.names = FALSE
+          result,
+          file = cache_file,
+          append = TRUE,
+          sep = "\t",
+          row.names = FALSE,
+          quote = FALSE,
+          col.names = FALSE
         )
       }
     }

@@ -4,7 +4,9 @@ test_that("store_manifest stores the manifest on a local file system", {
   dir.create(temp_dir)
   object <- n2k_manifest(
     data.frame(
-      fingerprint = "1", parent = NA_character_, stringsAsFactors = FALSE
+      fingerprint = "1",
+      parent = NA_character_,
+      stringsAsFactors = FALSE
     )
   )
   expect_is(
@@ -26,29 +28,31 @@ test_that("store_manifest stores the manifest on a local file system", {
 })
 
 test_that("store_manifest stores the manifest on an S3 bucket", {
-  skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
-  bucket <- get_bucket(Sys.getenv("N2KBUCKET"))
+  skip_if(Sys.getenv("MY_UNIVERSE") != "") # skip test on r-universe.dev
+  if (Sys.getenv("GITHUB_ACTION") == "") {
+    connect_inbo_s3()
+  }
+  project <- "unittest_store_manifest"
+  bucket <- get_bucket(Sys.getenv("N2KBUCKET"), prefix = project, max = 1)
   object <- n2k_manifest(
     data.frame(
-      fingerprint = "1", parent = NA_character_, stringsAsFactors = FALSE
+      fingerprint = "1",
+      parent = NA_character_,
+      stringsAsFactors = FALSE
     )
   )
-  expect_is(
-    stored <- store_manifest(
-      x = object, base = bucket, project = "unittest_store_manifest"
-    ),
-    "s3_bucket"
+  expect_type(
+    stored <- store_manifest(x = object, base = bucket, project = project),
+    "character"
+  )
+  available <- get_bucket(bucket, prefix = project)
+  expect_equivalent(stored, map_chr(available, "Key"))
+  expect_type(
+    stored2 <- store_manifest(x = object, base = bucket, project = project),
+    "character"
   )
   available <- get_bucket(bucket, prefix = "unittest_store_manifest")
-  expect_equivalent(stored, available)
-  expect_is(
-    stored2 <- store_manifest(
-      x = object, base = bucket, project = "unittest_store_manifest"
-    ),
-    "s3_bucket"
-  )
-  available <- get_bucket(bucket, prefix = "unittest_store_manifest")
-  expect_equivalent(stored2, available)
+  expect_equivalent(stored2, map_chr(available, "Key"))
   expect_equivalent(stored, stored2)
   expect_true(all(sapply(available, delete_object, bucket = bucket)))
 })

@@ -29,12 +29,16 @@ select_factor_threshold <- function(observation, variable, threshold) {
   if (!is.factor(variable_factor)) {
     variable_factor <- factor(variable_factor)
   }
-  if (nrow(observation) < 2 * length(levels(variable_factor))) {
-    stop(
-"The number of observations much be at least twice the number of levels in ",
-variable
-    )
-  }
+
+  list(nrow(observation) >= 2 * length(levels(variable_factor))) |>
+    setNames(
+      paste(
+        "The number of observations much be at least twice the number of",
+        "levels in",
+        variable
+      )
+    ) |>
+    do.call(what = stopifnot)
 
   model <- glm.nb(observation$Count ~ 0 + variable_factor)
   log_threshold <- max(coef(model)) + log(threshold)

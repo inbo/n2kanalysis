@@ -18,7 +18,8 @@ union <- function(...) {
   rownames(r_package) <- NULL
   analysis_version <- sha1(r_package)
   analysis_version_r_package <- data.frame(
-    analysis_version = analysis_version, r_package = r_package$fingerprint
+    analysis_version = analysis_version,
+    r_package = r_package$fingerprint
   )
   output <- combine(
     ...,

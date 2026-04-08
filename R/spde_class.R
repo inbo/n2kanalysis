@@ -15,7 +15,9 @@
 setClass(
   "Spde",
   representation = representation(
-    Coordinates = "data.frame", Range = "numeric", Sigma = "numeric"
+    Coordinates = "data.frame",
+    Range = "numeric",
+    Sigma = "numeric"
   )
 )
 
@@ -25,10 +27,16 @@ setValidity(
   "Spde",
   function(object) {
     assert_that(
-      noNA(object@Coordinates), noNA(object@Range), noNA(object@Sigma),
-      ncol(object@Coordinates) == 2, length(object@Range) == 2,
-      length(object@Sigma) == 2, all(object@Range > 0), all(object@Sigma > 0),
-      object@Range[2] < 1, object@Sigma[2] < 1
+      noNA(object@Coordinates),
+      noNA(object@Range),
+      noNA(object@Sigma),
+      ncol(object@Coordinates) == 2,
+      length(object@Range) == 2,
+      length(object@Sigma) == 2,
+      all(object@Range > 0),
+      all(object@Sigma > 0),
+      object@Range[2] < 1,
+      object@Sigma[2] < 1
     )
     return(TRUE)
   }

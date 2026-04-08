@@ -1,10 +1,11 @@
 Package: n2kanalysis
 Title: Generic Functions to Analyse Data from the 'Natura 2000' Monitoring
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
-    person("Research Institute for Nature and Forest (INBO)", , , "info@inbo.be", role = c("cph", "fnd"))
+    person("Research Institute for Nature and Forest (INBO)", , , "info@inbo.be", role = c("cph", "fnd"),
+           comment = c(ROR = "00j54wy13"))
   )
 Description: All generic functions and classes for the analysis for the
     'Natura 2000' monitoring. The classes contain all required data and
@@ -62,7 +63,7 @@ Config/checklist/keywords: analysis, reproducible research, natura 2000,
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Collate: 
     'n2k_parameter_class.R'
     'n2k_anomaly_class.R'
@@ -72,6 +73,7 @@ Collate:
     'n2k_analysis_metadata_class.R'
     'n2k_result_class.R'
     'combine_result.R'
+    'connect_inbo_s3.R'
     'import_s3_classes.R'
     'delete_model.R'
     'display.R'
@@ -169,3 +171,4 @@ Collate:
     'store_model.R'
     'union.R'
     'valid_object.R'
+    'write_s3_fun.R'

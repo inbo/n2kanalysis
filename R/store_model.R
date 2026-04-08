@@ -27,11 +27,17 @@ setMethod(
   signature = signature(base = "character"),
   definition = function(x, base, project, overwrite = TRUE, validate = TRUE) {
     assert_that(
-      is.flag(overwrite), noNA(overwrite), inherits(x, "n2kModel"),
-      is.string(base), is.string(project), noNA(project), is.flag(validate)
+      is.flag(overwrite),
+      noNA(overwrite),
+      inherits(x, "n2kModel"),
+      is.string(base),
+      is.string(project),
+      noNA(project),
+      is.flag(validate)
     )
     assert_that(
-      dir_exists(base), msg = sprintf("`%s` is not an existing directory", base)
+      dir_exists(base),
+      msg = sprintf("`%s` is not an existing directory", base)
     )
     base <- path_abs(base)
     if (isTRUE(validate)) {
@@ -45,7 +51,9 @@ setMethod(
     base <- path(base, project, part)
     dir_create(base)
     current <- dir_ls(
-      base, recurse = TRUE, type = "file",
+      base,
+      recurse = TRUE,
+      type = "file",
       regexp = sprintf("%s.rds$", fingerprint)
     )
     if (length(current) > 0) {
@@ -75,8 +83,13 @@ setMethod(
   signature = signature(base = "s3_bucket"),
   definition = function(x, base, project, overwrite = TRUE, validate = TRUE) {
     assert_that(
-      inherits(x, "n2kModel"), is.string(project), is.flag(overwrite),
-      is.flag(validate), noNA(project), noNA(overwrite), noNA(validate)
+      inherits(x, "n2kModel"),
+      is.string(project),
+      is.flag(overwrite),
+      is.flag(validate),
+      noNA(project),
+      noNA(overwrite),
+      noNA(validate)
     )
     if (isTRUE(validate)) {
       validObject(x, complete = TRUE)
@@ -121,8 +134,10 @@ setMethod(
         sha1() |>
         sprintf(fmt = "%2$s/backup/%1$s", project) -> backup
       copy_object(
-        from_object = old[1], to_object = backup,
-        from_bucket = base, to_bucket = base
+        from_object = old[1],
+        to_object = backup,
+        from_bucket = base,
+        to_bucket = base
       )
       delete_object(old, bucket = base)
     }
@@ -152,8 +167,10 @@ setMethod(
       # restore the backup because s3saveRDS() failed
       if (!bucket_ok) {
         copy_object(
-          from_object = backup, to_object = old[1],
-          from_bucket = base, to_bucket = base
+          from_object = backup,
+          to_object = old[1],
+          from_bucket = base,
+          to_bucket = base
         )
       }
       # remove the backup

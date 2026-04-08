@@ -29,4 +29,4 @@ identifiers:
   value: 10.5281/zenodo.3576047
 - type: url
   value: https://inbo.github.io/n2kanalysis/
-version: 0.4.0
+version: 0.4.1

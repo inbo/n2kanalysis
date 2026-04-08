@@ -7,11 +7,11 @@
 \alias{store_manifest,ANY,s3_bucket-method}
 \title{Store an \code{n2kManifest} object}
 \usage{
-store_manifest(x, base, project)
+store_manifest(x, base, project, overwrite = FALSE)
 
-\S4method{store_manifest}{ANY,character}(x, base, project)
+\S4method{store_manifest}{ANY,character}(x, base, project, overwrite = FALSE)
 
-\S4method{store_manifest}{ANY,s3_bucket}(x, base, project)
+\S4method{store_manifest}{ANY,s3_bucket}(x, base, project, overwrite = FALSE)
 }
 \arguments{
 \item{x}{the \code{n2kManifest}}
@@ -19,6 +19,9 @@ store_manifest(x, base, project)
 \item{base}{the base location to store the manifest}
 
 \item{project}{will be a relative path within the base location}
+
+\item{overwrite}{Should an existing object be overwritten?
+Defaults to \code{TRUE}.}
 }
 \description{
 Store an \code{n2kManifest} object

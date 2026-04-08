@@ -16,8 +16,10 @@ setClass(
   contains = "n2kAnalysisVersion",
   prototype = prototype(
     AnalysisRelation = data.frame(
-      analysis = character(0), parent_analysis = character(0),
-      parentstatus_fingerprint = character(0), parent_status = character(0),
+      analysis = character(0),
+      parent_analysis = character(0),
+      parentstatus_fingerprint = character(0),
+      parent_status = character(0),
       stringsAsFactors = FALSE
     )
   )
@@ -72,12 +74,15 @@ setValidity(
 
     assert_that(
       length(object@AnalysisFormula) == nrow(object@AnalysisMetadata),
-  msg = "Number of 'AnalysisFormula' not equal to number of 'AnalysisMetadata'"
+      msg = paste(
+        "Number of 'AnalysisFormula' not equal to number of 'AnalysisMetadata'"
+      )
     )
     if (inherits(object@AnalysisMetadata$formula, "character")) {
-      assert_that(isTRUE(all.equal(
-        lapply(object@AnalysisMetadata$formula, as.formula),
-        object@AnalysisFormula
+      assert_that(
+        isTRUE(all.equal(
+          lapply(object@AnalysisMetadata$formula, as.formula),
+          object@AnalysisFormula
         )),
         msg = "Formulas in 'AnalysisMetadata' don't match 'AnalysisFormula'"
       )
@@ -86,10 +91,11 @@ setValidity(
         levels(object@AnalysisMetadata$formula),
         as.formula
       )
-      assert_that(isTRUE(all.equal(
-        formula_list[object@AnalysisMetadata$formula],
-        object@AnalysisFormula
-      )),
+      assert_that(
+        isTRUE(all.equal(
+          formula_list[object@AnalysisMetadata$formula],
+          object@AnalysisFormula
+        )),
         msg = "Formulas in 'AnalysisMetadata' don't match 'AnalysisFormula'"
       )
     }
@@ -108,45 +114,60 @@ setValidity(
     if (any(object@AnalysisMetadata$last_imported_year > this_year)) {
       stop("last_imported_year from the future.")
     }
-    if (any(
-      object@AnalysisMetadata$first_imported_year >
-        object@AnalysisMetadata$last_imported_year
-    )) {
+    if (
+      any(
+        object@AnalysisMetadata$first_imported_year >
+          object@AnalysisMetadata$last_imported_year
+      )
+    ) {
       stop("first_imported_year cannot exceed last_imported_year")
     }
-    if (any(
-      object@AnalysisMetadata$last_analysed_year >
-        object@AnalysisMetadata$last_imported_year
-    )) {
+    if (
+      any(
+        object@AnalysisMetadata$last_analysed_year >
+          object@AnalysisMetadata$last_imported_year
+      )
+    ) {
       stop("last_analysed_year cannot exceed last_imported_year")
     }
-    if (any(
-      object@AnalysisMetadata$duration >
+    list(
+      object@AnalysisMetadata$duration <=
         object@AnalysisMetadata$last_imported_year -
-        object@AnalysisMetadata$first_imported_year + 1
-    )) {
-      stop(
+          object@AnalysisMetadata$first_imported_year +
+          1
+    ) |>
+      setNames(
         paste(
           "duration longer than the interval from first_imported_year to",
           "last_imported_year"
         )
-      )
-    }
+      ) |>
+      do.call(what = stopifnot)
 
-    if (any(
-      object@AnalysisMetadata$last_analysed_year <
+    list(
+      object@AnalysisMetadata$last_analysed_year >=
         object@AnalysisMetadata$first_imported_year +
-        object@AnalysisMetadata$duration - 1
-    )) {
-      stop(
-"last_analysed_year smaller than first_imported_year + duration - 1. Window
-outside imported range."
-      )
-    }
+          object@AnalysisMetadata$duration -
+          1
+    ) |>
+      setNames(
+        paste(
+          "`last_analysed_year` smaller than `first_imported_year + duration -",
+          "1`. Window outside imported range."
+        )
+      ) |>
+      do.call(what = stopifnot)
 
     ok_status <- c(
-      "new", "working", "waiting", "error", "converged", "false_convergence",
-      "unstable", "insufficient_data", "time-out"
+      "new",
+      "working",
+      "waiting",
+      "error",
+      "converged",
+      "false_convergence",
+      "unstable",
+      "insufficient_data",
+      "time-out"
     )
     if (!all(object@AnalysisMetadata$status %in% ok_status)) {
       stop(
@@ -164,15 +185,17 @@ outside imported range."
       stop("analysis_date must be in the past")
     }
 
-    if (!all(
+    list(
       object@AnalysisRelation$analysis %in%
         object@AnalysisMetadata$file_fingerprint
-    )) {
-      stop(
-"Some Analysis in 'AnalysisRelation' slot have no matching file_fingerprint in
-'Analysis' slot"
-      )
-    }
+    ) |>
+      setNames(
+        paste(
+          "Some Analysis in 'AnalysisRelation' slot have no matching",
+          "`file_fingerprint` in 'Analysis' slot"
+        )
+      ) |>
+      do.call(what = stopifnot)
 
     return(TRUE)
   }

@@ -8,19 +8,29 @@
 #' @importFrom git2rdata is_git2rmeta update_metadata verify_vc write_vc
 get_datafield_id <- function(table, field, datasource, root, stage = FALSE) {
   assert_that(
-    is.string(table), is.string(field), is.string(datasource), noNA(table),
-    noNA(field), noNA(datasource)
+    is.string(table),
+    is.string(field),
+    is.string(datasource),
+    noNA(table),
+    noNA(field),
+    noNA(datasource)
   )
   if (!is_git2rmeta(file = "datafield", root = root)) {
     data.frame(id = 1L, table = table, field = field, source = datasource) |>
       write_vc(file = "datafield", root = root, sorting = "id", stage = stage)
     update_metadata(
-      file = "datafield", root = root, stage = stage, name = "datafield",
+      file = "datafield",
+      root = root,
+      stage = stage,
+      name = "datafield",
       title = "Pointer to external code identifiers",
-      description =
-        "This dataset describes the external code identifiers used in the data.
-It points to the original source of the external code: which datasource, which
-table in that datasource and which field in that table.",
+      description = paste(
+        "This dataset describes the external code identifiers used in the",
+        "data.",
+        "It points to the original source of the external code: which",
+        "datasource, which table in that datasource and which field in that",
+        "table."
+      ),
       field_description = c(
         id = "unique identifier of the datafield",
         table = "table name of the identifier",
@@ -31,11 +41,13 @@ table in that datasource and which field in that table.",
     return(1L)
   }
   datafield <- verify_vc(
-    file = "datafield", root = root,
+    file = "datafield",
+    root = root,
     variables = c("id", "table", "field", "source")
   )
   which(
-    datafield$table == table & datafield$field == field &
+    datafield$table == table &
+      datafield$field == field &
       datafield$source == datasource
   ) -> relevant
   stopifnot("multiple matching datafield id found" = length(relevant) <= 1)

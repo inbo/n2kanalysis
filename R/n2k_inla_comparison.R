@@ -12,7 +12,8 @@
 setGeneric(
   name = "n2k_inla_comparison",
   def = function(
-    parent_status, ...
+    parent_status,
+    ...
   ) {
     standardGeneric("n2k_inla_comparison") # nocov
   }
@@ -53,10 +54,21 @@ setMethod(
   f = "n2k_inla_comparison",
   signature = signature(parent_status = "data.frame"),
   definition = function(
-    parent_status, status = "waiting", result_datasource_id, scheme_id,
-    formula, species_group_id, location_group_id, model_type,
-    first_imported_year, last_imported_year, duration, last_analysed_year,
-    analysis_date, ..., seed
+    parent_status,
+    status = "waiting",
+    result_datasource_id,
+    scheme_id,
+    formula,
+    species_group_id,
+    location_group_id,
+    model_type,
+    first_imported_year,
+    last_imported_year,
+    duration,
+    last_analysed_year,
+    analysis_date,
+    ...,
+    seed
   ) {
     assert_that(is.string(status))
     if (missing(seed)) {
@@ -99,10 +111,17 @@ setMethod(
     file_fingerprint <- sha1(
       list(
         result_datasource_id,
-        scheme_id, species_group_id, location_group_id,
-        model_type, formula, first_imported_year,
-        last_imported_year, duration, last_analysed_year,
-        format(analysis_date, tz = "UTC"), seed,
+        scheme_id,
+        species_group_id,
+        location_group_id,
+        model_type,
+        formula,
+        first_imported_year,
+        last_imported_year,
+        duration,
+        last_analysed_year,
+        format(analysis_date, tz = "UTC"),
+        seed,
         parent_status$parent_analysis
       )
     )
@@ -110,15 +129,22 @@ setMethod(
     parent_status$analysis <- file_fingerprint
     parent_status <- parent_status %>%
       select(
-        "analysis", "parent_analysis", "parentstatus_fingerprint",
+        "analysis",
+        "parent_analysis",
+        "parentstatus_fingerprint",
         "parent_status"
       )
     version <- get_analysis_version(sessionInfo())
     status_fingerprint <- sha1(
       list(
-        file_fingerprint, status, NULL,
-        version@AnalysisVersion$fingerprint, version@AnalysisVersion,
-        version@RPackage, version@AnalysisVersionRPackage, parent_status
+        file_fingerprint,
+        status,
+        NULL,
+        version@AnalysisVersion$fingerprint,
+        version@AnalysisVersion,
+        version@RPackage,
+        version@AnalysisVersionRPackage,
+        parent_status
       ),
       digits = 6L
     )

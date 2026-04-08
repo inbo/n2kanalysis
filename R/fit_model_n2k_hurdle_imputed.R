@@ -8,8 +8,12 @@ setMethod(
   f = "fit_model",
   signature = signature(x = "n2kHurdleImputed"),
   definition = function(
-    x, base, project, status = c("new", "waiting"), ...
-) {
+    x,
+    base,
+    project,
+    status = c("new", "waiting"),
+    ...
+  ) {
     validObject(x)
     assert_that(is.character(status), length(status) >= 1)
 
@@ -20,7 +24,9 @@ setMethod(
 
     if (is.null(x@Presence) || status(x) %in% c("converged", "error")) {
       presence <- read_model(
-        x@AnalysisRelation$parent_analysis[1], base = base, project = project
+        x@AnalysisRelation$parent_analysis[1],
+        base = base,
+        project = project
       )
       x@Presence <- presence@RawImputed
       x@AnalysisRelation$parentstatus_fingerprint[1] <- get_status_fingerprint(
@@ -30,18 +36,28 @@ setMethod(
       rm(presence)
       gc()
       x@AnalysisMetadata$status <- ifelse(
-        all(x@AnalysisRelation$parentstatus == "converged"), "new",
+        all(x@AnalysisRelation$parentstatus == "converged"),
+        "new",
         ifelse(
-          any(!x@AnalysisRelation$parentstatus %in%
-                c("new", "waiting", "converged")),
-          "error", "waiting"
+          any(
+            !x@AnalysisRelation$parentstatus %in%
+              c("new", "waiting", "converged")
+          ),
+          "error",
+          "waiting"
         )
       )
       x@AnalysisMetadata$status_fingerprint <- sha1(
         list(
-          get_file_fingerprint(x), x@AnalysisMetadata$status,
-          x@AnalysisVersion$fingerprint, x@AnalysisVersion, x@RPackage,
-          x@AnalysisVersionRPackage, x@AnalysisRelation, x@Presence, x@Count,
+          get_file_fingerprint(x),
+          x@AnalysisMetadata$status,
+          x@AnalysisVersion$fingerprint,
+          x@AnalysisVersion,
+          x@RPackage,
+          x@AnalysisVersionRPackage,
+          x@AnalysisRelation,
+          x@Presence,
+          x@Count,
           x@Hurdle
         ),
         digits = 6L
@@ -50,7 +66,9 @@ setMethod(
     }
     if (is.null(x@Count) || status(x) %in% c("converged", "error")) {
       count <- read_model(
-        x@AnalysisRelation$parent_analysis[2], base = base, project = project
+        x@AnalysisRelation$parent_analysis[2],
+        base = base,
+        project = project
       )
       x@Count <- count@RawImputed
       x@AnalysisRelation$parentstatus_fingerprint[2] <- get_status_fingerprint(
@@ -61,18 +79,28 @@ setMethod(
       gc()
 
       x@AnalysisMetadata$status <- ifelse(
-        all(x@AnalysisRelation$parentstatus == "converged"), "new",
+        all(x@AnalysisRelation$parentstatus == "converged"),
+        "new",
         ifelse(
-          any(!x@AnalysisRelation$parentstatus %in%
-                c("new", "waiting", "converged")),
-          "error", "waiting"
+          any(
+            !x@AnalysisRelation$parentstatus %in%
+              c("new", "waiting", "converged")
+          ),
+          "error",
+          "waiting"
         )
       )
       x@AnalysisMetadata$status_fingerprint <- sha1(
         list(
-          get_file_fingerprint(x), x@AnalysisMetadata$status,
-          x@AnalysisVersion$fingerprint, x@AnalysisVersion, x@RPackage,
-          x@AnalysisVersionRPackage, x@AnalysisRelation, x@Presence, x@Count,
+          get_file_fingerprint(x),
+          x@AnalysisMetadata$status,
+          x@AnalysisVersion$fingerprint,
+          x@AnalysisVersion,
+          x@RPackage,
+          x@AnalysisVersionRPackage,
+          x@AnalysisRelation,
+          x@Presence,
+          x@Count,
           x@Hurdle
         ),
         digits = 6L
@@ -88,9 +116,16 @@ setMethod(
     if (inherits(result, "try-error")) {
       x@AnalysisMetadata$status_fingerprint <- sha1(
         list(
-          get_file_fingerprint(x), "error", x@AnalysisVersion$fingerprint,
-          x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
-          x@AnalysisRelation, x@Presence, x@Count, NULL
+          get_file_fingerprint(x),
+          "error",
+          x@AnalysisVersion$fingerprint,
+          x@AnalysisVersion,
+          x@RPackage,
+          x@AnalysisVersionRPackage,
+          x@AnalysisRelation,
+          x@Presence,
+          x@Count,
+          NULL
         ),
         digits = 6L
       )
@@ -99,9 +134,16 @@ setMethod(
     }
     x@AnalysisMetadata$status_fingerprint <- sha1(
       list(
-        get_file_fingerprint(x), "converged", x@AnalysisVersion$fingerprint,
-        x@AnalysisVersion, x@RPackage, x@AnalysisVersionRPackage,
-        x@AnalysisRelation, x@Presence, x@Count, result
+        get_file_fingerprint(x),
+        "converged",
+        x@AnalysisVersion$fingerprint,
+        x@AnalysisVersion,
+        x@RPackage,
+        x@AnalysisVersionRPackage,
+        x@AnalysisRelation,
+        x@Presence,
+        x@Count,
+        result
       ),
       digits = 6L
     )

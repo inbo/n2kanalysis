@@ -1,18 +1,26 @@
 context("store_manifest_yaml")
 test_that("store_manifest_yaml stores the manifest on an S3 bucket", {
-  skip_if(Sys.getenv("AWS_SECRET_ACCESS_KEY") == "", message = "No AWS access")
-  bucket <- get_bucket(Sys.getenv("N2KBUCKET"))
+  skip_if(Sys.getenv("MY_UNIVERSE") != "") # skip test on r-universe.dev
+  if (Sys.getenv("GITHUB_ACTION") == "") {
+    connect_inbo_s3()
+  }
   object <- n2k_manifest(
     data.frame(
-      fingerprint = "1", parent = NA_character_, stringsAsFactors = FALSE
+      fingerprint = "1",
+      parent = NA_character_,
+      stringsAsFactors = FALSE
     )
   )
   project <- "unittest_store_manifest_yaml"
+  bucket <- get_bucket(Sys.getenv("N2KBUCKET"), prefix = project, max = 1)
   docker <- "inbobmk/rn2k:latest"
   dependencies <- c("inbo/n2khelper@v0.4.1", "inbo/n2kanalysis@docker")
   expect_is(
     stored <- store_manifest_yaml(
-      x = object, base = bucket, project = project, docker = docker,
+      x = object,
+      base = bucket,
+      project = project,
+      docker = docker,
       dependencies = dependencies
     ),
     "character"
@@ -29,7 +37,10 @@ test_that("store_manifest_yaml stores the manifest on an S3 bucket", {
 
   expect_is(
     stored2 <- store_manifest_yaml(
-      x = object, base = bucket, project = project, docker = docker,
+      x = object,
+      base = bucket,
+      project = project,
+      docker = docker,
       dependencies = dependencies
     ),
     "character"
@@ -52,7 +63,9 @@ test_that("store_manifest_yaml stores the manifest on a file system", {
   dir.create(base)
   object <- n2k_manifest(
     data.frame(
-      fingerprint = "1", parent = NA_character_, stringsAsFactors = FALSE
+      fingerprint = "1",
+      parent = NA_character_,
+      stringsAsFactors = FALSE
     )
   )
   project <- "unittest_store_manifest_yaml"
@@ -60,7 +73,10 @@ test_that("store_manifest_yaml stores the manifest on a file system", {
   dependencies <- c("inbo/n2khelper@v0.4.1", "inbo/n2kanalysis@docker")
   expect_is(
     stored <- store_manifest_yaml(
-      x = object, base = base, project = project, docker = docker,
+      x = object,
+      base = base,
+      project = project,
+      docker = docker,
       dependencies = dependencies
     ),
     "character"
@@ -70,7 +86,10 @@ test_that("store_manifest_yaml stores the manifest on a file system", {
 
   expect_is(
     stored2 <- store_manifest_yaml(
-      x = object, base = base, project = project, docker = docker,
+      x = object,
+      base = base,
+      project = project,
+      docker = docker,
       dependencies = dependencies
     ),
     "character"

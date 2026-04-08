@@ -26,11 +26,15 @@ moving_difference <- function(n_year, duration, first_year = 1) {
     FUN.VALUE = vector(mode = "numeric", length = n_year),
     FUN = function(i, trend_coef, n_year, extra_zero) {
       c(
-        rep(0, extra_zero[i, 1]), -trend_coef,
+        rep(0, extra_zero[i, 1]),
+        -trend_coef,
         rep(0, n_year - 2 * length(trend_coef) - sum(extra_zero[i, ])),
-        trend_coef, rep(0, extra_zero[i, 2])
+        trend_coef,
+        rep(0, extra_zero[i, 2])
       )
-    }, trend_coef = rep(1 / duration, duration), n_year = n_year,
+    },
+    trend_coef = rep(1 / duration, duration),
+    n_year = n_year,
     extra_zero = extra_zero
   ) |>
     `colnames<-`(

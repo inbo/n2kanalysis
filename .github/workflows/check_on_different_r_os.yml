@@ -30,10 +30,11 @@ jobs:
       _R_CHECK_SYSTEM_CLOCK_: false
       RSPM: ${{ matrix.config.rspm }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       N2KBUCKET: ${{ secrets.N2KBUCKET }}
+
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - uses: actions/checkout@v3
@@ -45,10 +46,29 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
+      - name: linux dependencies
+        if: runner.os == 'linux'
+        run: |
+          cd /tmp
+          wget http://ftp.gnu.org/gnu/glibc/glibc-2.38.tar.gz
+          tar -xzf glibc-2.38.tar.gz
+          mkdir glibc-build
+          cd glibc-build
+          ../glibc-2.38/configure --prefix=/usr/local/glibc-2.38
+          make -j$(nproc)
+          sudo make install
+          ldd --version
+      
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
           needs: check
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::347082780157:role/inbo-n2kmonitoring-shared-infra-eu-west-1-unittest-role
+          aws-region: eu-west-1
 
       - uses: r-lib/actions/check-r-package@v2
         with:

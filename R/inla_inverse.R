@@ -27,7 +27,9 @@ inla_inverse <- function(marginal) {
   if (inherits(estimate, "try-error")) {
     return(
       data.frame(
-        estimate = NA, lower_confidence_limit = NA, upper_confidence_limit = NA
+        estimate = NA,
+        lower_confidence_limit = NA,
+        upper_confidence_limit = NA
       )
     )
   }

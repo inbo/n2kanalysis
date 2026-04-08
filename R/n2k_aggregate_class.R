@@ -45,7 +45,8 @@ setValidity(
         object@AnalysisMetadata$scheme_id,
         object@AnalysisMetadata$species_group_id,
         object@AnalysisMetadata$location_group_id,
-        object@AnalysisMetadata$model_type, object@AnalysisMetadata$formula,
+        object@AnalysisMetadata$model_type,
+        object@AnalysisMetadata$formula,
         object@AnalysisMetadata$first_imported_year,
         object@AnalysisMetadata$last_imported_year,
         object@AnalysisMetadata$duration,
@@ -53,7 +54,9 @@ setValidity(
         format(object@AnalysisMetadata$analysis_date, tz = "UTC"),
         object@AnalysisMetadata$seed,
         object@AnalysisRelation$parent_analysis,
-        object@Function, object@Filter, object@Join
+        object@Function,
+        object@Filter,
+        object@Join
       ),
       environment = FALSE
     )
@@ -67,9 +70,13 @@ setValidity(
       list(
         object@AnalysisMetadata$file_fingerprint,
         object@AnalysisMetadata$status,
-        object@AnalysisMetadata$analysis_version, object@AnalysisVersion,
-        object@RPackage, object@AnalysisVersionRPackage,
-        object@AnalysisRelation, object@RawImputed, object@AggregatedImputed
+        object@AnalysisMetadata$analysis_version,
+        object@AnalysisVersion,
+        object@RPackage,
+        object@AnalysisVersionRPackage,
+        object@AnalysisRelation,
+        object@RawImputed,
+        object@AggregatedImputed
       ),
       digits = 6L
     )

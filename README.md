@@ -1,7 +1,7 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![License](http://img.shields.io/badge/license-GPL--3-blue.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
+[![License](http://img.shields.io/badge/license-GPL--3-blue.svg?style=flat)
 [![Release](https://img.shields.io/github/release/qubyte/rubidium.svg)](https://github.com/inbo/n2kanalysis/releases)
-[![codecov](https://codecov.io/gh/inbo/n2kanalysis/branch/master/graph/badge.svg)](https://app.codecov.io/gh/inbo/n2kanalysis)
+[![codecov](https://codecov.io/gh/inbo/n2kanalysis/branch/main/graph/badge.svg)](https://app.codecov.io/gh/inbo/n2kanalysis)
 
 # The `n2kanalysis` package
 
@@ -10,7 +10,7 @@ The import from the raw data into the analysis object is done by dedicated packa
 
 ## Rationale
 
-`n2kanalysis` is part of the collection of [R packages](https://github.com/search?q=topic%3Anatura2000+org%3Ainbo&type=Repositories) created to analyse the data gathered during the Natura 2000 monitoring.
+`n2kanalysis` is part of the collection of R packages created to analyse the data gathered during the Natura 2000 monitoring.
 
 - [`n2kanalysis`](https://github.com/inbo/n2kanalysis): R package with generic functions for the analysis
 - [`watervogelanalysis`](https://github.com/inbo/watervogelanalysis): R package to extract the raw data from the wintering bird survey database and prepare the analyses

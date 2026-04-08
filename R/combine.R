@@ -46,15 +46,19 @@ setMethod(
     ))
     r_package <- r_package[order(r_package$description, r_package$version), ]
     analysis_version_r_package <- lapply(
-      dots, slot, "AnalysisVersionRPackage"
+      dots,
+      slot,
+      "AnalysisVersionRPackage"
     ) %>%
       bind_rows() %>%
       distinct()
     analysis_version_r_package <- analysis_version_r_package %>%
       arrange(.data$analysis_version, .data$r_package)
     new(
-      "n2kAnalysisVersion", AnalysisVersion = analysis_version,
-      RPackage = r_package, AnalysisVersionRPackage = analysis_version_r_package
+      "n2kAnalysisVersion",
+      AnalysisVersion = analysis_version,
+      RPackage = r_package,
+      AnalysisVersionRPackage = analysis_version_r_package
     )
   }
 )
@@ -75,7 +79,8 @@ setMethod(
       bind_rows() %>%
       distinct()
     new(
-      "n2kParameter", Parameter = parameter,
+      "n2kParameter",
+      Parameter = parameter,
       ParameterEstimate = parameter_estimate
     )
   }

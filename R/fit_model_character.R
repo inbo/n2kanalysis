@@ -21,7 +21,13 @@ setMethod(
   f = "fit_model",
   signature = signature(x = "character"),
   definition = function(
-    x, base, project, status = c("new", "waiting"), verbose = TRUE, ..., bucket
+    x,
+    base,
+    project,
+    status = c("new", "waiting"),
+    verbose = TRUE,
+    ...,
+    bucket
   ) {
     assert_that(is.string(x))
     display(verbose, x)
@@ -50,18 +56,24 @@ setMethod(
     }
     dots <- list(...)
     if (
-      !has_name(dots, "local") || is.null(dots$local) ||
-      !inherits(base, "s3_bucket")
+      !has_name(dots, "local") ||
+        is.null(dots$local) ||
+        !inherits(base, "s3_bucket")
     ) {
       analysis <- read_model(hash, base = base, project = project)
       display(verbose, paste(status(analysis), "-> "), FALSE)
       analysis <- fit_model(
-        x = analysis, status = status, base = base, project = project, ...
+        x = analysis,
+        status = status,
+        base = base,
+        project = project,
+        ...
       )
       display(verbose, status(analysis))
       store_model(analysis, base = base, project = project)
       result <- data.frame(
-        fingerprint = get_file_fingerprint(analysis), status = status(analysis)
+        fingerprint = get_file_fingerprint(analysis),
+        status = status(analysis)
       )
       rm(analysis)
       gc(verbose = FALSE)
@@ -69,18 +81,25 @@ setMethod(
     }
     dots <- list(...)
     to_do <- object_status(
-      base = base, project = project, status = status, hash = x
+      base = base,
+      project = project,
+      status = status,
+      hash = x
     )
     if (length(to_do) == 0) {
       display(verbose, "skipping")
       gc(verbose = FALSE)
       result <- data.frame(
-        fingerprint = hash, status = "converged"
+        fingerprint = hash,
+        status = "converged"
       )
       return(invisible(result))
     }
     download_model(
-      hash = hash, base = base, local = dots$local, project = project,
+      hash = hash,
+      base = base,
+      local = dots$local,
+      project = project,
       verbose = verbose
     )
     analysis <- read_model(hash, base = dots$local, project = project)
@@ -88,21 +107,33 @@ setMethod(
     slot(analysis, "AnalysisRelation") |>
       mutate(
         downloaded = map(
-          .data$parent_analysis, download_model, base = base,
-          local = dots$local, project = project, verbose = verbose
+          .data$parent_analysis,
+          download_model,
+          base = base,
+          local = dots$local,
+          project = project,
+          verbose = verbose
         )
       )
     analysis <- fit_model(
-      x = analysis, status = status, base = dots$local, project = project, ...
+      x = analysis,
+      status = status,
+      base = dots$local,
+      project = project,
+      ...
     )
     display(verbose, status(analysis))
     store_model(analysis, base = dots$local, project = project)
     download_model(
-      hash = hash, local = base, base = dots$local, project = project,
+      hash = hash,
+      local = base,
+      base = dots$local,
+      project = project,
       verbose = verbose
     )
     result <- data.frame(
-      fingerprint = get_file_fingerprint(analysis), status = status(analysis)
+      fingerprint = get_file_fingerprint(analysis),
+      status = status(analysis)
     )
     rm(analysis)
     gc(verbose = FALSE)

@@ -8,7 +8,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "get_result",
-  def = function(x, ...) {
+  def = function(x, base, ...) {
     standardGeneric("get_result") # nocov
   }
 )

@@ -13,12 +13,17 @@ setClass(
   ),
   prototype = prototype(
     Parameter = data.frame(
-      description = character(0), parent = character(0),
-      fingerprint = character(0), stringsAsFactors = FALSE
+      description = character(0),
+      parent = character(0),
+      fingerprint = character(0),
+      stringsAsFactors = FALSE
     ),
     ParameterEstimate = data.frame(
-      analysis = character(0), parameter = character(0), estimate = numeric(0),
-      lower_confidence_limit = numeric(0), upper_confidence_limit = numeric(0),
+      analysis = character(0),
+      parameter = character(0),
+      estimate = numeric(0),
+      lower_confidence_limit = numeric(0),
+      upper_confidence_limit = numeric(0),
       stringsAsFactors = FALSE
     )
   )
@@ -33,7 +38,8 @@ setValidity(
   function(object) {
     parameter <- object@Parameter
     assert_that(
-      has_name(parameter, "description"), has_name(parameter, "parent"),
+      has_name(parameter, "description"),
+      has_name(parameter, "parent"),
       has_name(parameter, "fingerprint")
     )
 
@@ -46,19 +52,24 @@ setValidity(
       has_name(parameter_estimate, "upper_confidence_limit")
     )
 
-    if (!all(
-      na.omit(object@Parameter$parent) %in% object@Parameter$fingerprint
-    )) {
+    if (
+      !all(
+        na.omit(object@Parameter$parent) %in% object@Parameter$fingerprint
+      )
+    ) {
       stop("Some parent in 'Parameter' slot not found")
     }
-    if (!all(
+    all(
       object@ParameterEstimate$parameter %in% object@Parameter$fingerprint
-    )) {
-      stop(
-"Some parameter in 'ParameterEstimate' slot have no matching fingerprint in
-'Parameter' slot"
-      )
-    }
+    ) |>
+      list() |>
+      setNames(
+        paste(
+          "Some parameter in 'ParameterEstimate' slot have no matching",
+          "fingerprint in 'Parameter' slot"
+        )
+      ) |>
+      do.call(what = stopifnot)
     if (anyDuplicated(object@Parameter$fingerprint)) {
       stop("Duplicated fingerprint in 'Parameter' slot")
     }
@@ -69,33 +80,30 @@ setValidity(
       stop("Duplicated rows in 'ParameterEstimate' slot")
     }
 
-    if (nrow(object@ParameterEstimate) > 0) {
-      test <- object@ParameterEstimate %>%
-        summarise(
-          test_lcl = any(
-            .data$estimate - .data$lower_confidence_limit <
-              -.Machine$double.neg.eps,
-            na.rm = TRUE
-          ),
-          test_ucl = any(
-            .data$estimate - .data$upper_confidence_limit >
-              .Machine$double.neg.eps,
-            na.rm = TRUE
-          )
-        )
-      if (test$test_lcl) {
-        stop(
-  "All estimate in 'ParameterEstimate' slot must be greather than the
-  lower_confidence_limit"
-        )
-      }
-      if (test$test_ucl) {
-        stop(
-  "All estimate in 'ParameterEstimate' slot must be less than the
-  upper_confidence_limit"
-        )
-      }
+    if (nrow(object@ParameterEstimate) == 0) {
+      return(TRUE)
     }
+    test <- object@ParameterEstimate %>%
+      summarise(
+        test_lcl = all(
+          .data$estimate - .data$lower_confidence_limit >= 0,
+          na.rm = TRUE
+        ),
+        test_ucl = all(
+          .data$upper_confidence_limit - .data$estimate >= 0,
+          na.rm = TRUE
+        )
+      )
+    list(test$test_lcl, test$test_ucl) |>
+      setNames(
+        paste(
+          "All estimates in 'ParameterEstimate' slot must be",
+          c("greather", "less"),
+          "than the",
+          c("`lower_confidence_limit`", "`upper_confidence_limit`")
+        )
+      ) |>
+      do.call(what = stopifnot)
     return(TRUE)
   }
 )

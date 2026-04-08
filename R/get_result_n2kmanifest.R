@@ -6,75 +6,92 @@
 #' @include import_s3_classes.R
 setMethod(
   f = "get_result",
-  signature = signature(x = "n2kManifest"),
-  definition = function(x, ..., base, project, verbose = TRUE) {
-    assert_that(
-      inherits(base, "s3_bucket"), is.string(project), noNA(project),
-      validObject(x), is.flag(verbose), noNA(verbose)
-    )
-    manifest <- order_manifest(manifest = x)
-    data.frame(
-      object = manifest,
-      status = map_chr(manifest, get_result_s3, base = base, project = project)
-    )
+  signature = signature(x = "n2kManifest", base = "character"),
+  definition = function(x, base, ..., verbose = TRUE) {
+    assert_that(validObject(x))
+    display(verbose = verbose, paste("Handle manifest", x@Fingerprint))
+    order_manifest(manifest = x) |>
+      vapply(
+        FUN = function(hash, base, verbose, ...) {
+          list(get_result(x = hash, base = base, ..., verbose = verbose))
+        },
+        FUN.VALUE = vector(mode = "list", length = 1),
+        base = base,
+        verbose = verbose,
+        ...
+      ) |>
+      do.call(what = combine)
   }
 )
 
-#' @importFrom assertthat assert_that
-#' @importFrom aws.s3 get_bucket s3saveRDS
+#' @rdname get_result
+#' @inheritParams read_model
+#' @importFrom assertthat assert_that is.string noNA
+#' @importFrom methods setMethod new
 #' @importFrom purrr map_chr
-get_result_s3 <- function(hash, base, project, verbose = TRUE) {
-  display(verbose = verbose, paste(Sys.time(), hash), linefeed = FALSE)
-
-  target <- sprintf("%s/results/%s.rds", project, hash)
-  if (length(get_bucket(bucket = base, prefix = target, max = 1)) > 0) {
-    display(verbose = verbose, " already done")
-    return("converged")
-  }
-  substring(hash, 1, 4) |>
-    sprintf(fmt = "%2$s/%1$s", project) |>
-    get_bucket(bucket = base, max = Inf) |>
-    map_chr("Key") -> available
-  available <- available[grepl(hash, available)]
-  if (length(available) != 1) {
-    display(verbose = verbose, " object not found or multiple objects found")
-    return("object problem")
-  }
-  substring(hash, 1, 4) |>
-    sprintf(fmt = "%2$s/%1$s/(\\w+)/%3$s.rds", project, hash) |>
-    gsub(replacement = "\\1", available) -> hash_status
-  display(verbose = verbose, sprintf(" %s", hash_status))
-  if (hash_status != "converged") {
-    return(hash_status)
-  }
-  display(verbose = verbose, "    downloading object", FALSE)
-  x <- read_model(x = hash, base = base, project = project)
-  display(verbose = verbose, " done")
-  x <- try(get_result(x))
-  if (inherits(x, "try-error")) {
-    return("get_result() failed")
-  }
-
-  # try several times to write to S3 bucket
-  # avoids errors due to time out
-  i <- 1
-  repeat {
-    bucket_ok <- tryCatch(
-      s3saveRDS(x, bucket = base, object = target, multipart = TRUE),
-      error = function(err) {
-        err
-      }
+#' @include import_s3_classes.R
+setMethod(
+  f = "get_result",
+  signature = signature(x = "n2kManifest", base = "s3_bucket"),
+  definition = function(x, base, project, ..., verbose = TRUE) {
+    assert_that(validObject(x))
+    display(verbose = verbose, paste("Handle manifest", x@Fingerprint))
+    get_bucket(
+      bucket = base,
+      prefix = file.path(project, "results"),
+      max = Inf
+    ) |>
+      map_chr("Key") |>
+      basename() -> done
+    to_do <- order_manifest(manifest = x)
+    vapply(
+      to_do[!paste0(to_do, ".rds") %in% done],
+      FUN.VALUE = logical(1),
+      FUN = function(x, base, verbose, project, ...) {
+        display(verbose = verbose, paste("  extracting", x))
+        substring(x, 1, 4) |>
+          sprintf(fmt = "%2$s/%1$s", project) |>
+          get_bucket(bucket = base, max = Inf) -> available
+        available <- available[
+          map_chr(available, "Key") |>
+            grepl(pattern = x)
+        ]
+        stopifnot(
+          "object not found or multiple objects found" = length(available) == 1
+        )
+        get_result(
+          available[[1]],
+          base = base,
+          verbose = verbose,
+          project = project,
+          ...
+        )
+        gc(verbose = FALSE)
+        return(TRUE)
+      },
+      base = base,
+      verbose = verbose,
+      project = project,
+      ...
     )
-    if (is.logical(bucket_ok)) {
-      break
-    }
-    stopifnot("Unable to write to S3 bucket" = i <= 10)
-    message("attempt ", i, " to write to S3 bucket failed. Trying again...")
-    i <- i + 1
-    # waiting time between tries increases with the number of tries
-    Sys.sleep(i)
+    order_manifest(manifest = x) |>
+      vapply(
+        FUN = function(hash, base, project, verbose, ...) {
+          get_result(
+            x = hash,
+            base = base,
+            project = project,
+            ...,
+            verbose = verbose
+          ) |>
+            list()
+        },
+        FUN.VALUE = vector(mode = "list", length = 1),
+        base = base,
+        verbose = verbose,
+        project = project,
+        ...
+      ) |>
+      do.call(what = combine)
   }
-  rm(x)
-  gc(verbose = FALSE)
-  return("converged")
-}
+)

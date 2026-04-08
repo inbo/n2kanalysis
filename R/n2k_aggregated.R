@@ -93,11 +93,21 @@ setMethod(
     file_fingerprint <- sha1(
       list(
         dots$result_datasource_id,
-        dots$scheme_id, dots$species_group_id, dots$location_group_id,
-        dots$model_type, dots$formula, dots$first_imported_year,
-        dots$last_imported_year, dots$duration, dots$last_analysed_year,
-        format(dots$analysis_date, tz = "UTC"), dots$seed, dots$parent,
-        dots$fun, dots$filter, dots$join
+        dots$scheme_id,
+        dots$species_group_id,
+        dots$location_group_id,
+        dots$model_type,
+        dots$formula,
+        dots$first_imported_year,
+        dots$last_imported_year,
+        dots$duration,
+        dots$last_analysed_year,
+        format(dots$analysis_date, tz = "UTC"),
+        dots$seed,
+        dots$parent,
+        dots$fun,
+        dots$filter,
+        dots$join
       ),
       environment = FALSE
     )
@@ -108,11 +118,14 @@ setMethod(
       }
       dots$parent_statusfingerprint <- sha1(dots$parent_status)
     } else {
-      if (is.null(dots[["parent_status"]])) {
-        stop(
-"'parent_status' is required when 'parent_statusfingerprint' is provided"
-        )
-      }
+      list(!is.null(dots[["parent_status"]])) |>
+        setNames(
+          paste(
+            "'parent_status' is required when 'parent_statusfingerprint' is",
+            "provided"
+          )
+        ) |>
+        do.call(what = stopifnot)
     }
     analysis_relation <- data.frame(
       analysis = file_fingerprint,
@@ -124,9 +137,15 @@ setMethod(
     version <- get_analysis_version(sessionInfo())
     status_fingerprint <- sha1(
       list(
-        file_fingerprint, dots$status, version@AnalysisVersion$fingerprint,
-        version@AnalysisVersion, version@RPackage,
-        version@AnalysisVersionRPackage, analysis_relation, NULL, NULL
+        file_fingerprint,
+        dots$status,
+        version@AnalysisVersion$fingerprint,
+        version@AnalysisVersion,
+        version@RPackage,
+        version@AnalysisVersionRPackage,
+        analysis_relation,
+        NULL,
+        NULL
       ),
       digits = 6L
     )
@@ -138,17 +157,22 @@ setMethod(
       AnalysisVersionRPackage = version@AnalysisVersionRPackage,
       AnalysisMetadata = data.frame(
         result_datasource_id = dots$result_datasource_id,
-        scheme_id = dots$scheme_id, species_group_id = dots$species_group_id,
+        scheme_id = dots$scheme_id,
+        species_group_id = dots$species_group_id,
         location_group_id = dots$location_group_id,
-        model_type = dots$model_type, formula = dots$formula,
+        model_type = dots$model_type,
+        formula = dots$formula,
         first_imported_year = dots$first_imported_year,
         last_imported_year = dots$last_imported_year,
-        duration = dots$duration, last_analysed_year = dots$last_analysed_year,
-        analysis_date = dots$analysis_date, seed = dots$seed,
+        duration = dots$duration,
+        last_analysed_year = dots$last_analysed_year,
+        analysis_date = dots$analysis_date,
+        seed = dots$seed,
         status = dots$status,
         analysis_version = version@AnalysisVersion$fingerprint,
         file_fingerprint = file_fingerprint,
-        status_fingerprint = status_fingerprint, stringsAsFactors = FALSE
+        status_fingerprint = status_fingerprint,
+        stringsAsFactors = FALSE
       ),
       AnalysisFormula = list(as.formula(dots$formula)),
       AnalysisRelation = analysis_relation,

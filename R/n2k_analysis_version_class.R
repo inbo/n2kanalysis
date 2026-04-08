@@ -8,19 +8,25 @@
 setClass(
   "n2kAnalysisVersion",
   representation = representation(
-    AnalysisVersion = "data.frame", RPackage = "data.frame",
+    AnalysisVersion = "data.frame",
+    RPackage = "data.frame",
     AnalysisVersionRPackage = "data.frame"
   ),
   prototype = prototype(
     AnalysisVersion = data.frame(
-      fingerprint = character(0), stringsAsFactors = FALSE
+      fingerprint = character(0),
+      stringsAsFactors = FALSE
     ),
     RPackage = data.frame(
-      fingerprint = character(0), description = character(0),
-      version = character(0), origin = character(0), stringsAsFactors = FALSE
+      fingerprint = character(0),
+      description = character(0),
+      version = character(0),
+      origin = character(0),
+      stringsAsFactors = FALSE
     ),
     AnalysisVersionRPackage = data.frame(
-      analysis_version = character(0), r_package = character(0),
+      analysis_version = character(0),
+      r_package = character(0),
       stringsAsFactors = FALSE
     )
   )
@@ -32,7 +38,8 @@ setValidity(
   "n2kAnalysisVersion",
   function(object) {
     check_dataframe_variable(
-      df = object@AnalysisVersion, variable = "fingerprint",
+      df = object@AnalysisVersion,
+      variable = "fingerprint",
       name = "AnalysisVersion"
     )
     check_dataframe_variable(
@@ -46,23 +53,27 @@ setValidity(
       name = "AnalysisVersionRPackage"
     )
 
-    if (!all(
+    list(all(
       object@AnalysisVersionRPackage$analysis_version %in%
         object@AnalysisVersion$fingerprint
-    )) {
-      stop(
-"Some AnalysisVersion in 'AnalysisVersionRPackage' slot are not present in
-'AnalysisVersion' slot"
-      )
-    }
-    if (!all(
+    )) |>
+      setNames(
+        paste(
+          "Some AnalysisVersion in 'AnalysisVersionRPackage' slot are not",
+          "present in 'AnalysisVersion' slot"
+        )
+      ) |>
+      do.call(what = stopifnot)
+    list(all(
       object@AnalysisVersionRPackage$r_package %in% object@RPackage$fingerprint
-    )) {
-      stop(
-"Some r_package in 'AnalysisVersionRPackage' slot are not present in
-'RPackage' slot"
-      )
-    }
+    )) |>
+      setNames(
+        paste(
+          "Some r_package in 'AnalysisVersionRPackage' slot are not present in",
+          "'RPackage' slot"
+        )
+      ) |>
+      do.call(what = stopifnot)
     if (anyDuplicated(object@AnalysisVersionRPackage)) {
       stop("Duplicated rows in 'AnalysisVersionRPackage' slot")
     }

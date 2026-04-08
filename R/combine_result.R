@@ -31,7 +31,9 @@ setMethod(
       arrange(.data$fingerprint)
 
     analysis_version_r_package <- lapply(
-      dots, slot, name = "AnalysisVersionRPackage"
+      dots,
+      slot,
+      name = "AnalysisVersionRPackage"
     ) %>%
       do.call(what = rbind) %>%
       distinct() %>%

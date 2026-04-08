@@ -9,8 +9,13 @@ setMethod(
   f = "fit_model",
   signature = signature(x = "n2kSpde"),
   definition = function(
-    x, status = "new", ..., timeout = NULL, seed = get_seed(x),
-    num_threads = NULL, parallel_configs = TRUE
+    x,
+    status = "new",
+    ...,
+    timeout = NULL,
+    seed = get_seed(x),
+    num_threads = NULL,
+    parallel_configs = TRUE
   ) {
     assert_that(
       requireNamespace("INLA", quietly = TRUE),
@@ -41,7 +46,9 @@ setMethod(
       tag = "observed",
       effects = list(
         data[
-          !is.na(data[[response]]), colnames(data) != response, drop = FALSE
+          !is.na(data[[response]]),
+          colnames(data) != response,
+          drop = FALSE
         ],
         index
       )
@@ -66,53 +73,68 @@ setMethod(
       # directly fit model when less than 10% missing data
       control$data <- INLA::inla.stack.data(stack_total, spde = spde)
       control$control.predictor <- list(
-        A = INLA::inla.stack.A(stack_total), link = 1
+        A = INLA::inla.stack.A(stack_total),
+        link = 1
       )
       control$lincomb <- lc
-      model <- try({
-        if (!is.null(timeout)) {
-          assert_that(is.number(timeout), timeout > 0)
-          setTimeLimit(cpu = timeout, elapsed = timeout)
-        }
-        do.call(INLA::inla, control)
-      }, silent = TRUE)
+      model <- try(
+        {
+          if (!is.null(timeout)) {
+            assert_that(is.number(timeout), timeout > 0)
+            setTimeLimit(cpu = timeout, elapsed = timeout)
+          }
+          do.call(INLA::inla, control)
+        },
+        silent = TRUE
+      )
     } else {
       # first fit model without missing data
       control$data <- INLA::inla.stack.data(stack_observed, spde = spde)
       control$control.predictor <- list(A = INLA::inla.stack.A(stack_observed))
-      m0 <- try({
-        if (!is.null(timeout)) {
-          assert_that(is.number(timeout), timeout > 0)
-          setTimeLimit(cpu = timeout, elapsed = timeout)
-        }
-        do.call(INLA::inla, control)
-      }, silent = TRUE)
+      m0 <- try(
+        {
+          if (!is.null(timeout)) {
+            assert_that(is.number(timeout), timeout > 0)
+            setTimeLimit(cpu = timeout, elapsed = timeout)
+          }
+          do.call(INLA::inla, control)
+        },
+        silent = TRUE
+      )
       if (inherits(m0, "try-error")) {
         status(x) <- ifelse(
-          grepl("time limit", m0), "time-out", "error"
+          grepl("time limit", m0),
+          "time-out",
+          "error"
         )
         return(x)
       }
       # then refit with missing data
       control$data <- INLA::inla.stack.data(stack_total, spde = spde)
       control$control.predictor <- list(
-        A = INLA::inla.stack.A(stack_total), link = 1
+        A = INLA::inla.stack.A(stack_total),
+        link = 1
       )
       control$lincomb <- lc
       control$control.update <- list(result = m0)
-      model <- try({
-        if (!is.null(timeout)) {
-          assert_that(is.number(timeout), timeout > 0)
-          setTimeLimit(cpu = timeout, elapsed = timeout)
-        }
-        do.call(INLA::inla, control)
-      }, silent = TRUE)
+      model <- try(
+        {
+          if (!is.null(timeout)) {
+            assert_that(is.number(timeout), timeout > 0)
+            setTimeLimit(cpu = timeout, elapsed = timeout)
+          }
+          do.call(INLA::inla, control)
+        },
+        silent = TRUE
+      )
     }
 
     # handle error in model fit
     if (inherits(model, "try-error")) {
       status(x) <- ifelse(
-        grepl("time limit", model), "time-out", "error"
+        grepl("time limit", model),
+        "time-out",
+        "error"
       )
       return(x)
     }
@@ -122,8 +144,12 @@ setMethod(
     }
 
     imputed <- try(impute(
-      model = model, n_imp = x@ImputationSize, minimum = x@Minimum,
-      seed = seed, num_threads = num_threads, extra = x@Extra,
+      model = model,
+      n_imp = x@ImputationSize,
+      minimum = x@Minimum,
+      seed = seed,
+      num_threads = num_threads,
+      extra = x@Extra,
       parallel_configs = parallel_configs
     ))
     if (inherits(imputed, "try-error")) {
@@ -131,7 +157,10 @@ setMethod(
     }
     # return fitted model with imputations
     return(n2k_spde(
-      data = x, model_fit = model, status = "converged", raw_imputed = imputed
+      data = x,
+      model_fit = model,
+      status = "converged",
+      raw_imputed = imputed
     ))
   }
 )

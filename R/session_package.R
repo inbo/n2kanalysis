@@ -18,7 +18,9 @@ package_version <- function(x) {
   if (has_name(x, "Repository")) {
     return(
       data.frame(
-        description = x$Package, version = x$Version, origin = "CRAN",
+        description = x$Package,
+        version = x$Version,
+        origin = "CRAN",
         stringsAsFactors = FALSE
       )
     )
@@ -29,14 +31,19 @@ package_version <- function(x) {
         description = x$Package,
         version = x$Version,
         origin = sprintf(
-          "Github: %s/%s@%s", x$GithubUsername, x$GithubRepo, x$GithubSHA1
+          "Github: %s/%s@%s",
+          x$GithubUsername,
+          x$GithubRepo,
+          x$GithubSHA1
         ),
         stringsAsFactors = FALSE
       )
     )
   }
   data.frame(
-    description = x$Package, version = x$Version, origin = "local",
+    description = x$Package,
+    version = x$Version,
+    origin = "local",
     stringsAsFactors = FALSE
   )
 }

@@ -25,14 +25,22 @@ setMethod(
         filter(!is.na(.data$estimate), !is.na(.data$variance)) |>
         group_by(.data$value) |>
         summarise(
-          estimate = mean(.data$estimate), se = sqrt(sum(.data$variance)) / n()
+          estimate = mean(.data$estimate),
+          se = sqrt(sum(.data$variance)) / n()
         ) |>
         transmute(
-          .data$value, .data$estimate,
-          lower_confidence_limit =
-            qnorm(0.025, mean = .data$estimate, sd = .data$se),
-          upper_confidence_limit =
-            qnorm(0.975, mean = .data$estimate, sd = .data$se)
+          .data$value,
+          .data$estimate,
+          lower_confidence_limit = qnorm(
+            0.025,
+            mean = .data$estimate,
+            sd = .data$se
+          ),
+          upper_confidence_limit = qnorm(
+            0.975,
+            mean = .data$estimate,
+            sd = .data$se
+          )
         ) |>
         as.data.frame() -> x@Index
       status(x) <- "converged"
@@ -52,12 +60,14 @@ setMethod(
       )
       if (inherits(model, "try-error")) {
         parent_status[
-          parent_status$parent_analysis == this_parent, "parent_status"
+          parent_status$parent_analysis == this_parent,
+          "parent_status"
         ] <- "error"
         next
       }
       parent_status[
-        parent_status$parent_analysis == this_parent, "parent_status"
+        parent_status$parent_analysis == this_parent,
+        "parent_status"
       ] <- status(model)
       parent_status[
         parent_status$parent_analysis == this_parent,

@@ -20,8 +20,14 @@
 setGeneric(
   name = "manifest_yaml_to_bash",
   def = function(
-    base, project, hash, shutdown = FALSE, split = 1,
-    status = c("new", "waiting"), limit = FALSE, timeout = 4
+    base,
+    project,
+    hash,
+    shutdown = FALSE,
+    split = 1,
+    status = c("new", "waiting"),
+    limit = FALSE,
+    timeout = 4
   ) {
     standardGeneric("manifest_yaml_to_bash") # nocov
   }
@@ -38,12 +44,24 @@ setMethod(
   f = "manifest_yaml_to_bash",
   signature = signature(base = "s3_bucket"),
   definition = function(
-    base, project, hash, shutdown = FALSE, split = 1,
-    status = c("new", "waiting"), limit = FALSE, timeout = 4
+    base,
+    project,
+    hash,
+    shutdown = FALSE,
+    split = 1,
+    status = c("new", "waiting"),
+    limit = FALSE,
+    timeout = 4
   ) {
     assert_that(
-      is.string(project), noNA(project), is.flag(shutdown), noNA(shutdown),
-      is.count(split), is.flag(limit), noNA(limit), is.count(timeout)
+      is.string(project),
+      noNA(project),
+      is.flag(shutdown),
+      noNA(shutdown),
+      is.count(split),
+      is.flag(limit),
+      noNA(limit),
+      is.count(timeout)
     )
     if (missing(hash)) {
       paste(project, "yaml", sep = "/") |>
@@ -73,19 +91,30 @@ setMethod(
     to_do <- object_status(base = base, project = project, status = status)
     models <- models[models %in% to_do]
     model_scripts <- create_docker_model_scripts(
-      models = models, base = base, timeout = timeout,
-      limit = limit, volume = volume, docker_hash = docker_hash,
+      models = models,
+      base = base,
+      timeout = timeout,
+      limit = limit,
+      volume = volume,
+      docker_hash = docker_hash,
       project = project
     )
     vapply(
-      seq_len(split), FUN.VALUE = character(1), project = project, init = init,
-      split = split, shutdown = shutdown, base = base,
+      seq_len(split),
+      FUN.VALUE = character(1),
+      project = project,
+      init = init,
+      split = split,
+      shutdown = shutdown,
+      base = base,
       FUN = function(i, project, split, init, shutdown, base) {
         script <- path(
-          project, sprintf("bash/%s_%i.sh", docker_hash, i)
+          project,
+          sprintf("bash/%s_%i.sh", docker_hash, i)
         )
         c(
-          init, model_scripts[seq_along(model_scripts) %% split == (i - 1)],
+          init,
+          model_scripts[seq_along(model_scripts) %% split == (i - 1)],
           "sudo shutdown -h now"[shutdown]
         ) |>
           s3write_using(writeLines, object = script, bucket = base)
@@ -97,7 +126,8 @@ setMethod(
 
 create_docker_init <- function(yaml, docker_hash) {
   sprintf(
-    "RUN Rscript -e 'pak::pkg_install(\\\"%s\\\"%s)'", yaml$github,
+    "RUN Rscript -e 'pak::pkg_install(\\\"%s\\\"%s)'",
+    yaml$github,
     ", dependencies = FALSE, upgrade = FALSE, ask = FALSE"
   ) -> deps
   sprintf(
@@ -107,12 +137,20 @@ echo \"FROM %s
 %s\" > Dockerfile
 docker build --pull --tag rn2k:%s .
 rm Dockerfile",
-    yaml$docker, paste(deps, collapse = "\n"), docker_hash
+    yaml$docker,
+    paste(deps, collapse = "\n"),
+    docker_hash
   )
 }
 
 create_docker_model_scripts <- function(
-  models, base, timeout = 4, limit = FALSE, volume, docker_hash, project
+  models,
+  base,
+  timeout = 4,
+  limit = FALSE,
+  volume,
+  docker_hash,
+  project
 ) {
   if (inherits(base, "character")) {
     script <- "./fit_model_file.sh"
@@ -123,20 +161,31 @@ create_docker_model_scripts <- function(
   c(
     "echo \"\n\nmodel %i of %i\n\n\"\ndate\n",
     "timeout --kill-after=2m %ih docker run %s --name=%s -v %s rn2k:%s",
-    script, " -b %s -p %s -m %s%s"
+    script,
+    " -b %s -p %s -m %s%s"
   ) |>
     paste(collapse = " ") |>
     sprintf(
-      seq_along(models), length(models), timeout,
+      seq_along(models),
+      length(models),
+      timeout,
       paste(
         c(
-          "--rm", "--env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID",
+          "--rm",
+          "--env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID",
           "--env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY",
           "--env AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION",
-          "--cap-add NET_ADMIN"[limit], "--cpu-shares=512"[limit]
+          "--cap-add NET_ADMIN"[limit],
+          "--cpu-shares=512"[limit]
         ),
         collapse = " "
-      ), models, volume, docker_hash, base, project, models,
+      ),
+      models,
+      volume,
+      docker_hash,
+      base,
+      project,
+      models,
       ifelse(limit, " -s 1", "")
     )
 }
@@ -153,18 +202,31 @@ setMethod(
   f = "manifest_yaml_to_bash",
   signature = signature(base = "character"),
   definition = function(
-    base, project, hash, shutdown = FALSE, split = 1,
-    status = c("new", "waiting"), limit = FALSE, timeout = 4
+    base,
+    project,
+    hash,
+    shutdown = FALSE,
+    split = 1,
+    status = c("new", "waiting"),
+    limit = FALSE,
+    timeout = 4
   ) {
     assert_that(
-      is.string(base), noNA(base), file_test("-d", base), is.string(project),
-      noNA(project), is.flag(shutdown), noNA(shutdown), is.count(split),
-      is.flag(limit), noNA(limit)
+      is.string(base),
+      noNA(base),
+      file_test("-d", base),
+      is.string(project),
+      noNA(project),
+      is.flag(shutdown),
+      noNA(shutdown),
+      is.count(split),
+      is.flag(limit),
+      noNA(limit)
     )
     assert_that(split == 1, msg = "`split > 1` to do on local file systems.")
     assert_that(
       file_test("-d", base),
-      msg = sprintf("`%s` is not an existing folder",  base)
+      msg = sprintf("`%s` is not an existing folder", base)
     )
     path(base, project, "yaml") |>
       dir.create(showWarnings = FALSE)
@@ -194,8 +256,13 @@ setMethod(
     volume <- paste(base, base, "rw", sep = ":")
     models <- order_manifest(manifest = manifest)
     model_scripts <- create_docker_model_scripts(
-      models = models, base = base, timeout = timeout, limit = limit,
-      volume = volume, docker_hash = docker_hash, project = project
+      models = models,
+      base = base,
+      timeout = timeout,
+      limit = limit,
+      volume = volume,
+      docker_hash = docker_hash,
+      project = project
     )
     path(base, project, "bash") |>
       dir_create()
@@ -243,7 +310,9 @@ order_manifest <- function(manifest) {
 #' @importFrom purrr map_chr
 object_status <- function(base, project, status = c("new", "waiting"), hash) {
   assert_that(
-    inherits(base, "s3_bucket"), is.character(status), length(status) > 0,
+    inherits(base, "s3_bucket"),
+    is.character(status),
+    length(status) > 0,
     is.string(project)
   )
   if (missing(hash)) {

@@ -24,13 +24,22 @@ setMethod(
   f = "get_anomaly",
   signature = signature(analysis = "n2kInla"),
   definition = function(
-    analysis, n = 20, expected_ratio = 5, expected_absent = 5,
-    random_threshold = 1.05, verbose = TRUE, ...
+    analysis,
+    n = 20,
+    expected_ratio = 5,
+    expected_absent = 5,
+    random_threshold = 1.05,
+    verbose = TRUE,
+    ...
   ) {
     assert_that(
-      is.count(n), is.number(expected_ratio), expected_ratio > 1,
-      is.number(expected_absent), expected_absent > 1,
-      is.number(random_threshold), random_threshold > 1
+      is.count(n),
+      is.number(expected_ratio),
+      expected_ratio > 1,
+      is.number(expected_absent),
+      expected_absent > 1,
+      is.number(random_threshold),
+      random_threshold > 1
     )
     if (!is.null(analysis@Model)) {
       assert_that(
@@ -38,11 +47,16 @@ setMethod(
         msg = "multiple response not handled yet"
       )
       assert_that(
-        analysis@Model$.args$family %in% c(
-          "binomial", "nbinomial", "poisson", "zeroinflatednbinomial0",
-          "zeroinflatednbinomial1", "zeroinflatedpoisson0",
-          "zeroinflatedpoisson1"
-        ),
+        analysis@Model$.args$family %in%
+          c(
+            "binomial",
+            "nbinomial",
+            "poisson",
+            "zeroinflatednbinomial0",
+            "zeroinflatednbinomial1",
+            "zeroinflatedpoisson0",
+            "zeroinflatedpoisson1"
+          ),
         msg = paste(analysis@Model$.args$family, "not handled yet")
       )
       log_expected_ratio <- log(expected_ratio)
@@ -51,12 +65,15 @@ setMethod(
     }
 
     parameter <- get_model_parameter(
-      analysis = analysis, verbose = verbose, ...
+      analysis = analysis,
+      verbose = verbose,
+      ...
     )
     if (status(analysis) != "converged") {
       return(
         new(
-          "n2kAnomaly", Parameter = parameter@Parameter,
+          "n2kAnomaly",
+          Parameter = parameter@Parameter,
           ParameterEstimate = parameter@ParameterEstimate
         )
       )
@@ -68,15 +85,18 @@ setMethod(
       description = c(
         "Large ratio of observed vs expected",
         "Small ratio of observed vs expected",
-        "Zero observed and high expected", "Unstable imputations"
+        "Zero observed and high expected",
+        "Unstable imputations"
       )
     ) |>
       mutate(
-        fingerprint = map_chr(.data$description, ~sha1(c(description = .x)))
+        fingerprint = map_chr(.data$description, ~ sha1(c(description = .x)))
       )
     anomaly <- tibble(
-      anomaly_type = character(0), analysis = character(0),
-      parameter = character(0), observation = character(0),
+      anomaly_type = character(0),
+      analysis = character(0),
+      parameter = character(0),
+      observation = character(0),
       datafield = character(0)
     )
 
@@ -108,7 +128,8 @@ setMethod(
     display(verbose, ": observed > 0 vs fit", FALSE)
     data |>
       filter(
-        is.finite(.data$log_ratio), .data$log_ratio > log_expected_ratio
+        is.finite(.data$log_ratio),
+        .data$log_ratio > log_expected_ratio
       ) |>
       select("analysis", "parameter", "observation", "datafield") |>
       slice_head(n = n) |>
@@ -120,7 +141,8 @@ setMethod(
       bind_rows(anomaly) -> anomaly
     data |>
       filter(
-        is.finite(.data$log_ratio), .data$log_ratio < -log_expected_ratio
+        is.finite(.data$log_ratio),
+        .data$log_ratio < -log_expected_ratio
       ) |>
       select("analysis", "parameter", "observation", "datafield") |>
       slice_head(n = n) |>
@@ -172,7 +194,7 @@ setMethod(
         distinct(.data$anomaly_type) |>
         select(description = "anomaly_type") |>
         mutate(
-          fingerprint = map_chr(.data$description, ~sha1(c(description = .x)))
+          fingerprint = map_chr(.data$description, ~ sha1(c(description = .x)))
         ) |>
         bind_rows(anomaly_type)
       anomaly <- re_anomaly |>
@@ -189,7 +211,8 @@ setMethod(
         semi_join(x = parameter@Parameter, by = c("parent" = "fingerprint")) |>
         select("fingerprint", observation = "description") |>
         inner_join(
-          x = parameter@ParameterEstimate, by = c("parameter" = "fingerprint")
+          x = parameter@ParameterEstimate,
+          by = c("parameter" = "fingerprint")
         ) |>
         mutate(anomaly_type = parent$fingerprint)
       anomaly <- anomaly |>

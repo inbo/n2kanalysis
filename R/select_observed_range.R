@@ -23,7 +23,8 @@ select_observed_range <- function(observation, variable) {
   )
   if (any(is.na(observation[, variable]))) {
     warning(
-      variable, " contains missing values. Corresponding rows are removed."
+      variable,
+      " contains missing values. Corresponding rows are removed."
     )
   }
 

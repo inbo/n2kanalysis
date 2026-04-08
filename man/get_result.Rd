@@ -5,38 +5,41 @@
 \docType{methods}
 \name{get_result}
 \alias{get_result}
-\alias{get_result,character-method}
-\alias{get_result,n2kInla-method}
-\alias{get_result,n2kModel-method}
-\alias{get_result,n2kManifest-method}
-\alias{get_result,s3_object-method}
+\alias{get_result,character,character-method}
+\alias{get_result,character,s3_bucket-method}
+\alias{get_result,n2kInla,ANY-method}
+\alias{get_result,n2kModel,ANY-method}
+\alias{get_result,n2kManifest,character-method}
+\alias{get_result,n2kManifest,s3_bucket-method}
+\alias{get_result,s3_object,ANY-method}
 \title{Add the results from an analysis}
 \usage{
-get_result(x, ...)
+get_result(x, base, ...)
 
-\S4method{get_result}{character}(x, n_cluster = 1, verbose = TRUE, ...)
+\S4method{get_result}{character,character}(x, base, ..., project, verbose = TRUE)
 
-\S4method{get_result}{n2kInla}(x, verbose = TRUE, ...)
+\S4method{get_result}{character,s3_bucket}(x, base, ..., project, verbose = TRUE)
 
-\S4method{get_result}{n2kModel}(x, verbose = TRUE, ...)
+\S4method{get_result}{n2kInla,ANY}(x, base, ..., verbose = TRUE)
 
-\S4method{get_result}{n2kManifest}(x, ..., base, project, verbose = TRUE)
+\S4method{get_result}{n2kModel,ANY}(x, verbose = TRUE, ...)
 
-\S4method{get_result}{s3_object}(x, ...)
+\S4method{get_result}{n2kManifest,character}(x, base, ..., verbose = TRUE)
+
+\S4method{get_result}{n2kManifest,s3_bucket}(x, base, project, ..., verbose = TRUE)
+
+\S4method{get_result}{s3_object,ANY}(x, base, ..., project, verbose = TRUE)
 }
 \arguments{
 \item{x}{object with the current results}
 
-\item{...}{further arguments (see Details)}
-
-\item{n_cluster}{The number of clusters to run this function in parallel.
-Defaults to \code{1} (= no parallel computing).}
-
-\item{verbose}{Print extra information on the screen}
-
 \item{base}{the base location to read the model}
 
+\item{...}{further arguments (see Details)}
+
 \item{project}{will be a relative path within the base location}
+
+\item{verbose}{Print extra information on the screen}
 }
 \description{
 Add the results from an analysis

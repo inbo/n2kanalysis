@@ -9,8 +9,13 @@ setMethod(
   f = "fit_model",
   signature = signature(x = "n2kInla"),
   definition = function(
-    x, status = "new", ..., timeout = NULL, seed = get_seed(x),
-    num_threads = NULL, parallel_configs = TRUE
+    x,
+    status = "new",
+    ...,
+    timeout = NULL,
+    seed = get_seed(x),
+    num_threads = NULL,
+    parallel_configs = TRUE
   ) {
     assert_that(
       requireNamespace("INLA", quietly = TRUE),
@@ -41,11 +46,17 @@ setMethod(
     response <- all.vars(fm)[attr(fm, "response")]
     if (mean(is.na(data[[response]])) < 0.10) {
       model <- direct_fit(
-        control = control, data = data, lc = lc, timeout = timeout
+        control = control,
+        data = data,
+        lc = lc,
+        timeout = timeout
       )
     } else {
       model <- indirect_fit(
-        response = response, control = control, data = data, lc = lc,
+        response = response,
+        control = control,
+        data = data,
+        lc = lc,
         timeout = timeout
       )
     }
@@ -53,7 +64,9 @@ setMethod(
     # handle error in model fit
     if (inherits(model, "try-error")) {
       status(x) <- ifelse(
-        grepl("time limit", model), "time-out", "error"
+        grepl("time limit", model),
+        "time-out",
+        "error"
       )
       return(x)
     }
@@ -63,8 +76,12 @@ setMethod(
     }
 
     imputed <- try(impute(
-      model = model, n_imp = x@ImputationSize, minimum = x@Minimum,
-      seed = seed, num_threads = num_threads, extra = x@Extra,
+      model = model,
+      n_imp = x@ImputationSize,
+      minimum = x@Minimum,
+      seed = seed,
+      num_threads = num_threads,
+      extra = x@Extra,
       parallel_configs = parallel_configs
     ))
     if (inherits(imputed, "try-error")) {
@@ -72,7 +89,10 @@ setMethod(
     }
     # return fitted model with imputations
     return(n2k_inla(
-      data = x, model_fit = model, status = "converged", raw_imputed = imputed
+      data = x,
+      model_fit = model,
+      status = "converged",
+      raw_imputed = imputed
     ))
   }
 )
@@ -102,37 +122,48 @@ model2lincomb <- function(lincomb) {
 direct_fit <- function(control, data, lc, timeout = NULL) {
   control$data <- data
   control$lincomb <- lc
-  try({
-    if (!is.null(timeout)) {
-      assert_that(is.number(timeout), timeout > 0)
-      setTimeLimit(cpu = timeout, elapsed = timeout)
-    }
-    do.call(INLA::inla, control)
-  }, silent = TRUE)
-}
-
-#' @importFrom assertthat assert_that is.number
-indirect_fit <- function(control, data, lc, response, timeout = NULL) {
-  # first fit model without missing data
-  control$data <- data[!is.na(data[[response]]), ]
-  m0 <- try({
-    if (!is.null(timeout)) {
-      assert_that(is.number(timeout), timeout > 0)
-      setTimeLimit(cpu = timeout, elapsed = timeout)
-    }
-    do.call(INLA::inla, control)
-  }, silent = TRUE)
-  if (inherits(m0, "try-error") && "control.family" %in% names(control)) {
-    # when model failed to fit, try again without family
-    old_control_family <- control$control.family
-    control$control.family <- NULL
-    m0 <- try({
+  try(
+    {
       if (!is.null(timeout)) {
         assert_that(is.number(timeout), timeout > 0)
         setTimeLimit(cpu = timeout, elapsed = timeout)
       }
       do.call(INLA::inla, control)
-    }, silent = TRUE)
+    },
+    silent = TRUE
+  )
+}
+
+#' @importFrom assertthat assert_that is.number
+indirect_fit <- function(control, data, lc, response, timeout = NULL) {
+  # first fit model without missing data
+  compute <- control$control.compute
+  control$data <- data[!is.na(data[[response]]), ]
+  control$control.compute <- NULL
+  m0 <- try(
+    {
+      if (!is.null(timeout)) {
+        assert_that(is.number(timeout), timeout > 0)
+        setTimeLimit(cpu = timeout, elapsed = timeout)
+      }
+      do.call(INLA::inla, control)
+    },
+    silent = TRUE
+  )
+  if (inherits(m0, "try-error") && "control.family" %in% names(control)) {
+    # when model failed to fit, try again without family
+    old_control_family <- control$control.family
+    control$control.family <- NULL
+    m0 <- try(
+      {
+        if (!is.null(timeout)) {
+          assert_that(is.number(timeout), timeout > 0)
+          setTimeLimit(cpu = timeout, elapsed = timeout)
+        }
+        do.call(INLA::inla, control)
+      },
+      silent = TRUE
+    )
     control$control.family <- old_control_family
   }
   if (inherits(m0, "try-error")) {
@@ -142,11 +173,15 @@ indirect_fit <- function(control, data, lc, response, timeout = NULL) {
   control$data <- data
   control$lincomb <- lc
   control$control.update <- list(result = m0)
-  try({
-    if (!is.null(timeout)) {
-      assert_that(is.number(timeout), timeout > 0)
-      setTimeLimit(cpu = timeout, elapsed = timeout)
-    }
-    do.call(INLA::inla, control)
-  }, silent = TRUE)
+  control$control.compute <- compute
+  try(
+    {
+      if (!is.null(timeout)) {
+        assert_that(is.number(timeout), timeout > 0)
+        setTimeLimit(cpu = timeout, elapsed = timeout)
+      }
+      do.call(INLA::inla, control)
+    },
+    silent = TRUE
+  )
 }

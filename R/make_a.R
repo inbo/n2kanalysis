@@ -26,8 +26,10 @@ setMethod(
       all(colnames(object@Coordinates) %in% colnames(data))
     )
     stopifnot(
-      "INLA package required but not installed." =
-        requireNamespace("INLA", quietly = TRUE)
+      "INLA package required but not installed." = requireNamespace(
+        "INLA",
+        quietly = TRUE
+      )
     )
     data[colnames(object@Coordinates)] |>
       as.matrix() |>
