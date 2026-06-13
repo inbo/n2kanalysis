@@ -1,3 +1,7 @@
+# `n2kanalysis` 0.4.2
+
+* Update CI.
+
 # `n2kanalysis` 0.4.1
 
 * Improve `get_result()`.
