@@ -1,7 +1,7 @@
 #' @rdname get_result
 #' @importFrom methods setMethod new
 #' @importFrom dplyr %>% arrange filter inner_join mutate rename select
-#' semi_join tibble transmute
+#' @importFrom dplyr semi_join tibble transmute
 #' @importFrom rlang .data
 #' @importFrom digest sha1
 #' @importFrom tidyr pivot_longer

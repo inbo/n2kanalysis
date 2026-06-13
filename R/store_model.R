@@ -75,7 +75,7 @@ setMethod(
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.string is.flag noNA
 #' @importFrom aws.s3 bucket_exists copy_object delete_object get_bucket
-#' s3saveRDS
+#' @importFrom aws.s3 s3saveRDS
 #' @importFrom purrr map_chr
 #' @include import_s3_classes.R
 setMethod(

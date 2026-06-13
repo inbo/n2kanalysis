@@ -1,7 +1,7 @@
 #' @rdname get_model_parameter
 #' @importFrom digest sha1
 #' @importFrom dplyr %>% bind_rows distinct filter left_join mutate n n_distinct
-#' pull select semi_join transmute
+#' @importFrom dplyr pull select semi_join transmute
 #' @importFrom methods setMethod new
 #' @importFrom purrr map_chr map2_chr map_df
 #' @importFrom rlang .data !!

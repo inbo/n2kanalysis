@@ -11,6 +11,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{digest}{\code{\link[digest]{sha1}}}
+  \item{digest}{\code{\link[digest:sha1]{sha1()}}}
 }}
 

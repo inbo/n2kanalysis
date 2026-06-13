@@ -3,7 +3,7 @@
 #' @importFrom methods setMethod new
 #' @importFrom assertthat assert_that is.count is.number is.string
 #' @importFrom dplyr arrange bind_cols bind_rows distinct filter group_by mutate
-#' select slice_head slice_max tibble transmute ungroup
+#' @importFrom dplyr select slice_head slice_max tibble transmute ungroup
 #' @importFrom rlang !!
 #' @importFrom digest sha1
 #' @importFrom utils head tail
