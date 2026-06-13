@@ -4,7 +4,7 @@ Version: 0.4.1
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
-    person("Research Institute for Nature and Forest (INBO)", , , "info@inbo.be", role = c("cph", "fnd"),
+    person("Research Institute for Nature and Forest (INBO)", , , "info@inbo.be", role = c("cph", "fnd", "pbl"),
            comment = c(ROR = "00j54wy13"))
   )
 Description: All generic functions and classes for the analysis for the
@@ -50,20 +50,21 @@ Suggests:
     sf,
     sn,
     testthat (>= 2.0.1)
-VignetteBuilder: 
+VignetteBuilder:
     knitr
 Remotes:
     inbo/multimput,
     inbo/n2khelper
 Additional_repositories: https://inla.r-inla-download.org/R/stable,
     https://inbo.r-universe.dev
-Config/checklist/communities: inbo
-Config/checklist/keywords: analysis, reproducible research, natura 2000,
-    monitoring
+Config/citeme/communities: inbo
+Config/citeme/keywords: analysis; reproducible research; natura 2000;
+    monitoring; inbo_version
+Config/roxygen2/version: 8.0.0
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
-Collate: 
+Collate:
     'n2k_parameter_class.R'
     'n2k_anomaly_class.R'
     'n2k_analysis_version_class.R'
@@ -171,4 +172,3 @@ Collate:
     'union.R'
     'valid_object.R'
     'write_s3_fun.R'
-Config/roxygen2/version: 8.0.0

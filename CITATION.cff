@@ -7,7 +7,11 @@ authors:
   affiliation: Research Institute for Nature and Forest (INBO)
   orcid: 0000-0001-8804-4216
 keywords:
-- analysis, reproducible research, natura 2000, monitoring
+- analysis
+- reproducible research
+- natura 2000
+- monitoring
+- inbo_version
 contact:
 - given-names: Thierry
   family-names: Onkelinx

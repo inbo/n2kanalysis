@@ -5,7 +5,11 @@
   "upload_type": "software",
   "description": "<p>All generic functions and classes for the analysis for the ‘Natura 2000’ monitoring. The classes contain all required data and definitions to fit the model without the need to access other sources. Potentially they might need access to one or more parent objects. An aggregation object might for example need the result of an imputation object. The actual definition of the analysis, using these generic function and classes, is defined in dedictated analysis R packages for every monitoring scheme. For example ‘abvanalysis’ and ‘watervogelanalysis’.<\/p>",
   "keywords": [
-    "analysis, reproducible research, natura 2000, monitoring"
+    "analysis",
+    "reproducible research",
+    "natura 2000",
+    "monitoring",
+    "inbo_version"
   ],
   "access_right": "open",
   "language": "eng",
@@ -32,5 +36,6 @@
     {
       "identifier": "inbo"
     }
-  ]
+  ],
+  "publisher": "Research Institute for Nature and Forest (INBO)"
 }
