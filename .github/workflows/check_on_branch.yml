@@ -1,26 +1,39 @@
 on:
   push:
     branches-ignore:
-      - main
       - ghpages
 
 name: "check package with checklist"
 
 jobs:
   check-package:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: "check package"
+
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       N2KBUCKET: ${{ secrets.N2KBUCKET }}
+      RSPM: "https://packagemanager.rstudio.com/cran/__linux__/noble/latest"
+
     permissions:
-      id-token: write
       contents: read
+      id-token: write
+
     steps:
+
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@6a57fcec9bb9111707556ffdbf4afc4ef4b836db
         with:
           role-to-assume: arn:aws:iam::347082780157:role/inbo-n2kmonitoring-shared-infra-eu-west-1-unittest-role
           aws-region: eu-west-1
-      - uses: inbo/actions/check_pkg@main
+
+      - name: "Check out code"
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          fetch-depth: 0
+
+      - name: "Check package with checklist"
+        uses: inbo/actions/check_pkg@composite
+        with:
+          extra_repositories: https://cranhaven.r-universe.dev https://inla.r-inla-download.org/R/stable https://inbo.r-universe.dev
