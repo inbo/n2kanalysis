@@ -31,7 +31,7 @@ Imports:
     git2rdata (>= 0.5.0),
     MASS,
     methods,
-    multimput (>= 0.2.14),
+    multimput (>= 0.3.0),
     n2khelper (>= 0.5.0),
     purrr,
     rlang,

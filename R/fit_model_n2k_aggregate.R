@@ -45,7 +45,6 @@ setMethod(
             list(
               Class = "rawImputed",
               Response = "Count",
-              Minimum = "",
               Imputation = parent@AggregatedImputed@Imputation,
               Extra = cbind(
                 parent@AggregatedImputed@Covariate[0, ],
