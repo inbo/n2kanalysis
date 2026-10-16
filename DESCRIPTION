@@ -60,7 +60,7 @@ Additional_repositories: https://inla.r-inla-download.org/R/stable,
 Config/citeme/communities: inbo
 Config/citeme/keywords: analysis; reproducible research; natura 2000;
     monitoring; inbo_version
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
