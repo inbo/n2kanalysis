@@ -7,6 +7,8 @@
 #' [multimput::aggregate_impute()].
 #' - `join`: An optional list for the`join` argument of
 #' [multimput::aggregate_impute()].
+#' - `minimum`: An optional dataframe for the `minimum` argument of
+#' [multimput::aggregate_impute()]
 #' @name n2k_aggregate
 #' @rdname n2k_aggregate
 #' @exportMethod n2k_aggregate
@@ -42,7 +44,12 @@ setMethod(
       dots$status <- "waiting"
     }
     if (is.null(dots$minimum)) {
-      dots$minimum <- ""
+      dots$minimum <- data.frame()
+    } else {
+      stopifnot(
+        "`minimum` is not a data.frame" = inherits(dots$minimum, "data.frame")
+      )
+      dots$minimum <- as.data.frame(dots$minimum)
     }
     if (is.null(dots$seed)) {
       dots$seed <- sample(.Machine$integer.max, 1)
@@ -107,7 +114,8 @@ setMethod(
         dots$parent,
         dots$fun,
         dots$filter,
-        dots$join
+        dots$join,
+        dots$minimum
       ),
       environment = FALSE
     )
@@ -179,6 +187,7 @@ setMethod(
       Function = dots$fun,
       Filter = dots$filter,
       Join = dots$join,
+      Minimum = dots$minimum,
       RawImputed = NULL,
       AggregatedImputed = NULL
     )

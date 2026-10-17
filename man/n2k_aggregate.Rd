@@ -41,5 +41,7 @@ A random seed will be inserted when missing.
 \code{\link[multimput:aggregate_impute]{multimput::aggregate_impute()}}.
 \item \code{join}: An optional list for the\code{join} argument of
 \code{\link[multimput:aggregate_impute]{multimput::aggregate_impute()}}.
+\item \code{minimum}: An optional dataframe for the \code{minimum} argument of
+\code{\link[multimput:aggregate_impute]{multimput::aggregate_impute()}}
 }
 }

@@ -28,7 +28,8 @@ setClass(
     Function = "function",
     Filter = "list",
     Join = "list",
-    AggregatedImputed = "maybeAggregatedImputed"
+    AggregatedImputed = "maybeAggregatedImputed",
+    Minimum = "data.frame"
   ),
   contains = "n2kModel"
 )
@@ -56,7 +57,8 @@ setValidity(
         object@AnalysisRelation$parent_analysis,
         object@Function,
         object@Filter,
-        object@Join
+        object@Join,
+        object@Minimum
       ),
       environment = FALSE
     )

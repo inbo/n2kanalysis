@@ -45,17 +45,20 @@ setMethod(
         parent@AnalysisMetadata$status_fingerprint
       status(x) <- "new"
     }
-    model <- try(
-      aggregate_impute(
-        object = x@RawImputed,
-        grouping = x@AnalysisFormula[[1]] %>%
-          terms() %>%
-          attr("term.labels"),
-        fun = x@Function,
-        filter = x@Filter,
-        join = x@Join
-      )
+
+    args <- list(
+      object = x@RawImputed,
+      grouping = x@AnalysisFormula[[1]] %>%
+        terms() %>%
+        attr("term.labels"),
+      fun = x@Function,
+      filter = x@Filter,
+      join = x@Join
     )
+    if (nrow(x@minimum) > 0) {
+      args$minimum <- x@Minimum
+    }
+    model <- try(do.call(what = aggregate_impute, args = args))
     if ("try-error" %in% class(model)) {
       status(x) <- "error"
       return(x)
