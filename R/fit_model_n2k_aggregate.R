@@ -34,25 +34,7 @@ setMethod(
       if (inherits(parent, "n2kInla")) {
         x@RawImputed <- parent@RawImputed
       } else if (inherits(parent, "n2kAggregate")) {
-        nrow(parent@AggregatedImputed@Covariate) |>
-          rep(x = NA_integer_) |>
-          list() |>
-          setNames("Count") |>
-          cbind(parent@AggregatedImputed@Covariate) |>
-          list() |>
-          setNames("Data") |>
-          c(
-            list(
-              Class = "rawImputed",
-              Response = "Count",
-              Imputation = parent@AggregatedImputed@Imputation,
-              Extra = cbind(
-                parent@AggregatedImputed@Covariate[0, ],
-                Count = integer(0)
-              )
-            )
-          ) |>
-          do.call(what = "new") -> x@RawImputed
+        x@RawImputed <- parent@AggregatedImputed
       } else if (inherits(parent, "n2kHurdleImputed")) {
         x@RawImputed <- parent@Hurdle
       } else {
