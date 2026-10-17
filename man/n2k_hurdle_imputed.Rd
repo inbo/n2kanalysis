@@ -7,14 +7,16 @@
 \alias{n2k_hurdle_imputed,n2kHurdleImputed-methods}
 \title{Create an \code{n2kHurdleImputed} object}
 \usage{
-n2k_hurdle_imputed(presence, count, verbose = FALSE)
+n2k_hurdle_imputed(presence, count, by, verbose = FALSE)
 
-\S4method{n2k_hurdle_imputed}{n2kInla}(presence, count, verbose = FALSE)
+\S4method{n2k_hurdle_imputed}{n2kInla}(presence, count, by, verbose = FALSE)
 }
 \arguments{
 \item{presence}{the \code{n2kInla} object for the presence model.}
 
 \item{count}{the \code{n2kInla} object for the count model.}
+
+\item{by}{The \code{by} argument of \code{\link[multimput:hurdle_impute]{multimput::hurdle_impute()}}}
 
 \item{verbose}{display the location group ID and species group ID.
 Defaults to \code{FALSE}.}

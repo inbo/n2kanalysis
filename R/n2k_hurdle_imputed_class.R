@@ -16,7 +16,8 @@ setClass(
   representation = representation(
     Presence = "maybeRawImputed",
     Count = "maybeRawImputed",
-    Hurdle = "maybeAggregatedImputed"
+    Hurdle = "maybeAggregatedImputed",
+    By = "character"
   ),
   contains = "n2kModel"
 )
@@ -46,7 +47,8 @@ setValidity(
         object@AnalysisMetadata$last_analysed_year,
         format(object@AnalysisMetadata$analysis_date, tz = "UTC"),
         object@AnalysisMetadata$seed,
-        object@AnalysisRelation$parent_analysis
+        object@AnalysisRelation$parent_analysis,
+        object@By
       ),
       environment = FALSE
     )
@@ -72,7 +74,7 @@ setValidity(
     )
 
     assert_that(
-      object@AnalysisMetadata$status_fingerprint != status_fingerprint,
+      object@AnalysisMetadata$status_fingerprint == status_fingerprint,
       msg = "Corrupt status_fingerprint"
     )
 

@@ -1,6 +1,7 @@
 #' Create an `n2kHurdleImputed` object
 #' @param presence the `n2kInla` object for the presence model.
 #' @param count the `n2kInla` object for the count model.
+#' @param by The `by` argument of [multimput::hurdle_impute()]
 #' @param verbose display the location group ID and species group ID.
 #' Defaults to `FALSE`.
 #' @name n2k_hurdle_imputed
@@ -13,6 +14,7 @@ setGeneric(
   def = function(
     presence,
     count,
+    by,
     verbose = FALSE
   ) {
     standardGeneric("n2k_hurdle_imputed") # nocov
@@ -34,9 +36,11 @@ setMethod(
   definition = function(
     presence,
     count,
+    by,
     verbose = FALSE
   ) {
     assert_that(inherits(count, "n2kInla"), is.flag(verbose), noNA(verbose))
+    assert_that(is.string(by), noNA(by))
     sprintf(
       "%s:%s ",
       count@AnalysisMetadata$location_group_id,
@@ -102,7 +106,8 @@ setMethod(
         presence@AnalysisMetadata$last_analysed_year,
         format(presence@AnalysisMetadata$analysis_date, tz = "UTC"),
         presence@AnalysisMetadata$seed,
-        c(get_file_fingerprint(presence), get_file_fingerprint(count))
+        c(get_file_fingerprint(presence), get_file_fingerprint(count)),
+        by
       ),
       environment = FALSE
     )
@@ -125,7 +130,7 @@ setMethod(
       list(
         file_fingerprint,
         status,
-        version@AnalysisVersion$fingerprint,
+        version@AnalysisVersion,
         version@RPackage,
         version@AnalysisVersionRPackage,
         analysis_relation,
@@ -163,7 +168,8 @@ setMethod(
       AnalysisRelation = analysis_relation,
       Presence = presence@RawImputed,
       Count = count@RawImputed,
-      Hurdle = NULL
+      Hurdle = NULL,
+      By = by
     )
   }
 )

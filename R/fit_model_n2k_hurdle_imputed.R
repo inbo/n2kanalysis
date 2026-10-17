@@ -51,7 +51,6 @@ setMethod(
         list(
           get_file_fingerprint(x),
           x@AnalysisMetadata$status,
-          x@AnalysisVersion$fingerprint,
           x@AnalysisVersion,
           x@RPackage,
           x@AnalysisVersionRPackage,
@@ -94,7 +93,6 @@ setMethod(
         list(
           get_file_fingerprint(x),
           x@AnalysisMetadata$status,
-          x@AnalysisVersion$fingerprint,
           x@AnalysisVersion,
           x@RPackage,
           x@AnalysisVersionRPackage,
@@ -112,13 +110,14 @@ setMethod(
       return(x)
     }
 
-    result <- try(hurdle_impute(x@Presence, x@Count))
+    result <- try(
+      hurdle_impute(presence = x@Presence, count = x@Count, by = x@By)
+    )
     if (inherits(result, "try-error")) {
       x@AnalysisMetadata$status_fingerprint <- sha1(
         list(
           get_file_fingerprint(x),
           "error",
-          x@AnalysisVersion$fingerprint,
           x@AnalysisVersion,
           x@RPackage,
           x@AnalysisVersionRPackage,
@@ -136,7 +135,6 @@ setMethod(
       list(
         get_file_fingerprint(x),
         "converged",
-        x@AnalysisVersion$fingerprint,
         x@AnalysisVersion,
         x@RPackage,
         x@AnalysisVersionRPackage,
