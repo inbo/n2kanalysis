@@ -55,7 +55,7 @@ setMethod(
       filter = x@Filter,
       join = x@Join
     )
-    if (nrow(x@minimum) > 0) {
+    if (nrow(x@Minimum) > 0) {
       args$minimum <- x@Minimum
     }
     model <- try(do.call(what = aggregate_impute, args = args))
