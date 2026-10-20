@@ -55,31 +55,6 @@ setMethod(
       return(invisible(NULL))
     }
     dots <- list(...)
-    if (
-      !has_name(dots, "local") ||
-        is.null(dots$local) ||
-        !inherits(base, "s3_bucket")
-    ) {
-      analysis <- read_model(hash, base = base, project = project)
-      display(verbose, paste(status(analysis), "-> "), FALSE)
-      analysis <- fit_model(
-        x = analysis,
-        status = status,
-        base = base,
-        project = project,
-        ...
-      )
-      display(verbose, status(analysis))
-      store_model(analysis, base = base, project = project)
-      result <- data.frame(
-        fingerprint = get_file_fingerprint(analysis),
-        status = status(analysis)
-      )
-      rm(analysis)
-      gc(verbose = FALSE)
-      return(invisible(result))
-    }
-    dots <- list(...)
     to_do <- object_status(
       base = base,
       project = project,
@@ -95,6 +70,30 @@ setMethod(
       )
       return(invisible(result))
     }
+        if (
+          !has_name(dots, "local") ||
+            is.null(dots$local) ||
+            !inherits(base, "s3_bucket")
+        ) {
+          analysis <- read_model(hash, base = base, project = project)
+          display(verbose, paste(status(analysis), "-> "), FALSE)
+          analysis <- fit_model(
+            x = analysis,
+            status = status,
+            base = base,
+            project = project,
+            ...
+          )
+          display(verbose, status(analysis))
+          store_model(analysis, base = base, project = project)
+          result <- data.frame(
+            fingerprint = get_file_fingerprint(analysis),
+            status = status(analysis)
+          )
+          rm(analysis)
+          gc(verbose = FALSE)
+          return(invisible(result))
+        }
     download_model(
       hash = hash,
       base = base,
