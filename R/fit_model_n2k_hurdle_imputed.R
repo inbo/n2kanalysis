@@ -32,15 +32,15 @@ setMethod(
       x@AnalysisRelation$parentstatus_fingerprint[1] <- get_status_fingerprint(
         presence
       )
-      x@AnalysisRelation$parentstatus[1] <- status(presence)
+      x@AnalysisRelation$parent_status[1] <- status(presence)
       rm(presence)
       gc()
       x@AnalysisMetadata$status <- ifelse(
-        all(x@AnalysisRelation$parentstatus == "converged"),
+        all(x@AnalysisRelation$parent_status == "converged"),
         "new",
         ifelse(
           any(
-            !x@AnalysisRelation$parentstatus %in%
+            !x@AnalysisRelation$parent_status %in%
               c("new", "waiting", "converged")
           ),
           "error",
@@ -73,16 +73,16 @@ setMethod(
       x@AnalysisRelation$parentstatus_fingerprint[2] <- get_status_fingerprint(
         count
       )
-      x@AnalysisRelation$parentstatus[2] <- status(count)
+      x@AnalysisRelation$parent_status[2] <- status(count)
       rm(count)
       gc()
 
       x@AnalysisMetadata$status <- ifelse(
-        all(x@AnalysisRelation$parentstatus == "converged"),
+        all(x@AnalysisRelation$parent_status == "converged"),
         "new",
         ifelse(
           any(
-            !x@AnalysisRelation$parentstatus %in%
+            !x@AnalysisRelation$parent_status %in%
               c("new", "waiting", "converged")
           ),
           "error",
@@ -106,7 +106,7 @@ setMethod(
       store_model(x, base = base, project = project)
     }
 
-    if (!all(x@AnalysisRelation$parentstatus == "converged")) {
+    if (!all(x@AnalysisRelation$parent_status == "converged")) {
       return(x)
     }
 
