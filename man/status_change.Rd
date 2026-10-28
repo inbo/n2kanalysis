@@ -8,6 +8,7 @@
 \alias{status<-,n2kInlaComparison-method}
 \alias{status<-,n2kAggregate-method}
 \alias{status<-,n2kModelImputed-method}
+\alias{status<-,n2kAggregateComposite-method}
 \alias{status<-,n2kHurdleImputed-method}
 \title{Overwrite the status of an \code{n2kAnalysisMetadata}}
 \usage{
@@ -22,6 +23,8 @@ status(x) <- value
 \S4method{status}{n2kAggregate}(x) <- value
 
 \S4method{status}{n2kModelImputed}(x) <- value
+
+\S4method{status}{n2kAggregateComposite}(x) <- value
 
 \S4method{status}{n2kHurdleImputed}(x) <- value
 }

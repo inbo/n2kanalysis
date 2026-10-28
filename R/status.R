@@ -226,6 +226,33 @@ setReplaceMethod(
   }
 )
 
+#' @rdname status_change
+#' @importFrom methods setReplaceMethod
+#' @importFrom digest sha1
+#' @include n2k_aggregate_composite_class.R
+setReplaceMethod(
+  "status",
+  "n2kAggregateComposite",
+  function(x, value) {
+    x@AnalysisMetadata$status <- value
+    x@AnalysisMetadata$status_fingerprint <- sha1(
+      list(
+        x@AnalysisMetadata$file_fingerprint,
+        x@AnalysisMetadata$status,
+        x@AnalysisMetadata$analysis_version,
+        x@AnalysisVersion,
+        x@RPackage,
+        x@AnalysisVersionRPackage,
+        x@AnalysisRelation,
+        x@Input,
+        x@AggregatedImputed
+      ),
+      digits = 6L
+    )
+    validObject(x)
+    return(x)
+  }
+)
 
 #' @rdname status_change
 #' @importFrom methods setReplaceMethod
